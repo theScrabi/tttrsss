@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="placeholder" format="reference|color" />
+    <attr name="feedlistDivider" format="reference|color" />
+    <attr name="feedlistBackground" format="reference|color" />
+    <attr name="unreadCounterColor" format="reference|color" />
 </resources>

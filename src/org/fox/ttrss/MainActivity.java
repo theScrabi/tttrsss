@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,7 +38,17 @@ public class MainActivity extends Activity {
 			m_sessionId = savedInstanceState.getString("sessionId");
 		}
 		
-        setContentView(R.layout.main);        
+        setContentView(R.layout.main);
+        
+		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		FeedsFragment frag = new FeedsFragment();
+		
+		frag.initialize(m_sessionId);
+		
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		ft.replace(R.id.feeds_container, frag);
+		ft.commit();
+
     }
     
 	@Override
@@ -73,14 +84,18 @@ public class MainActivity extends Activity {
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.logout:
-			intent = new Intent(this, LoginActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			startActivityForResult(intent, 0);
-			finish();
+			logout();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	protected void logout() {
+		Intent intent = new Intent(this, LoginActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+		startActivityForResult(intent, 0);
+		finish();
 	}
 
 }

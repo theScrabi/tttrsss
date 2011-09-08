@@ -1,46 +1,25 @@
 package org.fox.ttrss;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class LoginActivity extends Activity {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
-	private String m_sessionId = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +36,8 @@ public class LoginActivity extends Activity {
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
 
 		setContentView(R.layout.login);
+		
+		performLogin();
 	}
 
 	protected void updateLoginStatus(int id) {
