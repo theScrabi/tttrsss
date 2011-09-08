@@ -1,9 +1,6 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,29 +11,28 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SimpleCursorAdapter;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
-	protected ArrayList<Feed> m_feeds = new ArrayList<Feed>();
+//	protected ArrayList<Feed> m_feeds = new ArrayList<Feed>();
 	protected FeedsListAdapter m_adapter;
 	protected SharedPreferences m_prefs;
 	protected String m_sessionId;
@@ -47,8 +43,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
+		m_sessionId = m_prefs.getString("last_session_id", null);
+		
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
 			m_sessionId = savedInstanceState.getString("sessionId");
 			m_activeFeedId = savedInstanceState.getInt("activeFeedId");
 			m_lastUpdate = savedInstanceState.getLong("lastUpdate");
@@ -56,7 +53,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 
-		m_adapter = new FeedsListAdapter(getActivity(), R.id.feeds_row, m_feeds);
+		DatabaseHelper helper = new DatabaseHelper(getActivity());
+		Cursor cursor = helper.getReadableDatabase().query("feeds", null, null, null, null, null, "unread DESC");
+		
+		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, cursor,
+				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
 		
 		ListView list = (ListView) view.findViewById(R.id.feeds);
 		
@@ -65,29 +66,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			list.setOnItemClickListener(this);
 		}
 
+		updateSelf();
+		
 		return view;    	
 	}
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		
-		if (new Date().getTime() - m_lastUpdate > 30*1000) {
-			refresh();
-		} else {
-			//
-		}
-	}
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void updateSessionId(String sessionId) {
+		m_sessionId = sessionId;
+
+		SharedPreferences.Editor editor = m_prefs.edit();
+		editor.putString("last_session_id", m_sessionId);	
+		editor.commit();
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
+		super.onAttach(activity);		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 	}
 
@@ -95,82 +89,62 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		m_sessionId = sessionId;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void refresh() {
-		ApiRequest task = new ApiRequest(null, m_prefs.getString("ttrss_url", null)) {
+	private void updateSelf() {
+		ApiRequest task = new ApiRequest(m_sessionId, 
+				m_prefs.getString("ttrss_url", null),
+				m_prefs.getString("login", null),
+				m_prefs.getString("password", null)) {
 			@Override
 			protected void onPostExecute(JsonElement result) {
-				if (result != null) {
+				if (result != null && getAuthStatus() == STATUS_OK) {
 					try {
-						m_lastUpdate = new Date().getTime();
-
-						JsonObject rv = result.getAsJsonObject();
-
-						int status = rv.get("status").getAsInt();
+						JsonArray feeds_object = (JsonArray) result.getAsJsonArray();
 						
-						if (status == 0) {
-							Type listType = new TypeToken<List<Feed>>() {}.getType();
-							List<Feed> feeds = m_gson.fromJson(rv.get("content"), listType);
-							
-							Collections.sort(feeds);
-							
-							if (feeds != null) {
-								m_feeds.clear();
-								
-								for (Feed feed : feeds) {
-									if (feed.id == -4 || feed.id > 0)
-										m_feeds.add(feed);
-								}						
-								
-								m_adapter.notifyDataSetChanged();
-								
-								/* if (getView() != null) {								
-									View v = getView().findViewById(R.id.loading_progress);
-								
-									if (v != null) v.setVisibility(View.GONE);
-								
-									v = getView().findViewById(R.id.no_unread_feeds);
-									
-									if (v != null) {
-										if (m_feeds.size() > 0)
-											v.setVisibility(View.INVISIBLE);
-										else
-											v.setVisibility(View.VISIBLE);
-									}
-								} */
-								
-								return;
-							}
-						} else {
-							JsonObject content = rv.get("content").getAsJsonObject();
-							
-							if (content != null) {
-								String error = content.get("error").getAsString();
+						Type listType = new TypeToken<List<Feed>>() {}.getType();
+						List<Feed> feeds = m_gson.fromJson(feeds_object, listType);
 
-								if (error.equals("NOT_LOGGED_IN")) {
-									MainActivity ma = (MainActivity)getActivity();
-									
-									if (ma != null) ma.logout();									
-								}
-							}							
+						DatabaseHelper dh = new DatabaseHelper(getActivity());
+						SQLiteDatabase db = dh.getWritableDatabase();
+
+						db.execSQL("DELETE FROM FEEDS");
+						
+						SQLiteStatement stmt = db.compileStatement("INSERT INTO feeds " +
+								"("+BaseColumns._ID+", title, feed_url, unread, has_icon, cat_id, last_updated) " +
+								"VALUES (?, ?, ?, ?, ?, ?, ?);");
+						
+						for (Feed feed : feeds) {
+							stmt.bindLong(1, feed.id);
+							stmt.bindString(2, feed.title);
+							stmt.bindString(3, feed.feed_url);
+							stmt.bindLong(4, feed.unread);
+							stmt.bindLong(5, 1);
+							stmt.bindLong(6, feed.cat_id);
+							stmt.bindLong(7, feed.last_updated);
+							stmt.execute();
 						}
+						
+						db.close();
+						
+						m_adapter.notifyDataSetChanged();
+					
 					} catch (Exception e) {
-						e.printStackTrace();						
-					}		
+						e.printStackTrace();
+					}										
 				}
-			}
+				
+			} 
 		};
 		
 		task.execute(new HashMap<String,String>() {   
 			{
 				put("sid", m_sessionId);
 				put("op", "getFeeds");
-				put("cat_id", "-4");
+				put("cat_id", "-3");
 				put("unread_only", "true");
 			}			 
 		});
 
-	}
+	} 
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
@@ -181,64 +155,20 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		out.putLong("lastUpdate", m_lastUpdate);
 	}
 	
-	private class FeedsListAdapter extends ArrayAdapter<Feed> {
-		private ArrayList<Feed> items;
-		
-		public FeedsListAdapter(Context context, int textViewResourceId, ArrayList<Feed> items) {
-			super(context, textViewResourceId, items);
-			this.items = items;
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+	private class FeedsListAdapter extends SimpleCursorAdapter {
 
-			View v = convertView;
-
-			Feed feed = items.get(position);
-			
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.feeds_row, null);
-			}
-			
-			TextView title = (TextView) v.findViewById(R.id.title);
-			
-			if (title != null) {
-				title.setText(feed.title);
-				
-				if (feed.id == m_activeFeedId) {
-					title.setTextAppearance(getContext(), R.style.SelectedFeed);
-				} else {
-					title.setTextAppearance(getContext(), R.style.Feed);
-				}
-			}
-			
-			TextView unread = (TextView) v.findViewById(R.id.unread_counter);
-			
-			if (unread != null) {
-				unread.setText(String.valueOf(feed.unread));
-			}
-			
-			return v;
-		}
-	}
-	
-	private class Feed implements Comparable<Feed> {
-		String feed_url;
-		String title;
-		int id;
-		int unread;
-		boolean has_icon;
-		int cat_id;
-		int last_updated;
+		private Context context;
+		private int layout;
 		
-		@Override
-		public int compareTo(Feed feed) {
-			if (feed.unread != this.unread)
-				return feed.unread - this.unread;
-			else
-				return this.title.compareTo(feed.title);
+		public FeedsListAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
+			
+	        this.context = context;
+	        this.layout = layout;
 		}
+		
+		
 	}
 
 	@Override
@@ -246,16 +176,17 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
 		
 		if (list != null) {
-			Feed feed = (Feed) list.getItemAtPosition(position);
+			Cursor cursor = (Cursor) list.getItemAtPosition(position);
 			
-			if (feed != null) {
-				Log.d(TAG, "clicked on feed " + feed.id);
+			if (cursor != null) {
+				int feedId = (int) cursor.getLong(0);
+
+				Log.d(TAG, "clicked on feed " + feedId);
 				
-				viewFeed(feed.id);
-				
+				viewFeed(feedId);				
 			}			
 		}		
-	}
+	} 
 
 	private void viewFeed(int feedId) {
 		m_activeFeedId = feedId;
@@ -271,77 +202,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		m_adapter.notifyDataSetChanged();
 
-	}
-	
-	private class FeedsDBHelper extends SQLiteOpenHelper {
-	    private SQLiteDatabase db;
-	    private static final int DATABASE_VERSION = 1;
-	    private static final String DB_NAME = "feeds.db";
-	    private static final String TABLE_NAME = "feeds";
-		
-		public FeedsDBHelper(Context context, String name,
-				CursorFactory factory, int version) {
-			super(context, name, factory, version);
-			
-	        db = getWritableDatabase();
-		}
-
-		@Override
-		public void onCreate(SQLiteDatabase db) {
-			db.execSQL("CREATE TABLE feeds (id INTEGER PRIMARY KEY,"+ 
-								"title TEXT,"+ 
-								"feed_url TEXT,"+
-								"unread INTEGER,"+
-								"has_icon INTEGER,"+
-								"cat_id INTEGER,"+
-								"last_updated INTEGER);");
-			}
-
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {			
-			db.execSQL("DROP TABLE feeds");
-			onCreate(db);
-		}
-				
-		public void clearAll() {
-	        db.delete("feeds", null, null);
-	    }
-		
-		public Cursor cursorSelectAll() {
-	        Cursor cursor = this.db.query(
-	                "feeds", // Table Name
-	                new String[] { "id", "title", "feed_url", "unread", "has_icon", "cat_id", "last_updated" }, // Columns to return
-	                null,       // SQL WHERE
-	                null,       // Selection Args
-	                null,       // SQL GROUP BY 
-	                null,       // SQL HAVING
-	                "unread DESC");    // SQL ORDER BY
-	        return cursor;
-	    }
-		
-		public ArrayList<Friend> listSelectAll() {
-	        ArrayList<Friend> list = new ArrayList<Friend>();
-	        Cursor cursor = this.db.query(TABLE_NAME, new String[] { "id", "title", "feed_url", "unread", "has_icon", "cat_id", "last_updated" }, 
-	        		null, null, null, null, "unread DESC");
-	        
-	        if (cursor.moveToFirst()) {
-	            do {
-	                Feed f = new Feed();
-	                f.id = cursor.getInt(0);
-	                f.title = cursor.getString(1);
-	                f.feed_url = cursor.getString(2);
-	                f.unread = cursor.getInt(3);
-	                f.has_icon = cursor.getInt(4) == 1;
-	                f.cat_id = cursor.getInt(5);
-	                f.last_updated = cursor.getInt(6);	                
-	                list.add(f);
-	            } while (cursor.moveToNext());
-	        }
-	        if (cursor != null && !cursor.isClosed()) {
-	            cursor.close();
-	        }
-	        return list;
-	    }
-	}
+	}	
 
 }

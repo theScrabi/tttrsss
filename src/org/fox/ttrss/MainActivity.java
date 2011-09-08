@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -16,7 +17,6 @@ public class MainActivity extends Activity {
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
-	private String m_sessionId;
 	private boolean m_feedsOpened = false;
 
     /** Called when the activity is first created. */
@@ -34,16 +34,8 @@ public class MainActivity extends Activity {
 
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
         
-		Bundle extras = getIntent().getExtras();
-		
-		if (extras != null) {
-			m_sessionId = extras.getString("sessionId");
-		} 
-		
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
 			m_feedsOpened = savedInstanceState.getBoolean("feedsOpened");
-			Log.d(TAG, "FU: " + m_feedsOpened);
 		}
 		
         setContentView(R.layout.main);
@@ -53,8 +45,6 @@ public class MainActivity extends Activity {
         	
         	FragmentTransaction ft = getFragmentManager().beginTransaction();			
         	FeedsFragment frag = new FeedsFragment();
-		
-        	frag.initialize(m_sessionId);
 		
         	ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         	ft.replace(R.id.feeds_container, frag);
@@ -69,7 +59,6 @@ public class MainActivity extends Activity {
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putString("sessionId", m_sessionId);
 		out.putBoolean("feedsOpened", m_feedsOpened);
 	}
     
@@ -78,7 +67,7 @@ public class MainActivity extends Activity {
 		super.onResume();
 
 		if (!m_prefs.getString("theme", "THEME_DARK").equals(m_themeName)) {
-			Intent refresh = new Intent(this, LoginActivity.class);
+			Intent refresh = new Intent(this, MainActivity.class);
 			startActivity(refresh);
 			finish();
 		}			
@@ -98,19 +87,9 @@ public class MainActivity extends Activity {
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
-		case R.id.logout:
-			logout();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	protected void logout() {
-		Intent intent = new Intent(this, LoginActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-		startActivityForResult(intent, 0);
-		finish();
-	}
-
+	
 }

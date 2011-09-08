@@ -8,7 +8,7 @@
         <EditTextPreference android:title="@string/login" android:key="login" android:singleLine="true"></EditTextPreference>
         <EditTextPreference android:title="@string/password" android:key="password" android:singleLine="true" android:password="true"></EditTextPreference>
         <EditTextPreference android:key="ttrss_url" android:title="@string/ttrss_url" android:singleLine="true" textUri="true" android:hint="@string/default_url"></EditTextPreference>
-        <CheckBoxPreference android:defaultValue="true" android:title="@string/auto_login" android:key="auto_login" />                                              
+        <!--  <CheckBoxPreference android:defaultValue="true" android:title="@string/auto_login" android:key="auto_login" /> -->                                              
                 
     </PreferenceCategory>
    

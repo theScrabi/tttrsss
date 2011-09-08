@@ -4,20 +4,21 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="6dip" android:id="@+id/feeds_row">
+    android:padding="3dip" android:id="@+id/feeds_row">
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"           
-            android:layout_gravity="center_vertical"       
-            android:paddingLeft="16dp"   
+            android:layout_gravity="center_vertical"    
+            android:paddingLeft="6dip"   
             android:text="{FEED}" android:textSize="16sp"/>
         <TextView
             android:id="@+id/unread_counter"
             android:gravity="right"
             android:textSize="12sp"
             android:textStyle="bold"
+            android:paddingRight="6dip"
             android:textColor="?unreadCounterColor"
             android:layout_gravity="center_vertical"            
             android:layout_width="wrap_content"
