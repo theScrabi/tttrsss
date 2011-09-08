@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-        <ListView android:layout_weight="1" android:background="?feedlistBackground"
+        <ListView android:layout_weight="1" 
         android:layout_width="match_parent" android:id="@+id/feeds" android:layout_height="match_parent"></ListView>
     </LinearLayout>
     <ProgressBar android:layout_height="wrap_content"

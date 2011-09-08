@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -64,6 +65,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		if (list != null) {
 			list.setAdapter(m_adapter);		
 			list.setOnItemClickListener(this);
+			list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
 
 		updateSelf();
