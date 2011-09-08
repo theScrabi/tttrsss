@@ -12,6 +12,10 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -268,4 +272,76 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		m_adapter.notifyDataSetChanged();
 
 	}
+	
+	private class FeedsDBHelper extends SQLiteOpenHelper {
+	    private SQLiteDatabase db;
+	    private static final int DATABASE_VERSION = 1;
+	    private static final String DB_NAME = "feeds.db";
+	    private static final String TABLE_NAME = "feeds";
+		
+		public FeedsDBHelper(Context context, String name,
+				CursorFactory factory, int version) {
+			super(context, name, factory, version);
+			
+	        db = getWritableDatabase();
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			db.execSQL("CREATE TABLE feeds (id INTEGER PRIMARY KEY,"+ 
+								"title TEXT,"+ 
+								"feed_url TEXT,"+
+								"unread INTEGER,"+
+								"has_icon INTEGER,"+
+								"cat_id INTEGER,"+
+								"last_updated INTEGER);");
+			}
+
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {			
+			db.execSQL("DROP TABLE feeds");
+			onCreate(db);
+		}
+				
+		public void clearAll() {
+	        db.delete("feeds", null, null);
+	    }
+		
+		public Cursor cursorSelectAll() {
+	        Cursor cursor = this.db.query(
+	                "feeds", // Table Name
+	                new String[] { "id", "title", "feed_url", "unread", "has_icon", "cat_id", "last_updated" }, // Columns to return
+	                null,       // SQL WHERE
+	                null,       // Selection Args
+	                null,       // SQL GROUP BY 
+	                null,       // SQL HAVING
+	                "unread DESC");    // SQL ORDER BY
+	        return cursor;
+	    }
+		
+		public ArrayList<Friend> listSelectAll() {
+	        ArrayList<Friend> list = new ArrayList<Friend>();
+	        Cursor cursor = this.db.query(TABLE_NAME, new String[] { "id", "title", "feed_url", "unread", "has_icon", "cat_id", "last_updated" }, 
+	        		null, null, null, null, "unread DESC");
+	        
+	        if (cursor.moveToFirst()) {
+	            do {
+	                Feed f = new Feed();
+	                f.id = cursor.getInt(0);
+	                f.title = cursor.getString(1);
+	                f.feed_url = cursor.getString(2);
+	                f.unread = cursor.getInt(3);
+	                f.has_icon = cursor.getInt(4) == 1;
+	                f.cat_id = cursor.getInt(5);
+	                f.last_updated = cursor.getInt(6);	                
+	                list.add(f);
+	            } while (cursor.moveToNext());
+	        }
+	        if (cursor != null && !cursor.isClosed()) {
+	            cursor.close();
+	        }
+	        return list;
+	    }
+	}
+
 }
