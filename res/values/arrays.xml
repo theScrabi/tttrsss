@@ -1,0 +1,12 @@
+
+    <resources>
+		<string-array name="pref_theme_names">
+        	<item>@string/theme_dark</item>
+        	<item>@string/theme_light</item>
+    	</string-array>
+    	
+    	<string-array name="pref_theme_values">
+        	<item>THEME_DARK</item>
+        	<item>THEME_LIGHT</item>
+    	</string-array>
+    </resources>

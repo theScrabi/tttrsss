@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MainActivity!</string>
+    <string name="login_session_error">Login session refused by server</string>
+    <string name="login_in_progress">Logging in...</string>
+    <string name="login_failed">Login failed.</string>    
     <string name="app_name">Tiny Tiny RSS</string>
+    <string name="login_need_configure">Please configure the application first.</string>
+    <string name="login_ready">Ready to login.</string>
+    <string name="login_login">Log in</string>
+    <string name="logout">Log out</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="default_url">http://example.domain/tt-rss/</string>
+    <string name="authentication">Authentication</string>
+    <string name="look_and_feel">Look and feel</string>
+    <string name="pref_theme">Theme</string>
+    <string name="pref_theme_long">Changes color theme of the application.</string>
+    <string name="ttrss_url">Tiny Tiny RSS URL</string>
+    <string name="auto_login">Login automatically</string>
+    <string name="theme_dark">Dark</string>
+    <string name="preferences">Preferences</string>
+    <string name="theme_light">Light</string>
+    <string name="login_api_disabled">Login failed: API disabled.</string>
+    <string name="login_wrong_password">Login failed: username or password incorrect.</string>
+    <string name="login_success">Logged in.</string>
 </resources>

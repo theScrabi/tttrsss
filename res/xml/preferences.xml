@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+   <PreferenceCategory android:title="@string/authentication">
+        
+        <EditTextPreference android:title="@string/login" android:key="login" android:singleLine="true"></EditTextPreference>
+        <EditTextPreference android:title="@string/password" android:key="password" android:singleLine="true" android:password="true"></EditTextPreference>
+        <EditTextPreference android:key="ttrss_url" android:title="@string/ttrss_url" android:singleLine="true" textUri="true" android:hint="@string/default_url"></EditTextPreference>
+        <CheckBoxPreference android:defaultValue="true" android:title="@string/auto_login" android:key="auto_login" />                                              
+                
+    </PreferenceCategory>
+   
+   <PreferenceCategory android:title="@string/look_and_feel">
+      <ListPreference
+           android:title="@string/pref_theme"
+           android:key="theme"
+           android:defaultValue="THEME_DARK"
+           android:entries="@array/pref_theme_names"
+           android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>  
+   </PreferenceCategory>
+  
+</PreferenceScreen>
