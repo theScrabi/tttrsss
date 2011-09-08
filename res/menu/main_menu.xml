@@ -6,7 +6,8 @@
           android:showAsAction="ifRoom|withText"/>
 
      <item android:id="@+id/logout"
-          android:title="@string/logout" 
-          android:showAsAction=""/>    
+          android:title="@string/logout"          
+          android:icon="@android:drawable/presence_offline"
+          android:showAsAction="ifRoom|withText"/>    
               
     </menu>

@@ -23,4 +23,5 @@
     <string name="login_api_disabled">Login failed: API disabled.</string>
     <string name="login_wrong_password">Login failed: username or password incorrect.</string>
     <string name="login_success">Logged in.</string>
+    <string name="no_unread_feeds">No unread feeds.</string>
 </resources>

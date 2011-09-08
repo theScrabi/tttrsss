@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity {
+	private final String TAG = this.getClass().getSimpleName();
+
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private String m_sessionId;
+	private boolean m_feedsOpened = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -34,20 +38,30 @@ public class MainActivity extends Activity {
 		
 		if (extras != null) {
 			m_sessionId = extras.getString("sessionId");
-		} else if (savedInstanceState != null) {
+		} 
+		
+		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
+			m_feedsOpened = savedInstanceState.getBoolean("feedsOpened");
+			Log.d(TAG, "FU: " + m_feedsOpened);
 		}
 		
         setContentView(R.layout.main);
         
-		FragmentTransaction ft = getFragmentManager().beginTransaction();			
-		FeedsFragment frag = new FeedsFragment();
+        if (!m_feedsOpened) {
+        	Log.d(TAG, "Opening feeds fragment...");
+        	
+        	FragmentTransaction ft = getFragmentManager().beginTransaction();			
+        	FeedsFragment frag = new FeedsFragment();
 		
-		frag.initialize(m_sessionId);
+        	frag.initialize(m_sessionId);
 		
-		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-		ft.replace(R.id.feeds_container, frag);
-		ft.commit();
+        	ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        	ft.replace(R.id.feeds_container, frag);
+        	ft.commit();
+        	
+        	m_feedsOpened = true;
+        }
 
     }
     
@@ -56,6 +70,7 @@ public class MainActivity extends Activity {
 		super.onSaveInstanceState(out);
 
 		out.putString("sessionId", m_sessionId);
+		out.putBoolean("feedsOpened", m_feedsOpened);
 	}
     
 	@Override

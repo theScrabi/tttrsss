@@ -3,18 +3,23 @@ package org.fox.ttrss;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,25 +29,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedsFragment extends Fragment {
+public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected ArrayList<Feed> m_feeds = new ArrayList<Feed>();
 	protected FeedsListAdapter m_adapter;
 	protected SharedPreferences m_prefs;
 	protected String m_sessionId;
+	protected int m_activeFeedId;
+	protected long m_lastUpdate;
 	protected Gson m_gson = new Gson();
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
+			m_sessionId = savedInstanceState.getString("sessionId");
+			m_activeFeedId = savedInstanceState.getInt("activeFeedId");
+			m_lastUpdate = savedInstanceState.getLong("lastUpdate");
 		}
 		
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -52,10 +57,27 @@ public class FeedsFragment extends Fragment {
 		ListView list = (ListView) view.findViewById(R.id.feeds);
 		
 		if (list != null) {
-			list.setAdapter(m_adapter);			
+			list.setAdapter(m_adapter);		
+			list.setOnItemClickListener(this);
 		}
-		
+
 		return view;    	
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+		if (new Date().getTime() - m_lastUpdate > 30*1000) {
+			refresh();
+		} else {
+			//
+		}
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -63,8 +85,6 @@ public class FeedsFragment extends Fragment {
 		super.onAttach(activity);
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-
-		refresh();
 	}
 
 	public void initialize(String sessionId) {
@@ -77,7 +97,9 @@ public class FeedsFragment extends Fragment {
 			@Override
 			protected void onPostExecute(JsonElement result) {
 				if (result != null) {
-					try {					
+					try {
+						m_lastUpdate = new Date().getTime();
+
 						JsonObject rv = result.getAsJsonObject();
 
 						int status = rv.get("status").getAsInt();
@@ -98,9 +120,20 @@ public class FeedsFragment extends Fragment {
 								
 								m_adapter.notifyDataSetChanged();
 								
-								View v = getView().findViewById(R.id.loading_progress);
+								/* if (getView() != null) {								
+									View v = getView().findViewById(R.id.loading_progress);
 								
-								if (v != null) v.setVisibility(View.GONE);
+									if (v != null) v.setVisibility(View.GONE);
+								
+									v = getView().findViewById(R.id.no_unread_feeds);
+									
+									if (v != null) {
+										if (m_feeds.size() > 0)
+											v.setVisibility(View.INVISIBLE);
+										else
+											v.setVisibility(View.VISIBLE);
+									}
+								} */
 								
 								return;
 							}
@@ -119,9 +152,8 @@ public class FeedsFragment extends Fragment {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();						
-					}
-				}				
-
+					}		
+				}
 			}
 		};
 		
@@ -141,6 +173,8 @@ public class FeedsFragment extends Fragment {
 		super.onSaveInstanceState(out);
 		
 		out.putString("sessionId", m_sessionId);
+		out.putInt("activeFeedId", m_activeFeedId);
+		out.putLong("lastUpdate", m_lastUpdate);
 	}
 	
 	private class FeedsListAdapter extends ArrayAdapter<Feed> {
@@ -156,7 +190,7 @@ public class FeedsFragment extends Fragment {
 
 			View v = convertView;
 
-			Feed item = items.get(position);
+			Feed feed = items.get(position);
 			
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -166,13 +200,19 @@ public class FeedsFragment extends Fragment {
 			TextView title = (TextView) v.findViewById(R.id.title);
 			
 			if (title != null) {
-				title.setText(item.title);
+				title.setText(feed.title);
+				
+				if (feed.id == m_activeFeedId) {
+					title.setTextAppearance(getContext(), R.style.SelectedFeed);
+				} else {
+					title.setTextAppearance(getContext(), R.style.Feed);
+				}
 			}
 			
 			TextView unread = (TextView) v.findViewById(R.id.unread_counter);
 			
 			if (unread != null) {
-				unread.setText(String.valueOf(item.unread));
+				unread.setText(String.valueOf(feed.unread));
 			}
 			
 			return v;
@@ -190,7 +230,42 @@ public class FeedsFragment extends Fragment {
 		
 		@Override
 		public int compareTo(Feed feed) {
-			return feed.unread - this.unread;
+			if (feed.unread != this.unread)
+				return feed.unread - this.unread;
+			else
+				return this.title.compareTo(feed.title);
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
+		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
+		
+		if (list != null) {
+			Feed feed = (Feed) list.getItemAtPosition(position);
+			
+			if (feed != null) {
+				Log.d(TAG, "clicked on feed " + feed.id);
+				
+				viewFeed(feed.id);
+				
+			}			
+		}		
+	}
+
+	private void viewFeed(int feedId) {
+		m_activeFeedId = feedId;
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		HeadlinesFragment frag = new HeadlinesFragment();
+		
+		frag.initialize(m_sessionId, feedId);
+		
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		ft.replace(R.id.headlines_container, frag);
+		ft.commit();
+		
+		m_adapter.notifyDataSetChanged();
+
 	}
 }

@@ -3,12 +3,22 @@
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground">#fafafa</item>
 		<item name="unreadCounterColor">#0000ff</item>
+		<item name="headlinesBackground">#ffffff</item>
 	</style>
 
 	<style name="DarkTheme" parent="android:Theme.Holo">
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">#101010</item>
 		<item name="unreadCounterColor">#0000ff</item>
+		<item name="headlinesBackground">#000000</item>
+	</style>
+	
+	<style name="SelectedFeed">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="Feed">
+		<item name="android:textStyle">normal</item>
 	</style>
 	
 </resources>
