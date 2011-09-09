@@ -260,7 +260,7 @@ public class MainActivity extends Activity {
 								String excerpt = Jsoup.parse(article.content).text(); 
 								
 								if (excerpt.length() > 250) {
-									excerpt = excerpt.substring(250) + "...";
+									excerpt = excerpt.substring(0, 250) + "...";
 								}
 								
 								if (c.getCount() != 0) {

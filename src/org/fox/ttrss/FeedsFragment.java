@@ -68,7 +68,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		DatabaseHelper helper = new DatabaseHelper(getActivity());
 		
 		m_db = helper.getReadableDatabase();		
-		m_cursor = m_db.query("feeds_unread", null, "unread > 0", null, null, null, "unread DESC");
+		m_cursor = m_db.query("feeds_unread", null, "unread > 0", null, null, null, "title");
 		
 		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
