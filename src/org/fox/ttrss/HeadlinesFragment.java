@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,7 +47,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			list.setEmptyView(view.findViewById(R.id.no_headlines));
 			list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
-
+		
 		return view;    	
 	}
 
@@ -95,18 +93,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
 		ArticleFragment frag = new ArticleFragment();
 		
-		//frag.initialize(articleId);
+		frag.initialize(articleId);
 		
-		Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.test);
-		a.reset();
-		View v = getView().findViewById(R.id.headlines_container);
-		v.clearAnimation();
-		v.startAnimation(a);
+		/* LinearLayout v = (LinearLayout) getActivity().findViewById(R.id.headlines_container);
 
+		if (v != null) {
+			ObjectAnimator anim = ObjectAnimator.ofFloat(v, "weightSum", 0f, 0.5f);
+			anim.setDuration(1000);
+			anim.start();
+
+		} */
 		
 		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 		ft.replace(R.id.article_container, frag);
 		ft.commit();
+		
+		getActivity().findViewById(R.id.article_container).setVisibility(View.VISIBLE);
 		
 		//m_adapter.notifyDataSetChanged();
 

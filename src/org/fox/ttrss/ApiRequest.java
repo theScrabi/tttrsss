@@ -4,15 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -20,7 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonElement> {
+public class ApiRequest {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected String m_sessionId;
@@ -43,11 +40,11 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		m_login = login;
 		m_password = password;
 		
-		Log.d(TAG, "initial SID=" + sessionId);
+		//Log.d(TAG, "initial SID=" + sessionId);
 	}
 	
 	protected int tryAuthenticate() {
-		JsonElement result = sendRequest(new HashMap<String,String>() {   
+		JsonElement result = _sendRequest(new HashMap<String,String>() {   
 			{
 				put("op", "login");
 				put("user", m_login);
@@ -101,7 +98,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		return m_authStatus;
 	}
 	
-	protected JsonElement sendRequest(HashMap<String,String> param) {
+	protected JsonElement _sendRequest(HashMap<String,String> param) {
 
 		HashMap<String,String> tmp = new HashMap<String,String>(param);
 
@@ -144,10 +141,9 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		return null;
 	}
 
-	@Override
-	protected JsonElement doInBackground(HashMap<String, String>... params) {
+	public JsonElement sendRequest(HashMap<String, String> params) {
 		
-		JsonElement result = sendRequest(params[0]);
+		JsonElement result = _sendRequest(params);
 
 		try {
 			JsonElement content = result.getAsJsonObject().get("content");
@@ -163,7 +159,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 					m_authStatus = tryAuthenticate();
 					
 					if (m_authStatus == STATUS_OK) {
-						result = sendRequest(params[0]);
+						result = _sendRequest(params);
 						
 						return result.getAsJsonObject().get("content");						
 					}
