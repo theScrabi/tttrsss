@@ -68,7 +68,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 
 		DatabaseHelper helper = new DatabaseHelper(getActivity());
-		m_cursor = helper.getReadableDatabase().query("feeds", null, null, null, null, null, "unread DESC");
+		m_cursor = helper.getReadableDatabase().query("feeds_unread", null, null, null, null, null, "unread DESC");
 		
 		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
@@ -197,7 +197,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		out.putLong("lastUpdate", m_lastUpdate);
 	}
 	
-	private class FeedsListAdapter extends SimpleCursorAdapter {
+	class FeedsListAdapter extends SimpleCursorAdapter {
 
 		private Context context;
 		private int layout;

@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
         	FeedsFragment frag = new FeedsFragment();
 		
         	ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        	ft.replace(R.id.feeds_container, frag);
+        	ft.replace(R.id.feeds_container, frag, "FEEDLIST");
         	ft.commit();
         	
         	m_feedsOpened = true;
@@ -210,8 +210,8 @@ public class MainActivity extends Activity {
 								stmtInsert.bindString(7, article.title);
 								stmtInsert.bindString(8, article.link);
 								stmtInsert.bindLong(9, article.feed_id);
-								stmtInsert.bindString(9, ""); // comma-separated tags
-								stmtInsert.bindString(10, article.content);
+								stmtInsert.bindString(10, ""); // comma-separated tags
+								stmtInsert.bindString(11, article.content);
 								stmtInsert.execute();
 
 							}
@@ -220,6 +220,13 @@ public class MainActivity extends Activity {
 						}
 						
 						db.close();
+						
+						FeedsFragment ff = (FeedsFragment) getFragmentManager().findFragmentByTag("FEEDLIST");
+						
+						if (ff != null) {
+							ff.m_cursor.requery();
+							ff.m_adapter.notifyDataSetChanged();
+						}
 						
 						Log.d(TAG, articlesFound + " articles processed");
 						
