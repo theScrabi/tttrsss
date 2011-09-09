@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
 				put("feed_id", "-4");
 				put("show_content", "1");
 				put("limit", String.valueOf(m_limit));
-				put("offset", String.valueOf(m_offset));
+				put("skip", String.valueOf(m_offset));
 				put("view_mode", "unread");
 			}			 
 		});
