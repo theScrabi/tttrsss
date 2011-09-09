@@ -11,17 +11,12 @@ import android.view.ViewGroup;
 
 public class HeadlinesFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
-	protected String m_sessionId;
 	protected int m_feedId;
 	protected SharedPreferences m_prefs;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
-		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
-		}
-		
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
 		/* m_adapter = new FeedsListAdapter(getActivity(), R.id.feeds_row, m_feeds);
@@ -43,8 +38,7 @@ public class HeadlinesFragment extends Fragment {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 	}
 
-	public void initialize(String sessionId, int feedId) {
-		m_sessionId = sessionId;
+	public void initialize(int feedId) {
 		m_feedId = feedId;
 	}
 

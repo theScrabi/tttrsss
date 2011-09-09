@@ -3,6 +3,8 @@ package org.fox.ttrss;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -36,18 +38,29 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 //	protected ArrayList<Feed> m_feeds = new ArrayList<Feed>();
 	protected FeedsListAdapter m_adapter;
 	protected SharedPreferences m_prefs;
-	protected String m_sessionId;
 	protected int m_activeFeedId;
 	protected long m_lastUpdate;
 	protected Gson m_gson = new Gson();
+	protected Cursor m_cursor;
+
+	private Timer m_timer;
+	private TimerTask m_updateTask = new TimerTask() {
+		@Override
+		public void run() {
+
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					updateSelf();
+				}				
+			});			
+		}		
+	};
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
-		m_sessionId = m_prefs.getString("last_session_id", null);
-		
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
 			m_activeFeedId = savedInstanceState.getInt("activeFeedId");
 			m_lastUpdate = savedInstanceState.getLong("lastUpdate");
 		}
@@ -55,9 +68,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 
 		DatabaseHelper helper = new DatabaseHelper(getActivity());
-		Cursor cursor = helper.getReadableDatabase().query("feeds", null, null, null, null, null, "unread DESC");
+		m_cursor = helper.getReadableDatabase().query("feeds", null, null, null, null, null, "unread DESC");
 		
-		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, cursor,
+		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
 		
 		ListView list = (ListView) view.findViewById(R.id.feeds);
@@ -68,31 +81,32 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
 
-		updateSelf();
+		//updateSelf();
 		
+		m_timer = new Timer("UpdateFeeds");
+		m_timer.schedule(m_updateTask, 1000L, 60*1000L);
+
 		return view;    	
 	}
 
-	protected void updateSessionId(String sessionId) {
-		m_sessionId = sessionId;
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 
-		SharedPreferences.Editor editor = m_prefs.edit();
-		editor.putString("last_session_id", m_sessionId);	
-		editor.commit();
+		m_timer.cancel();
+		m_timer = null;
 	}
-
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 	}
 
-	public void initialize(String sessionId) {
-		m_sessionId = sessionId;
-	}
-	
 	private void updateSelf() {
-		ApiRequest task = new ApiRequest(m_sessionId, 
+		String sessionId = ((MainActivity)getActivity()).getSessionId();
+		
+		ApiRequest task = new ApiRequest(sessionId, 
 				m_prefs.getString("ttrss_url", null),
 				m_prefs.getString("login", null),
 				m_prefs.getString("password", null)) {
@@ -100,6 +114,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			protected void onPostExecute(JsonElement result) {
 				if (result != null && getAuthStatus() == STATUS_OK) {
 					try {
+						((MainActivity)getActivity()).setSessionId(getSessionId());
+						
 						JsonArray feeds_object = (JsonArray) result.getAsJsonArray();
 						
 						Type listType = new TypeToken<List<Feed>>() {}.getType();
@@ -108,26 +124,51 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 						DatabaseHelper dh = new DatabaseHelper(getActivity());
 						SQLiteDatabase db = dh.getWritableDatabase();
 
-						db.execSQL("DELETE FROM FEEDS");
+						/* db.execSQL("DELETE FROM FEEDS"); */
 						
-						SQLiteStatement stmt = db.compileStatement("INSERT INTO feeds " +
-								"("+BaseColumns._ID+", title, feed_url, unread, has_icon, cat_id, last_updated) " +
-								"VALUES (?, ?, ?, ?, ?, ?, ?);");
-						
+						/* SQLiteStatement stmFind = db.compileStatement("SELECT "+BaseColumns._ID+" FROM feeds WHERE "+
+								BaseColumns._ID+" = ?"); */
+
+						SQLiteStatement stmtUpdate = db.compileStatement("UPDATE feeds SET " +
+								"title = ?, feed_url = ?, has_icon = ?, cat_id = ?, last_updated = ? WHERE " +
+								BaseColumns._ID + " = ?");
+
+						SQLiteStatement stmtInsert = db.compileStatement("INSERT INTO feeds " +
+								"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id, last_updated) " +
+								"VALUES (?, ?, ?, ?, ?, ?);");
+
 						for (Feed feed : feeds) {
-							stmt.bindLong(1, feed.id);
-							stmt.bindString(2, feed.title);
-							stmt.bindString(3, feed.feed_url);
-							stmt.bindLong(4, feed.unread);
-							stmt.bindLong(5, 1);
-							stmt.bindLong(6, feed.cat_id);
-							stmt.bindLong(7, feed.last_updated);
-							stmt.execute();
-						}
+							Cursor c = db.query("feeds", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
+									new String[] { String.valueOf(feed.id) }, null, null, null);
+							
+							if (c.getCount() != 0) {
+								stmtUpdate.bindString(1, feed.title);
+								stmtUpdate.bindString(2, feed.feed_url);								
+								stmtUpdate.bindLong(3, feed.has_icon ? 1 : 0);
+								stmtUpdate.bindLong(4, feed.cat_id);
+								stmtUpdate.bindLong(5, feed.last_updated);
+								stmtUpdate.bindLong(6, feed.id);
+								stmtUpdate.execute();								
+								
+							} else {
+								stmtInsert.bindLong(1, feed.id);
+								stmtInsert.bindString(2, feed.title);
+								stmtInsert.bindString(3, feed.feed_url);
+								stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
+								stmtInsert.bindLong(5, feed.cat_id);
+								stmtInsert.bindLong(6, feed.last_updated);
+								stmtInsert.execute();
+							}
+							
+							c.close();
+						} 
+						
+						// TODO delete not returned feeds which has no data here
 						
 						db.close();
 						
-						m_adapter.notifyDataSetChanged();
+						m_cursor.requery();
+						m_adapter.notifyDataSetChanged();						
 					
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -139,20 +180,19 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		task.execute(new HashMap<String,String>() {   
 			{
-				put("sid", m_sessionId);
+				put("sid", ((MainActivity)getActivity()).getSessionId());
 				put("op", "getFeeds");
 				put("cat_id", "-3");
 				put("unread_only", "true");
 			}			 
 		});
 
-	} 
+	}
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 		
-		out.putString("sessionId", m_sessionId);
 		out.putInt("activeFeedId", m_activeFeedId);
 		out.putLong("lastUpdate", m_lastUpdate);
 	}
@@ -168,8 +208,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			
 	        this.context = context;
 	        this.layout = layout;
-		}
-		
+		}		
 		
 	}
 
@@ -196,7 +235,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
 		HeadlinesFragment frag = new HeadlinesFragment();
 		
-		frag.initialize(m_sessionId, feedId);
+		frag.initialize(feedId);
 		
 		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 		ft.replace(R.id.headlines_container, frag);
