@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.jsoup.Jsoup;
+
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -255,10 +257,10 @@ public class MainActivity extends Activity {
 								Cursor c = db.query("articles", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
 										new String[] { String.valueOf(article.id) }, null, null, null);
 								
-								String excerpt = article.content.replaceAll("\\<[^>]*>","");
+								String excerpt = Jsoup.parse(article.content).text(); 
 								
-								if (excerpt.length() > 120) {
-									excerpt = excerpt.substring(120) + "...";
+								if (excerpt.length() > 250) {
+									excerpt = excerpt.substring(250) + "...";
 								}
 								
 								if (c.getCount() != 0) {
