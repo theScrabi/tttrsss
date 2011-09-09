@@ -47,10 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "content TEXT" +
                 ");");
 		
-		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds._id AS _id, " +
+		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
 				"feeds.title AS title, " +
 				"SUM(articles.unread) AS unread FROM feeds " +
-				"LEFT JOIN articles ON (articles.feed_id = feeds._id) GROUP BY feeds._id, feeds.title;");
+				"LEFT JOIN articles ON (articles.feed_id = feeds."+BaseColumns._ID+") " +
+				"GROUP BY feeds."+BaseColumns._ID+", feeds.title;");
 	}
 
 	@Override

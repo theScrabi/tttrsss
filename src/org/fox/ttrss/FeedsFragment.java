@@ -35,13 +35,12 @@ import com.google.gson.reflect.TypeToken;
 public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
-//	protected ArrayList<Feed> m_feeds = new ArrayList<Feed>();
 	protected FeedsListAdapter m_adapter;
 	protected SharedPreferences m_prefs;
 	protected int m_activeFeedId;
-	protected long m_lastUpdate;
 	protected Gson m_gson = new Gson();
 	protected Cursor m_cursor;
+	protected SQLiteDatabase m_db;
 
 	private Timer m_timer;
 	private TimerTask m_updateTask = new TimerTask() {
@@ -62,13 +61,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 		if (savedInstanceState != null) {
 			m_activeFeedId = savedInstanceState.getInt("activeFeedId");
-			m_lastUpdate = savedInstanceState.getLong("lastUpdate");
 		}
 		
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 
 		DatabaseHelper helper = new DatabaseHelper(getActivity());
-		m_cursor = helper.getReadableDatabase().query("feeds_unread", null, null, null, null, null, "unread DESC");
+		
+		m_db = helper.getReadableDatabase();		
+		m_cursor = m_db.query("feeds_unread", null, "unread > 0", null, null, null, "unread DESC");
 		
 		m_adapter = new FeedsListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
@@ -78,11 +78,15 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		if (list != null) {
 			list.setAdapter(m_adapter);		
 			list.setOnItemClickListener(this);
+			list.setEmptyView(view.findViewById(R.id.no_unread_feeds));
 			list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
 
-		//updateSelf();
+		View pb = view.findViewById(R.id.loading_progress);
 		
+		if (pb != null && m_cursor.getCount() == 0)
+			pb.setVisibility(View.VISIBLE);
+	
 		m_timer = new Timer("UpdateFeeds");
 		m_timer.schedule(m_updateTask, 1000L, 60*1000L);
 
@@ -93,6 +97,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	public void onDestroy() {
 		super.onDestroy();
 
+		m_cursor.close();
+		m_db.close();
+		
 		m_timer.cancel();
 		m_timer = null;
 	}
@@ -114,7 +121,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			protected void onPostExecute(JsonElement result) {
 				if (result != null && getAuthStatus() == STATUS_OK) {
 					try {
-						((MainActivity)getActivity()).setSessionId(getSessionId());
+						try {
+							((MainActivity)getActivity()).setSessionId(getSessionId());
+						} catch (NullPointerException e) {
+							//
+						}
 						
 						JsonArray feeds_object = (JsonArray) result.getAsJsonArray();
 						
@@ -123,11 +134,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 						DatabaseHelper dh = new DatabaseHelper(getActivity());
 						SQLiteDatabase db = dh.getWritableDatabase();
-
-						/* db.execSQL("DELETE FROM FEEDS"); */
-						
-						/* SQLiteStatement stmFind = db.compileStatement("SELECT "+BaseColumns._ID+" FROM feeds WHERE "+
-								BaseColumns._ID+" = ?"); */
 
 						SQLiteStatement stmtUpdate = db.compileStatement("UPDATE feeds SET " +
 								"title = ?, feed_url = ?, has_icon = ?, cat_id = ?, last_updated = ? WHERE " +
@@ -167,9 +173,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 						
 						db.close();
 						
-						m_cursor.requery();
-						m_adapter.notifyDataSetChanged();						
-					
+						View pb = getView().findViewById(R.id.loading_progress);
+						
+						if (pb != null) pb.setVisibility(View.INVISIBLE);
+
+						updateListView();
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}										
@@ -183,7 +192,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 				put("sid", ((MainActivity)getActivity()).getSessionId());
 				put("op", "getFeeds");
 				put("cat_id", "-3");
-				put("unread_only", "true");
+				put("unread_only", "0");
 			}			 
 		});
 
@@ -194,7 +203,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 		
 		out.putInt("activeFeedId", m_activeFeedId);
-		out.putLong("lastUpdate", m_lastUpdate);
 	}
 	
 	class FeedsListAdapter extends SimpleCursorAdapter {
@@ -243,6 +251,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		m_adapter.notifyDataSetChanged();
 
+	}
+
+	public synchronized void updateListView() {
+		m_cursor.requery();
+		m_adapter.notifyDataSetChanged();		
 	}	
 
 }

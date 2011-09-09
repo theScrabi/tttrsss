@@ -19,15 +19,6 @@ public class HeadlinesFragment extends Fragment {
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
-		/* m_adapter = new FeedsListAdapter(getActivity(), R.id.feeds_row, m_feeds);
-		
-		ListView list = (ListView) view.findViewById(R.id.feeds);
-		
-		if (list != null) {
-			list.setAdapter(m_adapter);		
-			list.setOnItemClickListener(this);
-		} */
-		
 		return view;    	
 	}
 
