@@ -18,14 +18,20 @@
     				android:paddingLeft="2dip" android:paddingRight="2dip"
     				android:layout_width="wrap_content" android:layout_height="match_parent"></ImageView>
                 
-            </LinearLayout> 
-            
-            <LinearLayout android:layout_weight="0.5" android:layout_height="match_parent" android:id="@+id/headlines_container" android:layout_width="match_parent">
             </LinearLayout>
+    	<LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/LinearLayout1" android:layout_weight="0.5">
+    		<LinearLayout android:layout_width="match_parent" android:layout_weight="0" android:id="@+id/headlines_container" android:layout_height="match_parent"></LinearLayout>
+    		<LinearLayout android:layout_width="match_parent" android:layout_weight="1" android:background="#f0f0ff" android:id="@+id/article_container" android:layout_height="match_parent"></LinearLayout>
+    	</LinearLayout>
             
         
     </LinearLayout>
     <TextView android:layout_gravity="center" android:visibility="invisible"
     android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/no_unread_feeds" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/no_unread_feeds"></TextView>
+    
+     <TextView android:id="@+id/no_headlines"
+     	android:visibility="invisible"    	
+    	android:layout_gravity="center" 
+    	android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/no_headlines"></TextView>
     
 </FrameLayout>

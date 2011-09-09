@@ -4,12 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" android:id="@+id/headlines_fragment">
     <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-        <ListView android:layout_weight="1" android:background="?headlinesBackground"
+        <ListView android:layout_weight="1" 
         android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/headlines"></ListView>
     </LinearLayout>
-     <TextView android:id="@+id/no_headlines"
-     	android:visibility="invisible"    	
-    	android:layout_gravity="center" 
-    	android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/no_headlines"></TextView>
 
     </FrameLayout>

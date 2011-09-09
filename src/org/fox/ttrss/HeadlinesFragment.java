@@ -2,19 +2,25 @@ package org.fox.ttrss;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public class HeadlinesFragment extends Fragment {
+public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected int m_feedId;
 	protected SharedPreferences m_prefs;
@@ -39,9 +45,9 @@ public class HeadlinesFragment extends Fragment {
 		
 		if (list != null) {
 			list.setAdapter(m_adapter);		
-			//list.setOnItemClickListener(this);
+			list.setOnItemClickListener(this);
 			list.setEmptyView(view.findViewById(R.id.no_headlines));
-			//list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+			list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
 
 		return view;    	
@@ -64,6 +70,46 @@ public class HeadlinesFragment extends Fragment {
 
 	public void initialize(int feedId) {
 		m_feedId = feedId;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
+		ListView list = (ListView)getActivity().findViewById(R.id.headlines);
+		
+		if (list != null) {
+			Cursor cursor = (Cursor) list.getItemAtPosition(position);
+			
+			if (cursor != null) {
+				int articleId = (int) cursor.getLong(0);
+
+				Log.d(TAG, "clicked on article " + articleId);
+				
+				viewArticle(articleId);
+				
+			}			
+		}		
+		
+	}
+
+	private void viewArticle(int articleId) {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		ArticleFragment frag = new ArticleFragment();
+		
+		//frag.initialize(articleId);
+		
+		Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.test);
+		a.reset();
+		View v = getView().findViewById(R.id.headlines_container);
+		v.clearAnimation();
+		v.startAnimation(a);
+
+		
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		ft.replace(R.id.article_container, frag);
+		ft.commit();
+		
+		//m_adapter.notifyDataSetChanged();
+
 	}
 
 }
