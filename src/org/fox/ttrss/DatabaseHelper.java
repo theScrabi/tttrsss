@@ -10,7 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final String TAG = this.getClass().getSimpleName();
 	public static final String DATABASE_NAME = "LocalStorage";
-	public static final int DATABASE_VERSION = 6;
+	public static final int DATABASE_VERSION = 7;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,7 +44,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "link TEXT, " +
                 "feed_id INTEGER, " +
                 "tags TEXT, " +
-                "content TEXT" +
+                "content TEXT, " +
+                "excerpt TEXT" +
                 ");");
 		
 		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +

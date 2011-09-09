@@ -238,12 +238,12 @@ public class MainActivity extends Activity {
 							/* db.execSQL("DELETE FROM articles"); */
 							
 							SQLiteStatement stmtInsert = db.compileStatement("INSERT INTO articles " +
-									"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content) " +
-									"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+									"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content, excerpt) " +
+									"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 	
 							SQLiteStatement stmtUpdate = db.compileStatement("UPDATE articles SET " +
 									"unread = ?, marked = ?, published = ?, updated = ?, is_updated = ?, title = ?, link = ?, feed_id = ?, " +
-									"tags = ?, content = ? WHERE " + BaseColumns._ID + " = ?");
+									"tags = ?, content = ?, excerpt = ? WHERE " + BaseColumns._ID + " = ?");
 	
 							for (Article article : articles) {
 								//Log.d(TAG, "Processing article #" + article.id);
@@ -254,6 +254,12 @@ public class MainActivity extends Activity {
 								
 								Cursor c = db.query("articles", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
 										new String[] { String.valueOf(article.id) }, null, null, null);
+								
+								String excerpt = article.content.replaceAll("\\<[^>]*>","");
+								
+								if (excerpt.length() > 120) {
+									excerpt = excerpt.substring(120) + "...";
+								}
 								
 								if (c.getCount() != 0) {
 									stmtUpdate.bindLong(1, article.unread ? 1 : 0);
@@ -266,7 +272,8 @@ public class MainActivity extends Activity {
 									stmtUpdate.bindLong(8, article.feed_id);
 									stmtUpdate.bindString(9, ""); // comma-separated tags
 									stmtUpdate.bindString(10, article.content);
-									stmtUpdate.bindLong(11, article.id);
+									stmtUpdate.bindString(11, excerpt);
+									stmtUpdate.bindLong(12, article.id);
 									stmtUpdate.execute();
 	
 								} else {
@@ -283,8 +290,8 @@ public class MainActivity extends Activity {
 									stmtInsert.bindLong(9, article.feed_id);
 									stmtInsert.bindString(10, ""); // comma-separated tags
 									stmtInsert.bindString(11, article.content);
-									stmtInsert.execute();
-	
+									stmtInsert.bindString(12, excerpt);
+									stmtInsert.execute();	
 								}
 								
 								c.close();

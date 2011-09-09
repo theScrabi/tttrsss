@@ -27,4 +27,5 @@
     <string name="offline">Offline</string>
     <string name="online">Online</string>
     <string name="synchronizing">Synchronizing...</string>
+    <string name="no_headlines">No articles found.</string>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:gravity="center_vertical"
+    android:padding="3dip" android:id="@+id/headlines_row" android:orientation="horizontal">
+    <CheckBox android:paddingLeft="6dip" android:paddingRight="6dip"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/selected"></CheckBox>
+        <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_width="match_parent">
+            <TextView android:id="@+id/title" android:textSize="16sp" android:layout_height="wrap_content" android:text="{Title...}" android:layout_width="match_parent"></TextView>
+            <TextView android:id="@+id/excerpt" android:textSize="13sp" android:layout_height="wrap_content" android:textColor="#909090" android:text="{Content excerpt...}" android:layout_width="match_parent"></TextView>
+        </LinearLayout>
+                   
+</LinearLayout>
