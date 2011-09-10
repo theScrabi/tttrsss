@@ -29,6 +29,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
+		if (savedInstanceState != null) {
+			m_feedId = savedInstanceState.getInt("feedId");
+		}
+
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
 		DatabaseHelper helper = new DatabaseHelper(getActivity());
@@ -112,6 +116,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		//m_adapter.notifyDataSetChanged();
 
+	}
+
+	@Override
+	public void onSaveInstanceState (Bundle out) {		
+		super.onSaveInstanceState(out);
+		
+		out.putInt("feedId", m_feedId);
 	}
 
 }

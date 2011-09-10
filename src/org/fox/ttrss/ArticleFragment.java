@@ -1,5 +1,7 @@
 package org.fox.ttrss;
 
+import java.sql.SQLData;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
@@ -20,6 +22,7 @@ public class ArticleFragment extends Fragment {
 
 	protected SharedPreferences m_prefs;
 	protected int m_articleId;
+	protected SQLiteDatabase m_db;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -31,11 +34,11 @@ public class ArticleFragment extends Fragment {
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
 		DatabaseHelper dh = new DatabaseHelper(getActivity());
-		SQLiteDatabase db = dh.getReadableDatabase();
+		m_db = dh.getReadableDatabase();
 
 		Log.d(TAG, "Opening article #" + m_articleId);
 		
-		Cursor c = db.query("articles", null, BaseColumns._ID + "=?", 
+		Cursor c = m_db.query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 		
 		c.moveToFirst();
@@ -59,7 +62,6 @@ public class ArticleFragment extends Fragment {
 		}
 		
 		c.close();
-		db.close();
 		
 		return view;    	
 	}
@@ -71,6 +73,8 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
+		m_db.close();
 	}
 	
 	@Override

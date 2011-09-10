@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private boolean m_feedsOpened = false;
+	private boolean m_splashDisabled = false;
 	protected String m_sessionId;
 	protected int m_offset = 0;
 	protected int m_limit = 30;
@@ -107,13 +108,14 @@ public class MainActivity extends Activity {
 			m_limit = savedInstanceState.getInt("limit");
 			m_updateMode = savedInstanceState.getInt("updateMode");
 			m_maxId = savedInstanceState.getInt("maxId");
+			m_splashDisabled = savedInstanceState.getBoolean("splashDisabled");
 		}
 
 		// allow database to upgrade before we do anything else
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		SQLiteDatabase db = dh.getWritableDatabase();
 
-		if (m_updateMode == UPDATE_INITIAL) {
+		if (m_updateMode == UPDATE_INITIAL && !m_splashDisabled) {
 			db.execSQL("DELETE FROM feeds;");
 			db.execSQL("DELETE FROM articles;");
 		}
@@ -127,10 +129,6 @@ public class MainActivity extends Activity {
 		LayoutTransition transitioner = new LayoutTransition();
         wrapper.setLayoutTransition(transitioner);
 
-        m_feedsTask = new FeedsTask();
-        m_feedsTimer = new Timer("UpdateFeeds");
-        m_feedsTimer.schedule(m_feedsTask, 1000L, 60*1000L);
-        
 		if (!m_feedsOpened) {
 			Log.d(TAG, "Opening feeds fragment...");
 
@@ -142,6 +140,20 @@ public class MainActivity extends Activity {
 			ft.commit();
 
 			m_feedsOpened = true;
+
+		}
+		
+		if (m_splashDisabled) {
+			ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
+			
+			if (vf != null && vf.getDisplayedChild() == 0)
+				vf.showNext();
+			
+			scheduleNextUpdate();
+		} else {
+			m_feedsTask = new FeedsTask();
+			m_feedsTimer = new Timer("UpdateFeeds");
+			m_feedsTimer.schedule(m_feedsTask, 1000L, 60*1000L);
 		}
 
 		//scheduleNextUpdate();
@@ -157,6 +169,7 @@ public class MainActivity extends Activity {
 		out.putInt("limit", m_limit);
 		out.putInt("updateMode", m_updateMode);
 		out.putInt("maxId", m_maxId);
+		out.putBoolean("splashDisabled", m_splashDisabled);
 	}
 
 	@Override
@@ -174,13 +187,13 @@ public class MainActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 
-		m_feedsTask.cancel();
-		m_articlesTask.cancel();
+		if (m_feedsTask != null) m_feedsTask.cancel();
+		if (m_articlesTask != null) m_articlesTask.cancel();
 		
-		m_feedsTimer.cancel();
+		if (m_feedsTimer != null)  m_feedsTimer.cancel();
 		m_feedsTimer = null;
 		
-		m_articlesTimer.cancel();
+		if (m_articlesTimer != null)  m_articlesTimer.cancel();
 		m_articlesTimer = null;
 	}
 
@@ -269,7 +282,7 @@ public class MainActivity extends Activity {
 					List<Article> articles = api.m_gson.fromJson(feeds_object, listType);
 
 					DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-					SQLiteDatabase db = dh.getWritableDatabase();
+					SQLiteDatabase db = dh.getWritableDatabase(); // TODO rework to m_writableDb etc to prevent crashes on rotate/recreate
 
 					/* db.execSQL("DELETE FROM articles"); */
 
@@ -368,6 +381,8 @@ public class MainActivity extends Activity {
 						m_updateMode = UPDATE_SEQUENTIAL;
 					}
 				}
+
+				m_splashDisabled = true;
 
 				runOnUiThread(new Runnable() {
 					@Override
