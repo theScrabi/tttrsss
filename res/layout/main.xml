@@ -1,8 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"    
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" android:id="@+id/main_flipper">
     
-    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="horizontal">
+    <FrameLayout android:layout_gravity="center_vertical" android:id="@+id/sync_splash" android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:gravity="center" android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="match_parent">
+            <ProgressBar android:id="@+id/loading_progress" android:layout_height="wrap_content" android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge"></ProgressBar>
+            <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/loading_message" android:text="@string/loading_message"></TextView>
+        </LinearLayout>
+    </FrameLayout>
+    
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="horizontal" android:id="@+id/main">
     
     	<LinearLayout android:layout_weight="1.5" android:layout_height="match_parent" android:id="@+id/linearLayout4" android:layout_width="match_parent">
 
@@ -25,11 +32,11 @@
     		
     		<ImageView android:paddingRight="2dip" android:layout_height="match_parent" android:background="?feedlistDivider" android:layout_width="wrap_content" android:paddingLeft="2dip"></ImageView>
     		
-    		<LinearLayout android:layout_weight="1" android:visibility="gone" android:layout_width="match_parent" android:background="#f0f0ff" android:id="@+id/article_container" android:layout_height="match_parent"></LinearLayout>
+    		<LinearLayout android:layout_weight="1" android:visibility="gone" android:layout_width="match_parent" android:id="@+id/article_container" android:layout_height="match_parent"></LinearLayout>
     	</LinearLayout>
             
         
     </LinearLayout>
     
     
-</FrameLayout>
+</ViewFlipper>

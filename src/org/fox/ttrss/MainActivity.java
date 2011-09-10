@@ -23,8 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ViewFlipper;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,14 +37,14 @@ public class MainActivity extends Activity {
 	private final static int UPDATE_SEQUENTIAL = 2;
 	private final static int UPDATE_OFFLINE = 3;
 
-	private final static int INITIAL_OFFSET_MAX = 100;
+	private final static int OFFSET_MAX = 100;
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private boolean m_feedsOpened = false;
 	protected String m_sessionId;
 	protected int m_offset = 0;
-	protected int m_limit = 25;
+	protected int m_limit = 30;
 	protected int m_maxId = 0;
 	protected int m_updateMode = UPDATE_INITIAL;
 
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 	private class FeedsTask extends TimerTask {
 		@Override
 		public void run() {
-			downloadFeeds();
+			downloadFeeds();			
 		}		
 	};
 
@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
 			m_feedsOpened = true;
 		}
 
-		scheduleNextUpdate();
+		//scheduleNextUpdate();
 	}
 
 	@Override
@@ -174,6 +174,12 @@ public class MainActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 
+		m_feedsTask.cancel();
+		m_articlesTask.cancel();
+		
+		m_feedsTimer.cancel();
+		m_feedsTimer = null;
+		
 		m_articlesTimer.cancel();
 		m_articlesTimer = null;
 	}
@@ -343,7 +349,7 @@ public class MainActivity extends Activity {
 
 				Log.d(TAG, articlesFound + " articles processed");
 
-				if (m_updateMode == UPDATE_INITIAL && articlesFound == m_limit && m_offset < INITIAL_OFFSET_MAX) {
+				if (articlesFound == m_limit && m_offset < OFFSET_MAX) {
 
 					m_offset += m_limit;
 
@@ -363,6 +369,17 @@ public class MainActivity extends Activity {
 					}
 				}
 
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
+						
+						if (vf != null && vf.getDisplayedChild() == 0) {
+							vf.showNext();
+						}
+					}
+				});
+				
 				scheduleNextUpdate();
 
 			} catch (Exception e) {
@@ -386,7 +403,7 @@ public class MainActivity extends Activity {
 				put("sid", m_sessionId);
 				put("op", "getFeeds");
 				put("cat_id", "-3");
-				put("unread_only", "0");
+				put("unread_only", "1");
 			}			 
 		});
 
@@ -454,10 +471,11 @@ public class MainActivity extends Activity {
 						
 						if (frag != null) {						
 							frag.updateListView();
-						}
+						}						
 					}
 				});
 				
+				scheduleNextUpdate();
 
 			} catch (Exception e) {
 				e.printStackTrace();
