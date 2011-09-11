@@ -49,10 +49,21 @@ public class MainActivity extends Activity {
 	protected int m_maxId = 0;
 	protected int m_updateMode = UPDATE_INITIAL;
 
+	private SQLiteDatabase m_readableDb;
+	private SQLiteDatabase m_writableDb;
+	
 	protected enum SyncStatus { SYNC_INITIAL, SYNC_ONLINE, SYNC_OFFLINE };
 
 	protected MenuItem m_syncStatus;
 
+	protected synchronized SQLiteDatabase getReadableDb() {
+		return m_readableDb;
+	}
+	
+	protected synchronized SQLiteDatabase getWritableDb() {
+		return m_writableDb;
+	}
+	
 	protected String getSessionId() {
 		return m_sessionId;
 	}
@@ -113,14 +124,23 @@ public class MainActivity extends Activity {
 
 		// allow database to upgrade before we do anything else
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-		SQLiteDatabase db = dh.getWritableDatabase();
+		m_writableDb = dh.getWritableDatabase();
+		m_readableDb = dh.getReadableDatabase();
 
 		if (m_updateMode == UPDATE_INITIAL && !m_splashDisabled) {
-			db.execSQL("DELETE FROM feeds;");
-			db.execSQL("DELETE FROM articles;");
+			m_writableDb.execSQL("DELETE FROM feeds;");
+			//db.execSQL("DELETE FROM articles;");
+			
+			if (m_maxId == 0) {
+				Cursor c = m_readableDb.query("articles", new String[] { BaseColumns._ID } , null, null, null, null, BaseColumns._ID + " DESC LIMIT 1");
+				if (c.getCount() == 1) {
+					c.moveToFirst();
+					//Log.i(TAG, "Last article # " + c.getInt(c.getColumnIndex(BaseColumns._ID)));
+					m_maxId = c.getInt(c.getColumnIndex(BaseColumns._ID));
+				}
+				c.close();
+			}
 		}
-
-		db.close();
 
 		setContentView(R.layout.main);
 
@@ -186,6 +206,9 @@ public class MainActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
+		m_writableDb.close();
+		m_readableDb.close();
 
 		if (m_feedsTask != null) m_feedsTask.cancel();
 		if (m_articlesTask != null) m_articlesTask.cancel();
@@ -263,7 +286,7 @@ public class MainActivity extends Activity {
 				put("skip", String.valueOf(m_offset));
 				put("view_mode", "unread");
 
-				if (m_updateMode != UPDATE_INITIAL) {
+				if (m_offset == 0) {
 					put("since_id", String.valueOf(m_maxId));
 				}
 			}			 
@@ -281,16 +304,13 @@ public class MainActivity extends Activity {
 					Type listType = new TypeToken<List<Article>>() {}.getType();
 					List<Article> articles = api.m_gson.fromJson(feeds_object, listType);
 
-					DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-					SQLiteDatabase db = dh.getWritableDatabase(); // TODO rework to m_writableDb etc to prevent crashes on rotate/recreate
-
 					/* db.execSQL("DELETE FROM articles"); */
 
-					SQLiteStatement stmtInsert = db.compileStatement("INSERT INTO articles " +
+					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
 							"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content, excerpt) " +
 					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-					SQLiteStatement stmtUpdate = db.compileStatement("UPDATE articles SET " +
+					SQLiteStatement stmtUpdate = getWritableDb().compileStatement("UPDATE articles SET " +
 							"unread = ?, marked = ?, published = ?, updated = ?, is_updated = ?, title = ?, link = ?, feed_id = ?, " +
 							"tags = ?, content = ?, excerpt = ? WHERE " + BaseColumns._ID + " = ?");
 
@@ -301,7 +321,7 @@ public class MainActivity extends Activity {
 
 						++articlesFound;
 
-						Cursor c = db.query("articles", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
+						Cursor c = getReadableDb().query("articles", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
 								new String[] { String.valueOf(article.id) }, null, null, null);
 
 						String excerpt = Jsoup.parse(article.content).text(); 
@@ -345,8 +365,6 @@ public class MainActivity extends Activity {
 
 						c.close();
 					}
-
-					db.close();
 
 					runOnUiThread(new Runnable() {
 						@Override
@@ -435,19 +453,16 @@ public class MainActivity extends Activity {
 				Type listType = new TypeToken<List<Feed>>() {}.getType();
 				List<Feed> feeds = api.m_gson.fromJson(feeds_object, listType);
 
-				DatabaseHelper dh = new DatabaseHelper(this);
-				SQLiteDatabase db = dh.getWritableDatabase();
-
-				SQLiteStatement stmtUpdate = db.compileStatement("UPDATE feeds SET " +
+				SQLiteStatement stmtUpdate = getWritableDb().compileStatement("UPDATE feeds SET " +
 						"title = ?, feed_url = ?, has_icon = ?, cat_id = ?, last_updated = ? WHERE " +
 						BaseColumns._ID + " = ?");
 
-				SQLiteStatement stmtInsert = db.compileStatement("INSERT INTO feeds " +
+				SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
 						"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id, last_updated) " +
 				"VALUES (?, ?, ?, ?, ?, ?);");
 
 				for (Feed feed : feeds) {
-					Cursor c = db.query("feeds", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
+					Cursor c = getReadableDb().query("feeds", new String[] { BaseColumns._ID } , BaseColumns._ID + "=?", 
 							new String[] { String.valueOf(feed.id) }, null, null, null);
 
 					if (c.getCount() != 0) {
@@ -473,8 +488,6 @@ public class MainActivity extends Activity {
 				} 
 
 				// TODO delete not returned feeds which has no data here
-
-				db.close();
 
 				runOnUiThread(new Runnable() {
 					@Override

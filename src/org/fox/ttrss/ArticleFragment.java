@@ -22,7 +22,6 @@ public class ArticleFragment extends Fragment {
 
 	protected SharedPreferences m_prefs;
 	protected int m_articleId;
-	protected SQLiteDatabase m_db;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -33,12 +32,9 @@ public class ArticleFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
-		DatabaseHelper dh = new DatabaseHelper(getActivity());
-		m_db = dh.getReadableDatabase();
-
 		Log.d(TAG, "Opening article #" + m_articleId);
 		
-		Cursor c = m_db.query("articles", null, BaseColumns._ID + "=?", 
+		Cursor c = ((MainActivity)getActivity()).getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 		
 		c.moveToFirst();
@@ -72,9 +68,7 @@ public class ArticleFragment extends Fragment {
 	
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
-		
-		m_db.close();
+		super.onDestroy();		
 	}
 	
 	@Override
@@ -87,7 +81,7 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
-		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 	}
 
 }

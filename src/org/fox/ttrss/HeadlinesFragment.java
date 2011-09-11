@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -22,7 +21,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected int m_feedId;
 	protected SharedPreferences m_prefs;
-	protected SQLiteDatabase m_db;
 	protected Cursor m_cursor;	
 	protected SimpleCursorAdapter m_adapter;
 	
@@ -35,10 +33,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
-		DatabaseHelper helper = new DatabaseHelper(getActivity());
-
-		m_db = helper.getReadableDatabase();		
-		m_cursor = m_db.query("articles", null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+		m_cursor = ((MainActivity)getActivity()).getReadableDb().query("articles", null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 		
 		m_adapter = new SimpleCursorAdapter(getActivity(), R.layout.headlines_row, m_cursor,
 				new String[] { "title", "excerpt" }, new int[] { R.id.title, R.id.excerpt }, 0);
@@ -67,7 +62,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		super.onDestroy();
 
 		m_cursor.close();
-		m_db.close();
 	}
 
 	public void initialize(int feedId) {
