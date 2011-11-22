@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,11 +24,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends Activity {
@@ -39,19 +43,12 @@ public class MainActivity extends Activity {
 
 	protected MenuItem m_syncStatus;
 
-	protected String getSessionId() {
+	public synchronized String getSessionId() {
 		return m_sessionId;
 	}
-
-	protected synchronized void setSessionId(String sessionId) {
-		m_sessionId = sessionId;
-
-		SharedPreferences.Editor editor = m_prefs.edit();
-		editor.putString("last_session_id", m_sessionId);	
-		editor.commit();
-	}
-
+	
 	/** Called when the activity is first created. */
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,15 +62,14 @@ public class MainActivity extends Activity {
 		}
 
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
-		m_sessionId = m_prefs.getString("last_session_id", null);
-
+	
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
 		}
 
 		setContentView(R.layout.main);
 			
-		ApiRequest ar = new ApiRequest();
+		LoginRequest ar = new LoginRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
 
 		HashMap<String,String> loginMap = new HashMap<String,String>() {
@@ -85,6 +81,8 @@ public class MainActivity extends Activity {
 		};
 
 		ar.execute(loginMap);
+		
+		setLoadingStatus(R.string.login_in_progress, true);
 		
 		/* ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
 		
@@ -105,6 +103,20 @@ public class MainActivity extends Activity {
 		ft.commit(); */
 	}
 
+	public void setLoadingStatus(int status, boolean showProgress) {
+		TextView tv = (TextView)findViewById(R.id.loading_message);
+		
+		if (tv != null) {
+			tv.setText(status);
+		}
+		
+		View pb = findViewById(R.id.loading_progress);
+		
+		if (pb != null) {
+			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+		}
+	}
+				
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
@@ -149,4 +161,58 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	private class LoginRequest extends ApiRequest {
+		
+		protected void onPostExecute(JsonElement result) {
+			if (result != null) {
+				try {			
+					JsonObject rv = result.getAsJsonObject();
+
+					int status = rv.get("status").getAsInt();
+					
+					if (status == 0) {
+						JsonObject content = rv.get("content").getAsJsonObject();
+						if (content != null) {
+							m_sessionId = content.get("session_id").getAsString();
+							
+							Log.d(TAG, "<<< Authentified, sessionId=" + m_sessionId);
+							
+							setLoadingStatus(R.string.loading_message, true);
+							
+							FragmentManager fm = getFragmentManager();
+							FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds);
+							
+							if (ff != null) {
+								ff.initialize(m_sessionId);
+							}
+							
+							ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
+							
+							if (vf != null) {
+								vf.showNext();
+							}
+						}
+					} else {
+						JsonObject content = rv.get("content").getAsJsonObject();
+						
+						if (content != null) {
+							String error = content.get("error").getAsString();
+
+							m_sessionId = null;
+
+							if (error.equals("LOGIN_ERROR")) {
+								setLoadingStatus(R.string.login_wrong_password, false);
+							} else if (error.equals("API_DISABLED")) {
+								setLoadingStatus(R.string.login_api_disabled, false);
+							} else {
+								setLoadingStatus(R.string.login_failed, false);
+							}
+						}							
+					}
+				} catch (Exception e) {
+					e.printStackTrace();						
+				}
+			}
+	    }
+	}
 }

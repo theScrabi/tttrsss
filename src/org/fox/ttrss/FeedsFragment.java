@@ -22,7 +22,8 @@ import android.widget.SimpleCursorAdapter;
 public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
-
+	private String m_sessionId;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
@@ -32,6 +33,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 
+		
+		
 		return view;    	
 	}
 
@@ -55,6 +58,17 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
+	}
+
+	public void initialize(String sessionId) {
+		m_sessionId = sessionId;
+		
+		refresh();
 	} 
 
+	public void refresh() {
+		
+		
+	
+	}
 }
