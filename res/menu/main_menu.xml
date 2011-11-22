@@ -4,10 +4,4 @@
           android:icon="@android:drawable/ic_menu_preferences"
           android:title="@string/preferences" 
           android:showAsAction="ifRoom|withText"/>
-
-     <item android:id="@+id/sync_status"
-          android:title="@string/offline"          
-          android:icon="@android:drawable/presence_offline"
-          android:showAsAction="ifRoom|withText"/>    
-              
     </menu>

@@ -31,33 +31,6 @@ public class ArticleFragment extends Fragment {
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
-
-		Log.d(TAG, "Opening article #" + m_articleId);
-		
-		Cursor c = ((MainActivity)getActivity()).getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
-				new String[] { String.valueOf(m_articleId) }, null, null, null);
-		
-		c.moveToFirst();
-		
-		Log.d(TAG, "Cursor count: " + c.getCount());
-		
-		TextView title = (TextView)view.findViewById(R.id.title);
-		
-		if (title != null) {
-			title.setText(c.getString(c.getColumnIndex("title")));
-		}
-
-		WebView content = (WebView)view.findViewById(R.id.content);
-		
-		if (content != null) {
-			String contentData = "<html><body>" + c.getString(c.getColumnIndex("content")) + "</body></html>";
-			
-			Log.d(TAG, "content=" + contentData);
-			
-			 content.loadData(contentData, "text/html", "utf-8");
-		}
-		
-		c.close();
 		
 		return view;    	
 	}

@@ -1,21 +1,20 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"    
     android:layout_height="fill_parent" android:id="@+id/main_flipper">
-    <FrameLayout android:id="@+id/sync_splash" android:layout_height="match_parent" android:layout_gravity="center_vertical" android:layout_width="match_parent">
-        <LinearLayout android:gravity="center" android:layout_width="match_parent" android:id="@+id/linearLayout1" android:layout_height="match_parent">
-            <ProgressBar android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/loading_progress" style="?android:attr/progressBarStyleLarge"></ProgressBar>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/loading_message" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message"></TextView>
+    <FrameLayout android:layout_gravity="center_vertical" android:id="@+id/sync_splash" android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout1" android:gravity="center" android:layout_height="match_parent">
+            <ProgressBar android:id="@+id/loading_progress" android:layout_height="wrap_content" android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge"></ProgressBar>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/loading_message" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/loading_message"></TextView>
         </LinearLayout>
     </FrameLayout>
-    <LinearLayout android:layout_height="fill_parent" android:id="@+id/main" android:layout_width="fill_parent" android:orientation="horizontal">
-        <LinearLayout android:layout_weight="1.5" android:id="@+id/linearLayout4" android:layout_width="match_parent" android:layout_height="match_parent">
-            <LinearLayout android:layout_weight="1" android:id="@+id/feeds_container" android:layout_width="match_parent" android:layout_height="match_parent"></LinearLayout>
-            <ImageView android:background="?feedlistDivider" android:paddingLeft="2dip" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingRight="2dip"></ImageView>
+    <LinearLayout android:id="@+id/main" android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="horizontal">
+        <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/linearLayout4" android:layout_weight="1.5">
+            <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/feeds_container" android:layout_weight="1"></LinearLayout>
+            <ImageView android:paddingLeft="2dip" android:layout_height="match_parent" android:layout_width="wrap_content" android:layout_weight="1" android:background="?feedlistDivider" android:paddingRight="2dip"></ImageView>
         </LinearLayout>
-        <LinearLayout android:layout_weight="0.5" android:id="@+id/headlines_wrapper" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
-            <LinearLayout android:layout_weight="1" android:id="@+id/headlines_container" android:layout_width="match_parent" android:layout_height="match_parent"></LinearLayout>
-            <!--  <ImageView android:background="?feedlistDivider" android:paddingLeft="2dip" android:layout_weight="1" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingRight="2dip"></ImageView> -->
-            <LinearLayout android:visibility="gone" android:layout_weight="1" android:id="@+id/article_container" android:layout_width="match_parent" android:layout_height="match_parent"></LinearLayout>
+        <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines_wrapper" android:layout_weight="0.5" android:orientation="vertical">
+            <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines_container" android:layout_weight="1"></LinearLayout>
+            <LinearLayout android:visibility="gone" android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/article_container" android:layout_weight="1"></LinearLayout>
         </LinearLayout>
     </LinearLayout>
     
