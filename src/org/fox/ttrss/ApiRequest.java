@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,10 +18,62 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class ApiRequest {
+public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
 
-	protected String m_sessionId;
+	protected static final int STATUS_LOGIN_FAILED = 0;
+	protected static final int STATUS_OK = 1;
+	protected static final int STATUS_API_DISABLED = 2;
+	protected static final int STATUS_OTHER_ERROR = 3;
+	
+	private String m_api;
+
+	protected void setApi(String api) {
+		m_api = api;
+	}
+
+	@Override
+	protected JsonElement doInBackground(HashMap<String, String>... params) {
+
+		Gson gson = new Gson();
+		
+		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
+		
+		Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
+		
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(m_api + "/api/");
+		
+		try {
+			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
+			HttpResponse execute = client.execute(httpPost);
+			
+			InputStream content = execute.getEntity().getContent();
+
+			BufferedReader buffer = new BufferedReader(
+					new InputStreamReader(content));
+
+			String s = "";				
+			String response = "";
+
+			while ((s = buffer.readLine()) != null) {
+				response += s;
+			}
+
+			Log.d(TAG, "<<< " + response);
+
+			JsonParser parser = new JsonParser();
+			
+			return parser.parse(response);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	/* protected String m_sessionId;
 	protected String m_apiEndpoint;
 	protected String m_login;
 	protected String m_password;
@@ -173,5 +226,5 @@ public class ApiRequest {
 		}
 		
 		return null;
-	}
+	} */ 
 }

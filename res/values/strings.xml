@@ -24,9 +24,6 @@
     <string name="login_wrong_password">Login failed: username or password incorrect.</string>
     <string name="login_success">Logged in.</string>
     <string name="no_unread_feeds">No unread feeds.</string>
-    <string name="offline">Offline</string>
-    <string name="online">Online</string>
-    <string name="synchronizing">Synchronizing...</string>
-    <string name="no_headlines">No articles found.</string>
+    <string name="no_unread_headlines">No unread headlines.</string>
     <string name="loading_message">Loading, please wait...</string>
 </resources>

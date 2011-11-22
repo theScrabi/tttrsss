@@ -3,13 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-        <ListView android:layout_weight="1" 
-        android:layout_width="match_parent" android:id="@+id/feeds" android:layout_height="match_parent"></ListView>
-    </LinearLayout>
-     <TextView android:id="@+id/no_unread_feeds"
-     	android:visibility="invisible"    	
-    	android:layout_gravity="center" android:color="#909090" 
-    	android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/no_unread_feeds"></TextView>
+    <TextView android:layout_width="wrap_content" android:id="@+id/no_unread_feeds" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:text="@string/no_unread_feeds" android:layout_gravity="center" ></TextView>
+    <ListView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/feeds"></ListView>
         
     </FrameLayout>

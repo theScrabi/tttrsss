@@ -72,12 +72,37 @@ public class MainActivity extends Activity {
 		}
 
 		setContentView(R.layout.main);
+			
+		ApiRequest ar = new ApiRequest();
+		ar.setApi(m_prefs.getString("ttrss_url", null));
 
-		ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
+		HashMap<String,String> loginMap = new HashMap<String,String>() {
+			{
+				put("op", "login");
+				put("user", m_prefs.getString("login", null));
+				put("password", m_prefs.getString("password", null));
+			}			 
+		};
+
+		ar.execute(loginMap);
+		
+		/* ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
 		
 		if (vf != null) {
 			vf.showNext();
 		}
+		
+		HeadlinesFragment hf = new HeadlinesFragment();
+		FeedsFragment ff = new FeedsFragment();
+		ArticleFragment af = new ArticleFragment();
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.add(R.id.main, ff);
+		ft.add(R.id.main, hf);
+		ft.add(R.id.main, af);
+		ft.hide(hf);
+		ft.hide(af);
+		ft.commit(); */
 	}
 
 	@Override
@@ -123,4 +148,5 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
 }

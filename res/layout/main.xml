@@ -8,14 +8,6 @@
         </LinearLayout>
     </FrameLayout>
     <LinearLayout android:id="@+id/main" android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="horizontal">
-        <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/linearLayout4" android:layout_weight="1.5">
-            <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/feeds_container" android:layout_weight="1"></LinearLayout>
-            <ImageView android:paddingLeft="2dip" android:layout_height="match_parent" android:layout_width="wrap_content" android:layout_weight="1" android:background="?feedlistDivider" android:paddingRight="2dip"></ImageView>
-        </LinearLayout>
-        <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines_wrapper" android:layout_weight="0.5" android:orientation="vertical">
-            <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines_container" android:layout_weight="1"></LinearLayout>
-            <LinearLayout android:visibility="gone" android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/article_container" android:layout_weight="1"></LinearLayout>
-        </LinearLayout>
     </LinearLayout>
     
     
