@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -162,6 +163,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 										
 										for (Feed f : feeds) 
 											m_feeds.add(f);
+										
+										Collections.sort(m_feeds);
 										
 										m_adapter.notifyDataSetInvalidated();
 										
