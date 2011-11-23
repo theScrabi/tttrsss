@@ -32,7 +32,7 @@ import com.google.gson.reflect.TypeToken;
 public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
-	private String m_sessionId;
+	//private String m_sessionId;
 	//private int m_activeFeedId;
 	private FeedListAdapter m_adapter;
 	private List<Feed> m_feeds = new ArrayList<Feed>();
@@ -69,7 +69,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);        
 		list.setOnItemClickListener(this);
 
-		if (m_sessionId != null) 
+		//if (m_sessionId != null) 
 			refresh();
 		
 		return view;    	
@@ -87,7 +87,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_feedSelectedListener = (OnFeedSelectedListener) activity;
 		
-		m_sessionId = ((MainActivity)activity).getSessionId();
+		//m_sessionId = ((MainActivity)activity).getSessionId();
 	
 	}
 
@@ -95,7 +95,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putString("sessionId", m_sessionId);
+		//out.putString("sessionId", m_sessionId);
 		//out.putInt("activeFeedId", m_activeFeedId);
 	}
 	
@@ -114,16 +114,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		fr.setApi(m_prefs.getString("ttrss_url", null));
 
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "getFeeds");
-				put("sid", m_sessionId);
-				put("cat_id", "-3");
-				put("unread_only", "true");
-			}			 
-		};
+		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+		
+		if (sessionId != null) {
+		
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("op", "getFeeds");
+					put("sid", sessionId);
+					put("cat_id", "-3");
+					put("unread_only", "true");
+				}			 
+			};
 
-		fr.execute(map);
+			fr.execute(map);
+		
+		}
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {

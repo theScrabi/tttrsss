@@ -1,9 +1,10 @@
 package org.fox.ttrss;
 
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,10 +30,30 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	private String m_sessionId;
 	private Article m_selectedArticle;
 	private Feed m_activeFeed;
+	private Timer m_refreshTimer;
+	private RefreshTask m_refreshTask;
 
 	protected MenuItem m_syncStatus;
 
-	public synchronized String getSessionId() {
+	private class RefreshTask extends TimerTask {
+
+		@Override
+		public void run() {
+			Log.d(TAG, "Refreshing feeds...");
+			
+			refreshFeeds();
+		}
+	}
+	
+	public synchronized void refreshFeeds() {
+		FeedsFragment frag = (FeedsFragment) getFragmentManager().findFragmentById(R.id.feeds_fragment);
+		
+		if (frag != null) {
+			frag.refresh();
+		}
+	}
+	
+	public String getSessionId() {
 		return m_sessionId;
 	}
 	
@@ -127,6 +148,15 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	public void onDestroy() {
 		super.onDestroy();
 		
+		if (m_refreshTask != null) {
+			m_refreshTask.cancel();
+			m_refreshTask = null;
+		}
+		
+		if (m_refreshTimer != null) {
+			m_refreshTimer.cancel();
+			m_refreshTimer = null;
+		}
 	}
 
 	@Override
@@ -179,6 +209,21 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							FragmentTransaction ft = getFragmentManager().beginTransaction();
 							ft.replace(R.id.feeds_fragment, frag);
 							ft.commit();
+							
+							if (m_refreshTask != null) {
+								m_refreshTask.cancel();
+								m_refreshTask = null;
+							}
+							
+							if (m_refreshTimer != null) {
+								m_refreshTimer.cancel();
+								m_refreshTimer = null;
+							}
+							
+							m_refreshTask = new RefreshTask();
+							m_refreshTimer = new Timer("Refresh");
+							
+							m_refreshTimer.schedule(m_refreshTask, 60*1000L, 60*1000L);
 						}
 					} else {
 						JsonObject content = rv.get("content").getAsJsonObject();
