@@ -4,6 +4,8 @@
 		<item name="feedlistBackground">#fafafa</item>
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground">#ffffff</item>
+		<item name="articleDivider">#f0f0f0</item>
+		<item name="articleHeader">#ffffff</item>		
 	</style>
 
 	<style name="DarkTheme" parent="android:Theme.Holo">
@@ -11,6 +13,8 @@
 		<item name="feedlistBackground">#101010</item>
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground">#000000</item>
+		<item name="articleDivider">#303030</item>
+		<item name="articleHeader">#101010</item>
 	</style>
 	
 	<style name="SelectedFeed">

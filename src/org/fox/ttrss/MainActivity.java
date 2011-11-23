@@ -88,12 +88,16 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ArticleFragment af = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 		ft.replace(R.id.feeds_fragment, new FeedsFragment());
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.replace(R.id.article_fragment, af);
-		ft.hide(af);
-		ft.hide(hf);
+		//ft.hide(hf);
+		//ft.hide(af);
 		ft.commit();
+		
+		findViewById(R.id.article_fragment).setVisibility(View.GONE);
+		findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		
 		LoginRequest ar = new LoginRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
@@ -264,6 +268,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.addToBackStack(null);
 		ft.commit();
+		
+		findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 	}
 
 	public Article getSelectedArticle() {
@@ -276,6 +282,9 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		m_selectedArticle = article;
 		
+		article.unread = false;
+		
+		
 		ArticleFragment frag = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
@@ -286,6 +295,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.addToBackStack(null);
 		ft.commit();
 		
+		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 	}
 
 	public Feed getActiveFeed() {

@@ -5,6 +5,7 @@
     android:padding="3dip" android:id="@+id/headlines_row" android:orientation="horizontal" android:layout_height="wrap_content">
     <CheckBox android:focusable="false"
          android:paddingLeft="6dip" android:paddingRight="6dip"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/selected"></CheckBox>
+    <ImageView android:layout_width="wrap_content" android:id="@+id/imageView1" android:layout_height="wrap_content" android:src="@android:drawable/star_off" android:paddingRight="5dip" android:clickable="true"></ImageView>
         
         <LinearLayout android:layout_weight="1" android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_width="match_parent">
             <TextView android:id="@+id/title" android:textSize="16sp" android:text="{Title...}" android:layout_width="match_parent" android:layout_height="match_parent"></TextView>

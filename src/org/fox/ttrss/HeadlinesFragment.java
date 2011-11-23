@@ -62,7 +62,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		list.setOnItemClickListener(this);
 		
 		if (m_feed != null) refresh();
-		
+
 		return view;    	
 	}
 

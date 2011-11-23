@@ -4,4 +4,6 @@
     <attr name="feedlistBackground" format="reference|color" />
     <attr name="unreadCounterColor" format="reference|color" />
     <attr name="headlinesBackground" format="reference|color" />
+    <attr name="articleHeader" format="reference|color" />
+    <attr name="articleDivider" format="reference|color" />
 </resources>
