@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.fox.ttrss.FeedsFragment.OnFeedSelectedListener;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
@@ -34,19 +35,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	protected SharedPreferences m_prefs;
 	
 	private String m_sessionId;
-	private int m_feedId;
-	private int m_activeArticleId;
+	private Feed m_feed;
+	//private int m_activeArticleId;
 	
 	private ArticleListAdapter m_adapter;
 	private List<Article> m_articles = new ArrayList<Article>();
+	private OnArticleSelectedListener m_articleSelectedListener;
 	
+	public interface OnArticleSelectedListener {
+		public void onArticleSelected(Article article);
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
-			m_feedId = savedInstanceState.getInt("feedId");
-			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
+			//m_feedId = savedInstanceState.getInt("feedId");
+			//m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -55,6 +60,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		
+		if (m_feed != null) refresh();
 		
 		return view;    	
 	}
@@ -73,8 +80,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		
+		m_sessionId = ((MainActivity)activity).getSessionId();
+		m_feed = ((MainActivity)activity).getActiveFeed();
+		
+		m_articleSelectedListener = (OnArticleSelectedListener) activity;
 	}
 
 	@Override
@@ -83,34 +94,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
-
-			viewArticle(article.id);
+			m_articleSelectedListener.onArticleSelected(article);
 		}
 	}
-
-	public void viewArticle(int articleId) {
-		ArticleFragment frag = new ArticleFragment();
-		frag.initialize(m_sessionId, articleId, m_prefs);
-		
-		if (frag != null) {
-			m_activeArticleId = articleId;
-			
-			FragmentTransaction ft = getFragmentManager().beginTransaction();			
-			ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-			ft.show(getFragmentManager().findFragmentById(R.id.article_fragment));
-			//ft.hide(getFragmentManager().findFragmentById(R.id.feeds_fragment));
-			ft.replace(R.id.article_fragment, frag);
-			ft.commit();
-		}
-
-	}
-	
-	public void initialize(String sessionId, int feedId, SharedPreferences prefs) {
-		m_sessionId = sessionId;
-		m_feedId = feedId;
-		m_prefs = prefs;
-		refresh();		
-	} 
 
 	public void refresh() {
 		HeadlinesRequest req = new HeadlinesRequest();
@@ -121,7 +107,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			{
 				put("op", "getHeadlines");
 				put("sid", m_sessionId);
-				put("feed_id", String.valueOf(m_feedId));
+				put("feed_id", String.valueOf(m_feed.id));
 				put("show_content", "true");
 				put("limit", String.valueOf(30));
 				put("offset", String.valueOf(0));
@@ -137,8 +123,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 		
 		out.putString("sessionId", m_sessionId);
-		out.putInt("feedId", m_feedId);		
-		out.putInt("activeArticleId", m_activeArticleId);
+		//out.putInt("feedId", m_feedId);		
+		//out.putInt("activeArticleId", m_activeArticleId);
 	}
 
 	private class HeadlinesRequest extends ApiRequest {

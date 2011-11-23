@@ -21,12 +21,14 @@ import android.widget.ViewFlipper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
-	protected String m_sessionId;
+	private String m_sessionId;
+	private Article m_selectedArticle;
+	private Feed m_activeFeed;
 
 	protected MenuItem m_syncStatus;
 
@@ -61,22 +63,15 @@ public class MainActivity extends Activity {
 		
 		setContentView(R.layout.main);
 
-		/* HeadlinesFragment hf = new HeadlinesFragment();
-		FeedsFragment ff = new FeedsFragment();
+		HeadlinesFragment hf = new HeadlinesFragment();
 		ArticleFragment af = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		
-		ft.add(R.id.main, ff);
-		ft.add(R.id.main, hf);
-		ft.add(R.id.main, af); 
-		ft.hide(hf);
+		ft.replace(R.id.feeds_fragment, new FeedsFragment());
+		ft.replace(R.id.headlines_fragment, hf);
+		ft.replace(R.id.article_fragment, af);
 		ft.hide(af);
-		ft.commit(); */
-
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.hide(getFragmentManager().findFragmentById(R.id.headlines_fragment));
-		ft.hide(getFragmentManager().findFragmentById(R.id.article_fragment));
+		ft.hide(hf);
 		ft.commit();
 		
 		LoginRequest ar = new LoginRequest();
@@ -93,13 +88,7 @@ public class MainActivity extends Activity {
 		ar.execute(map);
 		
 		setLoadingStatus(R.string.login_in_progress, true);
-		
-		/* ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
-		
-		if (vf != null) {
-			vf.showNext();
-		} */
-		
+	
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -176,18 +165,20 @@ public class MainActivity extends Activity {
 							
 							setLoadingStatus(R.string.loading_message, true);
 							
-							FragmentManager fm = getFragmentManager();
-							FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds_fragment);
-
-							if (ff != null) {
-								ff.initialize(m_sessionId);
-							}
+							//FragmentManager fm = getFragmentManager();
+							//FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds_fragment);
 							
 							ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
 							
 							if (vf != null) {
 								vf.showNext();
 							}
+							
+							FeedsFragment frag = new FeedsFragment();
+							
+							FragmentTransaction ft = getFragmentManager().beginTransaction();
+							ft.replace(R.id.feeds_fragment, frag);
+							ft.commit();
 						}
 					} else {
 						JsonObject content = rv.get("content").getAsJsonObject();
@@ -211,5 +202,48 @@ public class MainActivity extends Activity {
 				}
 			}
 	    }
+	}
+
+	@Override
+	public void onFeedSelected(Feed feed) {
+		Log.d(TAG, "Selected feed: " + feed.toString());
+		
+		m_activeFeed = feed;
+		
+		HeadlinesFragment hf = new HeadlinesFragment();
+		//hf.initialize(m_sessionId, feed.id, m_prefs);
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		ft.show(getFragmentManager().findFragmentById(R.id.headlines_fragment));
+		ft.replace(R.id.headlines_fragment, hf);
+		ft.addToBackStack(null);
+		ft.commit();
+	}
+
+	public Article getSelectedArticle() {
+		return m_selectedArticle;
+	}
+	
+	@Override
+	public void onArticleSelected(Article article) {
+		Log.d(TAG, "Selected article: " + article.toString());
+		
+		m_selectedArticle = article;
+		
+		ArticleFragment frag = new ArticleFragment();
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		ft.show(getFragmentManager().findFragmentById(R.id.article_fragment));
+		//ft.hide(getFragmentManager().findFragmentById(R.id.feeds_fragment));
+		ft.replace(R.id.article_fragment, frag);
+		ft.addToBackStack(null);
+		ft.commit();
+		
+	}
+
+	public Feed getActiveFeed() {
+		return m_activeFeed;
 	}
 }

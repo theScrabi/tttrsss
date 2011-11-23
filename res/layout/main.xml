@@ -1,22 +1,16 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"    
     android:layout_height="fill_parent" android:id="@+id/main_flipper">
-    <FrameLayout android:layout_height="match_parent" android:layout_width="match_parent" android:layout_gravity="center_vertical" android:id="@+id/sync_splash">
-        <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/linearLayout1" android:gravity="center">
-            <ProgressBar android:id="@+id/loading_progress" style="?android:attr/progressBarStyleLarge" android:layout_height="wrap_content" android:layout_width="wrap_content"></ProgressBar>
-            <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text="@string/loading_message" android:id="@+id/loading_message"></TextView>
+    <FrameLayout android:layout_height="match_parent" android:id="@+id/sync_splash" android:layout_width="match_parent" android:layout_gravity="center_vertical">
+        <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout1" android:gravity="center" android:layout_width="match_parent">
+            <ProgressBar style="?android:attr/progressBarStyleLarge" android:id="@+id/loading_progress" android:layout_height="wrap_content" android:layout_width="wrap_content"></ProgressBar>
+            <TextView android:id="@+id/loading_message" android:text="@string/loading_message" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         </LinearLayout>
     </FrameLayout>
-    <LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/main" android:orientation="horizontal">
-        <fragment android:layout_weight="0" android:id="@+id/feeds_fragment" android:layout_height="match_parent" android:layout_width="300dp" android:name="org.fox.ttrss.FeedsFragment">
-            <!-- Preview: layout=@layout/feeds_fragment -->
-        </fragment>
-        <fragment android:layout_weight="1" android:id="@+id/headlines_fragment" android:layout_height="match_parent" android:layout_width="wrap_content" android:name="org.fox.ttrss.HeadlinesFragment">
-            <!-- Preview: layout=@layout/headlines_fragment -->
-        </fragment>
-        <fragment android:layout_weight="0" android:id="@+id/article_fragment" android:layout_height="match_parent" android:name="org.fox.ttrss.ArticleFragment" android:layout_width="500dp">
-            <!-- Preview: layout=@layout/article_fragment -->
-        </fragment>
+    <LinearLayout android:layout_height="fill_parent" android:id="@+id/main" android:layout_width="fill_parent" android:orientation="horizontal">
+        <LinearLayout android:id="@+id/feeds_fragment" android:layout_weight="0" android:layout_height="match_parent" android:orientation="vertical" android:layout_width="300dp"></LinearLayout>
+        <LinearLayout android:layout_height="match_parent" android:layout_weight="1" android:id="@+id/headlines_fragment" android:orientation="vertical" android:layout_width="match_parent"></LinearLayout>
+        <LinearLayout android:id="@+id/article_fragment" android:layout_weight="0" android:layout_height="match_parent" android:orientation="vertical" android:layout_width="500dp"></LinearLayout>
     </LinearLayout>
     
     

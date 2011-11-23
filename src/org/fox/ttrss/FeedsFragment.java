@@ -7,11 +7,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +32,32 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private String m_sessionId;
-	private int m_activeFeedId;
+	//private int m_activeFeedId;
 	private FeedListAdapter m_adapter;
 	private List<Feed> m_feeds = new ArrayList<Feed>();
+	private OnFeedSelectedListener m_feedSelectedListener;
+	
+	public interface OnFeedSelectedListener {
+		public void onFeedSelected(Feed feed);
+	}
+	
+	public void showLoading(boolean show) {
+		View v = getView();
+		
+		if (v != null) {
+			v = v.findViewById(R.id.loading_container);
+	
+			if (v != null)
+				v.setVisibility(show ? View.VISIBLE : View.GONE);
+		}
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
-
+		
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
-			m_activeFeedId = savedInstanceState.getInt("activeFeedId");
+			//m_sessionId = savedInstanceState.getString("sessionId");
+			//m_activeFeedId = savedInstanceState.getInt("activeFeedId");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -52,6 +68,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);        
 		list.setOnItemClickListener(this);
 
+		if (m_sessionId != null) 
+			refresh();
+		
 		return view;    	
 	}
 
@@ -63,7 +82,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
+		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		m_feedSelectedListener = (OnFeedSelectedListener) activity;
+		
+		m_sessionId = ((MainActivity)activity).getSessionId();
+	
 	}
 
 	@Override
@@ -71,29 +95,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 
 		out.putString("sessionId", m_sessionId);
-		out.putInt("activeFeedId", m_activeFeedId);
-	}
-
-	public void setActiveFeedId(int feedId) {
-		m_activeFeedId = feedId;
-	}
-	
-	public void viewFeed(int feedId) {
-		//FragmentManager fm = getFragmentManager();
-		//HeadlinesFragment hf = (HeadlinesFragment) fm.findFragmentById(R.id.headlines_fragment);
-		
-		HeadlinesFragment hf = new HeadlinesFragment();
-		hf.initialize(m_sessionId, feedId, m_prefs);
-		
-		if (hf != null) {
-			setActiveFeedId(feedId);
-			
-			FragmentTransaction ft = getFragmentManager().beginTransaction();			
-			ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-			ft.show(getFragmentManager().findFragmentById(R.id.headlines_fragment));
-			ft.replace(R.id.headlines_fragment, hf);
-			ft.commit();
-		}
+		//out.putInt("activeFeedId", m_activeFeedId);
 	}
 	
 	@Override
@@ -102,16 +104,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
-
-			viewFeed(feed.id);
+			m_feedSelectedListener.onFeedSelected(feed);
 		}
 	}
-
-	public void initialize(String sessionId) {
-		m_sessionId = sessionId;
-		
-		refresh();
-	} 
 
 	public void refresh() {
 		FeedsRequest fr = new FeedsRequest();
@@ -170,8 +165,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 										
 										m_adapter.notifyDataSetInvalidated();
 										
-										View v = getView().findViewById(R.id.loading_container);
-										v.setVisibility(View.GONE);
+										showLoading(false);
 									}
 								});
 							}
@@ -221,6 +215,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
+			Feed active_feed = ((MainActivity)getActivity()).getActiveFeed();
+			
 			View v = convertView;
 
 			Feed feed = items.get(position);
@@ -235,7 +231,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			if (tt != null) {
 				tt.setText(feed.title);
 				
-				if (feed.id == m_activeFeedId)
+				if (active_feed != null && feed.id == active_feed.id)
 					tt.setTextAppearance(getContext(), R.style.SelectedFeed);
 				else
 					tt.setTextAppearance(getContext(), R.style.Feed);

@@ -1,15 +1,13 @@
 package org.fox.ttrss;
 
-import java.sql.SQLData;
+import java.net.URLEncoder;
+
+import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,30 +20,42 @@ public class ArticleFragment extends Fragment {
 
 	protected SharedPreferences m_prefs;
 	
-	private int m_articleId;
+	//private int m_articleId;
 	private String m_sessionId;
+	private Article m_article;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
-			m_articleId = savedInstanceState.getInt("articleId");
+			//m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 		
+		if (m_article != null) {
+			
+			TextView title = (TextView)view.findViewById(R.id.title);
+			
+			if (title != null) {
+				title.setText(m_article.title);
+			}
+			
+			WebView web = (WebView)view.findViewById(R.id.content);
+			
+			if (web != null) {
+				
+				// this is ridiculous
+				String content = "<html><body>" + URLEncoder.encode(m_article.content).replace('+', ' ') + "</body></html>";
+				
+				web.loadData(content, "text/html", "utf-8");
+			}
+		} 
+		
 		return view;    	
 	}
 
-	public void initialize(String sessionId, int articleId, SharedPreferences prefs) {
-		m_articleId = articleId;
-		m_prefs = prefs;
-		m_sessionId = sessionId;
-		
-		Log.d(TAG, "Article: " + articleId);
-	}
-	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();		
@@ -56,13 +66,18 @@ public class ArticleFragment extends Fragment {
 		super.onSaveInstanceState(out);
 		
 		out.putString("sessionId", m_sessionId);
-		out.putInt("articleId", m_articleId);
+		//out.putInt("articleId", m_articleId);
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
-		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+		
+		m_sessionId = ((MainActivity)activity).getSessionId();
+		m_article = ((MainActivity)activity).getSelectedArticle(); 
+		
+		//m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+
 	}
 
 }
