@@ -21,4 +21,12 @@
 		<item name="android:textStyle">normal</item>
 	</style>
 	
+	<style name="UnreadArticle">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="Article">
+		<item name="android:textStyle">normal</item>
+	</style>
+	
 </resources>

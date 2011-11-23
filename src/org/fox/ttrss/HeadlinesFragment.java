@@ -52,10 +52,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
-
+		
 		return view;    	
 	}
 
+	public void showLoading(boolean show) {
+		View v = getView();
+		
+		if (v != null) {
+			v = v.findViewById(R.id.loading_container);
+	
+			if (v != null)
+				v.setVisibility(show ? View.VISIBLE : View.GONE);
+		}
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -68,9 +79,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	
 	}
 
-	public void initialize(String sessionId, int feedId) {
+	public void initialize(String sessionId, int feedId, SharedPreferences prefs) {
 		m_sessionId = sessionId;
 		m_feedId = feedId;
+		m_prefs = prefs;
 		refresh();		
 	} 
 
@@ -128,8 +140,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 									
 									m_adapter.notifyDataSetInvalidated();
 									
-									View v = getView().findViewById(R.id.loading_container);
-									v.setVisibility(View.GONE);
+									showLoading(false);
 								}
 							});
 						}
@@ -193,6 +204,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			if (tt != null) {
 				tt.setText(article.title);
 				//tt.setTextAppearance(getContext(), R.style.Connection);
+				
+				if (article.unread)
+					tt.setTextAppearance(getContext(), R.style.UnreadArticle);
+				else
+					tt.setTextAppearance(getContext(), R.style.Article);
+
 			}
 
 			TextView te = (TextView) v.findViewById(R.id.excerpt);

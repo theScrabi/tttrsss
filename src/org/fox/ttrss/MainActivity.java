@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 		ft.commit(); */
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		//ft.hide(getFragmentManager().findFragmentById(R.id.headlines_fragment));
+		ft.hide(getFragmentManager().findFragmentById(R.id.headlines_fragment));
 		ft.hide(getFragmentManager().findFragmentById(R.id.article_fragment));
 		ft.commit();
 		
