@@ -21,12 +21,15 @@ public class ArticleFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected SharedPreferences m_prefs;
-	protected int m_articleId;
+	
+	private int m_articleId;
+	private String m_sessionId;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
+			m_sessionId = savedInstanceState.getString("sessionId");
 			m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
@@ -35,8 +38,12 @@ public class ArticleFragment extends Fragment {
 		return view;    	
 	}
 
-	public void initialize(int articleId) {
+	public void initialize(String sessionId, int articleId, SharedPreferences prefs) {
 		m_articleId = articleId;
+		m_prefs = prefs;
+		m_sessionId = sessionId;
+		
+		Log.d(TAG, "Article: " + articleId);
 	}
 	
 	@Override
@@ -48,6 +55,7 @@ public class ArticleFragment extends Fragment {
 	public void onSaveInstanceState (Bundle out) {		
 		super.onSaveInstanceState(out);
 		
+		out.putString("sessionId", m_sessionId);
 		out.putInt("articleId", m_articleId);
 	}
 	

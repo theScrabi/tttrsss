@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	
 	private String m_sessionId;
 	private int m_feedId;
+	private int m_activeArticleId;
 	
 	private ArticleListAdapter m_adapter;
 	private List<Article> m_articles = new ArrayList<Article>();
@@ -44,6 +46,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
 			m_feedId = savedInstanceState.getInt("feedId");
+			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -76,9 +79,32 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
-	
+		ListView list = (ListView)av;
+		
+		if (list != null) {
+			Article article = (Article)list.getItemAtPosition(position);
+
+			viewArticle(article.id);
+		}
 	}
 
+	public void viewArticle(int articleId) {
+		ArticleFragment frag = new ArticleFragment();
+		frag.initialize(m_sessionId, articleId, m_prefs);
+		
+		if (frag != null) {
+			m_activeArticleId = articleId;
+			
+			FragmentTransaction ft = getFragmentManager().beginTransaction();			
+			ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+			ft.show(getFragmentManager().findFragmentById(R.id.article_fragment));
+			//ft.hide(getFragmentManager().findFragmentById(R.id.feeds_fragment));
+			ft.replace(R.id.article_fragment, frag);
+			ft.commit();
+		}
+
+	}
+	
 	public void initialize(String sessionId, int feedId, SharedPreferences prefs) {
 		m_sessionId = sessionId;
 		m_feedId = feedId;
@@ -112,6 +138,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		out.putString("sessionId", m_sessionId);
 		out.putInt("feedId", m_feedId);		
+		out.putInt("activeArticleId", m_activeArticleId);
 	}
 
 	private class HeadlinesRequest extends ApiRequest {
