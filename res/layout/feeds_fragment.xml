@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout1" android:gravity="center" android:layout_height="match_parent">
-            <ProgressBar android:id="@+id/loading_progress" android:layout_height="wrap_content" android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge"></ProgressBar>
-            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/loading_message" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/loading_message"></TextView>
-        </LinearLayout>
-    <ListView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/feeds"></ListView>
+    android:layout_height="fill_parent" android:id="@+id/feeds_container" android:layout_width="match_parent">
+    <LinearLayout android:id="@+id/loading_container" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent">
+        <ProgressBar android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge" android:id="@+id/loading_progress" android:layout_height="wrap_content"></ProgressBar>
+        <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message" android:layout_height="wrap_content" ></TextView>
+    </LinearLayout>
+    <ListView android:id="@+id/feeds" android:layout_height="match_parent" android:layout_width="match_parent"></ListView>
         
     </FrameLayout>

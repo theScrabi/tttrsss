@@ -1,38 +1,25 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.jsoup.Jsoup;
-
-import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends Activity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -49,6 +36,11 @@ public class MainActivity extends Activity {
 	
 	/** Called when the activity is first created. */
 
+	public void toast(String message) {
+		Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,13 +58,31 @@ public class MainActivity extends Activity {
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
 		}
-
+		
 		setContentView(R.layout.main);
-			
+
+		/* HeadlinesFragment hf = new HeadlinesFragment();
+		FeedsFragment ff = new FeedsFragment();
+		ArticleFragment af = new ArticleFragment();
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		
+		ft.add(R.id.main, ff);
+		ft.add(R.id.main, hf);
+		ft.add(R.id.main, af); 
+		ft.hide(hf);
+		ft.hide(af);
+		ft.commit(); */
+
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		//ft.hide(getFragmentManager().findFragmentById(R.id.headlines_fragment));
+		ft.hide(getFragmentManager().findFragmentById(R.id.article_fragment));
+		ft.commit();
+		
 		LoginRequest ar = new LoginRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
 
-		HashMap<String,String> loginMap = new HashMap<String,String>() {
+		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "login");
 				put("user", m_prefs.getString("login", null));
@@ -80,7 +90,7 @@ public class MainActivity extends Activity {
 			}			 
 		};
 
-		ar.execute(loginMap);
+		ar.execute(map);
 		
 		setLoadingStatus(R.string.login_in_progress, true);
 		
@@ -88,19 +98,8 @@ public class MainActivity extends Activity {
 		
 		if (vf != null) {
 			vf.showNext();
-		}
+		} */
 		
-		HeadlinesFragment hf = new HeadlinesFragment();
-		FeedsFragment ff = new FeedsFragment();
-		ArticleFragment af = new ArticleFragment();
-		
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.add(R.id.main, ff);
-		ft.add(R.id.main, hf);
-		ft.add(R.id.main, af);
-		ft.hide(hf);
-		ft.hide(af);
-		ft.commit(); */
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -175,13 +174,11 @@ public class MainActivity extends Activity {
 						if (content != null) {
 							m_sessionId = content.get("session_id").getAsString();
 							
-							Log.d(TAG, "<<< Authentified, sessionId=" + m_sessionId);
-							
 							setLoadingStatus(R.string.loading_message, true);
 							
 							FragmentManager fm = getFragmentManager();
-							FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds);
-							
+							FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds_fragment);
+
 							if (ff != null) {
 								ff.initialize(m_sessionId);
 							}

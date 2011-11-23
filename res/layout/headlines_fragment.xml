@@ -4,6 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" android:id="@+id/headlines_fragment">
     <ListView android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines" android:background="#fafafa"></ListView>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:text="@string/no_unread_headlines" android:layout_gravity="center" android:id="@+id/no_unread_headlines"></TextView>
-
+    <LinearLayout android:id="@+id/loading_container" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent">
+        <ProgressBar android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge" android:id="@+id/loading_progress" android:layout_height="wrap_content"></ProgressBar>
+        <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message" android:layout_height="wrap_content" ></TextView>
+    </LinearLayout>
     </FrameLayout>
