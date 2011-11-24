@@ -61,7 +61,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		
-		if (m_feed != null) refresh();
+		if (m_feed != null) 
+			refresh();
+		else
+			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
 
 		return view;    	
 	}

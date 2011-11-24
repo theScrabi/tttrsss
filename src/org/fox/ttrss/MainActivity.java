@@ -199,11 +199,14 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
+		case R.id.update:
+			refreshFeeds();
+			return true;
 		case R.id.show_feeds:
 			if (getUnreadOnly()) {
-				item.setTitle(R.string.menu_all_feeds);
-			} else {
 				item.setTitle(R.string.menu_unread_feeds);
+			} else {
+				item.setTitle(R.string.menu_all_feeds);
 			}
 			
 			setUnreadOnly(!getUnreadOnly());

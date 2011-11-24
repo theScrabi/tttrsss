@@ -2,7 +2,12 @@
     <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/show_feeds"
           android:icon="@android:drawable/ic_menu_rotate"
-          android:title="@string/menu_unread_feeds" 
+          android:title="@string/menu_all_feeds" 
+          android:showAsAction=""/>
+          
+     <item android:id="@+id/update"
+          android:icon="@android:drawable/ic_menu_rotate"
+          android:title="@string/update" 
           android:showAsAction="ifRoom|withText"/>
           
      <item android:id="@+id/preferences"

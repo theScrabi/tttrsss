@@ -26,7 +26,8 @@
     <string name="no_unread_feeds">No unread feeds.</string>
     <string name="no_unread_headlines">No unread headlines.</string>
     <string name="loading_message">Loading, please wait...</string>
-    <string name="menu_unread_feeds">Unread feeds</string>
-    <string name="menu_all_feeds">All feeds</string>
+    <string name="menu_unread_feeds">Show unread feeds</string>
+    <string name="menu_all_feeds">Show all feeds</string>
+    <string name="update">Update</string>
     
 </resources>
