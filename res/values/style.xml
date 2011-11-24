@@ -5,7 +5,7 @@
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground">#ffffff</item>
 		<item name="articleDivider">#f0f0f0</item>
-		<item name="articleHeader">#ffffff</item>		
+		<item name="articleHeader">#E8F2FF</item>		
 	</style>
 
 	<style name="DarkTheme" parent="android:Theme.Holo">

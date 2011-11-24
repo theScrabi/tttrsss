@@ -32,8 +32,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	private Feed m_activeFeed;
 	private Timer m_refreshTimer;
 	private RefreshTask m_refreshTask;
-
-	protected MenuItem m_syncStatus;
+	private Menu m_menu;
+	private boolean m_unreadOnly = true;
 
 	private class RefreshTask extends TimerTask {
 
@@ -53,6 +53,17 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		}
 	}
 	
+
+	public void setUnreadOnly(boolean unread) {
+		m_unreadOnly = unread;
+		refreshFeeds();
+	}
+	
+	public boolean getUnreadOnly() {
+		return m_unreadOnly;
+	}
+	
+
 	public String getSessionId() {
 		return m_sessionId;
 	}
@@ -97,7 +108,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.commit();
 		
 		findViewById(R.id.article_fragment).setVisibility(View.GONE);
-		findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+		//findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		
 		LoginRequest ar = new LoginRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
@@ -167,16 +178,35 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
+		
+		m_menu = menu;
 
 		return true;
 	}
 
+	public void setMenuLabel(int id, int labelId) {
+		MenuItem mi = m_menu.findItem(id);
+		
+		if (mi != null) {
+			mi.setTitle(labelId);
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
+			return true;
+		case R.id.show_feeds:
+			if (getUnreadOnly()) {
+				item.setTitle(R.string.menu_all_feeds);
+			} else {
+				item.setTitle(R.string.menu_unread_feeds);
+			}
+			
+			setUnreadOnly(!getUnreadOnly());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -47,7 +47,9 @@ public class ArticleFragment extends Fragment {
 			if (web != null) {
 				
 				// this is ridiculous
-				String content = "<html><body>" + URLEncoder.encode(m_article.content).replace('+', ' ') + "</body></html>";
+				String content = URLEncoder.encode("<html>" +
+					"<head><style type=\"text/css\">img { max-width : 90%; }</style></head>" +
+					"<body>" + m_article.content + "</body></html>").replace('+', ' ');
 				
 				web.loadData(content, "text/html", "utf-8");
 			}

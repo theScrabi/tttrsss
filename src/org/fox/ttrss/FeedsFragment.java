@@ -32,8 +32,6 @@ import com.google.gson.reflect.TypeToken;
 public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
-	//private String m_sessionId;
-	//private int m_activeFeedId;
 	private FeedListAdapter m_adapter;
 	private List<Feed> m_feeds = new ArrayList<Feed>();
 	private OnFeedSelectedListener m_feedSelectedListener;
@@ -41,7 +39,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
 	}
-	
+
 	public void showLoading(boolean show) {
 		View v = getView();
 		
@@ -115,6 +113,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		fr.setApi(m_prefs.getString("ttrss_url", null));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
 		
 		if (sessionId != null) {
 		
@@ -123,7 +122,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 					put("op", "getFeeds");
 					put("sid", sessionId);
 					put("cat_id", "-3");
-					put("unread_only", "true");
+					if (unreadOnly) {
+						put("unread_only", String.valueOf(unreadOnly));
+					}
 				}			 
 			};
 
