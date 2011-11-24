@@ -16,12 +16,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -210,7 +214,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		public static final int VIEW_SELECTED = 2;
 		
 		public static final int VIEW_COUNT = VIEW_SELECTED+1;
+		
+		private ArrayList<Article> m_selectedArticles = new ArrayList<Article>();
 
+		/* private class ArticleCheckListener implements OnCheckedChangeListener {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+
+				Log.d(TAG, "onCheckedChanged: " + buttonView + "/" + getContext());
+			}
+
+		} */
+		
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
@@ -238,8 +255,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 
 			View v = convertView;
 
-			Article article = items.get(position);
-			
+			final Article article = items.get(position);
+
 			if (v == null) {
 				int layoutId = R.layout.headlines_row;
 				
@@ -279,6 +296,28 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				Date d = new Date((long)article.updated * 1000);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
+			}
+			
+			CheckBox cb = (CheckBox) v.findViewById(R.id.selected);
+
+			if (cb != null) {
+				cb.setChecked(m_selectedArticles.contains(article));
+				
+				cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+
+						if (isChecked) {
+							m_selectedArticles.add(article);
+						} else {
+							m_selectedArticles.remove(article);
+						}
+						
+						Log.d(TAG, "num selected: " + m_selectedArticles.size());
+						
+					}
+				});
 			}
 			
 			return v;

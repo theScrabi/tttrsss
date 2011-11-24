@@ -103,12 +103,9 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.replace(R.id.feeds_fragment, new FeedsFragment());
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.replace(R.id.article_fragment, af);
-		//ft.hide(hf);
-		//ft.hide(af);
 		ft.commit();
 		
 		findViewById(R.id.article_fragment).setVisibility(View.GONE);
-		//findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		
 		LoginRequest ar = new LoginRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
@@ -232,9 +229,6 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							
 							setLoadingStatus(R.string.loading_message, true);
 							
-							//FragmentManager fm = getFragmentManager();
-							//FeedsFragment ff = (FeedsFragment) fm.findFragmentById(R.id.feeds_fragment);
-							
 							ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
 							
 							if (vf != null) {
@@ -245,6 +239,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							
 							FragmentTransaction ft = getFragmentManager().beginTransaction();
 							ft.replace(R.id.feeds_fragment, frag);
+							ft.show(frag);
 							ft.commit();
 							
 							if (m_refreshTask != null) {
@@ -293,7 +288,6 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		m_activeFeed = feed;
 		
 		HeadlinesFragment hf = new HeadlinesFragment();
-		//hf.initialize(m_sessionId, feed.id, m_prefs);
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
 		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -301,8 +295,6 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.addToBackStack(null);
 		ft.commit();
-		
-		findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 	}
 
 	public Article getSelectedArticle() {
@@ -319,13 +311,14 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
 		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		//ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
 		ft.show(getFragmentManager().findFragmentById(R.id.article_fragment));
-		//ft.hide(getFragmentManager().findFragmentById(R.id.feeds_fragment));
 		ft.replace(R.id.article_fragment, frag);
 		ft.addToBackStack(null);
 		ft.commit();
 		
 		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		
 	}
 
 	public Feed getActiveFeed() {

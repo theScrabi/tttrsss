@@ -14,4 +14,5 @@ public class Article {
 	int feed_id; 
 	List<String> tags; 
 	String content;
+	boolean _selected;
 }

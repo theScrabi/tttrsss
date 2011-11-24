@@ -6,8 +6,12 @@
 		<item name="headlinesBackground">#ffffff</item>
 		<item name="articleDivider">#96c5ff</item>
 		<item name="articleHeader">#ffffff</item>		
-		<item name="headlinesSelectedBackground">#fff7d5</item>
+		<item name="headlineSelectedBackground">#fff7d5</item>
+		<item name="headlineUnreadBackground">#ffffff</item>
 		<item name="feedsSelectedBackground">#96C5FF</item>
+		<item name="headlineSeparatorUnread">#96C5FF</item>
+		<item name="headlineSeparatorNormal">#909090</item>
+		<item name="headlineSeparatorSelected">#DBC981</item>
 	</style>
 
 	<style name="DarkTheme" parent="android:Theme.Holo">
@@ -17,8 +21,13 @@
 		<item name="headlinesBackground">#000000</item>
 		<item name="articleDivider">#303030</item>
 		<item name="articleHeader">#101010</item>
-		<item name="headlinesSelectedBackground">#303060</item>
+		<item name="headlineSelectedBackground">#303060</item>
+		<item name="headlineUnreadBackground">#303030</item>
 		<item name="feedsSelectedBackground">#303060</item>
+		<item name="headlineSeparatorUnread">#303060</item>
+		<item name="headlineSeparatorNormal">#303060</item>
+		<item name="headlineSeparatorSelected">#303060</item>
+		
 	</style>
 
 </resources>
