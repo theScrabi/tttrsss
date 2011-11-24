@@ -35,6 +35,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private FeedListAdapter m_adapter;
 	private List<Feed> m_feeds = new ArrayList<Feed>();
 	private OnFeedSelectedListener m_feedSelectedListener;
+	private int m_selectedFeedId;
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
@@ -64,7 +65,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
-		list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);        
+		//list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);        
 		list.setOnItemClickListener(this);
 
 		//if (m_sessionId != null) 
@@ -104,6 +105,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
 			m_feedSelectedListener.onFeedSelected(feed);
+			m_selectedFeedId = feed.id;
+			m_adapter.notifyDataSetChanged();
 		}
 	}
 
@@ -217,34 +220,55 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private class FeedListAdapter extends ArrayAdapter<Feed> {
 		private ArrayList<Feed> items;
 
+		public static final int VIEW_NORMAL = 0;
+		public static final int VIEW_SELECTED = 1;
+		
+		public static final int VIEW_COUNT = VIEW_SELECTED+1;
+
 		public FeedListAdapter(Context context, int textViewResourceId, ArrayList<Feed> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 		}
-		
+
+		public int getViewTypeCount() {
+			return VIEW_COUNT;
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+			Feed feed = items.get(position);
+			
+			if (feed.id == m_selectedFeedId) {
+				return VIEW_SELECTED;
+			} else {
+				return VIEW_NORMAL;				
+			}			
+		}
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-
-			Feed active_feed = ((MainActivity)getActivity()).getActiveFeed();
-			
 			View v = convertView;
 
 			Feed feed = items.get(position);
 
 			if (v == null) {
+				int layoutId = R.layout.feeds_row;
+				
+				switch (getItemViewType(position)) {
+				case VIEW_SELECTED:
+					layoutId = R.layout.feeds_row_selected;
+					break;
+				}
+				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.feeds_row, null);
+				v = vi.inflate(layoutId, null);
+
 			}
 
 			TextView tt = (TextView) v.findViewById(R.id.title);
 
 			if (tt != null) {
 				tt.setText(feed.title);
-				
-				if (active_feed != null && feed.id == active_feed.id)
-					tt.setTextAppearance(getContext(), R.style.SelectedFeed);
-				else
-					tt.setTextAppearance(getContext(), R.style.Feed);
 			}
 
 			TextView tu = (TextView) v.findViewById(R.id.unread_counter);
@@ -257,5 +281,4 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			return v;
 		}
 	}
-
 }

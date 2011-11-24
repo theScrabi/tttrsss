@@ -315,9 +315,6 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		m_selectedArticle = article;
 		
-		article.unread = false;
-		
-		
 		ArticleFragment frag = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			

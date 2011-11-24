@@ -1,16 +1,17 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.fox.ttrss.FeedsFragment.OnFeedSelectedListener;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private String m_sessionId;
 	private Feed m_feed;
 	//private int m_activeArticleId;
+	private int m_selectedArticleId;
 	
 	private ArticleListAdapter m_adapter;
 	private List<Article> m_articles = new ArrayList<Article>();
@@ -98,6 +100,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
 			m_articleSelectedListener.onArticleSelected(article);
+			
+			article.unread = false;
+			m_selectedArticleId = article.id;
+			m_adapter.notifyDataSetChanged();
 		}
 	}
 
@@ -115,6 +121,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("limit", String.valueOf(30));
 				put("offset", String.valueOf(0));
 				put("view_mode", "adaptive");
+				//put("view_mode", "all_articles");
 			}			 
 		};
 
@@ -197,35 +204,62 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
+		
+		public static final int VIEW_NORMAL = 0;
+		public static final int VIEW_UNREAD = 1;
+		public static final int VIEW_SELECTED = 2;
+		
+		public static final int VIEW_COUNT = VIEW_SELECTED+1;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 		}
 		
+		public int getViewTypeCount() {
+			return VIEW_COUNT;
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+			Article a = items.get(position);
+			
+			if (a.id == m_selectedArticleId) {
+				return VIEW_SELECTED;
+			} else if (a.unread) {
+				return VIEW_UNREAD;
+			} else {
+				return VIEW_NORMAL;				
+			}			
+		}
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			View v = convertView;
 
 			Article article = items.get(position);
-
+			
 			if (v == null) {
+				int layoutId = R.layout.headlines_row;
+				
+				switch (getItemViewType(position)) {
+				case VIEW_UNREAD:
+					layoutId = R.layout.headlines_row_unread;
+					break;
+				case VIEW_SELECTED:
+					layoutId = R.layout.headlines_row_selected;
+					break;
+				}
+				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.headlines_row, null);
+				v = vi.inflate(layoutId, null);
 			}
 
 			TextView tt = (TextView) v.findViewById(R.id.title);
 
 			if (tt != null) {
 				tt.setText(article.title);
-				//tt.setTextAppearance(getContext(), R.style.Connection);
-				
-				if (article.unread)
-					tt.setTextAppearance(getContext(), R.style.UnreadArticle);
-				else
-					tt.setTextAppearance(getContext(), R.style.Article);
-
 			}
 
 			TextView te = (TextView) v.findViewById(R.id.excerpt);
@@ -234,11 +268,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				String excerpt = Jsoup.parse(article.content).text(); 
 				
 				if (excerpt.length() > 250)
-					excerpt = excerpt.substring(0, 250) + "...";
+					excerpt = excerpt.substring(0, 100) + "...";
 				
 				te.setText(excerpt);
 			}       	
 
+			TextView dv = (TextView) v.findViewById(R.id.date);
+			
+			if (dv != null) {
+				Date d = new Date((long)article.updated * 1000);
+				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
+				dv.setText(df.format(d));
+			}
+			
 			return v;
 		}
 	}
