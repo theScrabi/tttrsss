@@ -317,6 +317,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.addToBackStack(null);
 		ft.commit();
 		
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		
 	}

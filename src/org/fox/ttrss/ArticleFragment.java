@@ -4,15 +4,17 @@ import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.TextView;
 
-public class ArticleFragment extends Fragment {
+public class ArticleFragment extends Fragment implements View.OnClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected SharedPreferences m_prefs;
@@ -50,6 +52,12 @@ public class ArticleFragment extends Fragment {
 				
 				web.loadData(content, "text/html", "utf-8");
 			}
+			
+			Button btn = (Button)view.findViewById(R.id.close_button);
+			
+			if (btn != null) {
+				btn.setOnClickListener(this);
+			}
 		} 
 		
 		return view;    	
@@ -77,6 +85,12 @@ public class ArticleFragment extends Fragment {
 		
 		//m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		getActivity().findViewById(R.id.article_fragment).setVisibility(View.GONE);	
+		getActivity().findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
 	}
 
 }
