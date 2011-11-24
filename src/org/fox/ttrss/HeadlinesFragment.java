@@ -108,6 +108,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			article.unread = false;
 			m_selectedArticleId = article.id;
 			m_adapter.notifyDataSetChanged();
+			
+			catchupArticle(article);
 		}
 	}
 
@@ -206,6 +208,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	    }
 	}
 	
+	public void catchupArticle(final Article article) {
+		ApiRequest ar = new ApiRequest();
+		ar.setApi(m_prefs.getString("ttrss_url", null));
+
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", "0");
+				put("field", "2");
+			}			 
+		};
+
+		ar.execute(map);
+	}
+
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
 		
