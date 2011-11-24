@@ -182,7 +182,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
-		case R.id.update:
+		case R.id.update_feeds:
 			refreshFeeds();
 			return true;
 		case R.id.logout:
@@ -245,9 +245,11 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							ft.commit();
 							
 							m_menu.findItem(R.id.login).setVisible(false);
+							
 							m_menu.findItem(R.id.logout).setVisible(true);
-							m_menu.findItem(R.id.update).setVisible(true);
-							m_menu.findItem(R.id.show_feeds).setVisible(true);
+							
+							m_menu.findItem(R.id.update_feeds).setEnabled(true);
+							m_menu.findItem(R.id.show_feeds).setEnabled(true);
 							
 							if (m_refreshTask != null) {
 								m_refreshTask.cancel();
@@ -329,8 +331,10 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		
-		if (m_menu != null)
+		if (m_menu != null) {
 			m_menu.findItem(R.id.close_article).setVisible(true);
+			m_menu.findItem(R.id.share_article).setVisible(true);
+		}
 		
 	}
 
@@ -344,10 +348,13 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		if (m_menu != null) {
 			m_menu.findItem(R.id.login).setVisible(true);
+			
 			m_menu.findItem(R.id.logout).setVisible(false);
-			m_menu.findItem(R.id.update).setVisible(false);
-			m_menu.findItem(R.id.show_feeds).setVisible(false);
 			m_menu.findItem(R.id.close_article).setVisible(false);
+			m_menu.findItem(R.id.share_article).setVisible(false);
+			
+			m_menu.findItem(R.id.update_feeds).setEnabled(false);
+			m_menu.findItem(R.id.show_feeds).setEnabled(false);
 		}
 		
 		if (m_refreshTask != null) {

@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -214,6 +215,24 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		ar.execute(map);
 	}
 
+	public void setArticleMarked(final Article article) {
+		ApiRequest ar = new ApiRequest();
+		ar.setApi(m_prefs.getString("ttrss_url", null));
+
+		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.marked ? "1" : "0");
+				put("field", "0");
+			}			 
+		};
+
+		ar.execute(map);
+	}
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
 		
@@ -296,9 +315,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 					
 					@Override
 					public void onClick(View v) {
-						Log.d(TAG, "Marked image clicked " + v + " / " + article.id + "/" + article.marked);
 						article.marked = !article.marked;
 						m_adapter.notifyDataSetChanged();
+						
+						setArticleMarked(article);
 					}
 				});
 			}
