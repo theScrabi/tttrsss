@@ -29,5 +29,5 @@
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
     <string name="update">Update</string>
-    
+    <string name="close_article">Close article</string>
 </resources>

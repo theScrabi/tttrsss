@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -279,13 +281,29 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				v = vi.inflate(layoutId, null);
 			}
 
-			TextView tt = (TextView) v.findViewById(R.id.title);
+			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
 				tt.setText(article.title);
 			}
 
-			TextView te = (TextView) v.findViewById(R.id.excerpt);
+			ImageView marked = (ImageView)v.findViewById(R.id.marked);
+			
+			if (marked != null) {
+				marked.setImageResource(article.marked ? android.R.drawable.star_on : android.R.drawable.star_off);
+				
+				marked.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						Log.d(TAG, "Marked image clicked " + v + " / " + article.id + "/" + article.marked);
+						article.marked = !article.marked;
+						m_adapter.notifyDataSetChanged();
+					}
+				});
+			}
+			
+			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
 				String excerpt = Jsoup.parse(article.content).text(); 

@@ -15,10 +15,10 @@
 	
 	    <LinearLayout
         android:id="@+id/linerLayout3"
-        android:layout_width="wrap_content" android:gravity="center"
+        android:layout_width="wrap_content" android:gravity="center" android:padding="3dip" 
         android:layout_height="wrap_content" android:orientation="vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/date" android:text="Jan 01"></TextView>
-        <ImageView android:clickable="true" android:id="@+id/imageView1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@android:drawable/star_off"></ImageView>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#909090" android:textSize="13sp" android:id="@+id/date" android:text="Jan 01"></TextView>
+        <ImageView android:clickable="true" android:id="@+id/marked" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@android:drawable/star_off"></ImageView>
     </LinearLayout>
 	                   
 </LinearLayout>

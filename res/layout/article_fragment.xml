@@ -7,10 +7,10 @@
             android:layout_weight="1"
             android:layout_height="match_parent" android:orientation="vertical">
             <LinearLayout android:background="?articleHeader" android:layout_gravity="center_vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:id="@+id/article_header" android:padding="10dip">
-                <TextView android:singleLine="true" android:layout_weight="1" android:text="TextView" android:layout_height="wrap_content" android:ellipsize="end" android:layout_width="match_parent" android:id="@+id/title" android:textSize="15dip"></TextView>
-                <Button android:text="Close"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/close_button"></Button>
+                <TextView  android:singleLine="true" android:layout_weight="1" android:text="" android:layout_height="wrap_content" android:ellipsize="end" android:layout_width="match_parent" android:id="@+id/title" android:textSize="18dip"></TextView>
+                
             </LinearLayout>
-            <ImageView android:background="?articleDivider" android:paddingTop="2dip" android:layout_weight="0" android:layout_height="wrap_content" android:layout_width="match_parent"></ImageView>
+            <ImageView android:background="?feedlistDivider" android:paddingTop="2dip" android:layout_weight="0" android:layout_height="wrap_content" android:layout_width="match_parent"></ImageView>
             <WebView android:layout_weight="0" android:layout_width="match_parent" android:padding="3dip" android:layout_height="match_parent" android:id="@+id/content"></WebView>
         </LinearLayout>
     </LinearLayout>

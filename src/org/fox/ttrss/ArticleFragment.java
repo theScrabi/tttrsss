@@ -4,22 +4,21 @@ import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.TextView;
 
-public class ArticleFragment extends Fragment implements View.OnClickListener {
+public class ArticleFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected SharedPreferences m_prefs;
 	
-	//private int m_articleId;
 	private String m_sessionId;
 	private Article m_article;
 	
@@ -38,7 +37,8 @@ public class ArticleFragment extends Fragment implements View.OnClickListener {
 			TextView title = (TextView)view.findViewById(R.id.title);
 			
 			if (title != null) {
-				title.setText(m_article.title);
+				title.setText(Html.fromHtml("<a href=\""+URLEncoder.encode(m_article.link)+"\">" + m_article.title + "</a>"));
+				title.setMovementMethod(LinkMovementMethod.getInstance());
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
@@ -46,6 +46,7 @@ public class ArticleFragment extends Fragment implements View.OnClickListener {
 			if (web != null) {
 				
 				// this is ridiculous
+				// TODO white on black style for dark theme
 				String content = URLEncoder.encode("<html>" +
 					"<head><style type=\"text/css\">img { max-width : 90%; }</style></head>" +
 					"<body>" + m_article.content + "</body></html>").replace('+', ' ');
@@ -53,11 +54,6 @@ public class ArticleFragment extends Fragment implements View.OnClickListener {
 				web.loadData(content, "text/html", "utf-8");
 			}
 			
-			Button btn = (Button)view.findViewById(R.id.close_button);
-			
-			if (btn != null) {
-				btn.setOnClickListener(this);
-			}
 		} 
 		
 		return view;    	
@@ -86,11 +82,4 @@ public class ArticleFragment extends Fragment implements View.OnClickListener {
 		//m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 
 	}
-
-	@Override
-	public void onClick(View v) {
-		getActivity().findViewById(R.id.article_fragment).setVisibility(View.GONE);	
-		getActivity().findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
-	}
-
 }

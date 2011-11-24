@@ -191,6 +191,9 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		case R.id.login:
 			login();
 			return true;
+		case R.id.close_article:
+			closeArticle();
+			return true;
 		case R.id.show_feeds:
 			if (getUnreadOnly()) {
 				item.setTitle(R.string.menu_unread_feeds);
@@ -203,6 +206,16 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	public void closeArticle() {
+		findViewById(R.id.article_fragment).setVisibility(View.GONE);	
+		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
+		
+		if (m_menu != null)
+			m_menu.findItem(R.id.close_article).setVisible(false);
+		
+		m_selectedArticle = null;
 	}
 	
 	private class LoginRequest extends ApiRequest {
@@ -316,6 +329,9 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		
+		if (m_menu != null)
+			m_menu.findItem(R.id.close_article).setVisible(true);
+		
 	}
 
 	public Feed getActiveFeed() {
@@ -327,9 +343,11 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		findViewById(R.id.main).setVisibility(View.INVISIBLE);
 		
 		if (m_menu != null) {
+			m_menu.findItem(R.id.login).setVisible(true);
 			m_menu.findItem(R.id.logout).setVisible(false);
 			m_menu.findItem(R.id.update).setVisible(false);
 			m_menu.findItem(R.id.show_feeds).setVisible(false);
+			m_menu.findItem(R.id.close_article).setVisible(false);
 		}
 		
 		if (m_refreshTask != null) {
