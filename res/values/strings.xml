@@ -30,4 +30,5 @@
     <string name="menu_all_feeds">Show all feeds</string>
     <string name="update">Update</string>
     <string name="close_article">Close article</string>
+    <string name="share_article">Share article</string>
 </resources>

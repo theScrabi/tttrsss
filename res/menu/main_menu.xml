@@ -26,6 +26,12 @@
           android:icon="@android:drawable/ic_menu_rotate"
           android:title="@string/update" 
           android:showAsAction="ifRoom|withText"/>
+
+     <item android:id="@+id/share"
+     	  android:enabled="false"
+          android:icon="@android:drawable/ic_menu_share"
+          android:title="@string/share_article" 
+          android:showAsAction="ifRoom"/>
           
      <item android:id="@+id/preferences"
           android:icon="@android:drawable/ic_menu_preferences"
