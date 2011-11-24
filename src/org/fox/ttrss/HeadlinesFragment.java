@@ -39,7 +39,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected SharedPreferences m_prefs;
 	
-	private String m_sessionId;
+	//private String m_sessionId;
 	private Feed m_feed;
 	//private int m_activeArticleId;
 	private int m_selectedArticleId;
@@ -55,7 +55,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
+			//m_sessionId = savedInstanceState.getString("sessionId");
 			//m_feedId = savedInstanceState.getInt("feedId");
 			//m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 		}
@@ -90,10 +90,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		
-		m_sessionId = ((MainActivity)activity).getSessionId();
 		m_feed = ((MainActivity)activity).getActiveFeed();
-		
 		m_articleSelectedListener = (OnArticleSelectedListener) activity;
 	}
 
@@ -117,11 +114,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		HeadlinesRequest req = new HeadlinesRequest();
 		
 		req.setApi(m_prefs.getString("ttrss_url", null));
+		
+		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getHeadlines");
-				put("sid", m_sessionId);
+				put("sid", sessionId);
 				put("feed_id", String.valueOf(m_feed.id));
 				put("show_content", "true");
 				put("limit", String.valueOf(30));
@@ -138,7 +137,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 		
-		out.putString("sessionId", m_sessionId);
+		//out.putString("sessionId", m_sessionId);
 		//out.putInt("feedId", m_feedId);		
 		//out.putInt("activeArticleId", m_activeArticleId);
 	}
@@ -174,23 +173,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 							});
 						}
 					} else {
-						JsonObject content = rv.get("content").getAsJsonObject();
-						
-						if (content != null) {
-							String error = content.get("error").getAsString();
-
-							/* m_sessionId = null;
-
-							if (error.equals("LOGIN_ERROR")) {
-								setLoadingStatus(R.string.login_wrong_password, false);
-							} else if (error.equals("API_DISABLED")) {
-								setLoadingStatus(R.string.login_api_disabled, false);
-							} else {
-								setLoadingStatus(R.string.login_failed, false);
-							} */
-							
-							// TODO report error back to MainActivity
-						}							
+						MainActivity activity = (MainActivity)getActivity();							
+						activity.login();
+						showLoading(false);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -212,9 +197,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		ApiRequest ar = new ApiRequest();
 		ar.setApi(m_prefs.getString("ttrss_url", null));
 
+		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", sessionId);
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", "0");

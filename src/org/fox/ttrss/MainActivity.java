@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -106,21 +105,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ft.commit();
 		
 		findViewById(R.id.article_fragment).setVisibility(View.GONE);
-		
-		LoginRequest ar = new LoginRequest();
-		ar.setApi(m_prefs.getString("ttrss_url", null));
 
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "login");
-				put("user", m_prefs.getString("login", null));
-				put("password", m_prefs.getString("password", null));
-			}			 
-		};
-
-		ar.execute(map);
-		
-		setLoadingStatus(R.string.login_in_progress, true);
+		login();
 	
 	}
 
@@ -199,6 +185,12 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		case R.id.update:
 			refreshFeeds();
 			return true;
+		case R.id.logout:
+			logout();
+			return true;
+		case R.id.login:
+			login();
+			return true;
 		case R.id.show_feeds:
 			if (getUnreadOnly()) {
 				item.setTitle(R.string.menu_unread_feeds);
@@ -229,11 +221,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							
 							setLoadingStatus(R.string.loading_message, true);
 							
-							ViewFlipper vf = (ViewFlipper) findViewById(R.id.main_flipper);
-							
-							if (vf != null) {
-								vf.showNext();
-							}
+							findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
+							findViewById(R.id.main).setVisibility(View.VISIBLE);
 							
 							FeedsFragment frag = new FeedsFragment();
 							
@@ -241,6 +230,11 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							ft.replace(R.id.feeds_fragment, frag);
 							ft.show(frag);
 							ft.commit();
+							
+							m_menu.findItem(R.id.login).setVisible(false);
+							m_menu.findItem(R.id.logout).setVisible(true);
+							m_menu.findItem(R.id.update).setVisible(true);
+							m_menu.findItem(R.id.show_feeds).setVisible(true);
 							
 							if (m_refreshTask != null) {
 								m_refreshTask.cancel();
@@ -272,6 +266,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 							} else {
 								setLoadingStatus(R.string.login_failed, false);
 							}
+							
+							m_menu.findItem(R.id.login).setVisible(true);
 						}							
 					}
 				} catch (Exception e) {
@@ -324,5 +320,48 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 
 	public Feed getActiveFeed() {
 		return m_activeFeed;
+	}
+
+	public void logout() {
+		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+		findViewById(R.id.main).setVisibility(View.INVISIBLE);
+		
+		if (m_menu != null) {
+			m_menu.findItem(R.id.logout).setVisible(false);
+			m_menu.findItem(R.id.update).setVisible(false);
+			m_menu.findItem(R.id.show_feeds).setVisible(false);
+		}
+		
+		if (m_refreshTask != null) {
+			m_refreshTask.cancel();
+			m_refreshTask = null;
+		}
+		
+		if (m_refreshTimer != null) {
+			m_refreshTimer.cancel();
+			m_refreshTimer = null;
+		}
+
+		m_sessionId = null;
+	}
+
+	public void login() {		
+
+		logout();
+		
+		LoginRequest ar = new LoginRequest();
+		ar.setApi(m_prefs.getString("ttrss_url", null));
+
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("op", "login");
+				put("user", m_prefs.getString("login", null));
+				put("password", m_prefs.getString("password", null));
+			}			 
+		};
+
+		ar.execute(map);
+		
+		setLoadingStatus(R.string.login_in_progress, true);		
 	}
 }

@@ -1,11 +1,25 @@
 
     <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:id="@+id/login"
+    	  android:visible="false"
+          android:icon="@android:drawable/ic_menu_rotate"
+          android:title="@string/login" 
+          android:showAsAction="ifRoom|withText"/>
+
+    <item android:id="@+id/logout"
+    	  android:visible="false"
+          android:title="@string/logout" 
+          android:showAsAction=""/>
+    
     <item android:id="@+id/show_feeds"
+    	  android:visible="false"    	  
           android:icon="@android:drawable/ic_menu_rotate"
           android:title="@string/menu_all_feeds" 
           android:showAsAction=""/>
           
      <item android:id="@+id/update"
+     	  android:visible="false"
           android:icon="@android:drawable/ic_menu_rotate"
           android:title="@string/update" 
           android:showAsAction="ifRoom|withText"/>

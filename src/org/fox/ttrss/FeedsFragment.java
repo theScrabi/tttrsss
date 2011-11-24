@@ -183,23 +183,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 								});
 							}
 						} else {
-							JsonObject content = rv.get("content").getAsJsonObject();
-							
-							if (content != null) {
-								String error = content.get("error").getAsString();
-	
-								/* m_sessionId = null;
-	
-								if (error.equals("LOGIN_ERROR")) {
-									setLoadingStatus(R.string.login_wrong_password, false);
-								} else if (error.equals("API_DISABLED")) {
-									setLoadingStatus(R.string.login_api_disabled, false);
-								} else {
-									setLoadingStatus(R.string.login_failed, false);
-								} */
-								
-								// TODO report error back to MainActivity
-							}							
+							MainActivity activity = (MainActivity)getActivity();							
+							activity.login();
+							showLoading(false);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
