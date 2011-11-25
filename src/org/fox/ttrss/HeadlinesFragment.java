@@ -16,6 +16,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,26 +44,49 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected SharedPreferences m_prefs;
 	
-	//private String m_sessionId;
 	private Feed m_feed;
-	//private int m_activeArticleId;
 	private int m_selectedArticleId;
 	
 	private ArticleListAdapter m_adapter;
-	private List<Article> m_articles = new ArrayList<Article>();
+	private ArticleList m_articles = new ArticleList();
 	private OnArticleSelectedListener m_articleSelectedListener;
 	
 	public interface OnArticleSelectedListener {
 		public void onArticleSelected(Article article);
 	}
+	
+	private class ArticleList extends ArrayList<Article> implements Parcelable {
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeInt(this.size());
+			for (Article article : this) {
+				out.writeParcelable(article, flags);
+			}
+		}
+		
+		public void readFromParcel(Parcel in) {
+			int length = in.readInt();
+			
+			for (int i = 0; i < length; i++) {
+				Article article = in.readParcelable(Article.class.getClassLoader());
+				this.add(article);
+			}
+			
+		}
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
-			//m_sessionId = savedInstanceState.getString("sessionId");
-			
 			m_feed = savedInstanceState.getParcelable("feed");
-			//m_activeArticleId = savedInstanceState.getInt("activeArticleId");
+			m_articles = savedInstanceState.getParcelable("articles");
+			m_selectedArticleId = savedInstanceState.getInt("selectedArticleId");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -73,7 +98,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
-		if (m_feed != null) 
+		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
 			refresh();
 		else
 			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
@@ -132,7 +157,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("limit", String.valueOf(30));
 				put("offset", String.valueOf(0));
 				put("view_mode", "adaptive");
-				//put("view_mode", "all_articles");
 			}			 
 		};
 
@@ -144,10 +168,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 		
 		out.putParcelable("feed", m_feed);
-		
-		//out.putString("sessionId", m_sessionId);
-		//out.putInt("feedId", m_feedId);		
-		//out.putInt("activeArticleId", m_activeArticleId);
+		out.putParcelable("articles", m_articles);
+		out.putInt("selectedArticleId", m_selectedArticleId);
 	}
 
 	private class HeadlinesRequest extends ApiRequest {
@@ -246,17 +268,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		private ArrayList<Article> m_selectedArticles = new ArrayList<Article>();
 
-		/* private class ArticleCheckListener implements OnCheckedChangeListener {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-
-				Log.d(TAG, "onCheckedChanged: " + buttonView + "/" + getContext());
-			}
-
-		} */
-		
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;

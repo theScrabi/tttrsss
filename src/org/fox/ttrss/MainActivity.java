@@ -91,6 +91,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			m_sessionId = savedInstanceState.getString("sessionId");
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
+			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 		}
 		
 		setContentView(R.layout.main);
@@ -99,10 +100,12 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		LinearLayout layout = (LinearLayout)findViewById(R.id.main);
 		layout.setLayoutTransition(transitioner);
 		
-		findViewById(R.id.article_fragment).setVisibility(View.GONE);
+		if (m_selectedArticle == null)
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+		else
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 
 		if (m_sessionId != null) {
-			// restarting, TODO set update timers here?
 			loginSuccess();
 		} else {
 			login();
@@ -131,7 +134,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		out.putString("sessionId", m_sessionId);
 		out.putBoolean("unreadOnly", m_unreadOnly);
 		out.putParcelable("activeFeed", m_activeFeed);
-		
+		out.putParcelable("selectedArticle", m_selectedArticle);
 	}
 
 	@Override
@@ -232,9 +235,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	public void closeArticle() {
 		findViewById(R.id.article_fragment).setVisibility(View.GONE);	
 		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
-		
-		if (m_menu != null)
-			m_menu.findItem(R.id.close_article).setVisible(false);
+
+		initMainMenu();
 		
 		m_selectedArticle = null;
 	}
@@ -249,6 +251,14 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			
 				m_menu.findItem(R.id.update_feeds).setEnabled(true);
 				m_menu.findItem(R.id.show_feeds).setEnabled(true);
+			
+				if (m_selectedArticle != null) {
+					m_menu.findItem(R.id.close_article).setVisible(true);
+					m_menu.findItem(R.id.share_article).setVisible(true);
+				} else {
+					m_menu.findItem(R.id.close_article).setVisible(false);
+					m_menu.findItem(R.id.share_article).setVisible(false);
+				}
 				
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
@@ -361,6 +371,8 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	public void openArticle(Article article) {
 		m_selectedArticle = article;
 		
+		initMainMenu();
+		
 		ArticleFragment frag = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
@@ -369,11 +381,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		
-		if (m_menu != null) {
-			m_menu.findItem(R.id.close_article).setVisible(true);
-			m_menu.findItem(R.id.share_article).setVisible(true);
-		}
+				
 	}
 	
 	@Override

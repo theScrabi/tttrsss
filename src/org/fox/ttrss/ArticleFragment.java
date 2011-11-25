@@ -22,15 +22,13 @@ public class ArticleFragment extends Fragment {
 
 	protected SharedPreferences m_prefs;
 	
-	private String m_sessionId;
 	private Article m_article;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
-			//m_articleId = savedInstanceState.getInt("articleId");
+			m_article = savedInstanceState.getParcelable("article");
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
@@ -94,18 +92,13 @@ public class ArticleFragment extends Fragment {
 	public void onSaveInstanceState (Bundle out) {		
 		super.onSaveInstanceState(out);
 		
-		out.putString("sessionId", m_sessionId);
-		//out.putInt("articleId", m_articleId);
+		out.putParcelable("article", m_article);
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_sessionId = ((MainActivity)activity).getSessionId();
 		m_article = ((MainActivity)activity).getSelectedArticle(); 
-		
-		//m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-
 	}
 }
