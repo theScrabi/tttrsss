@@ -12,6 +12,10 @@ public class Feed implements Comparable<Feed>, Parcelable {
 	int cat_id;
 	int last_updated;
 	
+	public Feed(Parcel in) {
+		readFromParcel(in);
+	}
+	
 	@Override
 	public int compareTo(Feed feed) {
 		if (feed.unread != this.unread)
@@ -45,4 +49,15 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		cat_id = in.readInt();
 		last_updated = in.readInt();
 	}
+	
+	public static final Parcelable.Creator CREATOR =
+    	new Parcelable.Creator() {
+            public Feed createFromParcel(Parcel in) {
+                return new Feed(in);
+            }
+ 
+            public Feed[] newArray(int size) {
+                return new Feed[size];
+            }
+        };
 }

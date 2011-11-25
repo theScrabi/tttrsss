@@ -18,6 +18,10 @@ public class Article implements Parcelable {
 	List<String> tags; 
 	String content;
 	
+	public Article(Parcel in) {
+		readFromParcel(in);
+	}
+	
 	@Override
 	public int describeContents() {
 		return 0;
@@ -51,4 +55,15 @@ public class Article implements Parcelable {
 		in.readStringList(tags);
 		content = in.readString();
 	}
+	
+	public static final Parcelable.Creator CREATOR =
+    	new Parcelable.Creator() {
+            public Article createFromParcel(Parcel in) {
+                return new Article(in);
+            }
+ 
+            public Article[] newArray(int size) {
+                return new Article[size];
+            }
+        };
 }

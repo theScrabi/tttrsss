@@ -57,30 +57,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		public void onArticleSelected(Article article);
 	}
 	
-	private class ArticleList extends ArrayList<Article> implements Parcelable {
-		@Override
-		public int describeContents() {
-			return 0;
-		}
-
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(this.size());
-			for (Article article : this) {
-				out.writeParcelable(article, flags);
-			}
-		}
-		
-		public void readFromParcel(Parcel in) {
-			int length = in.readInt();
-			
-			for (int i = 0; i < length; i++) {
-				Article article = in.readParcelable(Article.class.getClassLoader());
-				this.add(article);
-			}
-			
-		}
-	}
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	

@@ -10,8 +10,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,32 +34,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private FeedList m_feeds = new FeedList();
 	private OnFeedSelectedListener m_feedSelectedListener;
 	private int m_selectedFeedId;
-	
-	private class FeedList extends ArrayList<Feed> implements Parcelable {
-
-		@Override
-		public int describeContents() {
-			return 0;
-		}
-
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(this.size());
-			for (Feed feed : this) {
-				out.writeParcelable(feed, flags);
-			}
-		}
-		
-		public void readFromParcel(Parcel in) {
-			int length = in.readInt();
-			
-			for (int i = 0; i < length; i++) {
-				Feed feed = in.readParcelable(Feed.class.getClassLoader());
-				this.add(feed);
-			}
-			
-		}
-	}
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
