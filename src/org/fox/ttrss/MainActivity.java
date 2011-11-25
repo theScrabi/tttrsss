@@ -218,6 +218,9 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		case R.id.close_article:
 			closeArticle();
 			return true;
+		case R.id.share_article:
+			shareArticle(m_selectedArticle);
+			return true;
 		case R.id.show_feeds:
 			if (getUnreadOnly()) {
 				item.setTitle(R.string.menu_unread_feeds);
@@ -229,6 +232,18 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	public void shareArticle(Article article) {
+		if (article != null) {
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
+			intent.putExtra(Intent.EXTRA_TEXT, article.link);
+
+			startActivity(Intent.createChooser(intent, getString(R.id.share_article)));
 		}
 	}
 	
