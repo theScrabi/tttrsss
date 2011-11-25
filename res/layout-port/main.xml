@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"    
+    android:layout_height="fill_parent" android:id="@+id/main_flipper">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:id="@+id/loading_container">
+        <ProgressBar android:id="@+id/loading_progress" android:layout_height="wrap_content" android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge"></ProgressBar>
+        <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/loading_message" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/loading_message"></TextView>
+    </LinearLayout>
+    <LinearLayout android:layout_height="fill_parent" android:orientation="horizontal" android:id="@+id/main" android:layout_width="fill_parent">
+        <FrameLayout android:layout_height="match_parent" android:layout_width="300dp" android:layout_weight="0" android:id="@+id/feeds_fragment"></FrameLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_height="match_parent" android:orientation="vertical" android:layout_width="match_parent">
+            <FrameLayout android:layout_weight="0.5" android:id="@+id/headlines_fragment" android:layout_width="match_parent" android:layout_height="0dp"></FrameLayout>
+            <FrameLayout android:layout_weight="0.5" android:id="@+id/article_fragment" android:layout_width="match_parent" android:layout_height="0dp"></FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+    
+    
+</FrameLayout>
