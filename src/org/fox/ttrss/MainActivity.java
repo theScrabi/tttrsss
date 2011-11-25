@@ -265,15 +265,18 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			
 				m_menu.findItem(R.id.logout).setVisible(true);
 			
-				m_menu.findItem(R.id.update_feeds).setEnabled(true);
-				m_menu.findItem(R.id.show_feeds).setEnabled(true);
-			
 				if (m_selectedArticle != null) {
 					m_menu.findItem(R.id.close_article).setVisible(true);
 					m_menu.findItem(R.id.share_article).setVisible(true);
+					
+					m_menu.findItem(R.id.update_feeds).setEnabled(false);
+					m_menu.findItem(R.id.show_feeds).setEnabled(false);
 				} else {
 					m_menu.findItem(R.id.close_article).setVisible(false);
 					m_menu.findItem(R.id.share_article).setVisible(false);
+					
+					m_menu.findItem(R.id.update_feeds).setEnabled(true);
+					m_menu.findItem(R.id.show_feeds).setEnabled(true);
 				}
 				
 			} else {
@@ -410,11 +413,6 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	}
 
 	public void logout() {
-		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-		findViewById(R.id.main).setVisibility(View.INVISIBLE);
-	
-		initMainMenu();
-		
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
 			m_refreshTask = null;
@@ -426,6 +424,19 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		}
 
 		m_sessionId = null;
+		
+		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+		findViewById(R.id.main).setVisibility(View.INVISIBLE);
+	
+		TextView tv = (TextView)findViewById(R.id.loading_message);
+		
+		if (tv != null) {
+			tv.setText(R.string.login_ready);		
+		}
+		
+		findViewById(R.id.loading_progress).setVisibility(View.GONE);
+		
+		initMainMenu();
 	}
 
 	public void login() {		

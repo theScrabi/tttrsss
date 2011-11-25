@@ -50,18 +50,19 @@ public class ArticleFragment extends Fragment {
 				// TODO white on black style for dark theme
 				String content;
 				try {
-					String backgroundOverride = "";
+					String cssOverride = "";
 					
 					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-						backgroundOverride = "body { background : black; color : #f0f0f0}\n";						
+						cssOverride = "body { background : black; color : #f0f0f0}\na { color : #303060; }\n";						
 					}
 					
 					content = URLEncoder.encode("<html>" +
 						"<head>" +
 						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" + // wtf, google?
 						"<style type=\"text/css\">" +
-						backgroundOverride +
+						cssOverride +
 						"img { max-width : 90%; }" +
+						"body { text-align : justify; }" +
 						"</style>" +
 						"</head>" +
 						"<body>" + m_article.content + "</body></html>", "utf-8").replace('+', ' ');
