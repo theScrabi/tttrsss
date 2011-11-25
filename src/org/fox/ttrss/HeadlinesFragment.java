@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.jsoup.Jsoup;
 
@@ -26,7 +27,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -339,6 +339,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			if (dv != null) {
 				Date d = new Date((long)article.updated * 1000);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
+				df.setTimeZone(TimeZone.getDefault());
 				dv.setText(df.format(d));
 			}
 			

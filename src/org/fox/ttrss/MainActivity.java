@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -174,6 +175,22 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 			mi.setTitle(labelId);
 		}
 	}
+	
+	@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	Log.d(TAG, "Overriding back button");
+        	
+        	if (m_selectedArticle != null) {
+        		closeArticle();
+        	} else {
+        		finish();
+        	}
+
+        	return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
