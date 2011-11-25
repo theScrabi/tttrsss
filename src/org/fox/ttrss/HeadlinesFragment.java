@@ -59,7 +59,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 
 		if (savedInstanceState != null) {
 			//m_sessionId = savedInstanceState.getString("sessionId");
-			//m_feedId = savedInstanceState.getInt("feedId");
+			
+			m_feed = savedInstanceState.getParcelable("feed");
 			//m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 		}
 
@@ -69,6 +70,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		
+		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
 		if (m_feed != null) 
 			refresh();
@@ -140,6 +143,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 		
+		out.putParcelable("feed", m_feed);
+		
 		//out.putString("sessionId", m_sessionId);
 		//out.putInt("feedId", m_feedId);		
 		//out.putInt("activeArticleId", m_activeArticleId);
@@ -182,13 +187,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					
-					MainActivity ma = (MainActivity)getActivity();
-					ma.toast("Error parsing headlines: incorrect format");
+					// report invalid object
 				}
 			} else {
-				MainActivity ma = (MainActivity)getActivity();
-				ma.toast("Error parsing headlines: null object.");
+				// report null object
 			}
 			
 			return;

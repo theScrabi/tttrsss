@@ -11,7 +11,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +34,35 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
-	private List<Feed> m_feeds = new ArrayList<Feed>();
+	private FeedList m_feeds = new FeedList();
 	private OnFeedSelectedListener m_feedSelectedListener;
 	private int m_selectedFeedId;
+	
+	private class FeedList extends ArrayList<Feed> implements Parcelable {
+
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			out.writeInt(this.size());
+			for (Feed feed : this) {
+				out.writeParcelable(feed, flags);
+			}
+		}
+		
+		public void readFromParcel(Parcel in) {
+			int length = in.readInt();
+			
+			for (int i = 0; i < length; i++) {
+				Feed feed = in.readParcelable(Feed.class.getClassLoader());
+				this.add(feed);
+			}
+			
+		}
+	}
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
@@ -54,8 +83,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
 		if (savedInstanceState != null) {
-			//m_sessionId = savedInstanceState.getString("sessionId");
-			//m_activeFeedId = savedInstanceState.getInt("activeFeedId");
+			m_selectedFeedId = savedInstanceState.getInt("selectedFeedId");
+			m_feeds = savedInstanceState.getParcelable("feeds");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -63,11 +92,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
-		//list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);        
 		list.setOnItemClickListener(this);
-
-		//if (m_sessionId != null) 
+		
+		if (m_feeds == null || m_feeds.size() == 0)
 			refresh();
+		else
+			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		return view;    	
 	}
@@ -83,17 +113,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_feedSelectedListener = (OnFeedSelectedListener) activity;
-		
-		//m_sessionId = ((MainActivity)activity).getSessionId();
-	
 	}
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		//out.putString("sessionId", m_sessionId);
-		//out.putInt("activeFeedId", m_activeFeedId);
+		out.putInt("selectedFeedId", m_selectedFeedId);
+		out.putParcelable("feeds", m_feeds);
 	}
 	
 	@Override
@@ -187,13 +214,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						
-						MainActivity ma = (MainActivity)getActivity();
-						ma.toast("Error parsing feedlist: incorrect format");
+						// report invalid object received
 					}
 				} else {
-					MainActivity ma = (MainActivity)getActivity();
-					ma.toast("Error parsing feedlist: null object.");
+					// report null object received
 				}
 				
 				return;
