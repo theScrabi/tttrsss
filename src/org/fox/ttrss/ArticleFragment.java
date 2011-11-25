@@ -1,6 +1,9 @@
 package org.fox.ttrss;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -37,8 +40,8 @@ public class ArticleFragment extends Fragment {
 			TextView title = (TextView)view.findViewById(R.id.title);
 			
 			if (title != null) {
-				title.setText(Html.fromHtml("<a href=\""+URLEncoder.encode(m_article.link)+"\">" + m_article.title + "</a>"));
 				title.setMovementMethod(LinkMovementMethod.getInstance());
+				title.setText(Html.fromHtml("<a href=\""+m_article.link.replace("\"", "\\\"")+"\">" + m_article.title + "</a>"));
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
@@ -47,13 +50,36 @@ public class ArticleFragment extends Fragment {
 				
 				// this is ridiculous
 				// TODO white on black style for dark theme
-				String content = URLEncoder.encode("<html>" +
-					"<head><style type=\"text/css\">img { max-width : 90%; }</style></head>" +
-					"<body>" + m_article.content + "</body></html>").replace('+', ' ');
+				String content;
+				try {
+					content = URLEncoder.encode("<html>" +
+						"<head>" +
+						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" + // wtf, google?
+						"<style type=\"text/css\">img { max-width : 90%; }</style>" +
+						"</head>" +
+						"<body>" + m_article.content + "</body></html>", "utf-8").replace('+', ' ');
+				} catch (UnsupportedEncodingException e) {
+					content = getString(R.string.could_not_decode_content);
+					e.printStackTrace();
+				}
 				
 				web.loadData(content, "text/html", "utf-8");
 			}
 			
+			TextView dv = (TextView)view.findViewById(R.id.date);
+			
+			if (dv != null) {
+				Date d = new Date(m_article.updated * 1000L);
+				SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
+				dv.setText(df.format(d));
+			}
+			
+			TextView cv = (TextView)view.findViewById(R.id.comments);
+			
+			// comments are not currently returned by the API
+			if (cv != null) {
+				cv.setVisibility(View.GONE);
+			}			
 		} 
 		
 		return view;    	

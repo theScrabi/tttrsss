@@ -29,6 +29,7 @@
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
     <string name="update_feeds">Refresh feeds</string>
-    <string name="close_article">Close article</string>
+    <string name="close_article">Close article</string>    
     <string name="share_article">Share article</string>
+    <string name="could_not_decode_content">Could not decode content (UnsupportedEncodingException)</string>
 </resources>
