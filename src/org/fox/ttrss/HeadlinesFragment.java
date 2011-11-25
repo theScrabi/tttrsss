@@ -42,13 +42,15 @@ import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
-	protected SharedPreferences m_prefs;
+	private SharedPreferences m_prefs;
 	
 	private Feed m_feed;
 	private int m_selectedArticleId;
 	
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList();
+	private ArticleList m_selectedArticles = new ArticleList();
+	
 	private OnArticleSelectedListener m_articleSelectedListener;
 	
 	public interface OnArticleSelectedListener {
@@ -87,6 +89,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			m_feed = savedInstanceState.getParcelable("feed");
 			m_articles = savedInstanceState.getParcelable("articles");
 			m_selectedArticleId = savedInstanceState.getInt("selectedArticleId");
+			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -170,6 +173,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		out.putParcelable("feed", m_feed);
 		out.putParcelable("articles", m_articles);
 		out.putInt("selectedArticleId", m_selectedArticleId);
+		out.putParcelable("selectedArticles", m_selectedArticles);
 	}
 
 	private class HeadlinesRequest extends ApiRequest {
@@ -266,8 +270,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		public static final int VIEW_COUNT = VIEW_SELECTED+1;
 		
-		private ArrayList<Article> m_selectedArticles = new ArrayList<Article>();
-
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;

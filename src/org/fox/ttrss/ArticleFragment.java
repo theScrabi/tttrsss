@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -20,8 +21,7 @@ import android.widget.TextView;
 public class ArticleFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
 
-	protected SharedPreferences m_prefs;
-	
+	private SharedPreferences m_prefs;
 	private Article m_article;
 	
 	@Override
@@ -50,10 +50,19 @@ public class ArticleFragment extends Fragment {
 				// TODO white on black style for dark theme
 				String content;
 				try {
+					String backgroundOverride = "";
+					
+					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+						backgroundOverride = "body { background : black; color : #f0f0f0}\n";						
+					}
+					
 					content = URLEncoder.encode("<html>" +
 						"<head>" +
 						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" + // wtf, google?
-						"<style type=\"text/css\">img { max-width : 90%; }</style>" +
+						"<style type=\"text/css\">" +
+						backgroundOverride +
+						"img { max-width : 90%; }" +
+						"</style>" +
 						"</head>" +
 						"<body>" + m_article.content + "</body></html>", "utf-8").replace('+', ' ');
 				} catch (UnsupportedEncodingException e) {
@@ -99,6 +108,7 @@ public class ArticleFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
+		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_article = ((MainActivity)activity).getSelectedArticle(); 
 	}
 }

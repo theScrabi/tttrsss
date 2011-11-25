@@ -17,16 +17,16 @@
 	<style name="DarkTheme" parent="android:Theme.Holo">
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">#101010</item>
-		<item name="unreadCounterColor">#0000ff</item>
+		<item name="unreadCounterColor">#303030</item>
 		<item name="headlinesBackground">#000000</item>
-		<item name="articleDivider">#303030</item>
+		<item name="articleDivider">#303060</item>
 		<item name="articleHeader">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">#303060</item>
 		<item name="headlineUnreadBackground">#303030</item>
 		<item name="feedsSelectedBackground">#303060</item>
 		<item name="headlineSeparatorUnread">#303060</item>
-		<item name="headlineSeparatorNormal">#303060</item>
-		<item name="headlineSeparatorSelected">#303060</item>
+		<item name="headlineSeparatorNormal">#303030</item>
+		<item name="headlineSeparatorSelected">#47478E</item>
 		
 	</style>
 

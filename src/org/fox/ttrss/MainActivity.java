@@ -252,6 +252,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
 
 		initMainMenu();
+		refreshFeeds();
 		
 		m_selectedArticle = null;
 	}
