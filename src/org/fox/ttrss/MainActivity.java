@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +97,10 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		setContentView(R.layout.main);
 
+		LayoutTransition transitioner = new LayoutTransition();
+		LinearLayout layout = (LinearLayout)findViewById(R.id.main);
+		layout.setLayoutTransition(transitioner);
+		
 		HeadlinesFragment hf = new HeadlinesFragment();
 		ArticleFragment af = new ArticleFragment();
 		
@@ -318,7 +324,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		HeadlinesFragment hf = new HeadlinesFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
-		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		//ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 		ft.show(getFragmentManager().findFragmentById(R.id.headlines_fragment));
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.addToBackStack(null);
@@ -338,7 +344,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		ArticleFragment frag = new ArticleFragment();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();			
-		ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+		//ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 		//ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
 		ft.show(getFragmentManager().findFragmentById(R.id.article_fragment));
 		ft.replace(R.id.article_fragment, frag);
