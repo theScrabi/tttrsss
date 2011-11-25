@@ -5,13 +5,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.animation.LayoutTransition;
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.method.HideReturnsTransformationMethod;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,12 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class MainActivity extends Activity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener {
+public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -47,7 +45,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 	}
 	
 	public synchronized void refreshFeeds() {
-		FeedsFragment frag = (FeedsFragment) getFragmentManager().findFragmentById(R.id.feeds_fragment);
+		FeedsFragment frag = (FeedsFragment) getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
 
 		Log.d(TAG, "Refreshing feeds..." + frag);
 
@@ -96,9 +94,11 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		setContentView(R.layout.main);
 
-		LayoutTransition transitioner = new LayoutTransition();
-		LinearLayout layout = (LinearLayout)findViewById(R.id.main);
-		layout.setLayoutTransition(transitioner);
+		if (android.os.Build.VERSION.SDK_INT > 10) {
+			LayoutTransition transitioner = new LayoutTransition();
+			LinearLayout layout = (LinearLayout)findViewById(R.id.main);
+			layout.setLayoutTransition(transitioner);
+		}
 		
 		if (m_selectedArticle == null)
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);
@@ -334,7 +334,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 
 							FeedsFragment frag = new FeedsFragment();
 							
-							FragmentTransaction ft = getFragmentManager().beginTransaction();
+							FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 							ft.replace(R.id.feeds_fragment, frag);
 							ft.commit();
 							
@@ -382,7 +382,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		HeadlinesFragment hf = new HeadlinesFragment();
 		
-		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
 		ft.replace(R.id.headlines_fragment, hf);
 		ft.commit();
 	}
@@ -394,7 +394,7 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 		
 		ArticleFragment frag = new ArticleFragment();
 		
-		FragmentTransaction ft = getFragmentManager().beginTransaction();			
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
 		
@@ -443,19 +443,28 @@ public class MainActivity extends Activity implements FeedsFragment.OnFeedSelect
 
 		logout();
 		
-		LoginRequest ar = new LoginRequest();
-		ar.setApi(m_prefs.getString("ttrss_url", null));
-
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "login");
-				put("user", m_prefs.getString("login", null));
-				put("password", m_prefs.getString("password", null));
-			}			 
-		};
-
-		ar.execute(map);
+		if (m_prefs.getString("ttrss_url", null) == null ||
+				m_prefs.getString("login", null) == null ||	
+				m_prefs.getString("password", null) == null) {
+			
+			setLoadingStatus(R.string.login_need_configure, false);
+			
+		} else {
 		
-		setLoadingStatus(R.string.login_in_progress, true);		
+			LoginRequest ar = new LoginRequest();
+			ar.setApi(m_prefs.getString("ttrss_url", null));
+	
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("op", "login");
+					put("user", m_prefs.getString("login", null));
+					put("password", m_prefs.getString("password", null));
+				}			 
+			};
+	
+			ar.execute(map);
+			
+			setLoadingStatus(R.string.login_in_progress, true);
+		}
 	}
 }
