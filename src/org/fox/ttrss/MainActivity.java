@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -253,8 +254,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         	
         	if (m_smallScreenMode) {
         		if (m_selectedArticle != null) {
+        			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			closeArticle();
         		} else if (m_activeFeed != null) {
+        			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+        			
         			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
         			
@@ -524,6 +528,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		ft.commit();
 		
 		if (m_smallScreenMode) {
+			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
+			
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		} else {
