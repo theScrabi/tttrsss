@@ -25,7 +25,7 @@
      <item android:id="@+id/show_all_articles"
           android:icon="@android:drawable/ic_menu_agenda"
           android:title="@string/show_all_articles" 
-          android:showAsAction="ifRoom|withText"/>
+          android:showAsAction=""/>
      
      <item android:id="@+id/update_feeds"
           android:icon="@android:drawable/ic_menu_rotate"

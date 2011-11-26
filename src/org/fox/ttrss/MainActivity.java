@@ -110,18 +110,23 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 		}
 		
-		Display display = getWindowManager().getDefaultDisplay(); 
+		Display display = getWindowManager().getDefaultDisplay();
+		int orientation = display.getOrientation();
+		int minWidth = orientation == 0 ? 1024 : 600;
+		int minHeight = orientation == 0 ? 600 : 1024;
 		
-		if (display.getWidth() > 1000 && display.getHeight() >= 600) {
+		if (display.getWidth() > minWidth && display.getHeight() >= minHeight) {
 			m_smallScreenMode = false;
-
+			
 			setContentView(R.layout.main);
 		} else {
 			m_smallScreenMode = true;
 		
 			setContentView(R.layout.main_small);
 		}
-		
+
+		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
+		Log.d(TAG, "orientation=" + display.getOrientation());
 
 		if (android.os.Build.VERSION.SDK_INT > 10) {
 			LayoutTransition transitioner = new LayoutTransition();
