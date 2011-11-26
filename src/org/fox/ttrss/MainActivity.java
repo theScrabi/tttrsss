@@ -39,6 +39,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
+	private boolean m_canLoadMore = true;
 
 	private class RefreshTask extends TimerTask {
 
@@ -106,6 +107,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
+			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 		}
 		
 		Display display = getWindowManager().getDefaultDisplay(); 
@@ -176,6 +178,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("activeFeed", m_activeFeed);
 		out.putParcelable("selectedArticle", m_selectedArticle);
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
+		out.putBoolean("canLoadMore", m_canLoadMore);
 	}
 
 	@Override
@@ -358,7 +361,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		refreshFeeds();
 	}
 
-	private void initMainMenu() {
+	public void setCanLoadMore(boolean canLoadMore) {
+		m_canLoadMore = canLoadMore;
+	}
+	
+	public void initMainMenu() {
 		if (m_menu != null) {
 
 			if (m_sessionId != null) {
@@ -386,10 +393,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				}
 
 				if (!m_smallScreenMode) {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null);
+					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_canLoadMore);
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
 				} else {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
+					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null && m_canLoadMore);
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
 				}
 

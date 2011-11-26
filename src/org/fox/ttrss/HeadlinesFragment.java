@@ -205,6 +205,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 										list.setSelection(last_position+1);
 									}
 									
+									MainActivity activity = (MainActivity)getActivity();
+									activity.setCanLoadMore(articles.size() >= 30);
+									activity.initMainMenu();
+									
 									showLoading(false);
 								}
 							});
