@@ -53,7 +53,7 @@ public class ArticleFragment extends Fragment {
 					String cssOverride = "";
 					
 					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-						cssOverride = "body { background : black; color : #f0f0f0}\na { color : #303060; }\n";						
+						cssOverride = "body { background : black; color : #f0f0f0}\n";						
 					}
 					
 					content = URLEncoder.encode("<html>" +
