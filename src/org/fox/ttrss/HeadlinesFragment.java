@@ -191,10 +191,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 									if (m_offset == 0)
 										m_articles.clear();
 									
+									int last_position = m_articles.size();
+									
 									for (Article f : articles) 
 										m_articles.add(f);
 									
 									m_adapter.notifyDataSetChanged();
+									
+									ListView list = (ListView)getView().findViewById(R.id.headlines);
+									
+									if (list != null) {
+										list.setSelection(last_position+1);
+									}
 									
 									showLoading(false);
 								}
