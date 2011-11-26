@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private Timer m_refreshTimer;
 	private RefreshTask m_refreshTask;
 	private Menu m_menu;
+	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 
 	private class RefreshTask extends TimerTask {
@@ -92,7 +94,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 		}
 		
-		setContentView(R.layout.main);
+		Display display = getWindowManager().getDefaultDisplay(); 
+		
+		if (display.getWidth() > 1000 && display.getHeight() >= 600) {
+			m_smallScreenMode = false;
+
+			setContentView(R.layout.main);
+		} else {
+			m_smallScreenMode = true;
+		
+			setContentView(R.layout.main_small);
+		}
+		
 
 		if (android.os.Build.VERSION.SDK_INT > 10) {
 			LayoutTransition transitioner = new LayoutTransition();
@@ -100,10 +113,23 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			layout.setLayoutTransition(transitioner);
 		}
 		
-		if (m_selectedArticle == null)
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);
-		else
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		if (m_smallScreenMode) {
+			if (m_selectedArticle != null) {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			} else if (m_activeFeed != null) {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			} else {
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			}
+		} else {
+			if (m_selectedArticle == null)
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			else
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		}
 
 		if (m_sessionId != null) {
 			loginSuccess();
@@ -195,10 +221,21 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	Log.d(TAG, "Overriding back button");
         	
-        	if (m_selectedArticle != null) {
-        		closeArticle();
+        	if (m_smallScreenMode) {
+        		if (m_selectedArticle != null) {
+        			closeArticle();
+        		} else if (m_activeFeed != null) {
+        			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+        			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+        		} else {
+        			finish();
+        		}
         	} else {
-        		finish();
+	        	if (m_selectedArticle != null) {
+	        		closeArticle();
+	        	} else {
+	        		finish();
+	        	}
         	}
 
         	return false;
@@ -258,8 +295,14 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	public void closeArticle() {
-		findViewById(R.id.article_fragment).setVisibility(View.GONE);	
-		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
+		
+		if (m_smallScreenMode) {
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);	
+		} else {
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+		}
 
 		m_selectedArticle = null;
 
@@ -395,6 +438,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	
 		initMainMenu();
 		
+		if (m_smallScreenMode) {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+		}
+		
 		if (!append) {
 			HeadlinesFragment hf = new HeadlinesFragment();
 		
@@ -420,8 +468,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
 		
-		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-		findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		if (m_smallScreenMode) {
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		}
 				
 	}
 	
