@@ -20,7 +20,12 @@
           android:title="@string/close_article" 
           android:showAsAction="ifRoom|withText"/>
         
-          
+     <item android:id="@+id/load_more_articles"
+     	  android:visible="false"
+          android:icon="@android:drawable/ic_menu_more"
+          android:title="@string/load_more_articles" 
+          android:showAsAction="ifRoom|withText"/>
+     
      <item android:id="@+id/update_feeds"
      	  android:enabled="false"
           android:icon="@android:drawable/ic_menu_rotate"

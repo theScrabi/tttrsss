@@ -79,7 +79,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
 		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
-			refresh();
+			refresh(false);
 		else
 			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
 
@@ -121,13 +121,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
-	public void refresh() {
+	public void refresh(boolean append) {
 		HeadlinesRequest req = new HeadlinesRequest();
 		
 		req.setApi(m_prefs.getString("ttrss_url", null));
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-
+		int skip = 0;
+		
+		if (append) {
+			for (Article a : m_articles) {
+				if (a.unread) ++skip;
+			}
+			
+			if (skip == 0) skip = m_articles.size();
+		}
+		
+		final int fskip = skip;
+		
+		req.setOffset(skip);
+		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getHeadlines");
@@ -137,6 +150,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("limit", String.valueOf(30));
 				put("offset", String.valueOf(0));
 				put("view_mode", "adaptive");
+				put("skip", String.valueOf(fskip));
 			}			 
 		};
 
@@ -154,6 +168,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 
 	private class HeadlinesRequest extends ApiRequest {
+		int m_offset = 0;
 		
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
@@ -172,12 +187,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 							
 							getActivity().runOnUiThread(new Runnable() {
 								public void run() {
-									m_articles.clear();
+									
+									if (m_offset == 0)
+										m_articles.clear();
 									
 									for (Article f : articles) 
 										m_articles.add(f);
 									
-									m_adapter.notifyDataSetInvalidated();
+									m_adapter.notifyDataSetChanged();
 									
 									showLoading(false);
 								}
@@ -199,6 +216,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			return;
 
 	    }
+
+		public void setOffset(int skip) {
+			m_offset = skip;			
+		}
 	}
 	
 	public void catchupArticle(final Article article) {

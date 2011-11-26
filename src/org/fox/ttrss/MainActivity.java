@@ -225,6 +225,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.close_article:
 			closeArticle();
 			return true;
+		case R.id.load_more_articles:
+			viewFeed(m_activeFeed, true);
+			return true;
 		case R.id.share_article:
 			shareArticle(m_selectedArticle);
 			return true;
@@ -285,14 +288,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.update_feeds).setEnabled(true);
 					m_menu.findItem(R.id.show_feeds).setEnabled(true);
 				}
-				
+
+				m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null);
+
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
 				
 				m_menu.findItem(R.id.logout).setVisible(false);
 				m_menu.findItem(R.id.close_article).setVisible(false);
 				m_menu.findItem(R.id.share_article).setVisible(false);
-				
+				m_menu.findItem(R.id.load_more_articles).setVisible(false);
+
 				m_menu.findItem(R.id.update_feeds).setEnabled(false);
 				m_menu.findItem(R.id.show_feeds).setEnabled(false);
 			}
@@ -377,21 +383,30 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	@Override
 	public void onFeedSelected(Feed feed) {
 		Log.d(TAG, "Selected feed: " + feed.toString());
-		viewFeed(feed);
+		viewFeed(feed, false);
 	}
 
 	public Article getSelectedArticle() {
 		return m_selectedArticle;
 	}
 	
-	public void viewFeed(Feed feed) {
+	public void viewFeed(Feed feed, boolean append) {
 		m_activeFeed = feed;
+	
+		initMainMenu();
 		
-		HeadlinesFragment hf = new HeadlinesFragment();
+		if (!append) {
+			HeadlinesFragment hf = new HeadlinesFragment();
 		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-		ft.replace(R.id.headlines_fragment, hf);
-		ft.commit();
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+			ft.replace(R.id.headlines_fragment, hf);
+			ft.commit();
+		} else {
+			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+			if (hf != null) {
+				hf.refresh(true);
+			}
+		}
 	}
 
 	public void openArticle(Article article) {
