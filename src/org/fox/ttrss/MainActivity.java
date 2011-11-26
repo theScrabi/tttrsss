@@ -227,6 +227,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         		} else if (m_activeFeed != null) {
         			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+        			
+        			m_activeFeed = null;
+        			initMainMenu();
         		} else {
         			finish();
         		}
