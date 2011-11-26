@@ -18,7 +18,9 @@
            android:key="theme"
            android:defaultValue="THEME_DARK"
            android:entries="@array/pref_theme_names"
-           android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>  
+           android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>
+      
+      <CheckBoxPreference android:title="@string/sort_feeds_by_unread" android:key="sort_feeds_by_unread"/>
    </PreferenceCategory>
   
 </PreferenceScreen>

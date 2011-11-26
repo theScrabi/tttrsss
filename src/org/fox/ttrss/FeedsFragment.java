@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +38,28 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
+	}
+
+	class FeedUnreadComparator implements Comparator<Feed> {
+
+		@Override
+		public int compare(Feed a, Feed b) {
+			if (a.unread != b.unread)
+					return b.unread - a.unread;
+				else
+					return a.title.compareTo(b.title);
+			}
+		
+	}
+	
+
+	class FeedTitleComparator implements Comparator<Feed> {
+
+		@Override
+		public int compare(Feed a, Feed b) {
+			return a.title.compareTo(b.title);
+		}
+		
 	}
 
 	public void showLoading(boolean show) {
@@ -170,9 +193,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 										for (Feed f : feeds) 
 											m_feeds.add(f);
 										
-										Collections.sort(m_feeds);
-										
-										m_adapter.notifyDataSetInvalidated();
+										sortFeeds();
 										
 										showLoading(false);
 									}
@@ -259,5 +280,18 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 			return v;
 		}
+	}
+
+	public void sortFeeds() {
+		Comparator<Feed> cmp;
+		
+		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
+			cmp = new FeedUnreadComparator();
+		} else {
+			cmp = new FeedTitleComparator();
+		}
+		
+		Collections.sort(m_feeds, cmp);
+		m_adapter.notifyDataSetInvalidated();
 	}
 }
