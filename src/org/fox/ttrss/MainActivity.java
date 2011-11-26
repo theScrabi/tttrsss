@@ -37,6 +37,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private Menu m_menu;
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
+	private boolean m_unreadArticlesOnly = true;
 
 	private class RefreshTask extends TimerTask {
 
@@ -65,7 +66,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public boolean getUnreadOnly() {
 		return m_unreadOnly;
 	}
+
+	public void setUnreadArticlesOnly(boolean unread) {
+		m_unreadArticlesOnly = unread;
+		
+		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		
+		if (frag != null) frag.refresh(false);
+	}
 	
+	public boolean getUnreadArticlesOnly() {
+		return m_unreadArticlesOnly;
+	}
 
 	public String getSessionId() {
 		return m_sessionId;
@@ -92,6 +104,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
+			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
 		}
 		
 		Display display = getWindowManager().getDefaultDisplay(); 
@@ -161,6 +174,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putBoolean("unreadOnly", m_unreadOnly);
 		out.putParcelable("activeFeed", m_activeFeed);
 		out.putParcelable("selectedArticle", m_selectedArticle);
+		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 	}
 
 	@Override
@@ -204,6 +218,22 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_menu = menu;
 		
 		initMainMenu();
+		
+		MenuItem item = menu.findItem(R.id.show_feeds);
+		
+		if (getUnreadOnly()) {
+			item.setTitle(R.string.menu_all_feeds);
+		} else {
+			item.setTitle(R.string.menu_unread_feeds);
+		}
+
+		item = menu.findItem(R.id.show_all_articles);
+		
+		if (getUnreadArticlesOnly()) {
+			item.setTitle(R.string.show_all_articles);
+		} else {
+			item.setTitle(R.string.show_unread_articles);
+		}
 
 		return true;
 	}
@@ -272,13 +302,24 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			shareArticle(m_selectedArticle);
 			return true;
 		case R.id.show_feeds:
+			setUnreadOnly(!getUnreadOnly());
+
 			if (getUnreadOnly()) {
-				item.setTitle(R.string.menu_unread_feeds);
-			} else {
 				item.setTitle(R.string.menu_all_feeds);
+			} else {
+				item.setTitle(R.string.menu_unread_feeds);
 			}
 			
-			setUnreadOnly(!getUnreadOnly());
+			return true;
+		case R.id.show_all_articles:
+			setUnreadArticlesOnly(!getUnreadArticlesOnly());
+	
+			if (getUnreadArticlesOnly()) {
+				item.setTitle(R.string.show_all_articles);
+			} else {
+				item.setTitle(R.string.show_unread_articles);
+			}
+			
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -319,24 +360,34 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			if (m_sessionId != null) {
 				m_menu.findItem(R.id.login).setVisible(false);
 			
-				m_menu.findItem(R.id.logout).setVisible(true);
+				m_menu.findItem(R.id.logout).setVisible(m_activeFeed == null && m_selectedArticle == null);
 			
 				if (m_selectedArticle != null) {
 					m_menu.findItem(R.id.close_article).setVisible(true);
 					m_menu.findItem(R.id.share_article).setVisible(true);
 					
-					m_menu.findItem(R.id.update_feeds).setEnabled(false);
-					m_menu.findItem(R.id.show_feeds).setEnabled(false);
+					m_menu.findItem(R.id.update_feeds).setVisible(false);
+					m_menu.findItem(R.id.show_feeds).setVisible(false);
 				} else {
 					m_menu.findItem(R.id.close_article).setVisible(false);
 					m_menu.findItem(R.id.share_article).setVisible(false);
 					
-					m_menu.findItem(R.id.update_feeds).setEnabled(true);
-					m_menu.findItem(R.id.show_feeds).setEnabled(true);
+					if (!m_smallScreenMode || m_activeFeed == null) {
+						m_menu.findItem(R.id.show_feeds).setVisible(true);
+						m_menu.findItem(R.id.update_feeds).setVisible(true);
+					} else {
+						m_menu.findItem(R.id.show_feeds).setVisible(false);
+						m_menu.findItem(R.id.update_feeds).setVisible(false);
+					}
 				}
 
-				m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null);
-				m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
+				if (!m_smallScreenMode) {
+					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null);
+					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
+				} else {
+					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
+					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
+				}
 
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
@@ -346,8 +397,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.findItem(R.id.share_article).setVisible(false);
 				m_menu.findItem(R.id.load_more_articles).setVisible(false);
 
-				m_menu.findItem(R.id.update_feeds).setEnabled(false);
-				m_menu.findItem(R.id.show_feeds).setEnabled(false);
+				m_menu.findItem(R.id.update_feeds).setVisible(false);
+				m_menu.findItem(R.id.show_feeds).setVisible(false);
 			}
 		}		
 	}

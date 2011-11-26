@@ -127,6 +127,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		req.setApi(m_prefs.getString("ttrss_url", null));
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();
 		int skip = 0;
 		
 		if (append) {
@@ -149,7 +150,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("show_content", "true");
 				put("limit", String.valueOf(30));
 				put("offset", String.valueOf(0));
-				put("view_mode", "adaptive");
+				put("view_mode", showUnread ? "adaptive" : "all_articles");
 				put("skip", String.valueOf(fskip));
 			}			 
 		};
@@ -200,7 +201,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 									
 									ListView list = (ListView)getView().findViewById(R.id.headlines);
 									
-									if (list != null) {
+									if (list != null && m_offset != 0) {
 										list.setSelection(last_position+1);
 									}
 									

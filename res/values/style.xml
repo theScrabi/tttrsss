@@ -15,7 +15,7 @@
 		<item name="headlineSeparatorSelected">#DBC981</item>
 	</style>
 
-	<style name="LightCompatTheme" parent="android:Theme.Light">
+	<style name="LightCompatTheme" parent="android:Theme.Light.NoTitleBar">
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground">#fafafa</item>
 		<item name="unreadCounterColor">#0000ff</item>
@@ -47,7 +47,7 @@
 		<item name="headlineSeparatorSelected">#47478E</item>
 	</style>
 	
-	<style name="DarkCompatTheme" parent="android:Theme">
+	<style name="DarkCompatTheme" parent="android:Theme.Black.NoTitleBar">
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">#101010</item>
 		<item name="unreadCounterColor">#303030</item>
