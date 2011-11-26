@@ -19,11 +19,17 @@
           android:icon="@android:drawable/ic_menu_close_clear_cancel"
           android:title="@string/close_article" 
           android:showAsAction="ifRoom|withText"/>
-        
-     <item android:id="@+id/load_more_articles"
+
+          <item android:id="@+id/load_more_articles"
      	  android:visible="false"
           android:icon="@android:drawable/ic_menu_more"
           android:title="@string/load_more_articles" 
+          android:showAsAction="ifRoom|withText"/>
+     
+     <item android:id="@+id/show_all_articles"
+     	  android:visible="false"
+          android:icon="@android:drawable/ic_menu_agenda"
+          android:title="@string/show_all_articles" 
           android:showAsAction="ifRoom|withText"/>
      
      <item android:id="@+id/update_feeds"

@@ -8,12 +8,29 @@
 		<item name="articleHeader">@android:color/transparent</item>		
 		<item name="headlineSelectedBackground">#fff7d5</item>
 		<item name="headlineUnreadBackground">#ffffff</item>
+		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">#96C5FF</item>
 		<item name="headlineSeparatorUnread">#96C5FF</item>
 		<item name="headlineSeparatorNormal">#909090</item>
 		<item name="headlineSeparatorSelected">#DBC981</item>
 	</style>
 
+	<style name="LightCompatTheme" parent="android:Theme.Light">
+		<item name="feedlistDivider">@android:drawable/divider_horizontal_bright</item>
+		<item name="feedlistBackground">#fafafa</item>
+		<item name="unreadCounterColor">#0000ff</item>
+		<item name="headlinesBackground">#ffffff</item>
+		<item name="articleDivider">#96c5ff</item>
+		<item name="articleHeader">@android:color/transparent</item>		
+		<item name="headlineSelectedBackground">#fff7d5</item>
+		<item name="headlineUnreadBackground">#ffffff</item>
+		<item name="headlineNormalBackground">#f0f0f0</item>
+		<item name="feedsSelectedBackground">#96C5FF</item>
+		<item name="headlineSeparatorUnread">#96C5FF</item>
+		<item name="headlineSeparatorNormal">#909090</item>
+		<item name="headlineSeparatorSelected">#DBC981</item>
+	</style>
+	    
 	<style name="DarkTheme" parent="android:Theme.Holo">
 		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">#101010</item>
@@ -23,11 +40,27 @@
 		<item name="articleHeader">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">#303060</item>
 		<item name="headlineUnreadBackground">#303030</item>
+		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">#303060</item>
 		<item name="headlineSeparatorUnread">#303060</item>
 		<item name="headlineSeparatorNormal">#303030</item>
 		<item name="headlineSeparatorSelected">#47478E</item>
-		
 	</style>
-
+	
+	<style name="DarkCompatTheme" parent="android:Theme">
+		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="feedlistBackground">#101010</item>
+		<item name="unreadCounterColor">#303030</item>
+		<item name="headlinesBackground">#000000</item>
+		<item name="articleDivider">#303060</item>
+		<item name="articleHeader">@android:color/transparent</item>
+		<item name="headlineSelectedBackground">#303060</item>
+		<item name="headlineUnreadBackground">#303030</item>
+		<item name="headlineNormalBackground">@android:color/transparent</item>
+		<item name="feedsSelectedBackground">#303060</item>
+		<item name="headlineSeparatorUnread">#303060</item>
+		<item name="headlineSeparatorNormal">#303030</item>
+		<item name="headlineSeparatorSelected">#47478E</item>
+	</style>
+	    
 </resources>

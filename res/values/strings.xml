@@ -34,4 +34,6 @@
     <string name="could_not_decode_content">Could not decode content (UnsupportedEncodingException)</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
     <string name="load_more_articles">More headlines...</string>
+    <string name="show_all_articles">Show all articles</string>
+    <string name="show_unread_articles">Show unread articles</string>
 </resources>

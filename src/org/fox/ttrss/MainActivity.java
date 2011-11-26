@@ -75,15 +75,15 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());       
 
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-			setTheme(R.style.DarkTheme);
+			setTheme(android.os.Build.VERSION.SDK_INT > 10 ? R.style.DarkTheme : R.style.DarkCompatTheme);
 		} else {
-			setTheme(R.style.LightTheme);
+			setTheme(android.os.Build.VERSION.SDK_INT > 10 ? R.style.LightTheme : R.style.LightCompatTheme);
 		}
+
+		super.onCreate(savedInstanceState);
 
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
 	
@@ -336,6 +336,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				}
 
 				m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null);
+				m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
 
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
