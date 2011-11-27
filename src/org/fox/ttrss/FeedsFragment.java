@@ -139,7 +139,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
 		
 		if (sessionId != null) {
-		
+			
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					setLoadingStatus(R.string.blank, true);
+				}
+			});
+			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
 					put("op", "getFeeds");
@@ -157,16 +164,18 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {
-		TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-		
-		if (tv != null) {
-			tv.setText(status);
-		}
-		
-		View pb = getView().findViewById(R.id.loading_progress);
-		
-		if (pb != null) {
-			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+		if (getView() != null) {
+			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
+			
+			if (tv != null) {
+				tv.setText(status);
+			}
+			
+			View pb = getView().findViewById(R.id.loading_progress);
+			
+			if (pb != null) {
+				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+			}
 		}
 	}
 	
@@ -187,22 +196,18 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 								Type listType = new TypeToken<List<Feed>>() {}.getType();
 								final List<Feed> feeds = gson.fromJson(content, listType);
 								
-								getActivity().runOnUiThread(new Runnable() {
-									public void run() {
-										m_feeds.clear();
+								m_feeds.clear();
+								
+								for (Feed f : feeds) 
+									m_feeds.add(f);
+								
+								sortFeeds();
+								
+								if (m_feeds.size() == 0)
+									setLoadingStatus(R.string.error_no_feeds, false);
+								else
+									setLoadingStatus(R.string.blank, false);
 										
-										for (Feed f : feeds) 
-											m_feeds.add(f);
-										
-										sortFeeds();
-										
-										if (m_feeds.size() == 0)
-											setLoadingStatus(R.string.error_no_feeds, false);
-										else
-											setLoadingStatus(R.string.blank, false);
-										
-									}
-								});
 							}
 						} else {
 							MainActivity activity = (MainActivity)getActivity();							

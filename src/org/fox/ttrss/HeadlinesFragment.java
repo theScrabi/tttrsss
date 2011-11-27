@@ -144,6 +144,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		req.setOffset(skip);
 		
+		setLoadingStatus(R.string.blank, true);
+		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getHeadlines");
@@ -171,16 +173,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
-		TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-		
-		if (tv != null) {
-			tv.setText(status);
-		}
-		
-		View pb = getView().findViewById(R.id.loading_progress);
-		
-		if (pb != null) {
-			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+		if (getView() != null) {
+			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
+			
+			if (tv != null) {
+				tv.setText(status);
+			}
+			
+			View pb = getView().findViewById(R.id.loading_progress);
+			
+			if (pb != null) {
+				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+			}
 		}
 	}
 	
@@ -202,32 +206,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 							Type listType = new TypeToken<List<Article>>() {}.getType();
 							final List<Article> articles = gson.fromJson(content, listType);
 							
-							getActivity().runOnUiThread(new Runnable() {
-								public void run() {
-									
-									if (m_offset == 0)
-										m_articles.clear();
-									
-									int last_position = m_articles.size();
-									
-									for (Article f : articles) 
-										m_articles.add(f);
-									
-									m_adapter.notifyDataSetChanged();
-									
-									ListView list = (ListView)getView().findViewById(R.id.headlines);
-									
-									if (list != null && m_offset != 0) {
-										list.setSelection(last_position+1);
-									}
-									
-									MainActivity activity = (MainActivity)getActivity();
-									activity.setCanLoadMore(articles.size() >= 30);
-									activity.initMainMenu();
-									
-									setLoadingStatus(R.string.blank, false);
-								}
-							});
+							if (m_offset == 0)
+								m_articles.clear();
+							
+							int last_position = m_articles.size();
+							
+							for (Article f : articles) 
+								m_articles.add(f);
+							
+							m_adapter.notifyDataSetChanged();
+							
+							ListView list = (ListView)getView().findViewById(R.id.headlines);
+							
+							if (list != null && m_offset != 0) {
+								list.setSelection(last_position+1);
+							}
+							
+							MainActivity activity = (MainActivity)getActivity();
+							activity.setCanLoadMore(articles.size() >= 30);
+							activity.initMainMenu();
+							
+							setLoadingStatus(R.string.blank, false);
 						}
 					} else {
 						MainActivity activity = (MainActivity)getActivity();							
