@@ -49,7 +49,7 @@
     <string name="toggle_marked">Toggle starred</string>
     <string name="toggle_published">Toggle published</string>
     <string name="set_unread">Mark unread</string>
-    <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authorization</string>
+    <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
     <string name="password_summary">Your tt-rss password</string>
     <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
