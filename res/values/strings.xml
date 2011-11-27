@@ -13,15 +13,16 @@
     <string name="password">Password</string>
     <string name="default_url">http://example.domain/tt-rss/</string>
     <string name="authentication">Authentication</string>
-    <string name="look_and_feel">Look and feel</string>
+    <string name="look_and_feel">Interface</string>
     <string name="pref_theme">Theme</string>
-    <string name="pref_theme_long">Changes color theme of the application.</string>
+    <string name="pref_theme_long">Changes color theme of the application</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="auto_login">Login automatically</string>
     <string name="theme_dark">Dark</string>
     <string name="preferences">Preferences</string>
     <string name="theme_light">Light</string>
     <string name="connection">Connection</string>
+    <string name="http_authentication">HTTP Authentication</string>
     <string name="login_api_disabled">Login failed: API disabled.</string>
     <string name="login_no_data">Login failed: no data received.</string>
     <string name="login_wrong_password">Login failed: username or password incorrect.</string>
@@ -48,4 +49,9 @@
     <string name="toggle_marked">Toggle starred</string>
     <string name="toggle_published">Toggle published</string>
     <string name="set_unread">Mark unread</string>
+    <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authorization</string>
+    <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
+    <string name="password_summary">Your tt-rss password</string>
+    <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
+        
 </resources>

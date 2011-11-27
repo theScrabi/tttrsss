@@ -692,10 +692,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		logout();
 		
-		if (m_prefs.getString("ttrss_url", null) == null ||
-				m_prefs.getString("login", null) == null ||	
-				m_prefs.getString("password", null) == null) {
-			
+		if (m_prefs.getString("ttrss_url", "").length() == 0) {
+
 			setLoadingStatus(R.string.login_need_configure, false);
 			
 		} else {
