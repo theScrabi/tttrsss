@@ -56,22 +56,24 @@ public class ArticleFragment extends Fragment {
 						cssOverride = "body { background : black; color : #f0f0f0}\n";						
 					}
 					
-					content = URLEncoder.encode("<html>" +
+					content = 
+						"<html>" +
 						"<head>" +
-						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" + // wtf, google?
+						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
 						"<style type=\"text/css\">" +
 						cssOverride +
 						"img { max-width : 90%; }" +
 						"body { text-align : justify; }" +
 						"</style>" +
 						"</head>" +
-						"<body>" + m_article.content + "</body></html>", "utf-8").replace('+', ' ');
-				} catch (UnsupportedEncodingException e) {
+						"<body>" + m_article.content + "</body></html>";
+					
+				} catch (Exception e) {
 					content = getString(R.string.could_not_decode_content);
 					e.printStackTrace();
 				}
 				
-				web.loadData(content, "text/html", "utf-8");
+				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 			}
 			
 			TextView dv = (TextView)view.findViewById(R.id.date);
