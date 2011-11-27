@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
 public class ArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
@@ -90,6 +93,14 @@ public class ArticleFragment extends Fragment {
 			if (cv != null) {
 				cv.setVisibility(View.GONE);
 			}			
+			
+			AdView av = (AdView)view.findViewById(R.id.ad);
+			
+			if (av != null) {
+				AdRequest request = new AdRequest();
+				request.addTestDevice(AdRequest.TEST_EMULATOR);
+				av.loadAd(request);
+			}
 		} 
 		
 		return view;    	

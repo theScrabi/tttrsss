@@ -25,7 +25,7 @@
             
            <!-- Ad Placeholder -->
 	    	<com.google.ads.AdView      
-		        android:id="@+id/adView"
+		        android:id="@+id/ad"
 		        android:layout_weight="0"
 		        android:gravity="center"
 		        android:background="@android:color/transparent"
@@ -33,6 +33,6 @@
 		        android:layout_height="wrap_content"
 		        ads:adUnitId="a14ed24fe8c671c"
 		        ads:adSize="BANNER"
-		        ads:loadAdOnCreate="true" />
+		        ads:loadAdOnCreate="false" />
         </LinearLayout>
     </LinearLayout>

@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import java.util.HashMap;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
