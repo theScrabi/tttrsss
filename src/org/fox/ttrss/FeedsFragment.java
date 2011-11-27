@@ -214,8 +214,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 						// report invalid object received
 					}
 				} else {
-					// report null object received
-					setLoadingStatus(R.string.error_no_data, false);
+					// report null object received, unless we've been awakened from sleep right in the right time
+					// so that current request failed
+					if (m_feeds.size() == 0) setLoadingStatus(R.string.error_no_data, false);
 				}
 				
 				return;
