@@ -62,7 +62,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 	}
 
-	public void showLoading(boolean show) {
+	/* public void showLoading(boolean show) {
 		View v = getView();
 		
 		if (v != null) {
@@ -71,7 +71,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			if (v != null)
 				v.setVisibility(show ? View.VISIBLE : View.GONE);
 		}
-	}
+	} */
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -91,7 +91,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		if (m_feeds == null || m_feeds.size() == 0)
 			refresh();
 		else
-			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
+			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
 		
 		return view;    	
 	}
@@ -130,10 +130,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	}
 
 	public void refresh() {
-		FeedsRequest fr = new FeedsRequest();
+		FeedsRequest req = new FeedsRequest();
 		
-		fr.setApi(m_prefs.getString("ttrss_url", null));
-		fr.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+		req.setApi(m_prefs.getString("ttrss_url", null));
+		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
@@ -151,7 +151,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 				}			 
 			};
 
-			fr.execute(map);
+			req.execute(map);
 		
 		}
 	}
@@ -196,24 +196,27 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 										
 										sortFeeds();
 										
-										showLoading(false);
+										if (m_feeds.size() == 0)
+											setLoadingStatus(R.string.error_no_feeds, false);
+										else
+											setLoadingStatus(R.string.blank, false);
+										
 									}
 								});
 							}
 						} else {
 							MainActivity activity = (MainActivity)getActivity();							
 							activity.login();
-							showLoading(false);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+						setLoadingStatus(R.string.error_invalid_object, false);
 						// report invalid object received
 					}
 				} else {
 					// report null object received
+					setLoadingStatus(R.string.error_no_data, false);
 				}
-				
-				showLoading(false);
 				
 				return;
 		    }

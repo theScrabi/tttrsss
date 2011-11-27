@@ -81,12 +81,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
 			refresh(false);
 		else
-			view.findViewById(R.id.loading_container).setVisibility(View.GONE);
+			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
 
 		return view;    	
 	}
 
-	public void showLoading(boolean show) {
+	/* public void showLoading(boolean show) {
 		View v = getView();
 		
 		if (v != null) {
@@ -95,7 +95,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			if (v != null)
 				v.setVisibility(show ? View.VISIBLE : View.GONE);
 		}
-	}
+	} */
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -169,6 +169,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		out.putParcelable("selectedArticles", m_selectedArticles);
 	}
 
+	public void setLoadingStatus(int status, boolean showProgress) {
+		TextView tv = (TextView)getView().findViewById(R.id.loading_message);
+		
+		if (tv != null) {
+			tv.setText(status);
+		}
+		
+		View pb = getView().findViewById(R.id.loading_progress);
+		
+		if (pb != null) {
+			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+		}
+	}
+	
 	private class HeadlinesRequest extends ApiRequest {
 		int m_offset = 0;
 		
@@ -210,24 +224,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 									activity.setCanLoadMore(articles.size() >= 30);
 									activity.initMainMenu();
 									
-									showLoading(false);
+									setLoadingStatus(R.string.blank, false);
 								}
 							});
 						}
 					} else {
 						MainActivity activity = (MainActivity)getActivity();							
 						activity.login();
-						showLoading(false);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					// report invalid object
+					setLoadingStatus(R.string.error_invalid_object, false);
 				}
 			} else {
-				// report null object
+				setLoadingStatus(R.string.error_no_data, false);
 			}
-			
-			showLoading(false);
 			
 			return;
 
@@ -239,8 +250,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 	
 	public void catchupArticle(final Article article) {
-		ApiRequest ar = new ApiRequest();
-		ar.setApi(m_prefs.getString("ttrss_url", null));
+		ApiRequest req = new ApiRequest();
+		req.setApi(m_prefs.getString("ttrss_url", null));
+		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 
@@ -254,12 +266,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			}			 
 		};
 
-		ar.execute(map);
+		req.execute(map);
 	}
 
 	public void setArticleMarked(final Article article) {
-		ApiRequest ar = new ApiRequest();
-		ar.setApi(m_prefs.getString("ttrss_url", null));
+		ApiRequest req = new ApiRequest();
+		req.setApi(m_prefs.getString("ttrss_url", null));
+		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 
@@ -273,7 +286,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			}			 
 		};
 
-		ar.execute(map);
+		req.execute(map);
 	}
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;

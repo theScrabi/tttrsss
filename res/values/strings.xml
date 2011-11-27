@@ -38,4 +38,8 @@
     <string name="show_all_articles">Show all articles</string>
     <string name="show_unread_articles">Show unread articles</string>
     <string name="ssl_trust_any">Accept any SSL certificate</string>
+    <string name="error_no_data">Error: no data received.</string>
+    <string name="error_no_feeds">No feeds to display.</string>
+    <string name="error_invalid_object">Error: invalid object received.</string>
+    <string name="blank"></string>
 </resources>
