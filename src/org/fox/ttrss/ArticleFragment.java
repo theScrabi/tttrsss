@@ -23,6 +23,7 @@ public class ArticleFragment extends Fragment {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
+	private ArticleOps m_articleOps;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -112,6 +113,8 @@ public class ArticleFragment extends Fragment {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_article = ((MainActivity)activity).getSelectedArticle(); 
+		m_articleOps = (ArticleOps)activity;
+		m_article = m_articleOps.getSelectedArticle(); 
+
 	}
 }

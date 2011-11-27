@@ -42,7 +42,15 @@
           android:icon="@android:drawable/ic_menu_share"
           android:title="@string/share_article" 
           android:showAsAction="ifRoom"/>
-                    
+     
+     <item android:id="@+id/toggle_marked"
+          android:title="@string/toggle_marked" 
+          android:showAsAction=""/>
+
+     <item android:id="@+id/toggle_published"
+          android:title="@string/toggle_published" 
+          android:showAsAction=""/>
+     
      <item android:id="@+id/logout"
           android:title="@string/logout" 
           android:showAsAction=""/>

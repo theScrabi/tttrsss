@@ -53,6 +53,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private ArticleList m_selectedArticles = new ArticleList();
 	
 	private OnArticleSelectedListener m_articleSelectedListener;
+	private ArticleOps m_articleOps;
 	
 	public interface OnArticleSelectedListener {
 		public void onArticleSelected(Article article);
@@ -76,7 +77,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
-		
+
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
 		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
@@ -104,6 +105,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_feed = ((MainActivity)activity).getActiveFeed();
 		m_articleSelectedListener = (OnArticleSelectedListener) activity;
+		m_articleOps = (ArticleOps) activity;
 	}
 
 	@Override
@@ -118,7 +120,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			m_selectedArticleId = article.id;
 			m_adapter.notifyDataSetChanged();
 			
-			catchupArticle(article);
+			m_articleOps.saveArticleUnread(article);
 		}
 	}
 
@@ -253,43 +255,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 	
-	public void catchupArticle(final Article article) {
-		ApiRequest req = new ApiRequest(getActivity().getApplicationContext());
-		//req.setApi(m_prefs.getString("ttrss_url", null));
-		//req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
-
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("sid", sessionId);
-				put("op", "updateArticle");
-				put("article_ids", String.valueOf(article.id));
-				put("mode", "0");
-				put("field", "2");
-			}			 
-		};
-
-		req.execute(map);
-	}
-
-	public void setArticleMarked(final Article article) {
-		ApiRequest req = new ApiRequest(getActivity().getApplicationContext());
-
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("sid", sessionId);
-				put("op", "updateArticle");
-				put("article_ids", String.valueOf(article.id));
-				put("mode", article.marked ? "1" : "0");
-				put("field", "0");
-			}			 
-		};
-
-		req.execute(map);
-	}
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
 		
@@ -362,7 +327,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 						article.marked = !article.marked;
 						m_adapter.notifyDataSetChanged();
 						
-						setArticleMarked(article);
+						m_articleOps.saveArticleMarked(article);
 					}
 				});
 			}
@@ -411,6 +376,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			
 			return v;
 		}
+	}
+
+
+
+	public void notifyUpdated() {
+		m_adapter.notifyDataSetChanged();
 	}
 
 }

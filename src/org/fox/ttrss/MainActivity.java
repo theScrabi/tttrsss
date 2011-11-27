@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener {
+public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener, ArticleOps {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -43,6 +43,61 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_canLoadMore = true;
 	private boolean m_compatMode = false;
 
+	public void updateHeadlines() {
+		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		if (frag != null) {
+			frag.notifyUpdated();
+		}
+	}
+	
+	public void saveArticleUnread(final Article article) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", "0");
+				put("field", "2");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
+	public void saveArticleMarked(final Article article) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+	
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.marked ? "1" : "0");
+				put("field", "0");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
+	public void saveArticlePublished(final Article article) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+	
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.published ? "1" : "0");
+				put("field", "1");
+			}			 
+		};
+
+		req.execute(map);
+	}
+	
 	private class RefreshTask extends TimerTask {
 
 		@Override
@@ -318,6 +373,20 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.share_article:
 			shareArticle(m_selectedArticle);
 			return true;
+		case R.id.toggle_marked:
+			if (m_selectedArticle != null) {
+				m_selectedArticle.marked = !m_selectedArticle.marked;
+				saveArticleMarked(m_selectedArticle);
+				updateHeadlines();
+			}
+			return true;
+		case R.id.toggle_published:
+			if (m_selectedArticle != null) {
+				m_selectedArticle.published = !m_selectedArticle.published;
+				saveArticlePublished(m_selectedArticle);
+				updateHeadlines();
+			}
+			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 
@@ -389,12 +458,16 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				if (m_selectedArticle != null) {
 					m_menu.findItem(R.id.close_article).setVisible(true);
 					m_menu.findItem(R.id.share_article).setVisible(true);
+					m_menu.findItem(R.id.toggle_marked).setVisible(true);
+					m_menu.findItem(R.id.toggle_published).setVisible(true);
 					
 					m_menu.findItem(R.id.update_feeds).setVisible(false);
 					m_menu.findItem(R.id.show_feeds).setVisible(false);
 				} else {
 					m_menu.findItem(R.id.close_article).setVisible(false);
 					m_menu.findItem(R.id.share_article).setVisible(false);
+					m_menu.findItem(R.id.toggle_marked).setVisible(false);
+					m_menu.findItem(R.id.toggle_published).setVisible(false);
 					
 					if (!m_smallScreenMode || m_activeFeed == null) {
 						m_menu.findItem(R.id.show_feeds).setVisible(true);
