@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, HeadlinesFragment.OnArticleSelectedListener, ArticleOps {
+public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -649,7 +649,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	@Override
-	public void onArticleSelected(Article article) {
+	public void onArticleOpened(Article article) {
 		openArticle(article);
 	}
 

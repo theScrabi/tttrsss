@@ -46,20 +46,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private SharedPreferences m_prefs;
 	
 	private Feed m_feed;
-	private int m_selectedArticleId;
+	private int m_activeArticleId;
 	
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList();
 	private ArticleList m_selectedArticles = new ArticleList();
 	
-	private OnArticleSelectedListener m_articleSelectedListener;
 	private ArticleOps m_articleOps;
 	
-	public interface OnArticleSelectedListener {
-		public void onArticleSelected(Article article);
+	public ArticleList getSelectedArticles() {
+		return m_selectedArticles;
 	}
-	
-	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -67,7 +64,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
 			m_articles = savedInstanceState.getParcelable("articles");
-			m_selectedArticleId = savedInstanceState.getInt("selectedArticleId");
+			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 		}
 
@@ -104,7 +101,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		super.onAttach(activity);
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_feed = ((MainActivity)activity).getActiveFeed();
-		m_articleSelectedListener = (OnArticleSelectedListener) activity;
 		m_articleOps = (ArticleOps) activity;
 	}
 
@@ -114,14 +110,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
-			m_articleSelectedListener.onArticleSelected(article);
+			m_articleOps.onArticleOpened(article);
 			
 			if (article.unread) {
 				article.unread = false;
 				m_articleOps.saveArticleUnread(article);
 			}
 
-			m_selectedArticleId = article.id;
+			m_activeArticleId = article.id;
 			m_adapter.notifyDataSetChanged();
 		}
 	}
@@ -172,7 +168,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		out.putParcelable("feed", m_feed);
 		out.putParcelable("articles", m_articles);
-		out.putInt("selectedArticleId", m_selectedArticleId);
+		out.putInt("activeArticleId", m_activeArticleId);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 	}
 
@@ -279,7 +275,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 			
-			if (a.id == m_selectedArticleId) {
+			if (a.id == m_activeArticleId) {
 				return VIEW_SELECTED;
 			} else if (a.unread) {
 				return VIEW_UNREAD;
