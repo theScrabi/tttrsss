@@ -1,4 +1,5 @@
 package org.fox.ttrss;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Parcel;
@@ -51,8 +52,11 @@ public class Article implements Parcelable {
 		is_updated = in.readInt() == 1;
 		title = in.readString();
 		link = in.readString();
-		feed_id = in.readInt();		
+		feed_id = in.readInt();
+		
+		if (tags == null) tags = new ArrayList<String>();
 		in.readStringList(tags);
+		
 		content = in.readString();
 	}
 	
