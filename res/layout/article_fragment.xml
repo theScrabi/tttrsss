@@ -2,6 +2,8 @@
     <LinearLayout android:id="@+id/article_fragment" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="horizontal">
         <ImageView android:layout_weight="0" android:background="?articleDivider" android:layout_width="wrap_content" android:paddingLeft="4dip" android:layout_height="match_parent"></ImageView>
         <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
             android:id="@+id/linerLayout2"
             android:layout_width="match_parent"
             android:layout_weight="1"
@@ -19,6 +21,18 @@
                 
             </LinearLayout>
             <ImageView android:background="?feedlistDivider" android:paddingTop="2dip" android:layout_weight="0" android:layout_height="wrap_content" android:layout_width="match_parent"></ImageView>
-            <WebView android:layout_weight="0" android:layout_width="match_parent" android:padding="3dip" android:layout_height="match_parent" android:id="@+id/content"></WebView>
+            <WebView android:layout_weight="1" android:layout_width="match_parent" android:padding="3dip" android:layout_height="match_parent" android:id="@+id/content"></WebView>
+            
+           <!-- Ad Placeholder -->
+	    	<com.google.ads.AdView      
+		        android:id="@+id/adView"
+		        android:layout_weight="0"
+		        android:gravity="center"
+		        android:background="@android:color/transparent"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        ads:adUnitId="a14ed24fe8c671c"
+		        ads:adSize="BANNER"
+		        ads:loadAdOnCreate="true" />
         </LinearLayout>
     </LinearLayout>
