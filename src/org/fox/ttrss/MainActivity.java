@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
-				put("mode", "0");
+				put("mode", article.unread ? "1" : "0");
 				put("field", "2");
 			}			 
 		};
@@ -387,6 +387,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				updateHeadlines();
 			}
 			return true;
+		case R.id.set_unread:
+			if (m_selectedArticle != null) {
+				m_selectedArticle.unread = true;
+				saveArticleUnread(m_selectedArticle);
+				updateHeadlines();
+			}
+			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 
@@ -460,6 +467,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.share_article).setVisible(true);
 					m_menu.findItem(R.id.toggle_marked).setVisible(true);
 					m_menu.findItem(R.id.toggle_published).setVisible(true);
+					m_menu.findItem(R.id.set_unread).setVisible(true);
 					
 					m_menu.findItem(R.id.update_feeds).setVisible(false);
 					m_menu.findItem(R.id.show_feeds).setVisible(false);
@@ -468,6 +476,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.share_article).setVisible(false);
 					m_menu.findItem(R.id.toggle_marked).setVisible(false);
 					m_menu.findItem(R.id.toggle_published).setVisible(false);
+					m_menu.findItem(R.id.set_unread).setVisible(false);
 					
 					if (!m_smallScreenMode || m_activeFeed == null) {
 						m_menu.findItem(R.id.show_feeds).setVisible(true);

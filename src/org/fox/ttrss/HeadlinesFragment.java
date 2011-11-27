@@ -116,11 +116,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			Article article = (Article)list.getItemAtPosition(position);
 			m_articleSelectedListener.onArticleSelected(article);
 			
-			article.unread = false;
+			if (article.unread) {
+				article.unread = false;
+				m_articleOps.saveArticleUnread(article);
+			}
+
 			m_selectedArticleId = article.id;
 			m_adapter.notifyDataSetChanged();
-			
-			m_articleOps.saveArticleUnread(article);
 		}
 	}
 
