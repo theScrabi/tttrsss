@@ -40,6 +40,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
 	private boolean m_canLoadMore = true;
+	private boolean m_compatMode = false;
 
 	private class RefreshTask extends TimerTask {
 
@@ -91,10 +92,12 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());       
 
+		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
+		
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-			setTheme(android.os.Build.VERSION.SDK_INT > 10 ? R.style.DarkTheme : R.style.DarkCompatTheme);
+			setTheme(m_compatMode ? R.style.DarkCompatTheme : R.style.DarkTheme);
 		} else {
-			setTheme(android.os.Build.VERSION.SDK_INT > 10 ? R.style.LightTheme : R.style.LightCompatTheme);
+			setTheme(m_compatMode ? R.style.LightCompatTheme : R.style.LightTheme);
 		}
 
 		super.onCreate(savedInstanceState);
@@ -127,8 +130,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "orientation=" + display.getOrientation());
+		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		if (android.os.Build.VERSION.SDK_INT > 10) {
+		if (!m_compatMode) {
 			LayoutTransition transitioner = new LayoutTransition();
 			LinearLayout layout = (LinearLayout)findViewById(R.id.main);
 			layout.setLayoutTransition(transitioner);
@@ -262,10 +266,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         	
         	if (m_smallScreenMode) {
         		if (m_selectedArticle != null) {
-        			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			closeArticle();
         		} else if (m_activeFeed != null) {
-        			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+        			if (m_compatMode) {
+        				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+        			}
         			
         			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
@@ -351,7 +356,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	public void closeArticle() {
-		
+		if (m_compatMode) {
+			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+		}
+
 		if (m_smallScreenMode) {
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);	
@@ -540,10 +548,12 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
-		
-		if (m_smallScreenMode) {
+
+		if (m_compatMode) {
 			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
-			
+		}
+
+		if (m_smallScreenMode) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		} else {
