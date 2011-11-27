@@ -50,6 +50,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleUnread(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 
@@ -66,6 +67,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		req.execute(map);
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleMarked(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	
@@ -82,6 +84,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		req.execute(map);
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticlePublished(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	
@@ -684,6 +687,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		initMainMenu();
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void login() {		
 
 		logout();
@@ -697,8 +701,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		} else {
 		
 			LoginRequest ar = new LoginRequest(getApplicationContext());
-			//ar.setApi(m_prefs.getString("ttrss_url", null));
-			//ar.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{

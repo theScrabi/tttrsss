@@ -56,6 +56,7 @@ public class Article implements Parcelable {
 		content = in.readString();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {
             public Article createFromParcel(Parcel in) {

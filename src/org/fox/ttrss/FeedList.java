@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@SuppressWarnings("serial")
 public class FeedList extends ArrayList<Feed> implements Parcelable {
 
 		public FeedList() { }
@@ -36,6 +37,7 @@ public class FeedList extends ArrayList<Feed> implements Parcelable {
 			readFromParcel(in);
 		}
 		
+		@SuppressWarnings("rawtypes")
 		public static final Parcelable.Creator CREATOR =
 	    	new Parcelable.Creator() {
 	            public FeedList createFromParcel(Parcel in) {

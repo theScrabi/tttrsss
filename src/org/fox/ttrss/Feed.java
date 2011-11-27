@@ -50,6 +50,7 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		last_updated = in.readInt();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {
             public Feed createFromParcel(Parcel in) {

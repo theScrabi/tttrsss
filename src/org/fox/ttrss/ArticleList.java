@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@SuppressWarnings("serial")
 public class ArticleList extends ArrayList<Article> implements Parcelable {
 	@Override
 	public int describeContents() {
@@ -34,6 +35,7 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {
             public ArticleList createFromParcel(Parcel in) {

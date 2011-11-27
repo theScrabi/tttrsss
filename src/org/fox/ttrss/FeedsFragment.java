@@ -29,6 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedsFragment extends Fragment implements OnItemClickListener {
+	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -62,17 +63,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 	}
 
-	/* public void showLoading(boolean show) {
-		View v = getView();
-		
-		if (v != null) {
-			v = v.findViewById(R.id.loading_container);
-	
-			if (v != null)
-				v.setVisibility(show ? View.VISIBLE : View.GONE);
-		}
-	} */
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
@@ -129,6 +119,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext());
 		

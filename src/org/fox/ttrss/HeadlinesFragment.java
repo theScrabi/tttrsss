@@ -13,11 +13,7 @@ import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -43,7 +39,6 @@ import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
-	private SharedPreferences m_prefs;
 	
 	private Feed m_feed;
 	private int m_activeArticleId;
@@ -85,21 +80,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		return view;    	
 	}
 
-	/* public void showLoading(boolean show) {
-		View v = getView();
-		
-		if (v != null) {
-			v = v.findViewById(R.id.loading_container);
-	
-			if (v != null)
-				v.setVisibility(show ? View.VISIBLE : View.GONE);
-		}
-	} */
-	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_feed = ((MainActivity)activity).getActiveFeed();
 		m_articleOps = (ArticleOps) activity;
 	}
@@ -122,11 +105,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean append) {
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
-		
-		//req.setApi(m_prefs.getString("ttrss_url", null));
-		//req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();

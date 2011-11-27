@@ -1,7 +1,5 @@
 package org.fox.ttrss;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,6 +17,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 public class ArticleFragment extends Fragment {
+	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
