@@ -123,10 +123,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 
 	public void refresh(boolean append) {
-		HeadlinesRequest req = new HeadlinesRequest();
+		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
 		
-		req.setApi(m_prefs.getString("ttrss_url", null));
-		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+		//req.setApi(m_prefs.getString("ttrss_url", null));
+		//req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();
@@ -191,6 +191,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private class HeadlinesRequest extends ApiRequest {
 		int m_offset = 0;
 		
+		public HeadlinesRequest(Context context) {
+			super(context);
+		}
+		
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
@@ -250,9 +254,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 	
 	public void catchupArticle(final Article article) {
-		ApiRequest req = new ApiRequest();
-		req.setApi(m_prefs.getString("ttrss_url", null));
-		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+		ApiRequest req = new ApiRequest(getActivity().getApplicationContext());
+		//req.setApi(m_prefs.getString("ttrss_url", null));
+		//req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 
@@ -270,9 +274,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 
 	public void setArticleMarked(final Article article) {
-		ApiRequest req = new ApiRequest();
-		req.setApi(m_prefs.getString("ttrss_url", null));
-		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+		ApiRequest req = new ApiRequest(getActivity().getApplicationContext());
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 

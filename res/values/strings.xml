@@ -9,6 +9,7 @@
     <string name="login_login">Log in</string>
     <string name="logout">Log out</string>
     <string name="login">Login</string>
+    <string name="debugging">Debugging</string>
     <string name="password">Password</string>
     <string name="default_url">http://example.domain/tt-rss/</string>
     <string name="authentication">Authentication</string>
@@ -20,6 +21,7 @@
     <string name="theme_dark">Dark</string>
     <string name="preferences">Preferences</string>
     <string name="theme_light">Light</string>
+    <string name="connection">Connection</string>
     <string name="login_api_disabled">Login failed: API disabled.</string>
     <string name="login_no_data">Login failed: no data received.</string>
     <string name="login_wrong_password">Login failed: username or password incorrect.</string>
@@ -42,4 +44,5 @@
     <string name="error_no_feeds">No feeds to display.</string>
     <string name="error_invalid_object">Error: invalid object received.</string>
     <string name="blank"></string>
+    <string name="transport_debugging">Log sent and received data</string>
 </resources>

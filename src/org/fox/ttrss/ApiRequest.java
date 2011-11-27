@@ -16,7 +16,10 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -33,13 +36,17 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	
 	private String m_api;
 	private boolean m_trustAny = false;
+	private boolean m_transportDebugging = false;
+	private Context m_context;
 
-	protected void setApi(String api) {
-		m_api = api;
-	}
+	public ApiRequest(Context context) {
+		m_context = context;
 
-	public void setTrustAny(boolean trust) {
-		m_trustAny = trust;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
+		
+		m_api = prefs.getString("ttrss_url", null);
+		m_trustAny = prefs.getBoolean("ssl_trust_any", false);
+		m_transportDebugging = prefs.getBoolean("transport_debugging", false);
 	}
 	
 	@Override
@@ -49,7 +56,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
 		
-		//Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
+		if (m_transportDebugging) Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
 		
 		DefaultHttpClient client;
 		
@@ -83,7 +90,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				response += s;
 			}
 
-			Log.d(TAG, "<<< " + response);
+			if (m_transportDebugging) Log.d(TAG, "<<< " + response);
 
 			JsonParser parser = new JsonParser();
 			

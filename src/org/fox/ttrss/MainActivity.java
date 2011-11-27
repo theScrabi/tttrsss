@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.animation.LayoutTransition;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -53,10 +54,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public synchronized void refreshFeeds() {
 		FeedsFragment frag = (FeedsFragment) getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
 
-		Log.d(TAG, "Refreshing feeds..." + frag);
+		Log.d(TAG, "Refreshing feeds...");
 
 		if (frag != null) {
-			frag.refresh();
+			frag.refresh(true);
 		}
 	}
 	
@@ -262,7 +263,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-        	Log.d(TAG, "Overriding back button");
         	
         	if (m_smallScreenMode) {
         		if (m_selectedArticle != null) {
@@ -450,6 +450,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	private class LoginRequest extends ApiRequest {
+		public LoginRequest(Context context) {
+			super(context);
+		}
 		
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
@@ -611,9 +614,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 		} else {
 		
-			LoginRequest ar = new LoginRequest();
-			ar.setApi(m_prefs.getString("ttrss_url", null));
-			ar.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+			LoginRequest ar = new LoginRequest(getApplicationContext());
+			//ar.setApi(m_prefs.getString("ttrss_url", null));
+			//ar.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{

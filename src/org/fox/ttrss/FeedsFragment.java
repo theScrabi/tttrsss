@@ -89,7 +89,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		list.setOnItemClickListener(this);
 		
 		if (m_feeds == null || m_feeds.size() == 0)
-			refresh();
+			refresh(false);
 		else
 			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
 		
@@ -129,23 +129,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
-	public void refresh() {
-		FeedsRequest req = new FeedsRequest();
+	public void refresh(boolean background) {
+		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext());
 		
-		req.setApi(m_prefs.getString("ttrss_url", null));
-		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
-
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
 		
 		if (sessionId != null) {
 			
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					setLoadingStatus(R.string.blank, true);
-				}
-			});
+			if (!background) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						setLoadingStatus(R.string.blank, true);
+					}
+				});
+			}
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
@@ -181,52 +180,56 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	
 	private class FeedsRequest extends ApiRequest {
 			
-			protected void onPostExecute(JsonElement result) {
-				if (result != null) {
-					try {			
-						JsonObject rv = result.getAsJsonObject();
-	
-						Gson gson = new Gson();
-						
-						int status = rv.get("status").getAsInt();
-						
-						if (status == 0) {
-							JsonArray content = rv.get("content").getAsJsonArray();
-							if (content != null) {
-								Type listType = new TypeToken<List<Feed>>() {}.getType();
-								final List<Feed> feeds = gson.fromJson(content, listType);
-								
-								m_feeds.clear();
-								
-								for (Feed f : feeds) 
-									m_feeds.add(f);
-								
-								sortFeeds();
-								
-								if (m_feeds.size() == 0)
-									setLoadingStatus(R.string.error_no_feeds, false);
-								else
-									setLoadingStatus(R.string.blank, false);
-										
-							}
-						} else {
-							MainActivity activity = (MainActivity)getActivity();							
-							activity.login();
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						setLoadingStatus(R.string.error_invalid_object, false);
-						// report invalid object received
-					}
-				} else {
-					// report null object received, unless we've been awakened from sleep right in the right time
-					// so that current request failed
-					if (m_feeds.size() == 0) setLoadingStatus(R.string.error_no_data, false);
-				}
-				
-				return;
-		    }
+		public FeedsRequest(Context context) {
+			super(context);
 		}
+
+		protected void onPostExecute(JsonElement result) {
+			if (result != null) {
+				try {			
+					JsonObject rv = result.getAsJsonObject();
+
+					Gson gson = new Gson();
+					
+					int status = rv.get("status").getAsInt();
+					
+					if (status == 0) {
+						JsonArray content = rv.get("content").getAsJsonArray();
+						if (content != null) {
+							Type listType = new TypeToken<List<Feed>>() {}.getType();
+							final List<Feed> feeds = gson.fromJson(content, listType);
+							
+							m_feeds.clear();
+							
+							for (Feed f : feeds) 
+								m_feeds.add(f);
+							
+							sortFeeds();
+							
+							if (m_feeds.size() == 0)
+								setLoadingStatus(R.string.error_no_feeds, false);
+							else
+								setLoadingStatus(R.string.blank, false);
+									
+						}
+					} else {
+						MainActivity activity = (MainActivity)getActivity();							
+						activity.login();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					setLoadingStatus(R.string.error_invalid_object, false);
+					// report invalid object received
+				}
+			} else {
+				// report null object received, unless we've been awakened from sleep right in the right time
+				// so that current request failed
+				if (m_feeds.size() == 0) setLoadingStatus(R.string.error_no_data, false);
+			}
+			
+			return;
+	    }
+	}
 
 	private class FeedListAdapter extends ArrayAdapter<Feed> {
 		private ArrayList<Feed> items;
