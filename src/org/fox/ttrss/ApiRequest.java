@@ -7,8 +7,14 @@ import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -26,11 +32,16 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	protected static final int STATUS_OTHER_ERROR = 3;
 	
 	private String m_api;
+	private boolean m_trustAny = false;
 
 	protected void setApi(String api) {
 		m_api = api;
 	}
 
+	public void setTrustAny(boolean trust) {
+		m_trustAny = trust;
+	}
+	
 	@Override
 	protected JsonElement doInBackground(HashMap<String, String>... params) {
 
@@ -38,9 +49,22 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
 		
-		Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
+		//Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
 		
-		DefaultHttpClient client = new DefaultHttpClient();
+		DefaultHttpClient client;
+		
+		if (m_trustAny) {
+			SchemeRegistry schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+			schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
+        
+			HttpParams httpParams = new BasicHttpParams();
+
+			client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
+		} else {
+			client = new DefaultHttpClient();
+		}
+
 		HttpPost httpPost = new HttpPost(m_api + "/api/");
 		
 		try {
@@ -68,6 +92,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 

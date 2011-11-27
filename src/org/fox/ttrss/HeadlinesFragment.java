@@ -125,6 +125,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		HeadlinesRequest req = new HeadlinesRequest();
 		
 		req.setApi(m_prefs.getString("ttrss_url", null));
+		req.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();
@@ -225,6 +226,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			} else {
 				// report null object
 			}
+			
+			showLoading(false);
 			
 			return;
 

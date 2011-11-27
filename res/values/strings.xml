@@ -21,6 +21,7 @@
     <string name="preferences">Preferences</string>
     <string name="theme_light">Light</string>
     <string name="login_api_disabled">Login failed: API disabled.</string>
+    <string name="login_no_data">Login failed: no data received.</string>
     <string name="login_wrong_password">Login failed: username or password incorrect.</string>
     <string name="login_success">Logged in.</string>
     <string name="no_unread_feeds">No unread feeds.</string>
@@ -36,4 +37,5 @@
     <string name="load_more_articles">Load more...</string>
     <string name="show_all_articles">Show all articles</string>
     <string name="show_unread_articles">Show unread articles</string>
+    <string name="ssl_trust_any">Accept any SSL certificate</string>
 </resources>

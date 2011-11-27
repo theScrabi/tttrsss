@@ -133,6 +133,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		FeedsRequest fr = new FeedsRequest();
 		
 		fr.setApi(m_prefs.getString("ttrss_url", null));
+		fr.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
 
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
@@ -212,8 +213,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 					// report null object received
 				}
 				
+				showLoading(false);
+				
 				return;
-
 		    }
 		}
 

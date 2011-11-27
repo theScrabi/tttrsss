@@ -490,8 +490,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				} catch (Exception e) {
 					e.printStackTrace();						
 				}
+			} else {
+				setLoadingStatus(R.string.login_no_data, false);
 			}
-	    }
+		}
 	}
 
 	@Override
@@ -601,7 +603,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 			LoginRequest ar = new LoginRequest();
 			ar.setApi(m_prefs.getString("ttrss_url", null));
-	
+			ar.setTrustAny(m_prefs.getBoolean("ssl_trust_any", false));
+			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
 					put("op", "login");
