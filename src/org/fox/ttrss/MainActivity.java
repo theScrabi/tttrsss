@@ -115,8 +115,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 		Display display = getWindowManager().getDefaultDisplay();
 		int orientation = display.getOrientation();
-		int minWidth = orientation == 0 ? 1024 : 600;
-		int minHeight = orientation == 0 ? 600 : 1024;
+		int minWidth = orientation % 2 == 0 ? 1024 : 600;
+		int minHeight = orientation % 2 == 0 ? 600 : 1024;
 		
 		if (display.getWidth() > minWidth && display.getHeight() >= minHeight) {
 			m_smallScreenMode = false;
