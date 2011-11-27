@@ -18,7 +18,30 @@
         android:layout_width="wrap_content" android:gravity="center" android:padding="3dip" 
         android:layout_height="wrap_content" android:orientation="vertical">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#909090" android:textSize="13sp" android:id="@+id/date" android:text="Jan 01"></TextView>
-        <ImageView android:clickable="true" android:id="@+id/marked" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@android:drawable/star_off"></ImageView>
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:paddingRight="2sp"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/marked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@android:drawable/star_off" >
+            </ImageView>
+
+            <ImageView
+                android:id="@+id/published"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_rss_bw" >
+            </ImageView>
+        </LinearLayout>
+            
     </LinearLayout>
 	                   
 </LinearLayout>

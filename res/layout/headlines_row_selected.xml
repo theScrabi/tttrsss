@@ -1,24 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
     android:background="?headlineSelectedBackground"
-    android:id="@+id/headlines_row" android:orientation="horizontal" android:layout_height="wrap_content">
-        <ImageView android:background="?headlineSeparatorSelected" android:paddingRight="4dip" android:layout_height="match_parent" android:layout_width="wrap_content"></ImageView>
-    <CheckBox android:focusable="false"
-         android:paddingLeft="6dip" android:paddingRight="6dip"  android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/selected"></CheckBox>
-        
-        <LinearLayout android:layout_weight="1" android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_width="match_parent">
-            <TextView android:singleLine="true" android:ellipsize="end" android:id="@+id/title" android:textSize="16sp" android:text="{Title...}" android:layout_width="match_parent" android:layout_height="match_parent"></TextView>
-            <TextView android:id="@+id/excerpt" android:textSize="13sp" android:textColor="#909090" android:text="{Content excerpt...}" android:layout_width="match_parent" android:layout_height="match_parent"></TextView>
-        </LinearLayout>
-	
-	    <LinearLayout
-        android:id="@+id/linerLayout3" android:padding="3dip" 
-        android:layout_width="wrap_content" android:gravity="center"
-        android:layout_height="wrap_content" android:orientation="vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#909090" android:textSize="13sp" android:id="@+id/date" android:text="Jan 01"></TextView>
-        <ImageView android:clickable="true" android:id="@+id/marked" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@android:drawable/star_off"></ImageView>
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="?headlineSeparatorSelected"
+        android:paddingRight="4dip" >
+    </ImageView>
+
+    <CheckBox
+        android:id="@+id/selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip" >
+    </CheckBox>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="{Title...}"
+            android:textSize="16sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/excerpt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="{Content excerpt...}"
+            android:textColor="#909090"
+            android:textSize="13sp" >
+        </TextView>
     </LinearLayout>
-	                   
+
+    <LinearLayout
+        android:id="@+id/linerLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="3dip" >
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jan 01"
+            android:textColor="#909090"
+            android:textSize="13sp" >
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:paddingRight="2sp"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/marked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@android:drawable/star_off" >
+            </ImageView>
+
+            <ImageView
+                android:id="@+id/published"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_rss_bw" >
+            </ImageView>
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

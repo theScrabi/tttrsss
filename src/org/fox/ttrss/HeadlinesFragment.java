@@ -332,6 +332,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				});
 			}
 			
+			ImageView published = (ImageView)v.findViewById(R.id.published);
+			
+			if (published != null) {
+				published.setImageResource(article.published ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+				
+				published.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						article.published = !article.published;
+						m_adapter.notifyDataSetChanged();
+						
+						m_articleOps.saveArticlePublished(article);
+					}
+				});
+			}
+			
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
