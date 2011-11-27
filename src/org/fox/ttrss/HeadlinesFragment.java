@@ -19,6 +19,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -345,7 +346,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
-				tt.setText(article.title);
+				tt.setText(Html.fromHtml(article.title));
 			}
 
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
