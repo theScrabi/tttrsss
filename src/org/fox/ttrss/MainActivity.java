@@ -412,6 +412,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
     }
 	
 	private void closeCategory() {
+		
 		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
 
@@ -548,6 +549,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					
 					m_menu.findItem(R.id.update_feeds).setVisible(false);
 					m_menu.findItem(R.id.show_feeds).setVisible(false);
+					m_menu.findItem(R.id.back_to_categories).setVisible(false);
 				} else {
 					m_menu.findItem(R.id.close_article).setVisible(false);
 					m_menu.findItem(R.id.share_article).setVisible(false);
@@ -562,6 +564,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 						m_menu.findItem(R.id.show_feeds).setVisible(false);
 						m_menu.findItem(R.id.update_feeds).setVisible(false);
 					}
+					
+					m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
 				}
 
 				if (!m_smallScreenMode) {
@@ -572,7 +576,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
 				}
 
-				m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
+				
 				
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
