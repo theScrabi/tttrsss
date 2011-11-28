@@ -95,11 +95,16 @@ public class ArticleFragment extends Fragment {
 			}			
 			
 			AdView av = (AdView)view.findViewById(R.id.ad);
+			boolean enableAds = m_prefs.getBoolean("enable_ads", false);
 			
 			if (av != null) {
-				AdRequest request = new AdRequest();
-				request.addTestDevice(AdRequest.TEST_EMULATOR);
-				av.loadAd(request);
+				if (enableAds) {
+					AdRequest request = new AdRequest();
+					request.addTestDevice(AdRequest.TEST_EMULATOR);
+					av.loadAd(request);
+				} else {
+					av.setVisibility(View.GONE);
+				}
 			}
 		} 
 		

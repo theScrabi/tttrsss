@@ -51,7 +51,8 @@
     <string name="set_unread">Mark unread</string>
     <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
-    <string name="password_summary">Your tt-rss password</string>
+    <string name="enable_ads">Enable ads</string>
+    <string name="enable_ads_summary">Showing ads to you supports the project</string>
     <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
         
 </resources>

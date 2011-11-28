@@ -6,7 +6,7 @@
    <PreferenceCategory android:title="@string/connection">
         
         <EditTextPreference android:summary="@string/login_summary" android:title="@string/login" android:key="login" android:singleLine="true"></EditTextPreference>
-        <EditTextPreference android:summary="@string/password_summary" android:title="@string/password" android:key="password" android:singleLine="true" android:password="true"></EditTextPreference>
+        <EditTextPreference android:title="@string/password" android:key="password" android:singleLine="true" android:password="true"></EditTextPreference>
         <EditTextPreference android:summary="@string/ttrss_url_summary" android:key="ttrss_url" android:title="@string/ttrss_url" android:singleLine="true" textUri="true" android:hint="@string/default_url"></EditTextPreference>
         <CheckBoxPreference android:defaultValue="false" android:title="@string/ssl_trust_any" android:key="ssl_trust_any" />                                              
 	</PreferenceCategory>
@@ -25,6 +25,7 @@
            android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>
       
       <CheckBoxPreference android:title="@string/sort_feeds_by_unread" android:key="sort_feeds_by_unread"/>
+      <CheckBoxPreference android:defaultValue="false" android:summary="@string/enable_ads_summary" android:title="@string/enable_ads" android:key="enable_ads" />
    </PreferenceCategory>
 
        
