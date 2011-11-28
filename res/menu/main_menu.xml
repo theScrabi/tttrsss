@@ -47,14 +47,16 @@
           android:title="@string/toggle_marked" 
           android:showAsAction=""/>
 
-     <item android:id="@+id/set_unread"
-          android:title="@string/set_unread" 
-          android:showAsAction=""/>
-     
      <item android:id="@+id/toggle_published"
           android:icon="@drawable/ic_menu_rss"
           android:title="@string/toggle_published" 
           android:showAsAction=""/>
+
+     <item android:id="@+id/set_unread"
+          android:icon="@android:drawable/ic_menu_recent_history"
+          android:title="@string/set_unread" 
+          android:showAsAction=""/>
+     
      
      <item android:id="@+id/logout"
           android:title="@string/logout" 
