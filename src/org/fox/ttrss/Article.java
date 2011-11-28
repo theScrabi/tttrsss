@@ -5,7 +5,7 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
+// TODO: serialize Labels
 public class Article implements Parcelable {
 	int id;
 	boolean unread; 
@@ -18,6 +18,7 @@ public class Article implements Parcelable {
 	int feed_id; 
 	List<String> tags; 
 	String content;
+	List<List<String>> labels;
 	
 	public Article(Parcel in) {
 		readFromParcel(in);
