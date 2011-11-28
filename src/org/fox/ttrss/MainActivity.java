@@ -572,7 +572,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_canLoadMore);
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
 				} else {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null && m_canLoadMore);
+					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null && m_canLoadMore &&
+							(!m_enableCats || m_activeCategory != null));
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
 				}
 
