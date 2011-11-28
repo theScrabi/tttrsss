@@ -7,6 +7,7 @@
     </LinearLayout>
     <LinearLayout android:layout_height="fill_parent" android:orientation="horizontal" android:id="@+id/main" android:layout_width="fill_parent">
         <FrameLayout android:layout_height="match_parent" android:layout_width="0dp" android:layout_weight="0.3" android:id="@+id/feeds_fragment"></FrameLayout>
+        <FrameLayout android:layout_height="match_parent" android:layout_width="0dp" android:layout_weight="0.3" android:id="@+id/cats_fragment"></FrameLayout>
         <FrameLayout android:layout_height="match_parent" android:layout_width="0dp" android:layout_weight="0.5" android:id="@+id/headlines_fragment"></FrameLayout>
         <FrameLayout android:layout_height="match_parent" android:layout_width="0dp" android:layout_weight="0.5" android:id="@+id/article_fragment"></FrameLayout>
     </LinearLayout>

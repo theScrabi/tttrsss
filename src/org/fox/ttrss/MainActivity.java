@@ -244,10 +244,20 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				}
 			}
 		} else {
-			if (m_selectedArticle == null)
+			if (m_selectedArticle == null) {
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-			else
+				
+				if (!m_enableCats || m_activeCategory != null)
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				else
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			
+			} else {
 				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			}
+			
+			
 		}
 
 		if (m_sessionId != null) {
@@ -375,13 +385,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			}
 
-        			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-            		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-
-        			m_activeCategory = null;
-        			
-        			initMainMenu();
-        			refreshCategories();
+        			closeCategory();
         			
         		} else {
         			finish();
@@ -389,6 +393,14 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         	} else {
 	        	if (m_selectedArticle != null) {
 	        		closeArticle();
+	        	} else if (m_activeCategory != null) {
+	        		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+            		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+
+        			m_activeCategory = null;
+        			
+        			initMainMenu();
+        			refreshCategories();
 	        	} else {
 	        		finish();
 	        	}
@@ -399,6 +411,16 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         return super.onKeyDown(keyCode, event);
     }
 	
+	private void closeCategory() {
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+
+		m_activeCategory = null;
+		
+		initMainMenu();
+		refreshCategories();	
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -417,6 +439,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.close_article:
 			closeArticle();
+			return true;
+		case R.id.back_to_categories:
+			closeCategory();
 			return true;
 		case R.id.load_more_articles:
 			viewFeed(m_activeFeed, true);
@@ -482,7 +507,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 	
-	public void closeArticle() {
+	private void closeArticle() {
 		if (m_compatMode) {
 			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
 		}
@@ -547,6 +572,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
 				}
 
+				m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
+				
 			} else {
 				m_menu.findItem(R.id.login).setVisible(true);
 				
@@ -554,6 +581,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.findItem(R.id.close_article).setVisible(false);
 				m_menu.findItem(R.id.share_article).setVisible(false);
 				m_menu.findItem(R.id.load_more_articles).setVisible(false);
+				m_menu.findItem(R.id.back_to_categories).setVisible(false);
 
 				m_menu.findItem(R.id.update_feeds).setVisible(false);
 				m_menu.findItem(R.id.show_feeds).setVisible(false);
@@ -686,10 +714,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	
 		initMainMenu();
 		
-		if (m_smallScreenMode) {
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-		}
+		findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 		
 		FeedsFragment frag = new FeedsFragment();
 	

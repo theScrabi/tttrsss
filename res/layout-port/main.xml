@@ -7,6 +7,7 @@
     </LinearLayout>
     <LinearLayout android:layout_height="fill_parent" android:orientation="horizontal" android:id="@+id/main" android:layout_width="fill_parent">
         <FrameLayout android:layout_height="match_parent" android:layout_width="300dp" android:layout_weight="0" android:id="@+id/feeds_fragment"></FrameLayout>
+        <FrameLayout android:layout_height="match_parent" android:layout_width="300dp" android:layout_weight="0" android:id="@+id/cats_fragment"></FrameLayout>
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_height="match_parent" android:orientation="vertical" android:layout_width="match_parent">

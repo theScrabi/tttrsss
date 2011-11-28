@@ -131,6 +131,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 		
 		m_feedSelectedListener = (OnFeedSelectedListener) activity;
+		
+		Feed activeFeed = ((MainActivity)activity).getActiveFeed();
+		
+		if (activeFeed != null)
+			m_selectedFeedId = activeFeed.id;
 	}
 
 	@Override

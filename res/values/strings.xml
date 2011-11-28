@@ -56,4 +56,5 @@
     <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
     <string name="download_feed_icons">Download and display feed icons</string>
     <string name="enable_cats">Enable feed categories</string>
+    <string name="back_to_categories">Close category</string>
 </resources>

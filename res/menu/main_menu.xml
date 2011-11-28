@@ -16,7 +16,12 @@
           android:icon="@android:drawable/ic_menu_agenda"
           android:title="@string/menu_all_feeds" 
           android:showAsAction=""/>
-          
+     
+     <item android:id="@+id/back_to_categories"
+          android:icon="@android:drawable/ic_menu_revert"
+          android:title="@string/back_to_categories" 
+          android:showAsAction="ifRoom|withText"/>
+     
      <item android:id="@+id/close_article"
           android:icon="@android:drawable/ic_menu_close_clear_cancel"
           android:title="@string/close_article" 
