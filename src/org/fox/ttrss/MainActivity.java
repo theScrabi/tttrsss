@@ -148,6 +148,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	
 	/** Called when the activity is first created. */
 
+	public boolean isSmallScreen() {
+		return m_smallScreenMode;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());       
@@ -627,10 +631,21 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
-	public void openArticle(Article article) {
+	public void openArticle(Article article, int compatAnimation) {
 		m_selectedArticle = article;
 		
+		if (article.unread) {
+			article.unread = false;
+			saveArticleUnread(article);
+		}
+		
 		initMainMenu();
+
+		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		
+		if (hf != null) {
+			hf.setActiveArticleId(article.id);
+		}
 		
 		ArticleFragment frag = new ArticleFragment();
 		
@@ -639,7 +654,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		ft.commit();
 
 		if (m_compatMode) {
-			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
+			if (compatAnimation == 0)
+				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
+			else
+				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, compatAnimation));
 		}
 
 		if (m_smallScreenMode) {
@@ -652,11 +670,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				
 	}
 	
-	@Override
-	public void onArticleOpened(Article article) {
-		openArticle(article);
-	}
-
 	public Feed getActiveFeed() {
 		return m_activeFeed;
 	}
@@ -713,5 +726,33 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 			setLoadingStatus(R.string.login_in_progress, true);
 		}
+	}
+
+	@Override
+	public Article getRelativeArticle(Article article, RelativeArticle ra) {
+		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		if (frag != null) {
+			ArticleList articles = frag.getAllArticles();
+			for (int i = 0; i < articles.size(); i++) {
+				Article a = articles.get(i);
+				
+				if (a.id == article.id) {
+					if (ra == RelativeArticle.AFTER) {
+						try {
+							return articles.get(i+1);
+						} catch (IndexOutOfBoundsException e) {
+							return null;
+						}
+					} else {
+						try {
+							return articles.get(i-1);
+						} catch (IndexOutOfBoundsException e) {
+							return null;
+						}
+					}
+				}
+			}
+		}		
+		return null;
 	}
 }

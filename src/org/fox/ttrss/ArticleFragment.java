@@ -3,6 +3,9 @@ package org.fox.ttrss;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.fox.ttrss.ArticleOps.RelativeArticle;
+import org.jsoup.helper.StringUtil;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,22 +13,27 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
-public class ArticleFragment extends Fragment {
+public class ArticleFragment extends Fragment implements OnClickListener {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
 	private ArticleOps m_articleOps;
+	private Article m_nextArticle;
+	private Article m_prevArticle;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -35,6 +43,26 @@ public class ArticleFragment extends Fragment {
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
+
+		// TODO change to interface?
+		MainActivity activity = (MainActivity)getActivity();
+		
+		if (activity != null) {		
+			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
+			
+			if (!activity.isSmallScreen()) {			
+				if (orientation % 2 == 0) {
+					view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
+				} else {
+					view.findViewById(R.id.splitter_vertical).setVisibility(View.GONE);
+				}
+			} else {
+				view.findViewById(R.id.splitter_vertical).setVisibility(View.GONE);
+				view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
+			}
+		} else {
+			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
+		}
 		
 		if (m_article != null) {
 			
@@ -56,6 +84,7 @@ public class ArticleFragment extends Fragment {
 					String cssOverride = "";
 					
 					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+						web.setBackgroundColor(android.R.color.black);
 						cssOverride = "body { background : black; color : #f0f0f0}\n";						
 					}
 					
@@ -87,11 +116,21 @@ public class ArticleFragment extends Fragment {
 				dv.setText(df.format(d));
 			}
 			
-			TextView cv = (TextView)view.findViewById(R.id.comments);
-			
-			// comments are not currently returned by the API
-			if (cv != null) {
-				cv.setVisibility(View.GONE);
+			TextView tagv = (TextView)view.findViewById(R.id.tags);
+						
+			if (tagv != null) {
+				if (m_article.tags != null) {
+					String tagsStr = "";
+				
+					for (String tag : m_article.tags)
+						tagsStr += tag + ", ";
+					
+					tagsStr = tagsStr.replaceAll(", $", "");
+				
+					tagv.setText(tagsStr);
+				} else {
+					tagv.setVisibility(View.GONE);
+				}
 			}			
 			
 			AdView av = (AdView)view.findViewById(R.id.ad);
@@ -106,6 +145,27 @@ public class ArticleFragment extends Fragment {
 					av.setVisibility(View.GONE);
 				}
 			}
+			
+			ImageView next = (ImageView)view.findViewById(R.id.next_article);
+			
+			if (next != null) {
+				if (m_nextArticle != null) {
+					next.setOnClickListener(this);
+				} else {
+					next.setImageResource(R.drawable.ic_next_article_disabled);
+				}
+			}
+			
+			ImageView prev = (ImageView)view.findViewById(R.id.prev_article);
+			
+			if (prev != null) {
+				if (m_prevArticle != null) {
+					prev.setOnClickListener(this);
+				} else {
+					prev.setImageResource(R.drawable.ic_prev_article_disabled);
+				}
+			}
+
 		} 
 		
 		return view;    	
@@ -130,6 +190,17 @@ public class ArticleFragment extends Fragment {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_articleOps = (ArticleOps)activity;
 		m_article = m_articleOps.getSelectedArticle(); 
+		
+		m_prevArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.BEFORE);
+		m_nextArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.AFTER);
+	}
 
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.next_article) {
+			m_articleOps.openArticle(m_nextArticle, 0);
+		} else if (v.getId() == R.id.prev_article) {
+			m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
+		}
 	}
 }
