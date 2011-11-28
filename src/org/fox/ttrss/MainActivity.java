@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps {
+public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps, FeedCategoriesFragment.OnCatSelectedListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -35,6 +35,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private String m_sessionId;
 	private Article m_selectedArticle;
 	private Feed m_activeFeed;
+	private FeedCategory m_activeCategory;
 	private Timer m_refreshTimer;
 	private RefreshTask m_refreshTask;
 	private Menu m_menu;
@@ -43,6 +44,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_unreadArticlesOnly = true;
 	private boolean m_canLoadMore = true;
 	private boolean m_compatMode = false;
+	private boolean m_enableCats = false;
 
 	public void updateHeadlines() {
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
@@ -106,7 +108,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		@Override
 		public void run() {
-			refreshFeeds();
+			if (!m_enableCats || m_activeCategory != null)
+				refreshFeeds();
+			else
+				refreshCategories();
 		}
 	}
 	
@@ -120,10 +125,23 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 	
+	public synchronized void refreshCategories() {
+		FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
+
+		Log.d(TAG, "Refreshing categories...");
+
+		if (frag != null) {
+			frag.refresh(true);
+		}
+	}
 
 	public void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
-		refreshFeeds();
+		
+		if (!m_enableCats || m_activeCategory != null )
+			refreshFeeds();
+		else
+			refreshCategories();
 	}
 	
 	public boolean getUnreadOnly() {
@@ -175,7 +193,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
+			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
 		}
+		
+		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 		
 		Display display = getWindowManager().getDefaultDisplay();
 		int orientation = display.getOrientation();
@@ -205,13 +226,22 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		if (m_smallScreenMode) {
 			if (m_selectedArticle != null) {
 				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 			} else if (m_activeFeed != null) {
 				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			} else {
 				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				
+				if (m_enableCats && m_activeCategory == null) {
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+					findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+				} else {
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				}
 			}
 		} else {
 			if (m_selectedArticle == null)
@@ -252,13 +282,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("selectedArticle", m_selectedArticle);
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putBoolean("canLoadMore", m_canLoadMore);
+		out.putParcelable("activeCategory", m_activeCategory);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		if (!m_prefs.getString("theme", "THEME_DARK").equals(m_themeName)) {
+		boolean needRefresh = !m_prefs.getString("theme", "THEME_DARK").equals(m_themeName) ||
+			m_prefs.getBoolean("enable_cats", false) != m_enableCats;
+		
+		if (needRefresh) {
 			Intent refresh = new Intent(this, MainActivity.class);
 			startActivity(refresh);
 			finish();
@@ -334,6 +368,21 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         			
         			m_activeFeed = null;
         			initMainMenu();
+        			refreshFeeds();
+
+        		} else if (m_activeCategory != null) {
+        			if (m_compatMode) {
+        				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+        			}
+
+        			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+            		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+
+        			m_activeCategory = null;
+        			
+        			initMainMenu();
+        			refreshCategories();
+        			
         		} else {
         			finish();
         		}
@@ -450,6 +499,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		initMainMenu();
 		refreshFeeds();
+
 	}
 
 	public void setCanLoadMore(boolean canLoadMore) {
@@ -554,10 +604,16 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 							
 							setLoadingStatus(R.string.loading_message, true);
 
-							FeedsFragment frag = new FeedsFragment();
-							
 							FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-							ft.replace(R.id.feeds_fragment, frag);
+							
+							if (m_enableCats) {
+								FeedCategoriesFragment frag = new FeedCategoriesFragment();
+								ft.replace(R.id.cats_fragment, frag);
+							} else {
+								FeedsFragment frag = new FeedsFragment(); 
+								ft.replace(R.id.feeds_fragment, frag);
+							}
+
 							ft.commit();
 							
 							loginSuccess();
@@ -625,6 +681,23 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
+	public void viewCategory(FeedCategory cat) {
+		m_activeCategory = cat;
+	
+		initMainMenu();
+		
+		if (m_smallScreenMode) {
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+		}
+		
+		FeedsFragment frag = new FeedsFragment();
+	
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+		ft.replace(R.id.feeds_fragment, frag);
+		ft.commit();
+	}
+
 	public void openArticle(Article article, int compatAnimation) {
 		m_selectedArticle = article;
 		
@@ -668,6 +741,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		return m_activeFeed;
 	}
 
+	public FeedCategory getActiveCategory() {
+		return m_activeCategory;
+	}
+	
 	public void logout() {
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
@@ -748,5 +825,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			}
 		}		
 		return null;
+	}
+
+	@Override
+	public void onCatSelected(FeedCategory cat) {
+		m_activeCategory = cat;
+		viewCategory(cat);
 	}
 }

@@ -1,11 +1,9 @@
 package org.fox.ttrss;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,11 +18,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -56,11 +52,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -166,6 +160,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
 		
+		FeedCategory cat = ((MainActivity)getActivity()).getActiveCategory();
+		
+		final int catId = (cat != null) ? cat.id : -4;
+		
 		if (sessionId != null) {
 			
 			if (!background) {
@@ -181,7 +179,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				{
 					put("op", "getFeeds");
 					put("sid", sessionId);
-					put("cat_id", "-4");
+					put("cat_id", String.valueOf(catId));
 					if (unreadOnly) {
 						put("unread_only", String.valueOf(unreadOnly));
 					}
