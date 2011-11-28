@@ -58,7 +58,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 
 		@Override
 		public int compare(Feed a, Feed b) {
-			return a.title.compareTo(b.title);
+			if (a.id >= 0 && b.id >= 0)
+				return a.title.compareTo(b.title);
+			else
+				return a.id - b.id;
 		}
 		
 	}
@@ -141,7 +144,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 				{
 					put("op", "getFeeds");
 					put("sid", sessionId);
-					put("cat_id", "-3");
+					put("cat_id", "-4");
 					if (unreadOnly) {
 						put("unread_only", String.valueOf(unreadOnly));
 					}
@@ -192,8 +195,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 							
 							m_feeds.clear();
 							
-							for (Feed f : feeds) 
-								m_feeds.add(f);
+							for (Feed f : feeds)
+								if (f.id > -10) // skip labels for now
+									m_feeds.add(f);
 							
 							sortFeeds();
 							
