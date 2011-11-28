@@ -1,6 +1,10 @@
 package org.fox.ttrss;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +14,14 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +46,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private FeedList m_feeds = new FeedList();
 	private OnFeedSelectedListener m_feedSelectedListener;
 	private int m_selectedFeedId;
+	private static final String ICON_PATH = "/org.fox.ttrss-icons/";
+	private boolean m_enableFeedIcons;
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
@@ -81,6 +92,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		
+		m_enableFeedIcons = m_prefs.getBoolean("enable_feed_icons", false);
 		
 		if (m_feeds == null || m_feeds.size() == 0)
 			refresh(false);
@@ -173,6 +186,50 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void getFeedIcons() {
+		
+		ApiRequest req = new ApiRequest(getActivity().getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				if (result != null) {
+
+					try {
+						JsonElement iconsUrl = result.getAsJsonObject().get("content").getAsJsonObject().get("icons_dir");
+
+						if (iconsUrl != null) {
+							String iconsStr = iconsUrl.getAsString();
+							String baseUrl = "";
+							
+							if (!iconsStr.contains("://")) {
+								baseUrl = m_prefs.getString("ttrss_url", "") + "/" + iconsStr;									
+							} else {
+								baseUrl = iconsStr;
+							}
+
+							GetIconsTask git = new GetIconsTask(baseUrl);
+							git.execute(m_feeds);
+						}
+					} catch (Exception e) {
+						Log.d(TAG, "Error receiving icons configuration");
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		};
+		
+		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+		
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", sessionId);
+				put("op", "getConfig");
+			}			 
+		};
+
+		req.execute(map);
+	}
+	
 	private class FeedsRequest extends ApiRequest {
 			
 		public FeedsRequest(Context context) {
@@ -206,7 +263,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 								setLoadingStatus(R.string.error_no_feeds, false);
 							else
 								setLoadingStatus(R.string.blank, false);
-									
+
+							if (m_enableFeedIcons) getFeedIcons();
+							
 						}
 					} else {
 						MainActivity activity = (MainActivity)getActivity();							
@@ -291,7 +350,27 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			ImageView icon = (ImageView)v.findViewById(R.id.icon);
 			
 			if (icon != null) {
-				icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+				
+				if (m_enableFeedIcons) {
+					
+					File storage = Environment.getExternalStorageDirectory();
+					
+					File iconFile = new  File(storage.getAbsolutePath() + ICON_PATH + feed.id + ".ico");
+					if (iconFile.exists()) {
+						Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
+						if (bmpOrig != null) {
+							Bitmap bmp = Bitmap.createScaledBitmap(bmpOrig, 28, 28, true);
+						
+							icon.setImageBitmap(bmp);
+						}
+					} else {
+						icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+					}
+					
+				} else {
+					icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+				}
+				
 			}
 
 			return v;
@@ -309,5 +388,66 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		
 		Collections.sort(m_feeds, cmp);
 		m_adapter.notifyDataSetInvalidated();
+	}
+	
+	public class GetIconsTask extends AsyncTask<FeedList, Integer, Integer> {
+
+		private String m_baseUrl;
+		
+		public GetIconsTask(String baseUrl) {
+			m_baseUrl = baseUrl;
+		}
+
+		@Override
+		protected Integer doInBackground(FeedList... params) {
+
+			try {
+				File storage = Environment.getExternalStorageDirectory();
+				final File iconPath = new File(storage.getAbsolutePath() + ICON_PATH);
+				if (!iconPath.exists()) iconPath.mkdir();
+			
+				final FeedList feeds = params[0];
+				
+				if (iconPath.exists()) {
+					for (Feed feed : feeds)	 {
+						if (feed.id > 0 && feed.has_icon) {
+							File iconFile = new File(iconPath.getAbsolutePath() + "/" + feed.id + ".ico");
+							String fetchUrl = m_baseUrl + "/" + feed.id + ".ico";
+							
+							if (!iconFile.exists()) {
+								//Log.d(TAG, "Downloading " + fetchUrl);
+								
+								try {
+									BufferedInputStream is = new BufferedInputStream(new URL(fetchUrl).openStream(), 1024);
+									FileOutputStream fos = new FileOutputStream(iconFile);
+									
+									byte[] buffer = new byte[1024];
+									int len = 0;
+									while ((len = is.read(buffer)) != -1) {
+									    fos.write(buffer, 0, len);
+									}
+									
+									fos.close();
+									is.close();
+								} catch (Exception e) {
+									Log.d(TAG, "Error downloading " + fetchUrl);
+									e.printStackTrace();
+								}
+
+							}											
+						}
+					}						
+				}
+			} catch (Exception e) {
+				Log.d(TAG, "Error while downloading feed icons");
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(Integer result) {
+			m_adapter.notifyDataSetInvalidated();
+		}
+		
 	}
 }
