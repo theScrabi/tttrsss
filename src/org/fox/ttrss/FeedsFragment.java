@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -285,7 +286,13 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			if (tu != null) {
 				tu.setText(String.valueOf(feed.unread));
 				tu.setVisibility((feed.unread > 0) ? View.VISIBLE : View.INVISIBLE);
-			}        	
+			}
+			
+			ImageView icon = (ImageView)v.findViewById(R.id.icon);
+			
+			if (icon != null) {
+				icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+			}
 
 			return v;
 		}
