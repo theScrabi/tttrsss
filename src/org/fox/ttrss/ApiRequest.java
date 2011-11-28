@@ -109,7 +109,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			InputStream content = execute.getEntity().getContent();
 
 			BufferedReader buffer = new BufferedReader(
-					new InputStreamReader(content));
+					new InputStreamReader(content), 8192);
 
 			String s = "";				
 			String response = "";

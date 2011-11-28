@@ -25,6 +25,7 @@
            android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>
       
       <CheckBoxPreference android:title="@string/sort_feeds_by_unread" android:key="sort_feeds_by_unread"/>
+      <CheckBoxPreference android:title="@string/download_feed_icons" android:key="download_feed_icons"/>
       <CheckBoxPreference android:defaultValue="false" android:summary="@string/enable_ads_summary" android:title="@string/enable_ads" android:key="enable_ads" />
    </PreferenceCategory>
 

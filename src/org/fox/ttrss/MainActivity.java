@@ -262,12 +262,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			Intent refresh = new Intent(this, MainActivity.class);
 			startActivity(refresh);
 			finish();
-		} else {
-			FeedsFragment frag = (FeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
-			
-			if (frag != null) {
-				frag.sortFeeds();
-			}
 		}
 		
 	}

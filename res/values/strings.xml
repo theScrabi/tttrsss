@@ -54,5 +54,5 @@
     <string name="enable_ads">Enable ads</string>
     <string name="enable_ads_summary">Showing ads to you supports the project</string>
     <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
-        
+    <string name="download_feed_icons">Download and display feed icons</string>
 </resources>

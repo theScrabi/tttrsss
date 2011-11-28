@@ -1,9 +1,13 @@
 package org.fox.ttrss;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +15,25 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -36,9 +56,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedsFragment extends Fragment implements OnItemClickListener {
+public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
@@ -46,7 +67,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 	private FeedList m_feeds = new FeedList();
 	private OnFeedSelectedListener m_feedSelectedListener;
 	private int m_selectedFeedId;
-	private static final String ICON_PATH = "/org.fox.ttrss-icons/";
+	private static final String ICON_PATH = "/org.fox.ttrss/icons/";
 	private boolean m_enableFeedIcons;
 	
 	public interface OnFeedSelectedListener {
@@ -93,7 +114,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		
-		m_enableFeedIcons = m_prefs.getBoolean("enable_feed_icons", false);
+		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
 		if (m_feeds == null || m_feeds.size() == 0)
 			refresh(false);
@@ -113,6 +134,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		m_prefs.registerOnSharedPreferenceChangeListener(this);
+		
 		m_feedSelectedListener = (OnFeedSelectedListener) activity;
 	}
 
@@ -404,36 +427,17 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			try {
 				File storage = Environment.getExternalStorageDirectory();
 				final File iconPath = new File(storage.getAbsolutePath() + ICON_PATH);
-				if (!iconPath.exists()) iconPath.mkdir();
+				if (!iconPath.exists()) iconPath.mkdirs();
 			
-				final FeedList feeds = params[0];
-				
 				if (iconPath.exists()) {
-					for (Feed feed : feeds)	 {
+					for (Feed feed : params[0])	 {
 						if (feed.id > 0 && feed.has_icon) {
-							File iconFile = new File(iconPath.getAbsolutePath() + "/" + feed.id + ".ico");
+							File outputFile = new File(iconPath.getAbsolutePath() + "/" + feed.id + ".ico");
 							String fetchUrl = m_baseUrl + "/" + feed.id + ".ico";
 							
-							if (!iconFile.exists()) {
-								//Log.d(TAG, "Downloading " + fetchUrl);
-								
-								try {
-									BufferedInputStream is = new BufferedInputStream(new URL(fetchUrl).openStream(), 1024);
-									FileOutputStream fos = new FileOutputStream(iconFile);
-									
-									byte[] buffer = new byte[1024];
-									int len = 0;
-									while ((len = is.read(buffer)) != -1) {
-									    fos.write(buffer, 0, len);
-									}
-									
-									fos.close();
-									is.close();
-								} catch (Exception e) {
-									Log.d(TAG, "Error downloading " + fetchUrl);
-									e.printStackTrace();
-								}
-
+							if (!outputFile.exists()) {
+								downloadFile(fetchUrl, outputFile.getAbsolutePath());
+								Thread.sleep(2000);
 							}											
 						}
 					}						
@@ -445,9 +449,79 @@ public class FeedsFragment extends Fragment implements OnItemClickListener {
 			return null;
 		}
 		
+		protected void downloadFile(String fetchUrl, String outputFile) {
+			DefaultHttpClient client;
+			
+			if (m_prefs.getBoolean("ssl_trust_any", false)) {
+				SchemeRegistry schemeRegistry = new SchemeRegistry();
+				schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+				schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
+	        
+				HttpParams httpParams = new BasicHttpParams();
+
+				client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
+			} else {
+				client = new DefaultHttpClient();
+			}
+
+			HttpGet httpGet = new HttpGet(fetchUrl);
+
+			String httpLogin = m_prefs.getString("http_login", "");
+			String httpPassword = m_prefs.getString("http_password", "");
+			
+			if (httpLogin.length() > 0) {
+
+				URL targetUrl;
+				try {
+					targetUrl = new URL(fetchUrl);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					return;
+				}
+				
+				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
+				
+				client.getCredentialsProvider().setCredentials(
+		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+		                new UsernamePasswordCredentials(httpLogin, httpPassword));
+			}
+			
+
+			try {
+				HttpResponse execute = client.execute(httpGet);
+				
+				InputStream content = execute.getEntity().getContent();
+
+				BufferedInputStream is = new BufferedInputStream(content, 1024);
+				FileOutputStream fos = new FileOutputStream(outputFile);
+				
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = is.read(buffer)) != -1) {
+				    fos.write(buffer, 0, len);
+				}
+				
+				fos.close();
+				is.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		
 		protected void onPostExecute(Integer result) {
 			m_adapter.notifyDataSetInvalidated();
 		}
+		
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+
+		sortFeeds();
+		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
 	}
 }
