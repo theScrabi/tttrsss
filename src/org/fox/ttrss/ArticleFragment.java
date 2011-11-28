@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.fox.ttrss.ArticleOps.RelativeArticle;
-import org.jsoup.helper.StringUtil;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -14,10 +13,13 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +36,8 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 	private ArticleOps m_articleOps;
 	private Article m_nextArticle;
 	private Article m_prevArticle;
+	private GestureDetector m_gestureDetector;
+	private View.OnTouchListener m_gestureListener;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -44,6 +48,17 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
+		m_gestureDetector = new GestureDetector(new MyGestureDetector());
+		m_gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent aEvent) {
+                if (m_gestureDetector.onTouchEvent(aEvent))
+                    return true;
+                else
+                    return false;
+                }
+            };
+            
+		
 		// TODO change to interface?
 		MainActivity activity = (MainActivity)getActivity();
 		
@@ -106,6 +121,9 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 				}
 				
 				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+				
+				if (activity.isSmallScreen())
+					web.setOnTouchListener(m_gestureListener);
 			}
 			
 			TextView dv = (TextView)view.findViewById(R.id.date);
@@ -203,4 +221,45 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 			m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
 		}
 	}
+	
+	// http://blog.blackmoonit.com/2010/07/gesture-detection-swipe-detection_4292.html
+	class MyGestureDetector extends SimpleOnGestureListener {
+        private static final int SWIPE_MIN_DISTANCE = 150;
+        private static final int SWIPE_MAX_OFF_PATH = 100;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
+ 
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float dX = e2.getX()-e1.getX();
+            float dY = e1.getY()-e2.getY();
+            if (Math.abs(dY)<SWIPE_MAX_OFF_PATH &&
+                Math.abs(velocityX)>=SWIPE_THRESHOLD_VELOCITY &&
+                Math.abs(dX)>=SWIPE_MIN_DISTANCE ) {
+                if (dX>0) {
+                    //Log.d(TAG, "Right swipe");
+                    
+                    if (m_prevArticle != null)
+                    	m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
+                    
+                } else {
+                    //Log.d(TAG, "Left swipe");
+                    
+                    if (m_nextArticle != null)
+                    	m_articleOps.openArticle(m_nextArticle, 0);
+
+                }
+                return true;
+            /* } else if (Math.abs(dX)<SWIPE_MAX_OFF_PATH &&
+                Math.abs(velocityY)>=SWIPE_THRESHOLD_VELOCITY &&
+                Math.abs(dY)>=SWIPE_MIN_DISTANCE ) {
+                if (dY>0) {
+                    Log.d(TAG, "Up swipe");
+                } else {
+                    Log.d(TAG, "Down swipe");
+                }
+                return true; */
+            }
+            return false;
+        }
+    };
 }

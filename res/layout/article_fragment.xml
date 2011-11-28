@@ -14,11 +14,11 @@
         android:paddingLeft="4dip" >
 
     </ImageView>
-
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-        android:id="@+id/linerLayout2"
+        android:id="@+id/article_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
