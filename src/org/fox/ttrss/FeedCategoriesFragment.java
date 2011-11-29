@@ -75,38 +75,19 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	    ContextMenuInfo menuInfo) {
 		
 		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
+		
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		FeedCategory cat = m_adapter.getItem(info.position);
+		
+		if (cat != null) 
+			menu.setHeaderTitle(cat.title);
+		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
 	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    FeedCategory cat = m_adapter.getItem(info.position);
-	    
-	    Log.d(TAG, "onContextItemSelected=" + cat);
-	    
-		MainActivity activity = (MainActivity)getActivity();
-
-	    if (cat != null) {
-	    	switch (item.getItemId()) {
-	    	case R.id.browse_articles:
-				m_selectedCatId = cat.id;
-				m_adapter.notifyDataSetChanged();
-	    		activity.viewCategory(cat, true);
-	    		break;
-	    	case R.id.browse_feeds:
-				m_selectedCatId = cat.id;
-				m_adapter.notifyDataSetChanged();
-	    		activity.viewCategory(cat, false);
-	    		break;
-	    	case R.id.catchup_category:
-	    		activity.catchupFeed(new Feed(cat.id, cat.title, true));
-	    		break;
-	    	}
-	    }
-			
-		return true;
+	public FeedCategory getCategoryAtPosition(int position) {
+		return m_adapter.getItem(position);
 	}
 	
 	@Override
@@ -357,5 +338,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			m_selectedCatId = cat.id;
 			m_adapter.notifyDataSetChanged();
 		}
+	}
+
+	public void setSelectedCategory(FeedCategory cat) {
+		m_selectedCatId = cat.id;
+		m_adapter.notifyDataSetChanged();
 	}
 }

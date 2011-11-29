@@ -101,31 +101,17 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	    ContextMenuInfo menuInfo) {
 		
 		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
+		
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		Feed feed = m_adapter.getItem(info.position);
+		
+		if (feed != null) 
+			menu.setHeaderTitle(feed.title);
+
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
 	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    Feed feed = m_adapter.getItem(info.position);
-	    
-		MainActivity activity = (MainActivity)getActivity();
-
-		Log.d(TAG, "onContextItemSelected=" + feed);
-		
-	    if (feed != null) {
-	    	switch (item.getItemId()) {
-	    	case R.id.catchup_feed:
-	    		activity.catchupFeed(feed);
-	    		break;
-	    	}
-	    }
-			
-		return true;
-	}
-
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
@@ -141,10 +127,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		
-		// http://code.google.com/p/android/issues/detail?id=20065
-		// categories fragment is displayed first, so it hogs the context menu events. thanks, google!
-		if (!m_prefs.getBoolean("enable_cats", false))
-			registerForContextMenu(list);
+		registerForContextMenu(list);
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
@@ -555,5 +538,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		sortFeeds();
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
+	}
+
+	public Feed getFeedAtPosition(int position) {
+		return m_adapter.getItem(position);
 	}
 }

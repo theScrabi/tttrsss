@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -524,6 +525,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		refreshCategories();	
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
@@ -560,43 +562,35 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.headlines_select_unread:
 			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
 			return true;
-		case R.id.selection_toggle_marked:
+		case R.id.catchup_and_load:
 			if (hf != null) {
-				ArticleList selected = hf.getSelectedArticles();
-			
-				if (selected.size() > 0) {
-					for (Article a : selected)
-						a.marked = !a.marked;
-			
-					toggleArticlesMarked(selected);
-					hf.notifyUpdated();
-				}
-			}
-			return true;
-		case R.id.selection_toggle_published:
-			if (hf != null) {
-				ArticleList selected = hf.getSelectedArticles();
-			
-				if (selected.size() > 0) {
-					for (Article a : selected)
-						a.published = !a.published;
-
-					toggleArticlesPublished(selected);
-					hf.notifyUpdated();
-				}
-			}
-			return true;
-		case R.id.selection_toggle_unread:
-			if (hf != null) {				
-				ArticleList selected = hf.getSelectedArticles();
+				final ArticleList articles = hf.getUnreadArticles();
 				
-				if (selected.size() > 0) {			
-					for (Article a : selected)
-						a.unread = !a.unread;
-			
-					toggleArticlesUnread(selected);
-					hf.notifyUpdated();
-				}
+				ApiRequest req = new ApiRequest(getApplicationContext()) {
+					@Override
+					protected void onPostExecute(JsonElement result) {
+						if (result != null) {
+							for (Article a : articles)
+								a.unread = false;
+								
+							viewFeed(m_activeFeed, true);
+						}
+					}
+				};
+					
+				@SuppressWarnings("serial")
+				HashMap<String,String> map = new HashMap<String,String>() {
+					{
+						put("sid", m_sessionId);
+						put("op", "updateArticle");
+						put("article_ids", articlesToIdString(articles));
+						put("mode", "0");
+						put("field", "2");
+					}			 
+				};
+
+				req.execute(map);
+
 			}
 			return true;
 		case R.id.load_more_articles:
@@ -650,7 +644,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	public void shareArticle(Article article) {
 		if (article != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
@@ -1070,6 +1064,117 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			setLoadingStatus(R.string.login_in_progress, true);
 		}
 	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    
+		Log.d(TAG, "onContextItemSelected=" + item.getItemId());
+
+		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		FeedsFragment ff = (FeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
+		FeedCategoriesFragment cf = (FeedCategoriesFragment)getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
+
+    	switch (item.getItemId()) {
+    	case R.id.browse_articles:
+    		if (cf != null) {
+    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
+    			if (cat != null) {
+    				viewCategory(cat, true);
+    				cf.setSelectedCategory(cat);
+    			}
+    		}
+    		break;
+    	case R.id.browse_feeds:
+    		if (cf != null) {
+    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
+    			if (cat != null) {
+    				viewCategory(cat, false);
+    				cf.setSelectedCategory(cat);
+    			}
+    		}
+    		break;
+    	case R.id.catchup_category:
+    		if (cf != null) {
+    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
+    			if (cat != null) {
+    	    		catchupFeed(new Feed(cat.id, cat.title, true));
+    			}
+    		}
+    		break;
+    	case R.id.catchup_feed:
+    		if (ff != null) {
+    			Feed feed = ff.getFeedAtPosition(info.position);
+    			if (feed != null) {
+    				catchupFeed(feed);
+    			}
+    		}
+    		break;
+		case R.id.selection_toggle_marked:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.marked = !a.marked;
+			
+					toggleArticlesMarked(selected);
+					hf.notifyUpdated();
+				} else {
+					Article article = hf.getArticleAtPosition(info.position);
+					if (article != null) {
+						article.marked = !article.marked;
+						saveArticleMarked(article);
+						hf.notifyUpdated();
+					}
+				}
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.published = !a.published;
+
+					toggleArticlesPublished(selected);
+					hf.notifyUpdated();
+				} else {
+					Article article = hf.getArticleAtPosition(info.position);
+					if (article != null) {
+						article.published = !article.published;
+						saveArticlePublished(article);
+						hf.notifyUpdated();
+					}
+				}
+			}
+			return true;
+		case R.id.selection_toggle_unread:
+			if (hf != null) {				
+				ArticleList selected = hf.getSelectedArticles();
+				
+				if (selected.size() > 0) {			
+					for (Article a : selected)
+						a.unread = !a.unread;
+			
+					toggleArticlesUnread(selected);
+					hf.notifyUpdated();
+				} else {
+					Article article = hf.getArticleAtPosition(info.position);
+					if (article != null) {
+						article.unread = !article.unread;
+						saveArticleUnread(article);
+						hf.notifyUpdated();
+					}
+				}
+			}
+			return true;
+    	}
+			
+		return true;
+	}
+
 
 	@Override
 	public Article getRelativeArticle(Article article, RelativeArticle ra) {

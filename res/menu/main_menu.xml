@@ -38,11 +38,18 @@
                 android:title="@string/load_more_articles"/>
 
             <item
+                android:id="@+id/catchup_and_load"
+                android:icon="@android:drawable/ic_menu_rotate"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/catchup_and_load"/>
+
+            <item
                 android:id="@+id/show_all_articles"
                 android:icon="@android:drawable/ic_menu_agenda"
                 android:showAsAction=""
                 android:title="@string/show_all_articles"/>
 
+            
             <item
                 android:id="@+id/headlines_select_all"
                 android:title="@string/headlines_select_all"/>
@@ -50,30 +57,10 @@
             <item
                 android:id="@+id/headlines_select_unread"
                 android:title="@string/headlines_select_unread"/>
-            
+
             <item
                 android:id="@+id/headlines_select_none"
                 android:title="@string/headlines_select_none"/>
-
-            <item
-                android:id="@+id/selection_toggle_unread"
-                android:icon="@android:drawable/ic_menu_recent_history"
-                android:showAsAction=""
-                android:title="@string/selection_toggle_unread"/>
-            
-            <item
-                android:id="@+id/selection_toggle_marked"
-                android:icon="@android:drawable/star_off"
-                android:showAsAction=""
-                android:title="@string/selection_toggle_marked"/>
-
-            <item
-                android:id="@+id/selection_toggle_published"
-                android:icon="@drawable/ic_menu_rss"
-                android:showAsAction=""
-                android:title="@string/selection_toggle_published"/>
-
-            
         </group>
 
         <group android:id="@+id/menu_group_article" >

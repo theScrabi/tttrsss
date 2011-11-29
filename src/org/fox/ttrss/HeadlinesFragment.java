@@ -17,11 +17,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -53,6 +56,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	}
 	
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+		
+		getActivity().getMenuInflater().inflate(R.menu.headlines_menu, menu);
+		
+		if (m_selectedArticles.size() > 0) {
+			menu.setHeaderTitle(R.string.headline_context_multiple);
+		} else {
+			menu.setHeaderTitle(R.string.headline_context_single);
+		}
+		
+		super.onCreateContextMenu(menu, v, menuInfo);		
+		
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
@@ -68,6 +87,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		registerForContextMenu(list);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
@@ -194,7 +214,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 						ListView list = (ListView)getView().findViewById(R.id.headlines);
 						
 						if (list != null && m_offset != 0) {
-							list.setSelection(last_position+1);
+							list.setSelection(last_position-1);
 						}
 						
 						MainActivity activity = (MainActivity)getActivity();
@@ -401,6 +421,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		}
 		
 		m_adapter.notifyDataSetChanged();
+	}
+
+	public Article getArticleAtPosition(int position) {
+		return m_adapter.getItem(position);
+	}
+
+	public ArticleList getUnreadArticles() {
+		ArticleList tmp = new ArticleList();
+		for (Article a : m_articles) {
+			if (a.unread) tmp.add(a);
+		}
+		return tmp;
 	}
 
 }

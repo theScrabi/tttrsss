@@ -22,6 +22,8 @@
     <string name="preferences">Preferences</string>
     <string name="theme_light">Light</string>
     <string name="connection">Connection</string>
+    <string name="headline_context_multiple">Selection toggle</string>
+    <string name="headline_context_single">Article toggle</string>
     <string name="http_authentication">HTTP Authentication</string>
     <string name="login_success">Logged in.</string>
     <string name="no_unread_feeds">No unread feeds.</string>
@@ -34,7 +36,7 @@
     <string name="share_article">Share article</string>
     <string name="catchup">Mark as read</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
-    <string name="load_more_articles">Load more...</string>
+    <string name="load_more_articles">Load more</string>
     <string name="show_all_articles">Show all articles</string>
     <string name="show_unread_articles">Show unread articles</string>
     <string name="ssl_trust_any">Accept any SSL certificate</string>
@@ -46,10 +48,10 @@
     <string name="toggle_published">Toggle published</string>
     <string name="headlines_select_all">Select all</string>
     <string name="headlines_select_none">Select none</string>
-    <string name="headlines_select_unread">Select unread</string>
-    <string name="selection_toggle_marked">Toggle starred</string>
-    <string name="selection_toggle_published">Toggle published</string>
-    <string name="selection_toggle_unread">Toggle unread</string>        
+    <string name="headlines_select_unread">Unread</string>
+    <string name="selection_toggle_marked">Starred</string>
+    <string name="selection_toggle_published">Published</string>
+    <string name="selection_toggle_unread">Unread</string>        
     <string name="set_unread">Mark unread</string>
     <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
@@ -63,6 +65,7 @@
     <string name="no_headlines_to_display">No headlines to display</string>
     <string name="browse_cats_like_feeds">Browse categories like feeds</string>
     <string name="browse_cats_like_feeds_summary">You can long-tap on a category to override this setting</string>
+    <string name="catchup_and_load">Catchup</string>
         
 	<string name="error_no_error">No error</string>
 	<string name="error_unknown">Error: Unknown error (see log)</string>
