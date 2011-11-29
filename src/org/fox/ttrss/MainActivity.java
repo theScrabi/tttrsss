@@ -315,23 +315,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			Intent refresh = new Intent(this, MainActivity.class);
 			startActivity(refresh);
 			finish();
+		} else if (m_sessionId != null) {
+			m_refreshTask = new RefreshTask();
+			m_refreshTimer = new Timer("Refresh");
+			
+			m_refreshTimer.schedule(m_refreshTask, 60*1000L, 120*1000L);
 		}
-		
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		
-		if (m_refreshTask != null) {
-			m_refreshTask.cancel();
-			m_refreshTask = null;
-		}
-		
-		if (m_refreshTimer != null) {
-			m_refreshTimer.cancel();
-			m_refreshTimer = null;
-		}
 	}
 
 	@Override
@@ -601,6 +596,22 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.findItem(R.id.show_feeds).setVisible(false);
 			}
 		}		
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		if (m_refreshTask != null) {
+			m_refreshTask.cancel();
+			m_refreshTask = null;
+		}
+		
+		if (m_refreshTimer != null) {
+			m_refreshTimer.cancel();
+			m_refreshTimer = null;
+		}
+
 	}
 	
 	private void loginSuccess() {
