@@ -1,7 +1,6 @@
 package org.fox.ttrss;
 
 import java.util.HashMap;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +8,8 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -108,10 +109,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		@Override
 		public void run() {
-			if (!m_enableCats || m_activeCategory != null)
-				refreshFeeds();
-			else
-				refreshCategories();
+			ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+			
+			if (cm.getBackgroundDataSetting()) {
+				NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+				if (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected()) {
+			
+					if (!m_enableCats || m_activeCategory != null)
+						refreshFeeds();
+					else
+						refreshCategories();
+				}
+			}
 		}
 	}
 	
@@ -613,7 +622,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_refreshTask = new RefreshTask();
 		m_refreshTimer = new Timer("Refresh");
 		
-		m_refreshTimer.schedule(m_refreshTask, 60*1000L, 60*1000L);
+		m_refreshTimer.schedule(m_refreshTask, 60*1000L, 120*1000L);
 	}
 	
 	private class LoginRequest extends ApiRequest {
