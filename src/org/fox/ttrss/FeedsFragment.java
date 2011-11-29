@@ -143,7 +143,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		// http://code.google.com/p/android/issues/detail?id=20065
 		// categories fragment is displayed first, so it hogs the context menu events. thanks, google!
-		if (m_prefs.getBoolean("enable_cats", false))
+		if (!m_prefs.getBoolean("enable_cats", false))
 			registerForContextMenu(list);
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
