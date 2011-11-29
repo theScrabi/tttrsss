@@ -120,6 +120,33 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@SuppressWarnings("unchecked")
+	public void catchupFeed(final Feed feed) {
+		Log.d(TAG, "catchupFeed=" + feed);
+		
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				if (!m_enableCats || m_activeCategory != null)
+					refreshFeeds();
+				else
+					refreshCategories();
+			}
+			
+		};
+	
+		@SuppressWarnings("serial")
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "catchupFeed");
+				put("feed_id", String.valueOf(feed.id));
+				if (feed.is_cat) put("is_cat", "1");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings("unchecked")
 	public void toggleArticlesMarked(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	

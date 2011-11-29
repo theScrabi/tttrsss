@@ -38,10 +38,14 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -91,6 +95,36 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+		
+		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
+		super.onCreateContextMenu(menu, v, menuInfo);		
+		
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    Feed feed = m_adapter.getItem(info.position);
+	    
+		MainActivity activity = (MainActivity)getActivity();
+
+		Log.d(TAG, "onContextItemSelected=" + feed);
+		
+	    if (feed != null) {
+	    	switch (item.getItemId()) {
+	    	case R.id.catchup_feed:
+	    		activity.catchupFeed(feed);
+	    		break;
+	    	}
+	    }
+			
+		return true;
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -106,6 +140,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		
+		// http://code.google.com/p/android/issues/detail?id=20065
+		// categories fragment is displayed first, so it hogs the context menu events. thanks, google!
+		if (m_prefs.getBoolean("enable_cats", false))
+			registerForContextMenu(list);
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		

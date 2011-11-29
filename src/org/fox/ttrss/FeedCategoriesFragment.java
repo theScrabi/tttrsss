@@ -14,6 +14,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -83,18 +84,24 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    FeedCategory cat = m_adapter.getItem(info.position);
 	    
+	    Log.d(TAG, "onContextItemSelected=" + cat);
+	    
 		MainActivity activity = (MainActivity)getActivity();
 
 	    if (cat != null) {
-			m_selectedCatId = cat.id;
-			m_adapter.notifyDataSetChanged();
-
 	    	switch (item.getItemId()) {
 	    	case R.id.browse_articles:
+				m_selectedCatId = cat.id;
+				m_adapter.notifyDataSetChanged();
 	    		activity.viewCategory(cat, true);
 	    		break;
 	    	case R.id.browse_feeds:
+				m_selectedCatId = cat.id;
+				m_adapter.notifyDataSetChanged();
 	    		activity.viewCategory(cat, false);
+	    		break;
+	    	case R.id.catchup_category:
+	    		activity.catchupFeed(new Feed(cat.id, cat.title, true));
 	    		break;
 	    	}
 	    }
