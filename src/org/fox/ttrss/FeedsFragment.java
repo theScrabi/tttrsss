@@ -45,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -375,9 +376,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 					if (iconFile.exists()) {
 						Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
 						if (bmpOrig != null) {
-							Bitmap bmp = Bitmap.createScaledBitmap(bmpOrig, 28, 28, true);
-						
-							icon.setImageBitmap(bmp);
+							icon.setImageBitmap(bmpOrig);
 						}
 					} else {
 						icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
