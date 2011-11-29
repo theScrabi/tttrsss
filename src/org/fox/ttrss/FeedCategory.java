@@ -12,6 +12,12 @@ public class FeedCategory implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	public FeedCategory(int id, String title, int unread) {
+		this.id = id;
+		this.title = title;
+		this.unread = unread;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;

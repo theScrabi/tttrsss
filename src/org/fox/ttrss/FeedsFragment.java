@@ -160,14 +160,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
-		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext());
+		FeedCategory cat = ((MainActivity)getActivity()).getActiveCategory();
+
+		final int catId = (cat != null) ? cat.id : -4;
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
-		
-		FeedCategory cat = ((MainActivity)getActivity()).getActiveCategory();
-		
-		final int catId = (cat != null) ? cat.id : -4;
+
+		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
 		if (sessionId != null) {
 			
@@ -257,9 +257,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	}
 	
 	private class FeedsRequest extends ApiRequest {
+		private int m_catId;
 			
-		public FeedsRequest(Context context) {
+		public FeedsRequest(Context context, int catId) {
 			super(context);
+			m_catId = catId;
 		}
 		
 		protected void onPostExecute(JsonElement result) {
@@ -274,7 +276,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						m_feeds.clear();
 						
 						for (Feed f : feeds)
-							if (f.id > -10) // skip labels for now
+							if (f.id > -10 || m_catId != -4) // skip labels for flat feedlist for now
 								m_feeds.add(f);
 						
 						sortFeeds();

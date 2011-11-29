@@ -35,7 +35,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
-	private int m_selectedCatId;
+	private int m_selectedCatId = -100;
 	private OnCatSelectedListener m_catSelectedListener;
 
 	public interface OnCatSelectedListener {
@@ -171,6 +171,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						final List<FeedCategory> cats = new Gson().fromJson(content, listType);
 						
 						m_cats.clear();
+						
+						int apiLevel = ((MainActivity)getActivity()).getApiLevel();
+						
+						// virtual cats implemented in getCategories since api level 1
+						if (apiLevel == 0) {
+							m_cats.add(new FeedCategory(-1, "Special", 0));
+							m_cats.add(new FeedCategory(-2, "Labels", 0));
+							m_cats.add(new FeedCategory(0, "Uncategorized", 0));
+						}
 						
 						for (FeedCategory c : cats)
 							m_cats.add(c);

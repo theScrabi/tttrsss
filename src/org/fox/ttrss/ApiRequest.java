@@ -47,7 +47,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private boolean m_transportDebugging = false;
 	protected int m_httpStatusCode = 0;
 	protected int m_apiStatusCode = 0;
-	private Context m_context;
+	protected Context m_context;
 	private SharedPreferences m_prefs;
 	
 	protected ApiError m_lastError;

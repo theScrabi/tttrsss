@@ -46,12 +46,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_canLoadMore = true;
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
+	private int m_apiLevel = 0;
 
 	public void updateHeadlines() {
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			frag.notifyUpdated();
 		}
+	}
+	
+	public int getApiLevel() {
+		return m_apiLevel;
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })
@@ -203,6 +208,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
+			m_apiLevel = savedInstanceState.getInt("apiLevel");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -302,6 +308,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putParcelable("activeCategory", m_activeCategory);
+		out.putInt("apiLevel", m_apiLevel);
 	}
 
 	@Override
@@ -428,7 +435,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.update_feeds:
-			refreshFeeds();
+			if (!m_enableCats || m_activeCategory != null )
+				refreshFeeds();
+			else
+				refreshCategories();
 			return true;
 		case R.id.logout:
 			logout();
@@ -644,19 +654,42 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 						
 						Log.d(TAG, "Authenticated!");
 						
+						ApiRequest req = new ApiRequest(m_context) {
+							protected void onPostExecute(JsonElement result) {
+								if (result != null) {
+									m_apiLevel = result.getAsJsonObject().get("level").getAsInt();
+								} else {
+									m_apiLevel = 0;
+								}
+								
+								Log.d(TAG, "Received API level: " + m_apiLevel);
+								
+								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+								
+								if (m_enableCats) {
+									FeedCategoriesFragment frag = new FeedCategoriesFragment();
+									ft.replace(R.id.cats_fragment, frag);
+								} else {
+									FeedsFragment frag = new FeedsFragment(); 
+									ft.replace(R.id.feeds_fragment, frag);
+								}
+
+								ft.commit();
+
+							}
+						};
+						
+						HashMap<String,String> map = new HashMap<String,String>() {
+							{
+								put("sid", m_sessionId);
+								put("op", "getApiLevel");
+							}			 
+						};
+
+						req.execute(map);
+						
 						setLoadingStatus(R.string.loading_message, true);
 
-						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-						
-						if (m_enableCats) {
-							FeedCategoriesFragment frag = new FeedCategoriesFragment();
-							ft.replace(R.id.cats_fragment, frag);
-						} else {
-							FeedsFragment frag = new FeedsFragment(); 
-							ft.replace(R.id.feeds_fragment, frag);
-						}
-
-						ft.commit();
 						
 						loginSuccess();
 						return;
