@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -29,21 +30,27 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
 
-	protected static final int STATUS_LOGIN_FAILED = 0;
-	protected static final int STATUS_OK = 1;
-	protected static final int STATUS_API_DISABLED = 2;
-	protected static final int STATUS_OTHER_ERROR = 3;
+	public enum ApiError { NO_ERROR, HTTP_UNAUTHORIZED, HTTP_FORBIDDEN, HTTP_NOT_FOUND, 
+		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED };
 	
+	public static final int API_STATUS_OK = 0;
+	public static final int API_STATUS_ERR = 1;
+		
 	private String m_api;
 	private boolean m_trustAny = false;
 	private boolean m_transportDebugging = false;
+	protected int m_httpStatusCode = 0;
+	protected int m_apiStatusCode = 0;
 	private Context m_context;
 	private SharedPreferences m_prefs;
+	
+	protected ApiError m_lastError;
 
 	public ApiRequest(Context context) {
 		m_context = context;
@@ -53,6 +60,42 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		m_api = m_prefs.getString("ttrss_url", null);
 		m_trustAny = m_prefs.getBoolean("ssl_trust_any", false);
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
+		m_lastError = ApiError.NO_ERROR;
+		
+	}
+	
+	protected int getErrorMessage() {
+		switch (m_lastError) {
+		case NO_ERROR:
+			return R.string.error_unknown;
+		case HTTP_UNAUTHORIZED:
+			return R.string.error_http_unauthorized;
+		case HTTP_FORBIDDEN:
+			return R.string.error_http_forbidden;
+		case HTTP_NOT_FOUND:
+			return R.string.error_http_not_found;
+		case HTTP_SERVER_ERROR:
+			return R.string.error_http_server_error;
+		case HTTP_OTHER_ERROR:
+			return R.string.error_http_other_error;
+		case SSL_REJECTED:
+			return R.string.error_ssl_rejected;
+		case PARSE_ERROR:
+			return R.string.error_parse_error;
+		case IO_ERROR:
+			return R.string.error_io_error;
+		case OTHER_ERROR:
+			return R.string.error_other_error;
+		case API_DISABLED:
+			return R.string.error_api_disabled;
+		case API_UNKNOWN:
+			return R.string.error_api_unknown;
+		case LOGIN_FAILED:
+			return R.string.error_login_failed;
+		default:
+			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
+			return R.string.error_unknown;
+		}
 	}
 	
 	@Override
@@ -106,25 +149,77 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
 			HttpResponse execute = client.execute(httpPost);
 			
-			InputStream content = execute.getEntity().getContent();
+			m_httpStatusCode = execute.getStatusLine().getStatusCode();
 
-			BufferedReader buffer = new BufferedReader(
-					new InputStreamReader(content), 8192);
-
-			String s = "";				
-			String response = "";
-
-			while ((s = buffer.readLine()) != null) {
-				response += s;
+			switch (m_httpStatusCode) {
+			case 200:
+				InputStream content = execute.getEntity().getContent();
+	
+				BufferedReader buffer = new BufferedReader(
+						new InputStreamReader(content), 8192);
+	
+				String s = "";				
+				String response = "";
+	
+				while ((s = buffer.readLine()) != null) {
+					response += s;
+				}
+	
+				if (m_transportDebugging) Log.d(TAG, "<<< " + response);
+	
+				JsonParser parser = new JsonParser();
+				
+				JsonElement result = parser.parse(response);
+				JsonObject resultObj = result.getAsJsonObject();
+				
+				m_apiStatusCode = resultObj.get("status").getAsInt();
+				
+				switch (m_apiStatusCode) {
+				case API_STATUS_OK:
+					return result.getAsJsonObject().get("content");
+				case API_STATUS_ERR:
+					JsonObject contentObj = resultObj.get("content").getAsJsonObject();
+					String error = contentObj.get("error").getAsString();
+					
+					if (error.equals("LOGIN_ERROR")) {
+						m_lastError = ApiError.LOGIN_FAILED;
+					} else if (error.equals("API_DISABLED")) {
+						m_lastError = ApiError.LOGIN_FAILED;
+					} else {
+						m_lastError = ApiError.API_UNKNOWN;
+					}		
+				}
+				
+				return null;
+			case 401:
+				m_lastError = ApiError.HTTP_UNAUTHORIZED;
+				break;
+			case 403:
+				m_lastError = ApiError.HTTP_FORBIDDEN;
+				break;
+			case 404:
+				m_lastError = ApiError.HTTP_NOT_FOUND;
+				break;
+			case 500:
+				m_lastError = ApiError.HTTP_SERVER_ERROR;
+				break;
+			default:
+				m_lastError = ApiError.HTTP_OTHER_ERROR;
+				break;
 			}
-
-			if (m_transportDebugging) Log.d(TAG, "<<< " + response);
-
-			JsonParser parser = new JsonParser();
 			
-			return parser.parse(response);
-			
+			return null;
+		} catch (javax.net.ssl.SSLPeerUnverifiedException e) {
+			m_lastError = ApiError.SSL_REJECTED;
+			e.printStackTrace();
+		} catch (IOException e) {
+			m_lastError = ApiError.IO_ERROR;
+			e.printStackTrace();
+		} catch (com.google.gson.JsonSyntaxException e) {
+			m_lastError = ApiError.PARSE_ERROR;
+			e.printStackTrace();
 		} catch (Exception e) {
+			m_lastError = ApiError.OTHER_ERROR;
 			e.printStackTrace();
 		}
 		

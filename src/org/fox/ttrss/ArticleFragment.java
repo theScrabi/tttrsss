@@ -94,31 +94,25 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 				// this is ridiculous
 				// TODO white on black style for dark theme
 				String content;
-				try {
-					String cssOverride = "";
-					
-					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-						web.setBackgroundColor(android.R.color.black);
-						cssOverride = "body { background : black; color : #f0f0f0}\n";						
-					}
-					
-					content = 
-						"<html>" +
-						"<head>" +
-						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-						"<style type=\"text/css\">" +
-						cssOverride +
-						"img { max-width : 90%; }" +
-						"body { text-align : justify; }" +
-						"</style>" +
-						"</head>" +
-						"<body>" + m_article.content + "</body></html>";
-					
-				} catch (Exception e) {
-					content = getString(R.string.could_not_decode_content);
-					e.printStackTrace();
+				String cssOverride = "";
+				
+				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+					web.setBackgroundColor(android.R.color.black);
+					cssOverride = "body { background : black; color : #f0f0f0}\n";						
 				}
 				
+				content = 
+					"<html>" +
+					"<head>" +
+					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+					"<style type=\"text/css\">" +
+					cssOverride +
+					"img { max-width : 90%; }" +
+					"body { text-align : justify; }" +
+					"</style>" +
+					"</head>" +
+					"<body>" + m_article.content + "</body></html>";
+					
 				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 				
 				if (activity.isSmallScreen())

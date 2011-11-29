@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener {
@@ -174,54 +173,50 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
-					JsonObject rv = result.getAsJsonObject();
-
-					Gson gson = new Gson();
-					
-					int status = rv.get("status").getAsInt();
-					
-					if (status == 0) {
-						JsonArray content = rv.get("content").getAsJsonArray();
-						if (content != null) {
-							Type listType = new TypeToken<List<Article>>() {}.getType();
-							final List<Article> articles = gson.fromJson(content, listType);
-							
-							if (m_offset == 0)
-								m_articles.clear();
-							
-							int last_position = m_articles.size();
-							
-							for (Article f : articles) 
-								m_articles.add(f);
-							
-							m_adapter.notifyDataSetChanged();
-							
-							ListView list = (ListView)getView().findViewById(R.id.headlines);
-							
-							if (list != null && m_offset != 0) {
-								list.setSelection(last_position+1);
-							}
-							
-							MainActivity activity = (MainActivity)getActivity();
-							activity.setCanLoadMore(articles.size() >= 30);
-							activity.initMainMenu();
-							
-							setLoadingStatus(R.string.blank, false);
+					JsonArray content = result.getAsJsonArray();
+					if (content != null) {
+						Type listType = new TypeToken<List<Article>>() {}.getType();
+						final List<Article> articles = new Gson().fromJson(content, listType);
+						
+						if (m_offset == 0)
+							m_articles.clear();
+						
+						int last_position = m_articles.size();
+						
+						for (Article f : articles) 
+							m_articles.add(f);
+						
+						m_adapter.notifyDataSetChanged();
+						
+						ListView list = (ListView)getView().findViewById(R.id.headlines);
+						
+						if (list != null && m_offset != 0) {
+							list.setSelection(last_position+1);
 						}
-					} else {
-						MainActivity activity = (MainActivity)getActivity();							
-						activity.login();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					setLoadingStatus(R.string.error_invalid_object, false);
-				}
-			} else {
-				setLoadingStatus(R.string.error_no_data, false);
-			}
-			
-			return;
+						
+						MainActivity activity = (MainActivity)getActivity();
+						activity.setCanLoadMore(articles.size() >= 30);
+						activity.initMainMenu();
+						
+						if (m_articles.size() == 0)
+							setLoadingStatus(R.string.no_headlines_to_display, false);
+						else
+							setLoadingStatus(R.string.blank, false);
 
+						return;
+					}
+							
+				} catch (Exception e) {
+					e.printStackTrace();						
+				}
+			}
+
+			if (m_lastError == ApiError.LOGIN_FAILED) {
+				MainActivity activity = (MainActivity)getActivity();							
+				activity.login();
+			} else {
+				setLoadingStatus(getErrorMessage(), false);
+			}
 	    }
 
 		public void setOffset(int skip) {

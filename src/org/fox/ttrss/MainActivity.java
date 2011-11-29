@@ -633,60 +633,41 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
-					JsonObject rv = result.getAsJsonObject();
-
-					int status = rv.get("status").getAsInt();
-					
-					if (status == 0) {
-						JsonObject content = rv.get("content").getAsJsonObject();
-						if (content != null) {
-							m_sessionId = content.get("session_id").getAsString();
-							
-							Log.d(TAG, "Authenticated!");
-							
-							setLoadingStatus(R.string.loading_message, true);
-
-							FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-							
-							if (m_enableCats) {
-								FeedCategoriesFragment frag = new FeedCategoriesFragment();
-								ft.replace(R.id.cats_fragment, frag);
-							} else {
-								FeedsFragment frag = new FeedsFragment(); 
-								ft.replace(R.id.feeds_fragment, frag);
-							}
-
-							ft.commit();
-							
-							loginSuccess();
-							
-						}
-					} else {
-						JsonObject content = rv.get("content").getAsJsonObject();
+					JsonObject content = result.getAsJsonObject();
+					if (content != null) {
+						m_sessionId = content.get("session_id").getAsString();
 						
-						if (content != null) {
-							String error = content.get("error").getAsString();
+						Log.d(TAG, "Authenticated!");
+						
+						setLoadingStatus(R.string.loading_message, true);
 
-							m_sessionId = null;
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+						
+						if (m_enableCats) {
+							FeedCategoriesFragment frag = new FeedCategoriesFragment();
+							ft.replace(R.id.cats_fragment, frag);
+						} else {
+							FeedsFragment frag = new FeedsFragment(); 
+							ft.replace(R.id.feeds_fragment, frag);
+						}
 
-							if (error.equals("LOGIN_ERROR")) {
-								setLoadingStatus(R.string.login_wrong_password, false);
-							} else if (error.equals("API_DISABLED")) {
-								setLoadingStatus(R.string.login_api_disabled, false);
-							} else {
-								setLoadingStatus(R.string.login_failed, false);
-							}
-							
-							m_menu.findItem(R.id.login).setVisible(true);
-						}							
+						ft.commit();
+						
+						loginSuccess();
+						return;
 					}
+							
 				} catch (Exception e) {
 					e.printStackTrace();						
 				}
-			} else {
-				setLoadingStatus(R.string.login_no_data, false);
 			}
+	
+			m_sessionId = null;
+
+			setLoadingStatus(getErrorMessage(), false);
+			m_menu.findItem(R.id.login).setVisible(true);
 		}
+
 	}
 
 	@Override

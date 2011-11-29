@@ -14,6 +14,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,52 +163,43 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		public CatsRequest(Context context) {
 			super(context);
 		}
-
+		
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
-					JsonObject rv = result.getAsJsonObject();
-
-					Gson gson = new Gson();
-					
-					int status = rv.get("status").getAsInt();
-					
-					if (status == 0) {
-						JsonArray content = rv.get("content").getAsJsonArray();
-						if (content != null) {
-							Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
-							final List<FeedCategory> cats = gson.fromJson(content, listType);
-							
-							m_cats.clear();
-							
-							for (FeedCategory c : cats)
-								m_cats.add(c);
-							
-							sortCats();
-							
-							if (m_cats.size() == 0)
-								setLoadingStatus(R.string.error_no_feeds, false);
-							else
-								setLoadingStatus(R.string.blank, false);
-
-						}
-					} else {
-						MainActivity activity = (MainActivity)getActivity();							
-						activity.login();
+					JsonArray content = result.getAsJsonArray();
+					if (content != null) {
+						Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
+						final List<FeedCategory> cats = new Gson().fromJson(content, listType);
+						
+						m_cats.clear();
+						
+						for (FeedCategory c : cats)
+							m_cats.add(c);
+						
+						sortCats();
+						
+						if (m_cats.size() == 0)
+							setLoadingStatus(R.string.no_feeds_to_display, false);
+						else
+							setLoadingStatus(R.string.blank, false);
+						
+						return;
 					}
+							
 				} catch (Exception e) {
-					e.printStackTrace();
-					setLoadingStatus(R.string.error_invalid_object, false);
-					// report invalid object received
+					e.printStackTrace();						
 				}
-			} else {
-				// report null object received, unless we've been awakened from sleep right in the right time
-				// so that current request failed
-				if (m_cats.size() == 0) setLoadingStatus(R.string.error_no_data, false);
 			}
-			
-			return;
-	    }
+
+			if (m_lastError == ApiError.LOGIN_FAILED) {
+				MainActivity activity = (MainActivity)getActivity();							
+				activity.login();
+			} else {
+				setLoadingStatus(getErrorMessage(), false);
+			}
+		}
+
 	}
 
 	public void sortCats() {

@@ -23,9 +23,6 @@
     <string name="theme_light">Light</string>
     <string name="connection">Connection</string>
     <string name="http_authentication">HTTP Authentication</string>
-    <string name="login_api_disabled">Login failed: API disabled.</string>
-    <string name="login_no_data">Login failed: no data received.</string>
-    <string name="login_wrong_password">Login failed: username or password incorrect.</string>
     <string name="login_success">Logged in.</string>
     <string name="no_unread_feeds">No unread feeds.</string>
     <string name="no_unread_headlines">No unread headlines.</string>
@@ -35,15 +32,11 @@
     <string name="update_feeds">Refresh feeds</string>
     <string name="close_article">Close article</string>    
     <string name="share_article">Share article</string>
-    <string name="could_not_decode_content">Could not decode content (UnsupportedEncodingException)</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
     <string name="load_more_articles">Load more...</string>
     <string name="show_all_articles">Show all articles</string>
     <string name="show_unread_articles">Show unread articles</string>
     <string name="ssl_trust_any">Accept any SSL certificate</string>
-    <string name="error_no_data">Error: no data received.</string>
-    <string name="error_no_feeds">No feeds to display.</string>
-    <string name="error_invalid_object">Error: invalid object received.</string>
     <string name="blank"></string>
     <string name="transport_debugging">Log sent and received data</string>
     <string name="toggle_marked">Toggle starred</string>
@@ -57,4 +50,24 @@
     <string name="download_feed_icons">Download and display feed icons</string>
     <string name="enable_cats">Enable feed categories</string>
     <string name="back_to_categories">Close category</string>
+    <string name="no_feeds_to_display">No feeds to display</string>
+    <string name="no_headlines_to_display">No headlines to display</string>
+        
+    <string name="error_template">Error: %1$s</string>
+        
+	<string name="error_no_error">No error</string>
+	<string name="error_unknown">Error: Unknown error (see log)</string>
+	<string name="error_http_unauthorized">Error: 401 unauthorized</string>
+    <string name="error_http_forbidden">Error: 403 forbidden</string>
+    <string name="error_http_not_found">Error: 404 not found</string>
+    <string name="error_http_server_error">Error: 500 server error</string>
+    <string name="error_http_other_error">Error: other HTTP error (see log)</string>
+    <string name="error_ssl_rejected">Error: SSL certificate rejected</string>
+    <string name="error_parse_error">Error: JSON parse failed</string>
+    <string name="error_io_error">Error: I/O failure (server down?)</string>
+    <string name="error_other_error">Error: unknown error (see log)</string>
+    <string name="error_api_disabled">Error: API disabled for this user</string>
+    <string name="error_api_unknown">Error: unknown API error (see log)</string>
+    <string name="error_login_failed">Error: username or password incorrect</string>
+    
 </resources>

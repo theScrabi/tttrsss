@@ -51,7 +51,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
@@ -220,7 +219,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				if (result != null) {
 
 					try {
-						JsonElement iconsUrl = result.getAsJsonObject().get("content").getAsJsonObject().get("icons_dir");
+						JsonElement iconsUrl = result.getAsJsonObject().get("icons_dir");
 
 						if (iconsUrl != null) {
 							String iconsStr = iconsUrl.getAsString();
@@ -261,54 +260,45 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		public FeedsRequest(Context context) {
 			super(context);
 		}
-
+		
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
-					JsonObject rv = result.getAsJsonObject();
+					JsonArray content = result.getAsJsonArray();
+					if (content != null) {
 
-					Gson gson = new Gson();
-					
-					int status = rv.get("status").getAsInt();
-					
-					if (status == 0) {
-						JsonArray content = rv.get("content").getAsJsonArray();
-						if (content != null) {
-							Type listType = new TypeToken<List<Feed>>() {}.getType();
-							final List<Feed> feeds = gson.fromJson(content, listType);
-							
-							m_feeds.clear();
-							
-							for (Feed f : feeds)
-								if (f.id > -10) // skip labels for now
-									m_feeds.add(f);
-							
-							sortFeeds();
-							
-							if (m_feeds.size() == 0)
-								setLoadingStatus(R.string.error_no_feeds, false);
-							else
-								setLoadingStatus(R.string.blank, false);
+						Type listType = new TypeToken<List<Feed>>() {}.getType();
+						final List<Feed> feeds = new Gson().fromJson(content, listType);
+						
+						m_feeds.clear();
+						
+						for (Feed f : feeds)
+							if (f.id > -10) // skip labels for now
+								m_feeds.add(f);
+						
+						sortFeeds();
+						
+						if (m_feeds.size() == 0)
+							setLoadingStatus(R.string.no_feeds_to_display, false);
+						else
+							setLoadingStatus(R.string.blank, false);
 
-							if (m_enableFeedIcons) getFeedIcons();
-							
-						}
-					} else {
-						MainActivity activity = (MainActivity)getActivity();							
-						activity.login();
+						if (m_enableFeedIcons) getFeedIcons();
+
+						return;
 					}
+							
 				} catch (Exception e) {
-					e.printStackTrace();
-					setLoadingStatus(R.string.error_invalid_object, false);
-					// report invalid object received
+					e.printStackTrace();						
 				}
-			} else {
-				// report null object received, unless we've been awakened from sleep right in the right time
-				// so that current request failed
-				if (m_feeds.size() == 0) setLoadingStatus(R.string.error_no_data, false);
 			}
-			
-			return;
+
+			if (m_lastError == ApiError.LOGIN_FAILED) {
+				MainActivity activity = (MainActivity)getActivity();							
+				activity.login();
+			} else {
+				setLoadingStatus(getErrorMessage(), false);
+			}
 	    }
 	}
 
