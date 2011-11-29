@@ -690,6 +690,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public void initMainMenu() {
 		if (m_menu != null) {
 			if (m_sessionId != null) {
+				
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 				
@@ -733,6 +734,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
+				m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+				m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+				m_menu.setGroupVisible(R.id.menu_group_article, false);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
 			}
 			
