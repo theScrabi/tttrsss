@@ -49,33 +49,12 @@
                 android:showAsAction=""
                 android:title="@string/show_all_articles"/>
 
-            
             <item
-                android:id="@+id/headlines_select_all"
-                android:title="@string/headlines_select_all"/>
-
-            <item
-                android:id="@+id/headlines_select_unread"
-                android:title="@string/headlines_select_unread"/>
-
-            <item
-                android:id="@+id/headlines_select_none"
-                android:title="@string/headlines_select_none"/>
+                android:id="@+id/headlines_select"
+                android:title="@string/headlines_select"/>
         </group>
 
         <group android:id="@+id/menu_group_article" >
-
-            <item
-                android:id="@+id/close_article"
-                android:icon="@android:drawable/ic_menu_close_clear_cancel"
-                android:showAsAction="ifRoom|withText"
-                android:title="@string/close_article"/>
-
-            <item
-                android:id="@+id/toggle_marked"
-                android:icon="@android:drawable/star_off"
-                android:showAsAction=""
-                android:title="@string/toggle_marked"/>
 
             <item
                 android:id="@+id/share_article"
@@ -84,16 +63,28 @@
                 android:title="@string/share_article"/>
 
             <item
+                android:id="@+id/toggle_marked"
+                android:icon="@android:drawable/star_off"
+                android:showAsAction=""
+                android:title="@string/article_toggle_marked"/>
+
+            <item
                 android:id="@+id/toggle_published"
                 android:icon="@drawable/ic_menu_rss"
                 android:showAsAction=""
-                android:title="@string/toggle_published"/>
+                android:title="@string/article_toggle_published"/>
 
             <item
                 android:id="@+id/set_unread"
                 android:icon="@android:drawable/ic_menu_recent_history"
                 android:showAsAction=""
-                android:title="@string/set_unread"/>
+                android:title="@string/article_set_unread"/>
+
+            <item
+                android:id="@+id/close_article"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/close_article"/>
         </group>
 
         <item

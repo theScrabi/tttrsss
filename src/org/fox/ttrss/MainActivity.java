@@ -5,7 +5,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.animation.LayoutTransition;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -23,7 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -528,7 +533,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		final HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
 		case R.id.preferences:
@@ -553,14 +558,35 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.back_to_categories:
 			closeCategory();
 			return true;
-		case R.id.headlines_select_all:
-			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
-			return true;
-		case R.id.headlines_select_none:
-			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
-			return true;
-		case R.id.headlines_select_unread:
-			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+		case R.id.headlines_select:
+			if (hf != null) {
+				Dialog dialog = new Dialog(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.headlines_select_dialog);
+	
+				builder.setSingleChoiceItems(new String[] { getString(R.string.headlines_select_all), 
+						getString(R.string.headlines_select_unread), getString(R.string.headlines_select_none) }, 0, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+							break;
+						case 1:
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+							break;
+						case 2:
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+							break;
+						}
+						dialog.cancel();
+					}
+				});
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			
 			return true;
 		case R.id.catchup_and_load:
 			if (hf != null) {
