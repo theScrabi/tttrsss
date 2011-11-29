@@ -25,8 +25,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +35,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener {
+	public static enum ArticlesSelection { ALL, NONE, UNREAD };
+
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
@@ -345,20 +345,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 
 			if (cb != null) {
 				cb.setChecked(m_selectedArticles.contains(article));
-				
-				cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				cb.setOnClickListener(new OnClickListener() {
+					
 					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-
-						if (isChecked) {
-							m_selectedArticles.add(article);
+					public void onClick(View view) {
+						CheckBox cb = (CheckBox)view;
+						
+						if (cb.isChecked()) {
+							if (!m_selectedArticles.contains(article))
+								m_selectedArticles.add(article);
 						} else {
 							m_selectedArticles.remove(article);
 						}
 						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
-						
 					}
 				});
 			}
@@ -387,6 +387,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			int position = m_adapter.getPosition(m_articleOps.getSelectedArticle());
 			list.setSelection(position);
 		}
+	}
+
+	public void setSelection(ArticlesSelection select) {
+		m_selectedArticles.clear();
+		
+		if (select != ArticlesSelection.NONE) {
+			for (Article a : m_articles) {
+				if (select == ArticlesSelection.ALL || select == ArticlesSelection.UNREAD && a.unread) {
+					m_selectedArticles.add(a);
+				}
+			}
+		}
+		
+		m_adapter.notifyDataSetChanged();
 	}
 
 }

@@ -110,6 +110,69 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		req.execute(map);
 	}
 	
+	public static String articlesToIdString(ArticleList articles) {
+		String tmp = "";
+		
+		for (Article a : articles) 
+			tmp += String.valueOf(a.id) + ",";
+		
+		return tmp.replaceAll(",$", "");
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesMarked(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+	
+		@SuppressWarnings("serial")
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "0");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesUnread(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+	
+		@SuppressWarnings("serial")
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "2");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesPublished(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+	
+		@SuppressWarnings("serial")
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "1");
+			}			 
+		};
+
+		req.execute(map);
+	}
+
 	private class RefreshTask extends TimerTask {
 
 		@Override
@@ -436,6 +499,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+
 		switch (item.getItemId()) {
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
@@ -458,6 +523,54 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.back_to_categories:
 			closeCategory();
+			return true;
+		case R.id.headlines_select_all:
+			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+			return true;
+		case R.id.headlines_select_none:
+			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+			return true;
+		case R.id.headlines_select_unread:
+			if (hf != null) hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+			return true;
+		case R.id.selection_toggle_marked:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.marked = !a.marked;
+			
+					toggleArticlesMarked(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.published = !a.published;
+
+					toggleArticlesPublished(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_unread:
+			if (hf != null) {				
+				ArticleList selected = hf.getSelectedArticles();
+				
+				if (selected.size() > 0) {			
+					for (Article a : selected)
+						a.unread = !a.unread;
+			
+					toggleArticlesUnread(selected);
+					hf.notifyUpdated();
+				}
+			}
 			return true;
 		case R.id.load_more_articles:
 			viewFeed(m_activeFeed, true);
@@ -698,6 +811,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			super(context);
 		}
 		
+		@SuppressWarnings("unchecked")
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {			
@@ -732,6 +846,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 							}
 						};
 						
+						@SuppressWarnings("serial")
 						HashMap<String,String> map = new HashMap<String,String>() {
 							{
 								put("sid", m_sessionId);

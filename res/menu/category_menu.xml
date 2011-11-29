@@ -2,10 +2,10 @@
 
     <item
         android:id="@+id/browse_articles"
-        android:title="Browse articles"/>
+        android:title="@string/category_browse_articles"/>
 
     <item
         android:id="@+id/browse_feeds"
-        android:title="Browse feeds"/>
+        android:title="@string/category_browse_feeds"/>
 
 </menu>
