@@ -378,12 +378,19 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			}
         			
-        			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-        			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-        			
-        			m_activeFeed = null;
+        			if (m_activeFeed.is_cat) {
+        				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+        				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+        				
+            			refreshCategories();
+        			} else {
+        				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+        				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+
+            			refreshFeeds();
+        			}
+    				m_activeFeed = null;
         			initMainMenu();
-        			refreshFeeds();
 
         		} else if (m_activeCategory != null) {
         			if (m_compatMode) {
@@ -756,7 +763,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	@Override
 	public void onFeedSelected(Feed feed) {
-		Log.d(TAG, "Selected feed: " + feed.toString());
 		viewFeed(feed, false);
 	}
 
@@ -788,19 +794,34 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
-	public void viewCategory(FeedCategory cat) {
-		m_activeCategory = cat;
+	public void viewCategory(FeedCategory cat, boolean openAsFeed) {
+		
+		if (!openAsFeed) {
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+
+			m_activeCategory = cat;
+
+			FeedsFragment frag = new FeedsFragment();
 	
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+			ft.replace(R.id.feeds_fragment, frag);
+			ft.commit();
+		} else {
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+
+			m_activeFeed = new Feed(cat.id, cat.title, true);
+			
+			HeadlinesFragment frag = new HeadlinesFragment();
+	
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+			ft.replace(R.id.headlines_fragment, frag);
+			ft.commit();
+			
+		}
+		
 		initMainMenu();
-		
-		findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-		findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-		
-		FeedsFragment frag = new FeedsFragment();
-	
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-		ft.replace(R.id.feeds_fragment, frag);
-		ft.commit();
 	}
 
 	public void openArticle(Article article, int compatAnimation) {
@@ -934,7 +955,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	@Override
 	public void onCatSelected(FeedCategory cat) {
-		m_activeCategory = cat;
-		viewCategory(cat);
+		Log.d(TAG, "onCatSelected");
+		viewCategory(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));
 	}
 }

@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/browse_articles"
+        android:title="Browse articles"/>
+
+    <item
+        android:id="@+id/browse_feeds"
+        android:title="Browse feeds"/>
+
+</menu>

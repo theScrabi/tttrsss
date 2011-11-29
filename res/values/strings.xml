@@ -52,8 +52,8 @@
     <string name="back_to_categories">Close category</string>
     <string name="no_feeds_to_display">No feeds to display</string>
     <string name="no_headlines_to_display">No headlines to display</string>
-        
-    <string name="error_template">Error: %1$s</string>
+    <string name="browse_cats_like_feeds">Browse categories like feeds</string>
+    <string name="browse_cats_like_feeds_summary">You can long-tap on a category to override this setting</string>
         
 	<string name="error_no_error">No error</string>
 	<string name="error_unknown">Error: Unknown error (see log)</string>

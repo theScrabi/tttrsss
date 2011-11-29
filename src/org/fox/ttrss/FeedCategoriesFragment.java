@@ -14,10 +14,15 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -66,6 +71,39 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	}
 	
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+		
+		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
+		super.onCreateContextMenu(menu, v, menuInfo);		
+		
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    FeedCategory cat = m_adapter.getItem(info.position);
+	    
+		MainActivity activity = (MainActivity)getActivity();
+
+	    if (cat != null) {
+			m_selectedCatId = cat.id;
+			m_adapter.notifyDataSetChanged();
+
+	    	switch (item.getItemId()) {
+	    	case R.id.browse_articles:
+	    		activity.viewCategory(cat, true);
+	    		break;
+	    	case R.id.browse_feeds:
+	    		activity.viewCategory(cat, false);
+	    		break;
+	    	}
+	    }
+			
+		return true;
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 		if (savedInstanceState != null) {
 			m_selectedCatId = savedInstanceState.getInt("selectedCatId");
@@ -78,6 +116,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		registerForContextMenu(list);
 		
 		if (m_cats == null || m_cats.size() == 0)
 			refresh(false);
@@ -297,7 +336,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		// TODO Auto-generated method stub
+
+		sortCats();
 		
 	}
 

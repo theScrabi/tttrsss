@@ -105,6 +105,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
 		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();
+		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		
 		if (append) {
@@ -131,6 +132,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("offset", String.valueOf(0));
 				put("view_mode", showUnread ? "adaptive" : "all_articles");
 				put("skip", String.valueOf(fskip));
+				
+				if (isCat) put("is_cat", "true");
 			}			 
 		};
 
