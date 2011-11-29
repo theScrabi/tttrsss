@@ -923,7 +923,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			ft.replace(R.id.feeds_fragment, frag);
 			ft.commit();
 		} else {
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			if (m_smallScreenMode) findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 
 			m_activeFeed = new Feed(cat.id, cat.title, true);
