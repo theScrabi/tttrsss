@@ -24,6 +24,13 @@ public class Article implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	public Article(int id) {
+		this.id = id;
+		this.title = "";
+		this.link = "";
+		this.tags = new ArrayList<String>();
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;

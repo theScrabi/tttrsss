@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,13 +39,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class HeadlinesFragment extends Fragment implements OnItemClickListener {
+public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
 
+	public static final int HEADLINES_REQUEST_SIZE = 30;
+	public static final int HEADLINES_BUFFER_MAX = 500;
+	
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
 	private int m_activeArticleId;
+	private boolean m_refreshInProgress = false;
+	private boolean m_canLoadMore = false;
 	
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList();
@@ -81,6 +88,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
+			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -89,6 +97,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		list.setOnScrollListener(this);
 		registerForContextMenu(list);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
@@ -114,15 +123,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
-			m_articleOps.openArticle(article, 0);
+			if (article.id >= 0) {
+				m_articleOps.openArticle(article, 0);
 			
-			m_activeArticleId = article.id;
-			m_adapter.notifyDataSetChanged();
+				m_activeArticleId = article.id;
+				m_adapter.notifyDataSetChanged();
+			}
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean append) {
+		m_refreshInProgress = true;
+		
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
 		
 		final String sessionId = ((MainActivity)getActivity()).getSessionId();
@@ -136,13 +149,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			}
 			
 			if (skip == 0) skip = m_articles.size();
+		} else {
+			setLoadingStatus(R.string.blank, true);
 		}
 		
 		final int fskip = skip;
 		
 		req.setOffset(skip);
-		
-		setLoadingStatus(R.string.blank, true);
 		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
@@ -150,7 +163,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				put("sid", sessionId);
 				put("feed_id", String.valueOf(m_feed.id));
 				put("show_content", "true");
-				put("limit", String.valueOf(30));
+				put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
 				put("offset", String.valueOf(0));
 				put("view_mode", showUnread ? "adaptive" : "all_articles");
 				put("skip", String.valueOf(fskip));
@@ -170,6 +183,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		out.putParcelable("articles", m_articles);
 		out.putInt("activeArticleId", m_activeArticleId);
 		out.putParcelable("selectedArticles", m_selectedArticles);
+		out.putBoolean("canLoadMore", m_canLoadMore);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -203,31 +217,43 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 						Type listType = new TypeToken<List<Article>>() {}.getType();
 						final List<Article> articles = new Gson().fromJson(content, listType);
 						
+						while (m_articles.size() > HEADLINES_BUFFER_MAX)
+							m_articles.remove(0);
+						
 						if (m_offset == 0)
 							m_articles.clear();
+						else
+							m_articles.remove(m_articles.size()-1); // remove previous placeholder
 						
 						int last_position = m_articles.size();
 						
 						for (Article f : articles) 
 							m_articles.add(f);
-						
+
+						if (articles.size() == HEADLINES_REQUEST_SIZE) {
+							Article placeholder = new Article(-1);
+							m_articles.add(placeholder);
+							
+							m_canLoadMore = true;
+						} else {
+							m_canLoadMore = false;
+						}
+
 						m_adapter.notifyDataSetChanged();
-						
-						ListView list = (ListView)getView().findViewById(R.id.headlines);
+
+						/* ListView list = (ListView)getView().findViewById(R.id.headlines);
 						
 						if (list != null && m_offset != 0 && articles.size() > 0) {
 							list.setSelection(last_position-1);
-						}
-						
-						MainActivity activity = (MainActivity)getActivity();
-						activity.setCanLoadMore(articles.size() >= 30);
-						activity.initMainMenu();
+						} */
 						
 						if (m_articles.size() == 0)
 							setLoadingStatus(R.string.no_headlines_to_display, false);
 						else
 							setLoadingStatus(R.string.blank, false);
 
+						m_refreshInProgress = false;
+						
 						return;
 					}
 							
@@ -242,6 +268,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
+			m_refreshInProgress = false;
 	    }
 
 		public void setOffset(int skip) {
@@ -255,8 +282,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
+		public static final int VIEW_LOADMORE = 3;
 		
-		public static final int VIEW_COUNT = VIEW_SELECTED+1;
+		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
 		
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -271,7 +299,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 			
-			if (a.id == m_activeArticleId) {
+			if (a.id == -1) {
+				return VIEW_LOADMORE;
+			} else if (a.id == m_activeArticleId) {
 				return VIEW_SELECTED;
 			} else if (a.unread) {
 				return VIEW_UNREAD;
@@ -291,6 +321,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 				int layoutId = R.layout.headlines_row;
 				
 				switch (getItemViewType(position)) {
+				case VIEW_LOADMORE:
+					layoutId = R.layout.headlines_row_loadmore;
+					break;
 				case VIEW_UNREAD:
 					layoutId = R.layout.headlines_row_unread;
 					break;
@@ -437,6 +470,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			if (a.unread) tmp.add(a);
 		}
 		return tmp;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		if (!m_refreshInProgress && m_canLoadMore && firstVisibleItem + visibleItemCount == m_articles.size()) {
+			refresh(true);
+		}
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
 	}
 
 }

@@ -49,7 +49,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_canLoadMore = true;
+	//private boolean m_canLoadMore = true;
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	private int m_apiLevel = 0;
@@ -302,7 +302,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
-			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
+			//m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 		}
@@ -397,7 +397,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("activeFeed", m_activeFeed);
 		out.putParcelable("selectedArticle", m_selectedArticle);
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
-		out.putBoolean("canLoadMore", m_canLoadMore);
+		//out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
 	}
@@ -581,7 +581,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				dialog = builder.create();
 				dialog.show();
 			}
-			
 			return true;
 		case R.id.headlines_mark_as_read:
 			if (hf != null) {
@@ -590,14 +589,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				for (Article a : articles)
 					a.unread = false;
 	
-				ApiRequest req = new ApiRequest(getApplicationContext()) {
-					@Override
-					protected void onPostExecute(JsonElement result) {
-						if (result != null) {
-							viewFeed(m_activeFeed, true);
-						}
-					}
-				};
+				ApiRequest req = new ApiRequest(getApplicationContext());
 
 				final String articleIds = articlesToIdString(articles);
 
@@ -613,7 +605,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				};
 
 				req.execute(map);
-
 			}
 			return true;
 		case R.id.share_article:
@@ -736,9 +727,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	}
 
-	public void setCanLoadMore(boolean canLoadMore) {
+	/* public void setCanLoadMore(boolean canLoadMore) {
 		m_canLoadMore = canLoadMore;
-	}
+	} */
 	
 	public void initMainMenu() {
 		if (m_menu != null) {
