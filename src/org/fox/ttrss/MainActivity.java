@@ -632,6 +632,34 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				updateHeadlines();
 			}
 			return true;
+		case R.id.selection_mark_as_read:
+			return true;
+		case R.id.selection_toggle_marked:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.marked = !a.marked;
+			
+					toggleArticlesMarked(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+			
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.published = !a.published;
+
+					toggleArticlesPublished(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
 		case R.id.toggle_published:
 			if (m_selectedArticle != null) {
 				m_selectedArticle.published = !m_selectedArticle.published;
@@ -719,37 +747,55 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					m_menu.findItem(R.id.show_all_articles).setVisible(true);
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, false); 
+					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 				}
 				
 				if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
 					
-					m_menu.findItem(R.id.update_feeds).setVisible(false);
-					m_menu.findItem(R.id.show_feeds).setVisible(false);
-					m_menu.findItem(R.id.back_to_categories).setVisible(false);
+					m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
 					
 					if (m_smallScreenMode) {
-						m_menu.setGroupVisible(R.id.menu_group_headlines, false); 
+						m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 					} else {
 						m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
 					}
 				
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_article, false);
-					
+
+					if (m_activeFeed != null) {
+						
+						HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+						
+						if (hf != null) {
+							int numSelected = hf.getSelectedArticles().size();
+							
+							if (numSelected != 0) {
+								m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+								m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+							} else {
+								m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+								m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+							}
+							
+						} else {
+							m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+						}
+						
+						m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
+					} else {
+						m_menu.setGroupVisible(R.id.menu_group_feeds, true); 
+					}
+
 					if (!m_smallScreenMode || m_activeFeed == null) {
 						m_menu.findItem(R.id.show_feeds).setVisible(true);
 						m_menu.findItem(R.id.update_feeds).setVisible(true);
-					} else {
-						m_menu.findItem(R.id.show_feeds).setVisible(false);
-						m_menu.findItem(R.id.update_feeds).setVisible(false);
 					}
 					
 					m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
-					
-					if (m_activeFeed != null) {
-						m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
-					}
 				}
 
 			} else {

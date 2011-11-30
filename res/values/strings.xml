@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="login_session_error">Login session refused by server</string>
     <string name="login_in_progress">Logging in...</string>
-    <string name="login_failed">Login failed.</string>    
+    <string name="login_failed">Login failed.</string>
     <string name="app_name">Tiny Tiny RSS</string>
     <string name="login_need_configure">Please configure the application first.</string>
     <string name="login_ready">Ready to login.</string>
@@ -32,7 +33,7 @@
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
     <string name="update_feeds">Refresh feeds</string>
-    <string name="close_article">Close article</string>    
+    <string name="close_article">Close article</string>
     <string name="share_article">Share article</string>
     <string name="catchup">Mark as read</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
@@ -50,10 +51,13 @@
     <string name="headlines_select_dialog">Select articles</string>
     <string name="headlines_select_all">All articles</string>
     <string name="headlines_select_unread">Unread articles</string>
-    <string name="headlines_select_none">None</string>
-    <string name="selection_toggle_marked">Starred</string>
-    <string name="selection_toggle_published">Published</string>
-    <string name="selection_toggle_unread">Unread</string>        
+    <string name="headlines_select_none">Deselect all</string>
+    <string name="selection_toggle_marked">Toggle starred</string>
+    <string name="selection_toggle_published">Toggle published</string>
+    <string name="selection_mark_as_read">Mark as read</string>
+    <string name="context_selection_toggle_marked">Starred</string>
+    <string name="context_selection_toggle_published">Published</string>
+    <string name="context_selection_toggle_unread">Unread</string>
     <string name="article_set_unread">Mark unread</string>
     <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
@@ -68,10 +72,9 @@
     <string name="browse_cats_like_feeds">Browse categories like feeds</string>
     <string name="browse_cats_like_feeds_summary">You can long-tap on a category to override this setting</string>
     <string name="catchup_and_load">Catchup</string>
-        
-	<string name="error_no_error">No error</string>
-	<string name="error_unknown">Error: Unknown error (see log)</string>
-	<string name="error_http_unauthorized">Error: 401 unauthorized</string>
+    <string name="error_no_error">No error</string>
+    <string name="error_unknown">Error: Unknown error (see log)</string>
+    <string name="error_http_unauthorized">Error: 401 unauthorized</string>
     <string name="error_http_forbidden">Error: 403 forbidden</string>
     <string name="error_http_not_found">Error: 404 not found</string>
     <string name="error_http_server_error">Error: 500 server error</string>
@@ -83,5 +86,5 @@
     <string name="error_api_disabled">Error: API disabled for this user</string>
     <string name="error_api_unknown">Error: unknown API error (see log)</string>
     <string name="error_login_failed">Error: username or password incorrect</string>
-    
+
 </resources>

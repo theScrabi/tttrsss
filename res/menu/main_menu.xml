@@ -1,11 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/preferences"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction=""
-        android:title="@string/preferences"/>
-
     <group android:id="@+id/menu_group_logged_in" >
 
         <group android:id="@+id/menu_group_feeds" >
@@ -27,6 +21,11 @@
                 android:icon="@android:drawable/ic_menu_rotate"
                 android:showAsAction=""
                 android:title="@string/update_feeds"/>
+
+            <item
+                android:id="@+id/logout"
+                android:showAsAction=""
+                android:title="@string/logout"/>
         </group>
 
         <group android:id="@+id/menu_group_headlines" >
@@ -52,6 +51,27 @@
             <item
                 android:id="@+id/headlines_select"
                 android:title="@string/headlines_select"/>
+        </group>
+
+        <group android:id="@+id/menu_group_headlines_selection" >
+
+            <item
+                android:id="@+id/selection_mark_as_read"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/selection_mark_as_read"/>
+
+            <item
+                android:id="@+id/selection_toggle_marked"
+                android:icon="@android:drawable/star_off"
+                android:showAsAction=""
+                android:title="@string/selection_toggle_marked"/>
+
+            <item
+                android:id="@+id/selection_toggle_published"
+                android:icon="@drawable/ic_menu_rss"
+                android:showAsAction=""
+                android:title="@string/selection_toggle_published"/>
         </group>
 
         <group android:id="@+id/menu_group_article" >
@@ -86,12 +106,13 @@
                 android:showAsAction="ifRoom|withText"
                 android:title="@string/close_article"/>
         </group>
-
-        <item
-            android:id="@+id/logout"
-            android:showAsAction=""
-            android:title="@string/logout"/>
     </group>
+
+    <item
+        android:id="@+id/preferences"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction=""
+        android:title="@string/preferences"/>
 
     <group android:id="@+id/menu_group_logged_out" >
 

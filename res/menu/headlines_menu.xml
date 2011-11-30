@@ -4,18 +4,18 @@
         android:id="@+id/selection_toggle_unread"
         android:icon="@android:drawable/ic_menu_recent_history"
         android:showAsAction=""
-        android:title="@string/selection_toggle_unread"/>
+        android:title="@string/context_selection_toggle_unread"/>
 
     <item
         android:id="@+id/selection_toggle_marked"
         android:icon="@android:drawable/star_off"
         android:showAsAction=""
-        android:title="@string/selection_toggle_marked"/>
+        android:title="@string/context_selection_toggle_marked"/>
 
     <item
         android:id="@+id/selection_toggle_published"
         android:icon="@drawable/ic_menu_rss"
         android:showAsAction=""
-        android:title="@string/selection_toggle_published"/>
+        android:title="@string/context_selection_toggle_published"/>
 
 </menu>

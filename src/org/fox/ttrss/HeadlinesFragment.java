@@ -385,6 +385,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 							m_selectedArticles.remove(article);
 						}
 						
+						((MainActivity)getActivity()).initMainMenu();
+						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
 				});
