@@ -1239,6 +1239,22 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				}
 			}
 			return true;
+		case R.id.share_article:
+			if (hf != null) {
+				Article article = hf.getArticleAtPosition(info.position);
+				if (article != null)
+					shareArticle(article);
+			}
+			break;
+		case R.id.set_unread:
+			if (hf != null) {
+				Article article = hf.getArticleAtPosition(info.position);
+				if (article != null) {
+					article.unread = true;
+					saveArticleUnread(article);
+				}
+			}
+			break;
     	}
 			
 		return true;
