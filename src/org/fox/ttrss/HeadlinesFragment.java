@@ -131,7 +131,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
 		ListView list = (ListView)av;
 		
-		if (list != null) {
+		if (list != null && !m_combinedMode) {
 			Article article = (Article)list.getItemAtPosition(position);
 			if (article.id >= 0) {
 				m_articleOps.openArticle(article, 0);
