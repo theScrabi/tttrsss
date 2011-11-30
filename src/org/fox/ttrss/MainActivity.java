@@ -588,6 +588,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				
 				for (Article a : articles)
 					a.unread = false;
+				
+				hf.notifyUpdated();
 	
 				ApiRequest req = new ApiRequest(getApplicationContext());
 
