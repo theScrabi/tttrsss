@@ -63,7 +63,7 @@
 
             <item
                 android:id="@+id/selection_toggle_marked"
-                android:icon="@android:drawable/star_off"
+                android:icon="@drawable/ic_menu_marked"
                 android:showAsAction=""
                 android:title="@string/selection_toggle_marked"/>
 
@@ -84,7 +84,7 @@
 
             <item
                 android:id="@+id/toggle_marked"
-                android:icon="@android:drawable/star_off"
+                android:icon="@drawable/ic_menu_marked"
                 android:showAsAction=""
                 android:title="@string/article_toggle_marked"/>
 
