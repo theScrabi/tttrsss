@@ -619,6 +619,15 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				updateHeadlines();
 			}
 			return true;
+		case R.id.selection_select_none:
+			if (hf != null) {				
+				ArticleList selected = hf.getSelectedArticles();
+				if (selected.size() > 0) {
+					selected.clear();
+					hf.notifyUpdated();
+				}
+			}
+			return true;
 		case R.id.selection_toggle_unread:
 			if (hf != null) {				
 				ArticleList selected = hf.getSelectedArticles();

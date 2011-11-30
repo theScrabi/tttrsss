@@ -54,6 +54,7 @@
     <string name="selection_toggle_marked">(Un)Star</string>
     <string name="selection_toggle_published">(Un)Publish</string>
     <string name="selection_toggle_unread">(Un)Read</string>
+    <string name="selection_select_none">Deselect all</string>
     <string name="context_selection_toggle_marked">(Un)Star</string>
     <string name="context_selection_toggle_published">(Un)Publish</string>
     <string name="context_selection_toggle_unread">(Un)Read</string>

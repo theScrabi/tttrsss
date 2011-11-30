@@ -61,6 +61,12 @@
                 android:icon="@drawable/ic_menu_rss"
                 android:showAsAction=""
                 android:title="@string/selection_toggle_published"/>
+            
+            <item
+                android:id="@+id/selection_select_none"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/selection_select_none"/>
         </group>
 
         <group android:id="@+id/menu_group_article" >
