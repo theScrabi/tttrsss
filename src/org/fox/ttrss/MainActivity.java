@@ -1235,4 +1235,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		Log.d(TAG, "onCatSelected");
 		viewCategory(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));
 	}
+
+	public boolean getSmallScreenMode() {
+		return m_smallScreenMode;
+	}
 }

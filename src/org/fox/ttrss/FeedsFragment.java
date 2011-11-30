@@ -66,6 +66,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private int m_selectedFeedId;
 	private static final String ICON_PATH = "/org.fox.ttrss/icons/";
 	private boolean m_enableFeedIcons;
+	private boolean m_feedIconsChecked = false;
 	
 	public interface OnFeedSelectedListener {
 		public void onFeedSelected(Feed feed);
@@ -118,6 +119,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (savedInstanceState != null) {
 			m_selectedFeedId = savedInstanceState.getInt("selectedFeedId");
 			m_feeds = savedInstanceState.getParcelable("feeds");
+			m_feedIconsChecked = savedInstanceState.getBoolean("feedIconsChecked");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -165,6 +167,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		out.putInt("selectedFeedId", m_selectedFeedId);
 		out.putParcelable("feeds", m_feeds);
+		out.putBoolean("feedIconsChecked", m_feedIconsChecked);
 	}
 	
 	@Override
@@ -255,6 +258,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 							GetIconsTask git = new GetIconsTask(baseUrl);
 							git.execute(m_feeds);
+							
+							m_feedIconsChecked = true;
 						}
 					} catch (Exception e) {
 						Log.d(TAG, "Error receiving icons configuration");
@@ -307,7 +312,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						else
 							setLoadingStatus(R.string.blank, false);
 
-						if (m_enableFeedIcons) getFeedIcons();
+						if (m_enableFeedIcons && !m_feedIconsChecked) getFeedIcons();
 
 						return;
 					}
