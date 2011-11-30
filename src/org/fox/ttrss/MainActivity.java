@@ -693,6 +693,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 			return true; */
 		default:
+			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
 		}
 	}
@@ -1138,8 +1139,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    
-		Log.d(TAG, "onContextItemSelected=" + item.getItemId());
-
 		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 		FeedsFragment ff = (FeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
 		FeedCategoriesFragment cf = (FeedCategoriesFragment)getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
@@ -1153,7 +1152,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
     				cf.setSelectedCategory(cat);
     			}
     		}
-    		break;
+    		return true;
     	case R.id.browse_feeds:
     		if (cf != null) {
     			FeedCategory cat = cf.getCategoryAtPosition(info.position);
@@ -1162,7 +1161,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
     				cf.setSelectedCategory(cat);
     			}
     		}
-    		break;
+    		return true;
     	case R.id.catchup_category:
     		if (cf != null) {
     			FeedCategory cat = cf.getCategoryAtPosition(info.position);
@@ -1170,7 +1169,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
     	    		catchupFeed(new Feed(cat.id, cat.title, true));
     			}
     		}
-    		break;
+    		return true;
     	case R.id.catchup_feed:
     		if (ff != null) {
     			Feed feed = ff.getFeedAtPosition(info.position);
@@ -1178,7 +1177,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
     				catchupFeed(feed);
     			}
     		}
-    		break;
+    		return true;
 		case R.id.selection_toggle_marked:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
@@ -1245,8 +1244,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				if (article != null)
 					shareArticle(article);
 			}
-			break;
-		case R.id.set_unread:
+			return true;
+		case R.id.catchup_above:
+			if (hf != null) {
+				Article article = hf.getArticleAtPosition(info.position);
+				if (article != null) {
+					// TODO implement
+					
+				}
+			}
+			return true;
+		/* case R.id.set_unread:
 			if (hf != null) {
 				Article article = hf.getArticleAtPosition(info.position);
 				if (article != null) {
@@ -1254,10 +1262,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					saveArticleUnread(article);
 				}
 			}
-			break;
+			break; */
+			default:
+		    	Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+				return super.onContextItemSelected(item);
     	}
-			
-		return true;
 	}
 
 

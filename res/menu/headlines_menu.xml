@@ -23,9 +23,9 @@
         android:title="@string/share_article"/>
 
     <item
-        android:id="@+id/set_unread"
+        android:id="@+id/catchup_above"
         android:showAsAction=""
-        android:title="@string/article_set_unread"/>
+        android:title="@string/article_mark_read_above"/>
     
     
     </group>
