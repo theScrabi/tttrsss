@@ -222,7 +222,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 						
 						ListView list = (ListView)getView().findViewById(R.id.headlines);
 						
-						if (list != null && m_offset != 0) {
+						if (list != null && m_offset != 0 && articles.size() > 0) {
 							list.setSelection(last_position-1);
 						}
 						

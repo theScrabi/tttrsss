@@ -34,7 +34,7 @@
     <string name="update_feeds">Refresh feeds</string>
     <string name="close_article">Close article</string>
     <string name="share_article">Share article</string>
-    <string name="catchup">Mark as read</string>
+    <string name="catchup">Mark read</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
     <string name="load_more_articles">Load more</string>
     <string name="show_all_articles">Show all articles</string>
@@ -70,7 +70,7 @@
     <string name="no_headlines_to_display">No headlines to display</string>
     <string name="browse_cats_like_feeds">Browse categories like feeds</string>
     <string name="browse_cats_like_feeds_summary">Use category context menu to override this setting</string>
-    <string name="catchup_and_load">Catchup</string>
+    <string name="headlines_mark_as_read">Mark read</string>
     <string name="error_no_error">No error</string>
     <string name="error_unknown">Error: Unknown error (see log)</string>
     <string name="error_http_unauthorized">Error: 401 unauthorized</string>

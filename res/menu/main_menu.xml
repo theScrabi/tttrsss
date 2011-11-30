@@ -24,32 +24,34 @@
 
             <item
                 android:id="@+id/logout"
+                android:icon="@drawable/ic_menu_exit"
                 android:showAsAction=""
                 android:title="@string/logout"/>
         </group>
 
         <group android:id="@+id/menu_group_headlines" >
 
-            <item
+            <!--  <item
                 android:id="@+id/load_more_articles"
                 android:icon="@android:drawable/ic_menu_more"
                 android:showAsAction="ifRoom|withText"
-                android:title="@string/load_more_articles"/>
+                android:title="@string/load_more_articles"/> -->
 
             <item
-                android:id="@+id/catchup_and_load"
-                android:icon="@android:drawable/ic_menu_rotate"
+                android:id="@+id/headlines_mark_as_read"
+                android:icon="@android:drawable/ic_menu_tick"
                 android:showAsAction="ifRoom|withText"
-                android:title="@string/catchup_and_load"/>
+                android:title="@string/headlines_mark_as_read"/>
 
-            <item
+            <!--  <item
                 android:id="@+id/show_all_articles"
                 android:icon="@android:drawable/ic_menu_agenda"
                 android:showAsAction=""
-                android:title="@string/show_all_articles"/>
+                android:title="@string/show_all_articles"/> -->
 
             <item
                 android:id="@+id/headlines_select"
+                android:icon="@drawable/ic_menu_database"
                 android:title="@string/headlines_select"/>
         </group>
 

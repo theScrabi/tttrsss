@@ -443,13 +443,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			item.setTitle(R.string.menu_unread_feeds);
 		}
 
-		item = menu.findItem(R.id.show_all_articles);
+		/* item = menu.findItem(R.id.show_all_articles);
 		
 		if (getUnreadArticlesOnly()) {
 			item.setTitle(R.string.show_all_articles);
 		} else {
 			item.setTitle(R.string.show_unread_articles);
-		}
+		} */
 
 		return true;
 	}
@@ -588,28 +588,30 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			}
 			
 			return true;
-		case R.id.catchup_and_load:
+		case R.id.headlines_mark_as_read:
 			if (hf != null) {
-				final ArticleList articles = hf.getUnreadArticles();
+				ArticleList articles = hf.getUnreadArticles();
 				
+				for (Article a : articles)
+					a.unread = false;
+	
 				ApiRequest req = new ApiRequest(getApplicationContext()) {
 					@Override
 					protected void onPostExecute(JsonElement result) {
 						if (result != null) {
-							for (Article a : articles)
-								a.unread = false;
-								
 							viewFeed(m_activeFeed, true);
 						}
 					}
 				};
-					
+
+				final String articleIds = articlesToIdString(articles);
+
 				@SuppressWarnings("serial")
 				HashMap<String,String> map = new HashMap<String,String>() {
 					{
 						put("sid", m_sessionId);
 						put("op", "updateArticle");
-						put("article_ids", articlesToIdString(articles));
+						put("article_ids", articleIds);
 						put("mode", "0");
 						put("field", "2");
 					}			 
@@ -618,9 +620,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				req.execute(map);
 
 			}
-			return true;
-		case R.id.load_more_articles:
-			viewFeed(m_activeFeed, true);
 			return true;
 		case R.id.share_article:
 			shareArticle(m_selectedArticle);
@@ -695,7 +694,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			}
 			
 			return true;
-		case R.id.show_all_articles:
+		/* case R.id.show_all_articles:
 			setUnreadArticlesOnly(!getUnreadArticlesOnly());
 	
 			if (getUnreadArticlesOnly()) {
@@ -704,7 +703,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				item.setTitle(R.string.show_unread_articles);
 			}
 			
-			return true;
+			return true; */
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -754,8 +753,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 				
 				if (m_activeFeed != null) {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_canLoadMore);
-					m_menu.findItem(R.id.show_all_articles).setVisible(true);
+					//m_menu.findItem(R.id.load_more_articles).setVisible(m_canLoadMore);
+					//m_menu.findItem(R.id.show_all_articles).setVisible(true);
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, false); 
 					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
