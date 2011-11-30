@@ -83,8 +83,16 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 			TextView title = (TextView)view.findViewById(R.id.title);
 			
 			if (title != null) {
+				
+				String titleStr;
+				
+				if (m_article.title.length() > 200)
+					titleStr = m_article.title.substring(0, 200) + "...";
+				else
+					titleStr = m_article.title;
+				
 				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_article.link.replace("\"", "\\\"")+"\">" + m_article.title + "</a>"));
+				title.setText(Html.fromHtml("<a href=\""+m_article.link.replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
