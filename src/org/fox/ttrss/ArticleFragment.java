@@ -102,15 +102,19 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 				String content;
 				String cssOverride = "";
 				
+				web.setBackgroundColor(0x00000000);
+
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-					web.setBackgroundColor(android.R.color.black);
-					cssOverride = "body { background : black; color : #f0f0f0}\n";						
+					cssOverride = "body { background : transparent; color : #e0e0e0}\n";						
+				} else {
+					cssOverride = "body { background : transparent; }\n";
 				}
 				
 				content = 
 					"<html>" +
 					"<head>" +
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+					"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					cssOverride +
 					"img { max-width : 90%; }" +
