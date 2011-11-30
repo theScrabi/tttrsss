@@ -50,8 +50,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	private ArticleList m_selectedArticles = new ArticleList();
 	
 	private ArticleOps m_articleOps;
-	private boolean m_smallScreenMode = false;
-	private boolean m_portraitMode = false;
 	
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
@@ -78,14 +76,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
-		m_portraitMode = getActivity().getWindowManager().getDefaultDisplay().getOrientation() % 2 == 0;
-
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
 			m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
-			m_smallScreenMode = savedInstanceState.getBoolean("smallScreenMode");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -110,7 +105,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		m_feed = ((MainActivity)activity).getActiveFeed();
-		m_smallScreenMode = ((MainActivity)activity).getSmallScreenMode();
 		m_articleOps = (ArticleOps) activity;
 	}
 
@@ -176,7 +170,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		out.putParcelable("articles", m_articles);
 		out.putInt("activeArticleId", m_activeArticleId);
 		out.putParcelable("selectedArticles", m_selectedArticles);
-		out.putBoolean("smallScreenMode", m_smallScreenMode);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -295,14 +288,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 			final Article article = items.get(position);
 
 			if (v == null) {
-				int layoutId = (m_smallScreenMode && m_portraitMode) ? R.layout.headlines_row_small : R.layout.headlines_row;
+				int layoutId = R.layout.headlines_row;
 				
 				switch (getItemViewType(position)) {
 				case VIEW_UNREAD:
-					layoutId = (m_smallScreenMode && m_portraitMode) ? R.layout.headlines_row_small_unread : R.layout.headlines_row_unread;
+					layoutId = R.layout.headlines_row_unread;
 					break;
 				case VIEW_SELECTED:
-					layoutId = (m_smallScreenMode && m_portraitMode) ? R.layout.headlines_row_small_selected : R.layout.headlines_row_selected;
+					layoutId = R.layout.headlines_row_selected;
 					break;
 				}
 				

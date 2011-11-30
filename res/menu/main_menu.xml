@@ -31,23 +31,10 @@
 
         <group android:id="@+id/menu_group_headlines" >
 
-            <!--  <item
-                android:id="@+id/load_more_articles"
-                android:icon="@android:drawable/ic_menu_more"
-                android:showAsAction="ifRoom|withText"
-                android:title="@string/load_more_articles"/> -->
-
             <item
                 android:id="@+id/headlines_mark_as_read"
-                android:icon="@android:drawable/ic_menu_tick"
-                android:showAsAction="ifRoom|withText"
+                android:icon="@drawable/ic_menu_tick"
                 android:title="@string/headlines_mark_as_read"/>
-
-            <!--  <item
-                android:id="@+id/show_all_articles"
-                android:icon="@android:drawable/ic_menu_agenda"
-                android:showAsAction=""
-                android:title="@string/show_all_articles"/> -->
 
             <item
                 android:id="@+id/headlines_select"
