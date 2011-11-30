@@ -310,22 +310,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 		
 		Display display = getWindowManager().getDefaultDisplay();
-		int orientation = display.getOrientation();
-		int minWidth = orientation % 2 == 0 ? 1024 : 600;
-		int minHeight = orientation % 2 == 0 ? 600 : 1024;
 		
-		if (display.getWidth() > minWidth && display.getHeight() >= minHeight) {
-			m_smallScreenMode = false;
-			
-			setContentView(R.layout.main);
-		} else {
-			m_smallScreenMode = true;
+		int width = display.getWidth();
+		int height = display.getHeight();
 		
-			setContentView(R.layout.main_small);
-		}
-
+		if (height > width) { int tmp = height; width = tmp; height = width; }
+		
+		m_smallScreenMode = width < 960 || height < 720; 
+		
+		setContentView(R.layout.main);
+		
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "orientation=" + display.getOrientation());
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
@@ -1290,9 +1285,5 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public void onCatSelected(FeedCategory cat) {
 		Log.d(TAG, "onCatSelected");
 		viewCategory(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));
-	}
-
-	public boolean getSmallScreenMode() {
-		return m_smallScreenMode;
 	}
 }
