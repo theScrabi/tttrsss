@@ -1273,8 +1273,69 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+	    int action = event.getAction();
+	    int keyCode = event.getKeyCode();
+	        switch (keyCode) {
+	        case KeyEvent.KEYCODE_VOLUME_DOWN:
+	            if (action == KeyEvent.ACTION_DOWN) {
+	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+
+	            	if (hf != null && m_activeFeed != null) {
+	            		Article base = hf.getArticleById(hf.getActiveArticleId());
+	            		
+	            		Article next = base != null ? getRelativeArticle(base, RelativeArticle.AFTER) : hf.getArticleAtPosition(0);
+	            		
+	            		if (next != null) {
+	            			hf.setActiveArticleId(next.id);
+	            			
+	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
+	            			
+	            			if (combinedMode || m_selectedArticle == null) {
+	            				next.unread = false;
+	            				saveArticleUnread(next);
+	            			} else {
+	            				openArticle(next, 0);
+	            			}
+	            		}
+	            	}
+	            }
+	            return true;
+	        case KeyEvent.KEYCODE_VOLUME_UP:
+	            if (action == KeyEvent.ACTION_UP) {
+	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+
+	            	if (hf != null && m_activeFeed != null) {
+	            		Article base = hf.getArticleById(hf.getActiveArticleId());
+	            		
+	            		Article prev = base != null ? getRelativeArticle(base, RelativeArticle.BEFORE) : hf.getArticleAtPosition(0);
+	            		
+	            		if (prev != null) {
+	            			hf.setActiveArticleId(prev.id);
+	            			
+	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
+	            			
+	            			if (combinedMode || m_selectedArticle == null) {
+	            				prev.unread = false;
+	            				saveArticleUnread(prev);
+	            			} else {
+	            				openArticle(prev, 0);
+	            			}
+	            		}
+	            	}
+
+	            }
+	            return true;
+	        default:
+	            return super.dispatchKeyEvent(event);
+	        }
+	    }
+	
+	@Override
 	public void onCatSelected(FeedCategory cat) {
 		Log.d(TAG, "onCatSelected");
-		viewCategory(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));
+		boolean browse = m_prefs.getBoolean("browse_cats_like_feeds", false);
+		
+		viewCategory(cat, browse && cat.id >= 0);
 	}
 }

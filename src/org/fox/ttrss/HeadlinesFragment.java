@@ -478,7 +478,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
 		if (list != null) {
-			int position = m_adapter.getPosition(m_articleOps.getSelectedArticle());
+			int position = m_adapter.getPosition(getArticleById(id));
 			list.setSelection(position);
 		}
 	}
@@ -499,6 +499,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public Article getArticleAtPosition(int position) {
 		return m_adapter.getItem(position);
+	}
+	
+	public Article getArticleById(int id) {
+		for (Article a : m_articles) {
+			if (a.id == id)
+				return a;
+		}
+		return null;
 	}
 
 	public ArticleList getUnreadArticles() {
@@ -521,4 +529,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		// no-op
 	}
 
+	public int getActiveArticleId() {
+		return m_activeArticleId;
+	}
+
+	
 }
