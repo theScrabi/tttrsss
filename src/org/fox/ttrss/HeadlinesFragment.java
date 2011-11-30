@@ -13,7 +13,10 @@ import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -23,6 +26,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -51,6 +55,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private int m_activeArticleId;
 	private boolean m_refreshInProgress = false;
 	private boolean m_canLoadMore = false;
+	private boolean m_combinedMode = true;
+	
+	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList();
@@ -88,7 +95,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
-			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
+			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
+			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -114,7 +122,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		m_feed = ((MainActivity)activity).getActiveFeed();
+		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_articleOps = (ArticleOps) activity;
+		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}
 
 	@Override
@@ -184,6 +194,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putInt("activeArticleId", m_activeArticleId);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putBoolean("canLoadMore", m_canLoadMore);
+		out.putBoolean("combinedMode", m_combinedMode);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -225,8 +236,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						else
 							m_articles.remove(m_articles.size()-1); // remove previous placeholder
 						
-						int last_position = m_articles.size();
-						
 						for (Article f : articles) 
 							m_articles.add(f);
 
@@ -241,12 +250,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 						m_adapter.notifyDataSetChanged();
 
-						/* ListView list = (ListView)getView().findViewById(R.id.headlines);
-						
-						if (list != null && m_offset != 0 && articles.size() > 0) {
-							list.setSelection(last_position-1);
-						} */
-						
 						if (m_articles.size() == 0)
 							setLoadingStatus(R.string.no_headlines_to_display, false);
 						else
@@ -379,14 +382,48 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
-				String excerpt = Jsoup.parse(article.content).text(); 
+				if (!m_combinedMode) {			
+					String excerpt = Jsoup.parse(article.content).text(); 
 				
-				if (excerpt.length() > 100)
-					excerpt = excerpt.substring(0, 100) + "...";
+					if (excerpt.length() > 100)
+						excerpt = excerpt.substring(0, 100) + "...";
 				
-				te.setText(excerpt);
+					te.setText(excerpt);
+				} else {
+					te.setVisibility(View.GONE);
+				}
 			}       	
 
+			WebView web = (WebView)v.findViewById(R.id.content);
+			
+			if (web != null) {			
+				if (m_combinedMode) {
+					String content;
+					String cssOverride = "";
+					
+					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+						web.setBackgroundColor(android.R.color.black);
+						cssOverride = "body { background : black; color : #f0f0f0}\n";						
+					}
+					
+					content = 
+						"<html>" +
+						"<head>" +
+						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+						"<style type=\"text/css\">" +
+						cssOverride +
+						"img { max-width : 90%; }" +
+						"body { text-align : justify; }" +
+						"</style>" +
+						"</head>" +
+						"<body>" + article.content + "</body></html>";
+						
+					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+				} else {
+					web.setVisibility(View.GONE);
+				}
+			}
+			
 			TextView dv = (TextView) v.findViewById(R.id.date);
 			
 			if (dv != null) {
@@ -481,7 +518,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO Auto-generated method stub
+		// no-op
 	}
 
 }

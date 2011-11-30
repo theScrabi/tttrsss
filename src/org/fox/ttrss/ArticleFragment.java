@@ -99,8 +99,6 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 			
 			if (web != null) {
 				
-				// this is ridiculous
-				// TODO white on black style for dark theme
 				String content;
 				String cssOverride = "";
 				
