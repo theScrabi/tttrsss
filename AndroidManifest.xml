@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.fox.ttrss"
-      android:versionCode="25"
-      android:versionName="0.1.24">
+      android:versionCode="26"
+      android:versionName="0.1.25">
     <uses-sdk android:minSdkVersion="8" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
