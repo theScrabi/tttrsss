@@ -56,10 +56,10 @@
         <group android:id="@+id/menu_group_headlines_selection" >
 
             <item
-                android:id="@+id/selection_mark_as_read"
-                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:id="@+id/selection_toggle_unread"
+                android:icon="@android:drawable/ic_menu_rotate"
                 android:showAsAction=""
-                android:title="@string/selection_mark_as_read"/>
+                android:title="@string/selection_toggle_unread"/>
 
             <item
                 android:id="@+id/selection_toggle_marked"

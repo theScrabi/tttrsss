@@ -66,7 +66,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener {
 		if (m_selectedArticles.size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
 		} else {
-			menu.setHeaderTitle(R.string.headline_context_single);
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+			Article article = getArticleAtPosition(info.position);
+			menu.setHeaderTitle(article.title);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
