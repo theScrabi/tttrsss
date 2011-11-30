@@ -952,7 +952,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 						req.execute(map);
 						
 						setLoadingStatus(R.string.loading_message, true);
-
 						
 						loginSuccess();
 						return;
@@ -966,7 +965,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_sessionId = null;
 
 			setLoadingStatus(getErrorMessage(), false);
-			m_menu.findItem(R.id.login).setVisible(true);
+			//m_menu.findItem(R.id.login).setVisible(true);
 		}
 
 	}

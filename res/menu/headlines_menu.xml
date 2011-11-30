@@ -15,4 +15,20 @@
         android:showAsAction=""
         android:title="@string/context_selection_toggle_published"/>
 
+    <group android:id="@+id/menu_group_single_article">
+        
+    <item
+        android:id="@+id/share_article"
+        android:showAsAction=""
+        android:title="@string/share_article"/>
+
+    <item
+        android:id="@+id/set_unread"
+        android:showAsAction=""
+        android:title="@string/article_set_unread"/>
+    
+    
+    </group>
+    
+    
 </menu>

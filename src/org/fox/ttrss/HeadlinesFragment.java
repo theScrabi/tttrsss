@@ -19,9 +19,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -77,10 +79,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (m_selectedArticles.size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
+			menu.setGroupVisible(R.id.menu_group_single_article, false);
 		} else {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 			Article article = getArticleAtPosition(info.position);
 			menu.setHeaderTitle(article.title);
+			menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
@@ -131,11 +135,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
 		ListView list = (ListView)av;
 		
-		if (list != null && !m_combinedMode) {
+		Log.d(TAG, "onItemClick=" + position);
+		
+		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
 			if (article.id >= 0) {
-				m_articleOps.openArticle(article, 0);
-			
+				if (m_combinedMode) {
+					article.unread = false;
+					m_articleOps.saveArticleUnread(article);
+				} else {
+					m_articleOps.openArticle(article, 0);
+				}
+				
 				m_activeArticleId = article.id;
 				m_adapter.notifyDataSetChanged();
 			}
@@ -337,12 +348,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
+				
+				// http://code.google.com/p/android/issues/detail?id=3414
+				((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 			}
 
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
-				tt.setText(Html.fromHtml(article.title));
+				if (m_combinedMode) {
+					tt.setMovementMethod(LinkMovementMethod.getInstance());
+					tt.setText(Html.fromHtml("<a href=\""+article.link.replace("\"", "\\\"")+"\">" + article.title + "</a>"));
+				} else {
+					tt.setText(Html.fromHtml(article.title));
+				}
 			}
 
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
@@ -416,13 +435,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 						"<style type=\"text/css\">" +
 						cssOverride +
-						"img { max-width : 90%; }" +
+						//"img { max-width : 90%; }" +
 						"body { text-align : justify; }" +
 						"</style>" +
 						"</head>" +
 						"<body>" + article.content + "</body></html>";
 						
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+					//web.setOnTouchListener(new WebViewClickListener(web, parent, position));
 				} else {
 					web.setVisibility(View.GONE);
 				}

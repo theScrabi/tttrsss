@@ -117,7 +117,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 					"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					cssOverride +
-					"img { max-width : 90%; }" +
+					//"img { max-width : 90%; }" +
 					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +
