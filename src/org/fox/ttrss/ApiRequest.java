@@ -201,6 +201,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 					} else if (error.equals("API_DISABLED")) {
 						m_lastError = ApiError.LOGIN_FAILED;
 					} else {
+						Log.d(TAG, "Unknown API error: " + error);
 						m_lastError = ApiError.API_UNKNOWN;
 					}		
 				}
