@@ -674,6 +674,24 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				updateHeadlines();
 			}
 			return true;
+		case R.id.catchup_above:
+			if (hf != null) {
+				if (m_selectedArticle != null) {
+					ArticleList articles = hf.getAllArticles();
+					ArticleList tmp = new ArticleList();
+					for (Article a : articles) {
+						a.unread = false;
+						tmp.add(a);
+						if (m_selectedArticle.id == a.id)
+							break;
+					}
+					if (tmp.size() > 0) {
+						toggleArticlesUnread(tmp);
+						hf.notifyUpdated();
+					}
+				}
+			}
+			return true;
 		case R.id.set_unread:
 			if (m_selectedArticle != null) {
 				m_selectedArticle.unread = true;
@@ -1258,8 +1276,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			if (hf != null) {
 				Article article = hf.getArticleAtPosition(info.position);
 				if (article != null) {
-					// TODO implement
-					
+					ArticleList articles = hf.getAllArticles();
+					ArticleList tmp = new ArticleList();
+					for (Article a : articles) {
+						a.unread = false;
+						tmp.add(a);
+						if (article.id == a.id)
+							break;
+					}
+					if (tmp.size() > 0) {
+						toggleArticlesUnread(tmp);
+						hf.notifyUpdated();
+					}
 				}
 			}
 			return true;
