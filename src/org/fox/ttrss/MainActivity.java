@@ -1140,7 +1140,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		logout();
 		
-		if (m_prefs.getString("ttrss_url", "").length() == 0) {
+		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
 
 			setLoadingStatus(R.string.login_need_configure, false);
 			
@@ -1151,8 +1151,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
 					put("op", "login");
-					put("user", m_prefs.getString("login", null));
-					put("password", m_prefs.getString("password", null));
+					put("user", m_prefs.getString("login", "").trim());
+					put("password", m_prefs.getString("password", "").trim());
 				}			 
 			};
 	
