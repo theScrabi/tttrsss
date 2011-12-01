@@ -87,6 +87,7 @@
     <string name="error_api_disabled">Error: API disabled for this user</string>
     <string name="error_api_unknown">Error: unknown API error (see log)</string>
     <string name="error_login_failed">Error: username or password incorrect</string>
+    <string name="error_invalid_api_url">Error: invalid API URL</string>
 	<string name="combined_mode_summary">Displays articles inline, instead of a separate panel</string>
 	<string name="combined_mode">Combined mode</string>
 </resources>

@@ -37,7 +37,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private final String TAG = this.getClass().getSimpleName();
 
 	public enum ApiError { NO_ERROR, HTTP_UNAUTHORIZED, HTTP_FORBIDDEN, HTTP_NOT_FOUND, 
-		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED };
+		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED, INVALID_URL };
 	
 	public static final int API_STATUS_OK = 0;
 	public static final int API_STATUS_ERR = 1;
@@ -57,7 +57,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
 		
-		m_api = m_prefs.getString("ttrss_url", null);
+		m_api = m_prefs.getString("ttrss_url", null).trim();
 		m_trustAny = m_prefs.getBoolean("ssl_trust_any", false);
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
 		m_lastError = ApiError.NO_ERROR;
@@ -92,6 +92,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			return R.string.error_api_unknown;
 		case LOGIN_FAILED:
 			return R.string.error_login_failed;
+		case INVALID_URL:
+			return R.string.error_invalid_api_url;
 		default:
 			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
 			return R.string.error_unknown;
@@ -121,31 +123,44 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			client = new DefaultHttpClient();
 		}
 
-		HttpPost httpPost = new HttpPost(m_api + "/api/");
+		try {
 
-		String httpLogin = m_prefs.getString("http_login", "");
-		String httpPassword = m_prefs.getString("http_password", "");
-		
-		if (httpLogin.length() > 0) {
-			if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
-
-			URL targetUrl;
+			HttpPost httpPost;
+			
 			try {
-				targetUrl = new URL(m_api);
-			} catch (MalformedURLException e) {
+				httpPost = new HttpPost(m_api + "/api/");
+			} catch (IllegalArgumentException e) {
+				m_lastError = ApiError.INVALID_URL;
+				e.printStackTrace();
+				return null;
+			} catch (Exception e) {
+				m_lastError = ApiError.OTHER_ERROR;
 				e.printStackTrace();
 				return null;
 			}
+	
+			String httpLogin = m_prefs.getString("http_login", "").trim();
+			String httpPassword = m_prefs.getString("http_password", "").trim();
 			
-			HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
-			
-			client.getCredentialsProvider().setCredentials(
-	                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-	                new UsernamePasswordCredentials(httpLogin, httpPassword));
-		}
-		
+			if (httpLogin.length() > 0) {
+				if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
+	
+				URL targetUrl;
+				try {
+					targetUrl = new URL(m_api);
+				} catch (MalformedURLException e) {
+					m_lastError = ApiError.INVALID_URL;
+					e.printStackTrace();
+					return null;
+				}
+				
+				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
+				
+				client.getCredentialsProvider().setCredentials(
+		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+		                new UsernamePasswordCredentials(httpLogin, httpPassword));
+			}
 
-		try {
 			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
 			HttpResponse execute = client.execute(httpPost);
 			
