@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -103,6 +104,11 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 				String cssOverride = "";
 				
 				web.setBackgroundColor(0x00000000);
+				
+				WebSettings ws = web.getSettings();
+				
+				ws.setSupportZoom(true);
+				ws.setBuiltInZoomControls(true);
 
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}\n";						
@@ -117,7 +123,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 					"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					cssOverride +
-					//"img { max-width : 90%; }" +
+					"img { max-width : 98%; height : auto; }" +
 					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +

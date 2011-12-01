@@ -435,7 +435,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 						"<style type=\"text/css\">" +
 						cssOverride +
-						//"img { max-width : 90%; }" +
+						"img { max-width : 98%; height : auto; }" +
 						"body { text-align : justify; }" +
 						"</style>" +
 						"</head>" +
