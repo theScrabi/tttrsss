@@ -964,7 +964,11 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 									ft.replace(R.id.feeds_fragment, frag);
 								}
 
-								ft.commit();
+								try {
+									ft.commit();
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								}
 
 							}
 						};
