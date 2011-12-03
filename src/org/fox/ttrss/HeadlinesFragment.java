@@ -14,18 +14,17 @@ import org.jsoup.Jsoup;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -330,7 +329,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			View v = convertView;
 
 			final Article article = items.get(position);
-
+			int webBgResource = R.attr.headlineNormalBackground;
+			
 			if (v == null) {
 				int layoutId = R.layout.headlines_row;
 				
@@ -340,9 +340,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					break;
 				case VIEW_UNREAD:
 					layoutId = R.layout.headlines_row_unread;
+					webBgResource = R.attr.headlineUnreadBackground;
 					break;
 				case VIEW_SELECTED:
 					layoutId = R.layout.headlines_row_selected;
+					webBgResource = R.attr.headlineSelectedBackground;
 					break;
 				}
 				
@@ -420,8 +422,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					String content;
 					String cssOverride = "";
 
-					web.setBackgroundColor(0x00000000);
+					TypedValue tv = new TypedValue();
+				    getActivity().getTheme().resolveAttribute(webBgResource, tv, true);
+				    int webColor = tv.data;
 
+				    web.setBackgroundColor(webColor);
+					
 					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 						cssOverride = "body { background : transparent; color : #e0e0e0}\n";						
 					} else {
