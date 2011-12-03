@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -427,6 +428,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				    int webColor = tv.data;
 
 				    web.setBackgroundColor(webColor);
+				    
+				    //WebSettings ws = web.getSettings();
+				    //ws.setBlockNetworkLoads(true);
 					
 					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 						cssOverride = "body { background : transparent; color : #e0e0e0}\n";						
