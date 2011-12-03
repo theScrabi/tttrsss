@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.animation.LayoutTransition;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -26,9 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -324,9 +321,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			LayoutTransition transitioner = new LayoutTransition();
-			LinearLayout layout = (LinearLayout)findViewById(R.id.main);
-			layout.setLayoutTransition(transitioner);
+			new TransitionHelper((LinearLayout)findViewById(R.id.main));
 		}
 		
 		if (m_smallScreenMode) {
@@ -829,65 +824,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 				m_menu.setGroupVisible(R.id.menu_group_headlines, false);
 				m_menu.setGroupVisible(R.id.menu_group_article, false);
+				m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
 			}
-			
-			/* if (m_sessionId != null) {
-				m_menu.findItem(R.id.login).setVisible(false);
-			
-				m_menu.findItem(R.id.logout).setVisible(m_activeFeed == null && m_selectedArticle == null);
-			
-				if (m_selectedArticle != null) {
-					m_menu.findItem(R.id.close_article).setVisible(true);
-					m_menu.findItem(R.id.share_article).setVisible(true);
-					m_menu.findItem(R.id.toggle_marked).setVisible(true);
-					m_menu.findItem(R.id.toggle_published).setVisible(true);
-					m_menu.findItem(R.id.set_unread).setVisible(true);
-					
-					m_menu.findItem(R.id.update_feeds).setVisible(false);
-					m_menu.findItem(R.id.show_feeds).setVisible(false);
-					m_menu.findItem(R.id.back_to_categories).setVisible(false);
-				} else {
-					m_menu.findItem(R.id.close_article).setVisible(false);
-					m_menu.findItem(R.id.share_article).setVisible(false);
-					m_menu.findItem(R.id.toggle_marked).setVisible(false);
-					m_menu.findItem(R.id.toggle_published).setVisible(false);
-					m_menu.findItem(R.id.set_unread).setVisible(false);
-					
-					if (!m_smallScreenMode || m_activeFeed == null) {
-						m_menu.findItem(R.id.show_feeds).setVisible(true);
-						m_menu.findItem(R.id.update_feeds).setVisible(true);
-					} else {
-						m_menu.findItem(R.id.show_feeds).setVisible(false);
-						m_menu.findItem(R.id.update_feeds).setVisible(false);
-					}
-					
-					m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
-				}
-
-				if (!m_smallScreenMode) {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_canLoadMore);
-					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null);
-				} else {
-					m_menu.findItem(R.id.load_more_articles).setVisible(m_activeFeed != null && m_selectedArticle == null && m_canLoadMore &&
-							(!m_enableCats || m_activeCategory != null));
-					m_menu.findItem(R.id.show_all_articles).setVisible(m_activeFeed != null && m_selectedArticle == null);
-				}
-
-				
-				
-			} else {
-				m_menu.findItem(R.id.login).setVisible(true);
-				
-				m_menu.findItem(R.id.logout).setVisible(false);
-				m_menu.findItem(R.id.close_article).setVisible(false);
-				m_menu.findItem(R.id.share_article).setVisible(false);
-				m_menu.findItem(R.id.load_more_articles).setVisible(false);
-				m_menu.findItem(R.id.back_to_categories).setVisible(false);
-
-				m_menu.findItem(R.id.update_feeds).setVisible(false);
-				m_menu.findItem(R.id.show_feeds).setVisible(false);
-			} */
 		}		
 	}
 	

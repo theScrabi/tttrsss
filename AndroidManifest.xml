@@ -3,7 +3,7 @@
       package="org.fox.ttrss"
       android:versionCode="29"
       android:versionName="0.1.28">
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="4" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
