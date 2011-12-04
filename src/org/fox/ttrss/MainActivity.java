@@ -737,14 +737,21 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
 		}
 
-		boolean browseCats = m_prefs.getBoolean("browse_cats_like_feeds", false);
+		//boolean browseCats = m_prefs.getBoolean("browse_cats_like_feeds", false);
 		
 		if (m_smallScreenMode) {
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);	
 		} else {
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
-			findViewById(browseCats ? R.id.cats_fragment : R.id.feeds_fragment).setVisibility(View.VISIBLE);
+			
+			if (m_activeFeed != null) {
+				if (m_activeFeed.is_cat) {
+					findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+				} else {
+					findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+				}
+			}
 		}
 
 		m_selectedArticle = null;
