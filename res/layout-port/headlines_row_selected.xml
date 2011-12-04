@@ -98,8 +98,9 @@
     </LinearLayout>
 
 
-    <WebView
+    <TextView
         android:id="@+id/content"
+        android:text="Article content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" />

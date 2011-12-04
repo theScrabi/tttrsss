@@ -1,6 +1,9 @@
 package org.fox.ttrss;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,26 +12,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.Html.ImageGetter;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -66,6 +74,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleList m_selectedArticles = new ArticleList();
 	
 	private ArticleOps m_articleOps;
+	
+	private ImageGetter m_dummyGetter = new ImageGetter() {
+
+		@Override
+		public Drawable getDrawable(String source) {
+			return new BitmapDrawable();
+		}
+		
+	};
 	
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
@@ -330,7 +347,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			View v = convertView;
 
 			final Article article = items.get(position);
-			int webBgResource = R.attr.headlineNormalBackground;
 			
 			if (v == null) {
 				int layoutId = R.layout.headlines_row;
@@ -341,11 +357,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					break;
 				case VIEW_UNREAD:
 					layoutId = R.layout.headlines_row_unread;
-					webBgResource = R.attr.headlineUnreadBackground;
 					break;
 				case VIEW_SELECTED:
 					layoutId = R.layout.headlines_row_selected;
-					webBgResource = R.attr.headlineSelectedBackground;
 					break;
 				}
 				
@@ -416,46 +430,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}       	
 
-			WebView web = (WebView)v.findViewById(R.id.content);
+			TextView content = (TextView)v.findViewById(R.id.content);
 			
-			if (web != null) {			
+			if (content != null) {
 				if (m_combinedMode) {
-					String content;
-					String cssOverride = "";
-
-					TypedValue tv = new TypedValue();
-				    getActivity().getTheme().resolveAttribute(webBgResource, tv, true);
-				    int webColor = tv.data;
-
-				    web.setBackgroundColor(webColor);
-				    
-				    //WebSettings ws = web.getSettings();
-				    //ws.setBlockNetworkLoads(true);
+					content.setMovementMethod(LinkMovementMethod.getInstance());
 					
-					if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-						cssOverride = "body { background : transparent; color : #e0e0e0}\n";						
-					} else {
-						cssOverride = "body { background : transparent; }\n";
-					}
+					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
+					content.setText(Html.fromHtml(article.content, m_dummyGetter, null));
 					
-					content = 
-						"<html>" +
-						"<head>" +
-						"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />" +
-						"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
-						"<style type=\"text/css\">" +
-						cssOverride +
-						"img { max-width : 98%; height : auto; }" +
-						"body { text-align : justify; }" +
-						"</style>" +
-						"</head>" +
-						"<body>" + article.content + "</body></html>";
-						
-					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
-					//web.setOnTouchListener(new WebViewClickListener(web, parent, position));
 				} else {
-					web.setVisibility(View.GONE);
+					content.setVisibility(View.GONE);
 				}
+				
 			}
 			
 			TextView dv = (TextView) v.findViewById(R.id.date);
