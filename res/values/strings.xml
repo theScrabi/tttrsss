@@ -90,5 +90,8 @@
     <string name="error_invalid_api_url">Error: invalid API URL</string>
 	<string name="combined_mode_summary">Displays full article text inline, instead of a separate panel</string>
 	<string name="combined_mode">Combined mode</string>
-	<string name="initiate_sync">Sync offline</string>
+	<string name="go_offline">Go offline</string>
+	<string name="go_online">Go online</string>
+	<string name="offline_downloading">Preparing offline mode...</string>
+	<string name="offline_switch_error">Failed to prepare offline mode (see log)</string>
 </resources>

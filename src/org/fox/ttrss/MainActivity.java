@@ -406,13 +406,42 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
 	}
+	
+	//private boolean m_canGetMoreArticles = true;
+	private int m_articleOffset = 0;
+	
+	@SuppressWarnings("unchecked")
+	public void offlineGetArticles() {
+		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
+
+		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
+		
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("op", "getHeadlines");
+				put("sid", m_sessionId);
+				put("feed_id", "-4");
+				put("view_mode", "unread");
+				put("show_content", "true");
+				put("skip", String.valueOf(m_articleOffset));
+				put("limit", "30");
+			}			 
+		};
+		
+		req.execute(map);
+	}
 
 	@SuppressWarnings("unchecked")
-	public void offlineSync() {
-		Log.d(TAG, "Starting offlineSync");
+	public void switchOffline() {
+		Log.d(TAG, "offline: starting");
 		
 		if (m_sessionId != null) {
 		
+			findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+			findViewById(R.id.main).setVisibility(View.INVISIBLE);
+			
+			setLoadingStatus(R.string.offline_downloading, true);
+			
 			// TODO upload updated stuff here
 						
 			// Download feeds
@@ -424,29 +453,38 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				protected void onPostExecute(JsonElement content) {
 					if (content != null) {
 						
-						Type listType = new TypeToken<List<Feed>>() {}.getType();
-						List<Feed> feeds = new Gson().fromJson(content, listType);
+						try {
+							Type listType = new TypeToken<List<Feed>>() {}.getType();
+							List<Feed> feeds = new Gson().fromJson(content, listType);
+							
+							SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
+									"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
+							"VALUES (?, ?, ?, ?, ?);");
+							
+							for (Feed feed : feeds) {
+								stmtInsert.bindLong(1, feed.id);
+								stmtInsert.bindString(2, feed.title);
+								stmtInsert.bindString(3, feed.feed_url);
+								stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
+								stmtInsert.bindLong(5, feed.cat_id);
+	
+								stmtInsert.execute();
+							}
 						
-						SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
-								"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
-						"VALUES (?, ?, ?, ?, ?);");
-						
-						for (Feed feed : feeds) {
-							stmtInsert.bindLong(1, feed.id);
-							stmtInsert.bindString(2, feed.title);
-							stmtInsert.bindString(3, feed.feed_url);
-							stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
-							stmtInsert.bindLong(5, feed.cat_id);
-
-							stmtInsert.execute();
+							Log.d(TAG, "offline: done downloading feeds");
+							
+							m_articleOffset = 0;
+							
+							getWritableDb().execSQL("DELETE FROM articles;");
+	
+							offlineGetArticles();
+						} catch (Exception e) {
+							e.printStackTrace();
+							setLoadingStatus(R.string.offline_switch_error, false);
 						}
 					
-						Log.d(TAG, "offlineSync: done downloading feeds");
-						
-						// TODO download fresh articles
-					
 					} else {
-						Log.d(TAG, "offlineSync failed: " + getErrorMessage());
+						setLoadingStatus(getErrorMessage(), false);
 						// TODO error, could not download feeds, properly report API error (toast)
 					}
 				}
@@ -638,8 +676,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.login:
 			login();
 			return true;
-		case R.id.initiate_sync:
-			offlineSync();
+		case R.id.go_offline:
+			switchOffline();
 			return true;
 		case R.id.close_article:
 			closeArticle();
@@ -1448,5 +1486,79 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		boolean browse = m_prefs.getBoolean("browse_cats_like_feeds", false);
 		
 		viewCategory(cat, browse && cat.id >= 0);
+	}
+	
+	public class OfflineArticlesRequest extends ApiRequest {
+		public OfflineArticlesRequest(Context context) {
+			super(context);
+		}
+
+		@Override
+		protected void onPostExecute(JsonElement content) {
+			if (content != null) {
+				try {
+					Type listType = new TypeToken<List<Article>>() {}.getType();
+					List<Article> articles = new Gson().fromJson(content, listType);
+	
+					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
+							"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content) " +
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+	
+					for (Article article : articles) {
+	
+						String tagsString = "";
+						
+						for (String t : article.tags) {
+							tagsString += t + ", ";
+						}
+						
+						tagsString.replaceAll("/, $/", "");
+						
+						stmtInsert.bindLong(1, article.id);
+						stmtInsert.bindLong(2, article.unread ? 1 : 0);
+						stmtInsert.bindLong(3, article.marked ? 1 : 0);
+						stmtInsert.bindLong(4, article.published ? 1 : 0);
+						stmtInsert.bindLong(5, article.updated);
+						stmtInsert.bindLong(6, article.is_updated ? 1 : 0);
+						stmtInsert.bindString(7, article.title);
+						stmtInsert.bindString(8, article.link);
+						stmtInsert.bindLong(9, article.feed_id);
+						stmtInsert.bindString(10, tagsString); // comma-separated tags
+						stmtInsert.bindString(11, article.content);
+						
+						try {
+							stmtInsert.execute();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+	
+					}
+	
+					//m_canGetMoreArticles = articles.size() == 30;
+					m_articleOffset += articles.size();
+	
+					Log.d(TAG, "offline: received " + articles.size() + " articles");
+					
+					if (articles.size() == 30 && m_articleOffset < 500) {
+						offlineGetArticles();
+					} else {
+						logout();
+						setLoadingStatus(R.string.blank, false);
+						
+					}
+					
+					return;
+					
+				} catch (Exception e) {
+					setLoadingStatus(R.string.offline_switch_error, false);
+					Log.d(TAG, "offline: failed: exception when loading articles");
+					e.printStackTrace();
+				}
+				
+			} else {
+				Log.d(TAG, "offline: failed: " + getErrorMessage());
+				setLoadingStatus(getErrorMessage(), false);
+			}
+		}
 	}
 }

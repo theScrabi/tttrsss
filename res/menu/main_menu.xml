@@ -1,5 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item
+        android:id="@+id/go_offline"
+        android:icon="@drawable/ic_menu_cloud"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/go_offline"/>
+
+    <item
+        android:id="@+id/go_online"
+        android:visible="false"
+        android:icon="@drawable/ic_menu_cloud"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/go_online"/>
+
     <group android:id="@+id/menu_group_logged_in" >
 
         <group android:id="@+id/menu_group_feeds" >
@@ -21,12 +34,6 @@
                 android:icon="@android:drawable/ic_menu_rotate"
                 android:showAsAction=""
                 android:title="@string/update_feeds"/>
-
-            <item
-                android:id="@+id/initiate_sync"
-                android:icon="@android:drawable/ic_menu_rotate"
-                android:showAsAction="ifRoom|withText"
-                android:title="@string/initiate_sync"/>
 
             <item
                 android:id="@+id/logout"
