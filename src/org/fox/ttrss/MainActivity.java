@@ -61,6 +61,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private int m_articleOffset = 0;
 	private boolean m_isOffline = false;
 	
+	private int m_activeOfflineFeedId = 0;
+	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 	
@@ -320,6 +322,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
 			m_isOffline = savedInstanceState.getBoolean("isOffline");
+			m_activeOfflineFeedId = savedInstanceState.getInt("offlineActiveFeedId");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -334,6 +337,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_smallScreenMode = width < 960 || height < 720; 
 		
 		setContentView(R.layout.main);
+
+		initDatabase();
+		
+		m_isOffline = true;
 		
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
@@ -353,51 +360,57 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			}
 		}
 		
-		if (m_smallScreenMode) {
-			if (m_selectedArticle != null) {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			} else if (m_activeFeed != null) {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			} else {
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
-				
-				if (m_enableCats && m_activeCategory == null) {
+		if (m_isOffline) {
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+		} else {
+			
+			if (m_smallScreenMode) {
+				if (m_selectedArticle != null) {
 					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-					findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+					findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				} else if (m_activeFeed != null) {
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+					findViewById(R.id.article_fragment).setVisibility(View.GONE);
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				} else {
+					findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+					//findViewById(R.id.article_fragment).setVisibility(View.GONE);
+					
+					if (m_enableCats && m_activeCategory == null) {
+						findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+						findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+					} else {
+						findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+					}
+				}
+			} else {
+				if (m_selectedArticle == null) {
+					findViewById(R.id.article_fragment).setVisibility(View.GONE);
+					
+					if (!m_enableCats || m_activeCategory != null)
+						findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+					else
+						findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				
+				} else {
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				}
 			}
-		} else {
-			if (m_selectedArticle == null) {
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-				
-				if (!m_enableCats || m_activeCategory != null)
-					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				else
-					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			
-			} else {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			}
-			
-			
-		}
-
-		initDatabase();
-
-		if (m_sessionId != null) {
-			loginSuccess();
-		} else {
-			login();
 		}
 		
+		if (m_isOffline) {
+			switchOffline();
+		} else {
+			if (m_sessionId != null) {
+				loginSuccess();
+			} else {
+				login();
+			}
+		}
 	
 	}
 
@@ -405,6 +418,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		m_writableDb = dh.getWritableDatabase();
 		m_readableDb = dh.getReadableDatabase();
+	}
+	
+	public synchronized SQLiteDatabase getReadableDb() {
+		return m_readableDb;
 	}
 	
 	public synchronized SQLiteDatabase getWritableDb() {
@@ -501,7 +518,30 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			};
 			
 			req.execute(map);
-		}		
+		} else {
+			switchOfflineSuccess();
+		}
+	}
+	
+	public void switchOfflineSuccess() {
+		logout();
+		//setLoadingStatus(R.string.blank, false);
+
+		m_isOffline = true;
+		initMainMenu();
+
+		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
+		findViewById(R.id.main).setVisibility(View.VISIBLE);
+
+		if (m_activeOfflineFeedId == 0) {
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
+			ft.replace(R.id.feeds_fragment, frag);
+			ft.commit();
+		} else {
+			offlineViewFeed(m_activeOfflineFeedId);
+		}
+		
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -531,6 +571,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putInt("apiLevel", m_apiLevel);
 		out.putInt("isLicensed", m_isLicensed);
 		out.putBoolean("isOffline", m_isOffline);
+		out.putInt("offlineActiveFeedId", m_activeOfflineFeedId);
 	}
 
 	@Override
@@ -969,7 +1010,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.setGroupVisible(R.id.menu_group_headlines, false);
 				m_menu.setGroupVisible(R.id.menu_group_article, false);
 				m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
+
+				if (m_isOffline) {
+					m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
+					
+				} else {
+					m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
+				}
 			}
 		}		
 	}
@@ -988,6 +1035,15 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_refreshTimer = null;
 		}
 
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	
+		m_readableDb.close();
+		m_writableDb.close();
+		
 	}
 	
 	private void loginSuccess() {
@@ -1546,10 +1602,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					if (articles.size() == 30 && m_articleOffset < 500) {
 						offlineGetArticles();
 					} else {
-						logout();
-						setLoadingStatus(R.string.blank, false);
-						m_isOffline = true;
-						initMainMenu();
+						switchOfflineSuccess();
 					}
 					
 					return;
@@ -1565,5 +1618,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				setLoadingStatus(getErrorMessage(), false);
 			}
 		}
+	}
+
+	public void offlineViewFeed(int feedId) {
+		m_activeOfflineFeedId = feedId;
 	}
 }

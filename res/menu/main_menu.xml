@@ -1,19 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/go_offline"
-        android:icon="@drawable/ic_menu_cloud"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/go_offline"/>
-
-    <item
         android:id="@+id/go_online"
-        android:visible="false"
         android:icon="@drawable/ic_menu_cloud"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/go_online"/>
+        android:title="@string/go_online"
+        android:visible="false"/>
 
     <group android:id="@+id/menu_group_logged_in" >
+
+        <item
+            android:id="@+id/go_offline"
+            android:icon="@drawable/ic_menu_cloud"
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/go_offline"/>
 
         <group android:id="@+id/menu_group_feeds" >
 
