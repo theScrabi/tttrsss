@@ -231,7 +231,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 	
 	// http://blog.blackmoonit.com/2010/07/gesture-detection-swipe-detection_4292.html
 	class MyGestureDetector extends SimpleOnGestureListener {
-        private static final int SWIPE_MIN_DISTANCE = 150;
+        private static final int SWIPE_MIN_DISTANCE = 100;
         private static final int SWIPE_MAX_OFF_PATH = 100;
         private static final int SWIPE_THRESHOLD_VELOCITY = 100;
  
