@@ -60,7 +60,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
             
 		
 		// TODO change to interface?
-		MainActivity activity = (MainActivity)getActivity();
+		OfflineActivity activity = (OfflineActivity)getActivity();
 		
 		if (activity != null) {		
 			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
@@ -79,7 +79,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
 		}
 		
-		m_cursor = ((MainActivity)getActivity()).getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
+		m_cursor = ((OfflineActivity)getActivity()).getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 
 		m_cursor.moveToFirst();
@@ -205,7 +205,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
-		m_articleId = ((MainActivity)activity).getSelectedOfflineArticleId();
+		m_articleId = ((OfflineActivity)activity).getSelectedOfflineArticleId();
 		/* m_articleOps = (ArticleOps)activity;
 		m_article = m_articleOps.getSelectedArticle(); 
 		

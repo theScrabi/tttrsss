@@ -61,9 +61,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private int m_articleOffset = 0;
 	private boolean m_isOffline = false;
 	
-	private int m_activeOfflineFeedId = 0;
-	private int m_selectedOfflineArticleId = 0;
-	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 	
@@ -324,9 +321,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
-			m_isOffline = savedInstanceState.getBoolean("isOffline");
-			m_activeOfflineFeedId = savedInstanceState.getInt("offlineActiveFeedId");
-			m_selectedOfflineArticleId = savedInstanceState.getInt("offlineArticleId");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -354,21 +348,20 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			new TransitionHelper((LinearLayout)findViewById(R.id.main));
 		}
 
-		List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
-		
-		for (PackageInfo p : pkgs) {
-			if ("org.fox.ttrss.key".equals(p.packageName)) {
-				m_isLicensed = 1;
-				Log.d(TAG, "license apk found");
-				break;
-			}
-		}
-		
 		if (m_isOffline) {
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			Intent refresh = new Intent(this, OfflineActivity.class);
+			startActivity(refresh);
+			finish();
 		} else {
+			List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
+			
+			for (PackageInfo p : pkgs) {
+				if ("org.fox.ttrss.key".equals(p.packageName)) {
+					m_isLicensed = 1;
+					Log.d(TAG, "license apk found");
+					break;
+				}
+			}
 			
 			if (m_smallScreenMode) {
 				if (m_selectedArticle != null) {
@@ -404,32 +397,14 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				}
 			}
-		}
-		
-		if (m_isOffline) {
-
-			initMainMenu();
 			
-			findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
-			findViewById(R.id.main).setVisibility(View.VISIBLE);
-
-			if (m_activeOfflineFeedId == 0) {
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
-				ft.replace(R.id.feeds_fragment, frag);
-				ft.commit();
-			} else {
-				//
-			}
-
-		} else {
 			if (m_sessionId != null) {
 				loginSuccess();
 			} else {
 				login();
 			}
 		}
-	
+		
 	}
 
 	public void initDatabase() {
@@ -561,14 +536,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		editor.putBoolean("offline_mode_active", true);
 		editor.commit();
 		
-		Intent refresh = new Intent(this, MainActivity.class);
+		Intent refresh = new Intent(this, OfflineActivity.class);
 		startActivity(refresh);
 		finish();
 		
-	}
-	
-	public int getActiveOfflineFeedId() {
-		return m_activeOfflineFeedId;
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -597,9 +568,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
 		out.putInt("isLicensed", m_isLicensed);
-		out.putBoolean("isOffline", m_isOffline);
-		out.putInt("offlineActiveFeedId", m_activeOfflineFeedId);
-		out.putInt("offlineArticleId", m_selectedOfflineArticleId);
 	}
 
 	@Override
@@ -664,7 +632,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         	if (m_smallScreenMode) {
         		if (m_selectedArticle != null) {
         			closeArticle();
-        		} else if (m_activeFeed != null || m_activeOfflineFeedId != 0) {
+        		} else if (m_activeFeed != null) {
         			if (m_compatMode) {
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			}
@@ -681,7 +649,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
             			refreshFeeds();
         			}
     				m_activeFeed = null;
-    				m_activeOfflineFeedId = 0;
         			initMainMenu();
 
         		} else if (m_activeCategory != null) {
@@ -1659,60 +1626,4 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
-	public void offlineViewFeed(int feedId) {
-		m_activeOfflineFeedId = feedId;
-		
-		initMainMenu();
-		
-		if (m_smallScreenMode) {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
-		}
-		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(); 
-		ft.replace(R.id.headlines_fragment, frag);
-		ft.commit();
-		
-	}
-
-	public void openOfflineArticle(int articleId, int compatAnimation) {
-		m_selectedOfflineArticleId = articleId;
-		
-		initMainMenu();
-
-		OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-		
-		if (hf != null) {
-			hf.setActiveArticleId(articleId);
-		}
-		
-		OfflineArticleFragment frag = new OfflineArticleFragment();
-		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-		ft.replace(R.id.article_fragment, frag);
-		ft.commit();
-
-		if (m_compatMode) {
-			if (compatAnimation == 0)
-				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
-			else
-				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, compatAnimation));
-		}
-
-		if (m_smallScreenMode) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		}
-
-		
-	}
-
-	public int getSelectedOfflineArticleId() {
-		return m_selectedOfflineArticleId;
-	}
 }

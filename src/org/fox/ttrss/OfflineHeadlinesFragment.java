@@ -131,14 +131,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public Cursor createCursor() {
 		if (m_cursor != null) m_cursor.close();
 		
-		return ((MainActivity)getActivity()).getReadableDb().query("articles", 
+		return ((OfflineActivity)getActivity()).getReadableDb().query("articles", 
 				null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_feedId = ((MainActivity)activity).getActiveOfflineFeedId();
+		m_feedId = ((OfflineActivity)activity).getActiveOfflineFeedId();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_articleOps = (ArticleOps) activity;
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
@@ -156,7 +156,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_activeArticleId = cursor.getInt(0);
 			
 			if (m_combinedMode) { 
-				SQLiteStatement stmtUpdate = ((MainActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+				SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
 						"WHERE " + BaseColumns._ID + " = ?");
 				
 				stmtUpdate.bindLong(1, m_activeArticleId);
@@ -165,7 +165,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 				refresh();
 			} else {
-				((MainActivity)getActivity()).openOfflineArticle(m_activeArticleId, 0);
+				((OfflineActivity)getActivity()).openOfflineArticle(m_activeArticleId, 0);
 			}
 			
 			
@@ -281,7 +281,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = ((MainActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
+						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -302,7 +302,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = ((MainActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
+						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -369,7 +369,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 							m_selectedArticles.remove(new Integer(articleId));
 						}
 						
-						((MainActivity)getActivity()).initMainMenu();
+						((OfflineActivity)getActivity()).initMainMenu();
 						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
