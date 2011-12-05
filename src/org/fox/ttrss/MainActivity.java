@@ -344,7 +344,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		initDatabase();
 		
-		m_isOffline = true;
+		m_isOffline = m_prefs.getBoolean("offline_mode_active", false);
 		
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
@@ -407,7 +407,21 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 		
 		if (m_isOffline) {
-			switchOffline();
+
+			initMainMenu();
+			
+			findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
+			findViewById(R.id.main).setVisibility(View.VISIBLE);
+
+			if (m_activeOfflineFeedId == 0) {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
+				ft.replace(R.id.feeds_fragment, frag);
+				ft.commit();
+			} else {
+				//
+			}
+
 		} else {
 			if (m_sessionId != null) {
 				loginSuccess();
@@ -453,6 +467,18 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		req.execute(map);
 	}
 
+	public void switchOnline() {
+		// TODO upload updated stuff here
+
+		SharedPreferences.Editor editor = m_prefs.edit();
+		editor.putBoolean("offline_mode_active", false);
+		editor.commit();
+		
+		Intent refresh = new Intent(this, MainActivity.class);
+		startActivity(refresh);
+		finish();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void switchOffline() {
 		Log.d(TAG, "offline: starting");
@@ -464,8 +490,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 			setLoadingStatus(R.string.offline_downloading, true);
 			
-			// TODO upload updated stuff here
-						
 			// Download feeds
 			
 			getWritableDb().execSQL("DELETE FROM feeds;");
@@ -492,7 +516,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	
 								stmtInsert.execute();
 							}
-						
+
+							stmtInsert.close();
+
 							Log.d(TAG, "offline: done downloading feeds");
 							
 							m_articleOffset = 0;
@@ -531,20 +557,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		logout();
 		//setLoadingStatus(R.string.blank, false);
 
-		m_isOffline = true;
-		initMainMenu();
-
-		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
-		findViewById(R.id.main).setVisibility(View.VISIBLE);
-
-		if (m_activeOfflineFeedId == 0) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
-			ft.replace(R.id.feeds_fragment, frag);
-			ft.commit();
-		} else {
-			offlineViewFeed(m_activeOfflineFeedId);
-		}
+		SharedPreferences.Editor editor = m_prefs.edit();
+		editor.putBoolean("offline_mode_active", true);
+		editor.commit();
+		
+		Intent refresh = new Intent(this, MainActivity.class);
+		startActivity(refresh);
+		finish();
 		
 	}
 	
@@ -710,7 +729,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		final HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		HeadlinesFragment hf = null;
+		
+		if (m_sessionId != null)
+			hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
 		case R.id.preferences:
@@ -729,6 +751,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.login:
 			login();
 			return true;
+		case R.id.go_online:
+			switchOnline();
+			return true;
 		case R.id.go_offline:
 			switchOffline();
 			return true;
@@ -740,6 +765,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.headlines_select:
 			if (hf != null) {
+				final HeadlinesFragment fhf = hf;
 				Dialog dialog = new Dialog(this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setTitle(R.string.headlines_select_dialog);
@@ -750,13 +776,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 						case 0:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+							fhf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
 							break;
 						case 1:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+							fhf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
 							break;
 						case 2:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+							fhf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
 							break;
 						}
 						dialog.cancel();
@@ -1023,6 +1049,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 				if (m_isOffline) {
 					m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
+					m_menu.findItem(R.id.go_online).setVisible(true);
 					
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
@@ -1603,7 +1630,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 						}
 	
 					}
-	
+
+					stmtInsert.close();
+
 					//m_canGetMoreArticles = articles.size() == 30;
 					m_articleOffset += articles.size();
 	
