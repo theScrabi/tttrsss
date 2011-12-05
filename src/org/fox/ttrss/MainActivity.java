@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -12,10 +13,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -30,8 +34,10 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps, FeedCategoriesFragment.OnCatSelectedListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -52,6 +58,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_enableCats = false;
 	private int  m_isLicensed = -1;
 	private int m_apiLevel = 0;
+	
+	private SQLiteDatabase m_readableDb;
+	private SQLiteDatabase m_writableDb;
 	
 	public void updateHeadlines() {
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
@@ -377,14 +386,85 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 		}
 
+		initDatabase();
+
 		if (m_sessionId != null) {
 			loginSuccess();
 		} else {
 			login();
 		}
+		
 	
 	}
 
+	public void initDatabase() {
+		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
+		m_writableDb = dh.getWritableDatabase();
+		m_readableDb = dh.getReadableDatabase();
+	}
+	
+	public synchronized SQLiteDatabase getWritableDb() {
+		return m_writableDb;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void offlineSync() {
+		Log.d(TAG, "Starting offlineSync");
+		
+		if (m_sessionId != null) {
+		
+			// TODO upload updated stuff here
+						
+			// Download feeds
+			
+			getWritableDb().execSQL("DELETE FROM feeds;");
+			
+			ApiRequest req = new ApiRequest(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(JsonElement content) {
+					if (content != null) {
+						
+						Type listType = new TypeToken<List<Feed>>() {}.getType();
+						List<Feed> feeds = new Gson().fromJson(content, listType);
+						
+						SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
+								"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
+						"VALUES (?, ?, ?, ?, ?);");
+						
+						for (Feed feed : feeds) {
+							stmtInsert.bindLong(1, feed.id);
+							stmtInsert.bindString(2, feed.title);
+							stmtInsert.bindString(3, feed.feed_url);
+							stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
+							stmtInsert.bindLong(5, feed.cat_id);
+
+							stmtInsert.execute();
+						}
+					
+						Log.d(TAG, "offlineSync: done downloading feeds");
+						
+						// TODO download fresh articles
+					
+					} else {
+						Log.d(TAG, "offlineSync failed: " + getErrorMessage());
+						// TODO error, could not download feeds, properly report API error (toast)
+					}
+				}
+			};
+			
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("op", "getFeeds");
+					put("sid", m_sessionId);
+					put("cat_id", "-3");
+					put("unread_only", "true");
+				}			 
+			};
+			
+			req.execute(map);
+		}		
+	}
+	
 	public void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView)findViewById(R.id.loading_message);
 		
@@ -557,6 +637,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.login:
 			login();
+			return true;
+		case R.id.initiate_sync:
+			offlineSync();
 			return true;
 		case R.id.close_article:
 			closeArticle();

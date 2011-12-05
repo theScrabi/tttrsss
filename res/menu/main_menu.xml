@@ -23,6 +23,12 @@
                 android:title="@string/update_feeds"/>
 
             <item
+                android:id="@+id/initiate_sync"
+                android:icon="@android:drawable/ic_menu_rotate"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/initiate_sync"/>
+
+            <item
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_menu_exit"
                 android:showAsAction=""
@@ -61,7 +67,7 @@
                 android:icon="@drawable/ic_menu_rss"
                 android:showAsAction=""
                 android:title="@string/selection_toggle_published"/>
-            
+
             <item
                 android:id="@+id/selection_select_none"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
@@ -100,11 +106,11 @@
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction="ifRoom"
                 android:title="@string/close_article"/>
-            
-             <item
-        		android:id="@+id/catchup_above"
-        		android:icon="@drawable/ic_menu_tick"
-        		android:title="@string/article_mark_read_above"/>
+
+            <item
+                android:id="@+id/catchup_above"
+                android:icon="@drawable/ic_menu_tick"
+                android:title="@string/article_mark_read_above"/>
         </group>
     </group>
 

@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "feed_url TEXT, " +
                 "title TEXT, " +
                 "has_icon BOOLEAN, " +
-                "cat_id INTEGER, " +
+                "cat_id INTEGER" +
                 ");");                
 
 		db.execSQL("CREATE TABLE IF NOT EXISTS articles (" +
@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "link TEXT, " +
                 "feed_id INTEGER, " +
                 "tags TEXT, " +
-                "content TEXT, " +
+                "content TEXT" +
                 ");");
 		
 		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
