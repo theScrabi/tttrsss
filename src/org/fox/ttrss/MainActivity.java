@@ -62,6 +62,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_isOffline = false;
 	
 	private int m_activeOfflineFeedId = 0;
+	private int m_selectedOfflineArticleId = 0;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -242,12 +243,14 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	public synchronized void refreshFeeds() {
-		FeedsFragment frag = (FeedsFragment) getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
-
-		Log.d(TAG, "Refreshing feeds...");
-
-		if (frag != null) {
-			frag.refresh(true);
+		if (m_sessionId != null) {
+			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
+	
+			Log.d(TAG, "Refreshing feeds...");
+	
+			if (frag != null) {
+				frag.refresh(true);
+			}
 		}
 	}
 	
@@ -323,6 +326,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
 			m_isOffline = savedInstanceState.getBoolean("isOffline");
 			m_activeOfflineFeedId = savedInstanceState.getInt("offlineActiveFeedId");
+			m_selectedOfflineArticleId = savedInstanceState.getInt("offlineArticleId");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -544,6 +548,10 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 	}
 	
+	public int getActiveOfflineFeedId() {
+		return m_activeOfflineFeedId;
+	}
+	
 	public void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView)findViewById(R.id.loading_message);
 		
@@ -572,6 +580,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putInt("isLicensed", m_isLicensed);
 		out.putBoolean("isOffline", m_isOffline);
 		out.putInt("offlineActiveFeedId", m_activeOfflineFeedId);
+		out.putInt("offlineArticleId", m_selectedOfflineArticleId);
 	}
 
 	@Override
@@ -636,12 +645,12 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
         	if (m_smallScreenMode) {
         		if (m_selectedArticle != null) {
         			closeArticle();
-        		} else if (m_activeFeed != null) {
+        		} else if (m_activeFeed != null || m_activeOfflineFeedId != 0) {
         			if (m_compatMode) {
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			}
         			
-        			if (m_activeFeed.is_cat) {
+        			if (m_activeFeed != null && m_activeFeed.is_cat) {
         				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
         				
@@ -653,6 +662,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
             			refreshFeeds();
         			}
     				m_activeFeed = null;
+    				m_activeOfflineFeedId = 0;
         			initMainMenu();
 
         		} else if (m_activeCategory != null) {
@@ -1622,5 +1632,58 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	public void offlineViewFeed(int feedId) {
 		m_activeOfflineFeedId = feedId;
+		
+		initMainMenu();
+		
+		if (m_smallScreenMode) {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+		}
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(); 
+		ft.replace(R.id.headlines_fragment, frag);
+		ft.commit();
+		
+	}
+
+	public void openOfflineArticle(int articleId, int compatAnimation) {
+		m_selectedOfflineArticleId = articleId;
+		
+		initMainMenu();
+
+		OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		
+		if (hf != null) {
+			hf.setActiveArticleId(articleId);
+		}
+		
+		OfflineArticleFragment frag = new OfflineArticleFragment();
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+		ft.replace(R.id.article_fragment, frag);
+		ft.commit();
+
+		if (m_compatMode) {
+			if (compatAnimation == 0)
+				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
+			else
+				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, compatAnimation));
+		}
+
+		if (m_smallScreenMode) {
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		}
+
+		
+	}
+
+	public int getSelectedOfflineArticleId() {
+		return m_selectedOfflineArticleId;
 	}
 }

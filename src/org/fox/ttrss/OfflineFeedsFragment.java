@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +53,18 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		
 	}
 	
+	public Cursor createCursor() {
+		if (m_cursor != null) m_cursor.close();
+		
+		return ((MainActivity)getActivity()).getReadableDb().query("feeds_unread", 
+				null, null, null, null, null, "title");
+	}
+	
+	public void refresh() {
+		m_adapter.changeCursor(createCursor());
+		m_adapter.notifyDataSetChanged();
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
@@ -65,8 +76,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		
 		ListView list = (ListView)view.findViewById(R.id.feeds);
 		
-		m_cursor = ((MainActivity)getActivity()).getReadableDb().query("feeds_unread", 
-				null, null, null, null, null, "title");
+		m_cursor = createCursor();
 		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
