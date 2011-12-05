@@ -284,9 +284,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 		
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-			setTheme(m_compatMode ? R.style.DarkCompatTheme : R.style.DarkTheme);
+			setTheme(R.style.DarkTheme);
 		} else {
-			setTheme(m_compatMode ? R.style.LightCompatTheme : R.style.LightTheme);
+			setTheme(R.style.LightTheme);
 		}
 
 		super.onCreate(savedInstanceState);
