@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -46,16 +48,20 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	//private boolean m_canLoadMore = true;
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
+	private int  m_isLicensed = -1;
 	private int m_apiLevel = 0;
-
+	
 	public void updateHeadlines() {
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			frag.notifyUpdated();
 		}
+	}
+	
+	public boolean getLicensed() {
+		return m_isLicensed == 1;
 	}
 	
 	public int getApiLevel() {
@@ -299,9 +305,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
 			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
-			//m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");
 			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
+			m_isLicensed = savedInstanceState.getInt("isLicensed");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -322,6 +328,16 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 		if (!m_compatMode) {
 			new TransitionHelper((LinearLayout)findViewById(R.id.main));
+		}
+
+		List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
+		
+		for (PackageInfo p : pkgs) {
+			if ("org.fox.ttrss.key".equals(p.packageName)) {
+				m_isLicensed = 1;
+				Log.d(TAG, "license apk found");
+				break;
+			}
 		}
 		
 		if (m_smallScreenMode) {
@@ -392,9 +408,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("activeFeed", m_activeFeed);
 		out.putParcelable("selectedArticle", m_selectedArticle);
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
-		//out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
+		out.putInt("isLicensed", m_isLicensed);
 	}
 
 	@Override
@@ -761,10 +777,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	}
 
-	/* public void setCanLoadMore(boolean canLoadMore) {
-		m_canLoadMore = canLoadMore;
-	} */
-	
 	public void initMainMenu() {
 		if (m_menu != null) {
 			if (m_sessionId != null) {

@@ -30,7 +30,6 @@
       <CheckBoxPreference android:defaultValue="false" android:title="@string/browse_cats_like_feeds" android:key="browse_cats_like_feeds"
           android:summary="@string/browse_cats_like_feeds_summary" />
       <CheckBoxPreference android:defaultValue="false" android:summary="@string/combined_mode_summary" android:title="@string/combined_mode" android:key="combined_mode" />
-      <CheckBoxPreference android:defaultValue="false" android:summary="@string/enable_ads_summary" android:title="@string/enable_ads" android:key="enable_ads" />
    </PreferenceCategory>
 
        

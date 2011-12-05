@@ -7,6 +7,7 @@ import org.fox.ttrss.ArticleOps.RelativeArticle;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -159,10 +160,9 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 			}			
 			
 			AdView av = (AdView)view.findViewById(R.id.ad);
-			boolean enableAds = m_prefs.getBoolean("enable_ads", false);
 			
 			if (av != null) {
-				if (enableAds) {
+				if (!((MainActivity)getActivity()).getLicensed()) {
 					AdRequest request = new AdRequest();
 					request.addTestDevice(AdRequest.TEST_EMULATOR);
 					av.loadAd(request);
