@@ -58,6 +58,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	private boolean m_enableCats = false;
 	private int  m_isLicensed = -1;
 	private int m_apiLevel = 0;
+	private int m_articleOffset = 0;
+	private boolean m_isOffline = false;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -317,6 +319,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
+			m_isOffline = savedInstanceState.getBoolean("isOffline");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -332,6 +335,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 		setContentView(R.layout.main);
 		
+		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
@@ -406,9 +410,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	public synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
 	}
-	
-	//private boolean m_canGetMoreArticles = true;
-	private int m_articleOffset = 0;
 	
 	@SuppressWarnings("unchecked")
 	public void offlineGetArticles() {
@@ -529,6 +530,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
 		out.putInt("isLicensed", m_isLicensed);
+		out.putBoolean("isOffline", m_isOffline);
 	}
 
 	@Override
@@ -992,6 +994,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
 		findViewById(R.id.main).setVisibility(View.VISIBLE);
 
+		m_isOffline = false;
+		
 		initMainMenu();
 		
 		if (m_refreshTask != null) {
@@ -1544,7 +1548,8 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					} else {
 						logout();
 						setLoadingStatus(R.string.blank, false);
-						
+						m_isOffline = true;
+						initMainMenu();
 					}
 					
 					return;
