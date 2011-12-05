@@ -1609,7 +1609,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 							tagsString += t + ", ";
 						}
 						
-						tagsString.replaceAll("/, $/", "");
+						tagsString = tagsString.replaceAll(", $", "");
 						
 						stmtInsert.bindLong(1, article.id);
 						stmtInsert.bindLong(2, article.unread ? 1 : 0);
