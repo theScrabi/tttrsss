@@ -9,7 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final String TAG = this.getClass().getSimpleName();
 	public static final String DATABASE_NAME = "OfflineStorage.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS feeds;");
 		db.execSQL("DROP TABLE IF EXISTS articles;");
 		db.execSQL("DROP VIEW IF EXISTS feeds_unread;");
+		db.execSQL("DROP TRIGGER IF EXISTS articles_set_modified;");
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS feeds (" +
                 BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -40,9 +41,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "link TEXT, " +
                 "feed_id INTEGER, " +
                 "tags TEXT, " +
-                "content TEXT," +
-                "selected BOOLEAN" +
+                "content TEXT, " +
+                "selected BOOLEAN, " +
+                "modified BOOLEAN" +
                 ");");
+		
+		db.execSQL("CREATE TRIGGER articles_set_modified UPDATE OF marked, published, unread ON articles " +
+		"BEGIN " +
+		" UPDATE articles SET modified = 1 WHERE " + BaseColumns._ID + " = " + "OLD." + BaseColumns._ID + "; " +
+		"END;");
 		
 		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
 				"feeds.title AS title, " +
