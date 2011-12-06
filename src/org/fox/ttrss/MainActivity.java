@@ -749,6 +749,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 							break;
 						}
 						dialog.cancel();
+						initMainMenu();
 					}
 				});
 				
