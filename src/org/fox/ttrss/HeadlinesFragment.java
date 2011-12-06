@@ -127,6 +127,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		list.setOnScrollListener(this);
+		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
@@ -278,9 +279,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 						m_adapter.notifyDataSetChanged();
 
-						if (m_articles.size() == 0)
-							setLoadingStatus(R.string.no_headlines_to_display, false);
-						else
+						//if (m_articles.size() == 0)
+						//	setLoadingStatus(R.string.no_headlines_to_display, false);
+						//else
 							setLoadingStatus(R.string.blank, false);
 
 						m_refreshInProgress = false;

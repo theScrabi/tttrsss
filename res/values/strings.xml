@@ -26,8 +26,8 @@
     <string name="headline_context_multiple">Selected articles</string>
     <string name="http_authentication">HTTP Authentication</string>
     <string name="login_success">Logged in.</string>
-    <string name="no_unread_feeds">No unread feeds.</string>
-    <string name="no_unread_headlines">No unread headlines.</string>
+    <string name="no_unread_feeds">No unread feeds</string>
+    <string name="no_unread_headlines">No unread articles</string>
     <string name="loading_message">Loading, please wait...</string>
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
@@ -94,4 +94,6 @@
 	<string name="go_online">Go online</string>
 	<string name="offline_downloading">Preparing offline mode...</string>
 	<string name="offline_switch_error">Failed to prepare offline mode (see log)</string>
+	<string name="no_feeds">No feeds to display</string>
+	<string name="no_headlines">No articles to display</string>
 </resources>

@@ -127,6 +127,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
+		list.setEmptyView(view.findViewById(R.id.no_feeds));
 		list.setOnItemClickListener(this);
 		
 		registerForContextMenu(list);
@@ -307,9 +308,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						
 						sortFeeds();
 						
-						if (m_feeds.size() == 0)
-							setLoadingStatus(R.string.no_feeds_to_display, false);
-						else
+						//if (m_feeds.size() == 0)
+						//	setLoadingStatus(R.string.no_feeds_to_display, false);
+						//else
 							setLoadingStatus(R.string.blank, false);
 
 						if (m_enableFeedIcons && !m_feedIconsChecked) getFeedIcons();
