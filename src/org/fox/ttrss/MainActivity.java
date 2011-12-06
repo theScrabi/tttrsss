@@ -40,7 +40,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps, FeedCategoriesFragment.OnCatSelectedListener {
+public class MainActivity extends FragmentActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private final int OFFLINE_SYNC_SEQ = 60;
@@ -75,15 +75,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 	
+	@Override
 	public boolean getLicensed() {
 		return m_isLicensed == 1;
 	}
 	
+	@Override
 	public int getApiLevel() {
 		return m_apiLevel;
 	}
 	
-	public boolean hasPendingOfflineData() {
+	private boolean hasPendingOfflineData() {
 		Cursor c = getReadableDb().query("articles", 
 				new String[] { "COUNT(*)" }, "modified = 1", null, null, null, null);
 		if (c.moveToFirst()) {
@@ -100,7 +102,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		getWritableDb().execSQL("UPDATE articles SET modified = 0");
 	}
 
-	public boolean hasOfflineData() {
+	private boolean hasOfflineData() {
 		Cursor c = getReadableDb().query("articles", 
 				new String[] { "COUNT(*)" }, null, null, null, null, null);
 		if (c.moveToFirst()) {
@@ -201,7 +203,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@SuppressWarnings("unchecked")
-	public void toggleArticlesMarked(final ArticleList articles) {
+	private void toggleArticlesMarked(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	
 		@SuppressWarnings("serial")
@@ -219,7 +221,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@SuppressWarnings("unchecked")
-	public void toggleArticlesUnread(final ArticleList articles) {
+	private void toggleArticlesUnread(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	
 		@SuppressWarnings("serial")
@@ -237,7 +239,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@SuppressWarnings("unchecked")
-	public void toggleArticlesPublished(final ArticleList articles) {
+	private void toggleArticlesPublished(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 	
 		@SuppressWarnings("serial")
@@ -295,7 +297,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
-	public void setUnreadOnly(boolean unread) {
+	private void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
 		
 		if (!m_enableCats || m_activeCategory != null )
@@ -304,11 +306,12 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			refreshCategories();
 	}
 	
+	@Override
 	public boolean getUnreadOnly() {
 		return m_unreadOnly;
 	}
 
-	public void setUnreadArticlesOnly(boolean unread) {
+	private void setUnreadArticlesOnly(boolean unread) {
 		m_unreadArticlesOnly = unread;
 		
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
@@ -316,16 +319,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		if (frag != null) frag.refresh(false);
 	}
 	
+	@Override
 	public boolean getUnreadArticlesOnly() {
 		return m_unreadArticlesOnly;
 	}
 
+	@Override
 	public String getSessionId() {
 		return m_sessionId;
 	}
-	
-	/** Called when the activity is first created. */
 
+	@Override
 	public boolean isSmallScreen() {
 		return m_smallScreenMode;
 	}
@@ -441,7 +445,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 	}
 
-	public void initDatabase() {
+	private void initDatabase() {
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		m_writableDb = dh.getWritableDatabase();
 		m_readableDb = dh.getReadableDatabase();
@@ -456,7 +460,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void offlineGetArticles() {
+	private void offlineGetArticles() {
 		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
 
 		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
@@ -477,7 +481,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	}
 
 	@SuppressWarnings("unchecked")
-	public void switchOffline() {
+	private void switchOffline() {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
 			setMessage(R.string.dialog_offline_switch_prompt).
@@ -567,7 +571,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	}
 	
-	public void switchOfflineSuccess() {
+	private void switchOfflineSuccess() {
 		logout();
 		//setLoadingStatus(R.string.blank, false);
 
@@ -581,7 +585,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		
 	}
 	
-	public void setLoadingStatus(int status, boolean showProgress) {
+	private void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView)findViewById(R.id.loading_message);
 		
 		if (tv != null) {
@@ -656,7 +660,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		return true;
 	}
 
-	public void setMenuLabel(int id, int labelId) {
+	private void setMenuLabel(int id, int labelId) {
 		MenuItem mi = m_menu.findItem(id);
 		
 		if (mi != null) {
@@ -935,7 +939,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		}
 	}
 
-	public void shareArticle(Article article) {
+	private void shareArticle(Article article) {
 		if (article != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			
@@ -976,6 +980,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	}
 
+	@Override
 	public void initMainMenu() {
 		if (m_menu != null) {
 			if (m_sessionId != null) {
@@ -1460,15 +1465,17 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				
 	}
 	
+	@Override
 	public Feed getActiveFeed() {
 		return m_activeFeed;
 	}
 
+	@Override
 	public FeedCategory getActiveCategory() {
 		return m_activeCategory;
 	}
 	
-	public void logout() {
+	private void logout() {
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
 			m_refreshTask = null;
@@ -1495,6 +1502,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		initMainMenu();
 	}
 
+	@Override
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void login() {		
 

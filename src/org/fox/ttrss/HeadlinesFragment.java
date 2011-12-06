@@ -65,7 +65,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleList m_articles = new ArticleList();
 	private ArticleList m_selectedArticles = new ArticleList();
 	
-	private ArticleOps m_articleOps;
+	private OnlineServices m_onlineServices;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
@@ -135,9 +135,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_feed = ((MainActivity)activity).getActiveFeed();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_articleOps = (ArticleOps) activity;
+		m_onlineServices = (OnlineServices) activity;
+		m_feed = m_onlineServices.getActiveFeed();
+
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}
 
@@ -152,9 +153,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (article.id >= 0) {
 				if (m_combinedMode) {
 					article.unread = false;
-					m_articleOps.saveArticleUnread(article);
+					m_onlineServices.saveArticleUnread(article);
 				} else {
-					m_articleOps.openArticle(article, 0);
+					m_onlineServices.openArticle(article, 0);
 				}
 				
 				m_activeArticleId = article.id;
@@ -169,8 +170,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
 		
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-		final boolean showUnread = ((MainActivity)getActivity()).getUnreadArticlesOnly();
+		final String sessionId = m_onlineServices.getSessionId();
+		final boolean showUnread = m_onlineServices.getUnreadArticlesOnly();
 		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		
@@ -287,8 +288,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				MainActivity activity = (MainActivity)getActivity();							
-				activity.login();
+				m_onlineServices.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
@@ -386,7 +386,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						article.marked = !article.marked;
 						m_adapter.notifyDataSetChanged();
 						
-						m_articleOps.saveArticleMarked(article);
+						m_onlineServices.saveArticleMarked(article);
 					}
 				});
 			}
@@ -403,7 +403,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						article.published = !article.published;
 						m_adapter.notifyDataSetChanged();
 						
-						m_articleOps.saveArticlePublished(article);
+						m_onlineServices.saveArticlePublished(article);
 					}
 				});
 			}
@@ -464,7 +464,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							m_selectedArticles.remove(article);
 						}
 						
-						((MainActivity)getActivity()).initMainMenu();
+						m_onlineServices.initMainMenu();
 						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}

@@ -3,7 +3,7 @@ package org.fox.ttrss;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fox.ttrss.ArticleOps.RelativeArticle;
+import org.fox.ttrss.OnlineServices.RelativeArticle;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -32,7 +32,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private ArticleOps m_articleOps;
+	private OnlineServices m_onlineServices;
 	private Article m_nextArticle;
 	private Article m_prevArticle;
 	private GestureDetector m_gestureDetector;
@@ -58,13 +58,12 @@ public class ArticleFragment extends Fragment implements OnClickListener {
             };
             
 		
-		// TODO change to interface?
-		MainActivity activity = (MainActivity)getActivity();
+		Activity activity = (Activity)getActivity();
 		
 		if (activity != null) {		
 			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
 			
-			if (!activity.isSmallScreen()) {			
+			if (!m_onlineServices.isSmallScreen()) {			
 				if (orientation % 2 == 0) {
 					view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
 				} else {
@@ -129,7 +128,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 					
 				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 				
-				if (activity.isSmallScreen())
+				if (m_onlineServices.isSmallScreen())
 					web.setOnTouchListener(m_gestureListener);
 			}
 			
@@ -161,7 +160,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 			AdView av = (AdView)view.findViewById(R.id.ad);
 			
 			if (av != null) {
-				if (!((MainActivity)getActivity()).getLicensed()) {
+				if (!m_onlineServices.getLicensed()) {
 					AdRequest request = new AdRequest();
 					request.addTestDevice(AdRequest.TEST_EMULATOR);
 					av.loadAd(request);
@@ -212,19 +211,19 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_articleOps = (ArticleOps)activity;
-		m_article = m_articleOps.getSelectedArticle(); 
+		m_onlineServices = (OnlineServices)activity;
+		m_article = m_onlineServices.getSelectedArticle(); 
 		
-		m_prevArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.BEFORE);
-		m_nextArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.AFTER);
+		m_prevArticle = m_onlineServices.getRelativeArticle(m_article, RelativeArticle.BEFORE);
+		m_nextArticle = m_onlineServices.getRelativeArticle(m_article, RelativeArticle.AFTER);
 	}
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.next_article) {
-			m_articleOps.openArticle(m_nextArticle, 0);
+			m_onlineServices.openArticle(m_nextArticle, 0);
 		} else if (v.getId() == R.id.prev_article) {
-			m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
+			m_onlineServices.openArticle(m_prevArticle, R.anim.slide_right);
 		}
 	}
 	
@@ -245,13 +244,13 @@ public class ArticleFragment extends Fragment implements OnClickListener {
                     //Log.d(TAG, "Right swipe");
                     
                     if (m_prevArticle != null)
-                    	m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
+                    	m_onlineServices.openArticle(m_prevArticle, R.anim.slide_right);
                     
                 } else {
                     //Log.d(TAG, "Left swipe");
                     
                     if (m_nextArticle != null)
-                    	m_articleOps.openArticle(m_nextArticle, 0);
+                    	m_onlineServices.openArticle(m_nextArticle, 0);
 
                 }
                 return true;

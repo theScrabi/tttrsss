@@ -61,16 +61,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
 	private FeedList m_feeds = new FeedList();
-	private OnFeedSelectedListener m_feedSelectedListener;
+	private OnlineServices m_onlineServices;
 	private int m_selectedFeedId;
 	private static final String ICON_PATH = "/org.fox.ttrss/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	
-	public interface OnFeedSelectedListener {
-		public void onFeedSelected(Feed feed);
-	}
-
 	class FeedUnreadComparator implements Comparator<Feed> {
 
 		@Override
@@ -153,9 +149,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 		
-		m_feedSelectedListener = (OnFeedSelectedListener) activity;
+		m_onlineServices = (OnlineServices)activity;
 		
-		Feed activeFeed = ((MainActivity)activity).getActiveFeed();
+		Feed activeFeed = m_onlineServices.getActiveFeed();
 		
 		if (activeFeed != null)
 			m_selectedFeedId = activeFeed.id;
@@ -176,7 +172,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
-			m_feedSelectedListener.onFeedSelected(feed);
+			m_onlineServices.onFeedSelected(feed);
 			m_selectedFeedId = feed.id;
 			m_adapter.notifyDataSetChanged();
 		}
@@ -184,12 +180,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
-		FeedCategory cat = ((MainActivity)getActivity()).getActiveCategory();
+		FeedCategory cat = m_onlineServices.getActiveCategory();
 
 		final int catId = (cat != null) ? cat.id : -4;
 		
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
+		final String sessionId = m_onlineServices.getSessionId();
+		final boolean unreadOnly = m_onlineServices.getUnreadOnly();
 
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
@@ -270,7 +266,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 		};
 		
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
+		final String sessionId = m_onlineServices.getSessionId();
 		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
@@ -323,8 +319,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				MainActivity activity = (MainActivity)getActivity();							
-				activity.login();
+				m_onlineServices.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}

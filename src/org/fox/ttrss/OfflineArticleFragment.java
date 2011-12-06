@@ -3,7 +3,7 @@ package org.fox.ttrss;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fox.ttrss.ArticleOps.RelativeArticle;
+import org.fox.ttrss.OnlineServices.RelativeArticle;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

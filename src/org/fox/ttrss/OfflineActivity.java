@@ -1,6 +1,6 @@
 package org.fox.ttrss;
 
-import org.fox.ttrss.ArticleOps.RelativeArticle;
+import org.fox.ttrss.OnlineServices.RelativeArticle;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -781,7 +781,7 @@ public class OfflineActivity extends FragmentActivity  {
 		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 	}
 	
-	public int getRelativeArticleId(int baseId, int feedId, ArticleOps.RelativeArticle mode) {
+	public int getRelativeArticleId(int baseId, int feedId, OnlineServices.RelativeArticle mode) {
 		
 		Cursor c;
 		

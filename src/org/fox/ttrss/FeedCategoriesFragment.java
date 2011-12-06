@@ -39,12 +39,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
 	private int m_selectedCatId = -100;
-	private OnCatSelectedListener m_catSelectedListener;
+	private OnlineServices m_onlineServices;
 
-	public interface OnCatSelectedListener {
-		public void onCatSelected(FeedCategory cat);
-	}
-	
 	class CatUnreadComparator implements Comparator<FeedCategory> {
 		@Override
 		public int compare(FeedCategory a, FeedCategory b) {
@@ -115,7 +111,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 
-		m_catSelectedListener = (OnCatSelectedListener)activity;
+		m_onlineServices = (OnlineServices)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
@@ -150,8 +146,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void refresh(boolean background) {
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
 		
-		final String sessionId = ((MainActivity)getActivity()).getSessionId();
-		final boolean unreadOnly = ((MainActivity)getActivity()).getUnreadOnly();
+		final String sessionId = m_onlineServices.getSessionId();
+		final boolean unreadOnly = m_onlineServices.getUnreadOnly();
 		
 		if (sessionId != null) {
 			
@@ -196,7 +192,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						m_cats.clear();
 						
-						int apiLevel = ((MainActivity)getActivity()).getApiLevel();
+						int apiLevel = m_onlineServices.getApiLevel();
 						
 						// virtual cats implemented in getCategories since api level 1
 						if (apiLevel == 0) {
@@ -224,8 +220,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				MainActivity activity = (MainActivity)getActivity();							
-				activity.login();
+				m_onlineServices.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
@@ -332,7 +327,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
-			m_catSelectedListener.onCatSelected(cat);
+			m_onlineServices.onCatSelected(cat);
 			m_selectedCatId = cat.id;
 			m_adapter.notifyDataSetChanged();
 		}

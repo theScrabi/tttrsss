@@ -1,6 +1,6 @@
 package org.fox.ttrss;
 
-public interface ArticleOps {
+public interface OnlineServices {
 	public enum RelativeArticle { BEFORE, AFTER };
 	
 	public Article getSelectedArticle();
@@ -10,5 +10,19 @@ public interface ArticleOps {
 	public void updateHeadlines();
 	public void openArticle(Article article, int compatAnimation);
 	public Article getRelativeArticle(Article article, RelativeArticle ra);
+	
+	public void onCatSelected(FeedCategory cat);
+	public void onFeedSelected(Feed feed);
+	
+	public void initMainMenu();
+	public void login();
+	public Feed getActiveFeed();
+	public FeedCategory getActiveCategory();
+	public String getSessionId();
+	public boolean getUnreadArticlesOnly();
+	public boolean isSmallScreen();
+	public boolean getUnreadOnly();
+	public boolean getLicensed();
+	public int getApiLevel();
 }
 
