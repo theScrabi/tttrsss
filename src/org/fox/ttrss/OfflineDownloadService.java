@@ -31,7 +31,7 @@ public class OfflineDownloadService extends IntentService {
 	public static final int NOTIFY_DOWNLOADING = 1;
 
 	private static final int OFFLINE_SYNC_SEQ = 60;
-	private static final int OFFLINE_SYNC_MAX = 60; //500
+	private static final int OFFLINE_SYNC_MAX = 500;
 	
 	private SQLiteDatabase m_writableDb;
 	private SQLiteDatabase m_readableDb;
