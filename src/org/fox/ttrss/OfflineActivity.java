@@ -111,22 +111,56 @@ public class OfflineActivity extends FragmentActivity  {
 
 		List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
 		
-		findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-		findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-		findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
 		initMainMenu();
 		
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
 		findViewById(R.id.main).setVisibility(View.VISIBLE);
 
+		if (m_smallScreenMode) {
+			if (m_selectedArticleId != 0) {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			} else if (m_activeFeedId != 0) {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			} else {
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				
+				/*if (m_enableCats && m_activeCategory == null) {
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+					findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+				} else {
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				} */
+				
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			}
+		} else {
+			if (m_selectedArticleId == 0) {
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				
+				/* if (!m_enableCats || m_activeCategory != null)
+					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				else
+					findViewById(R.id.feeds_fragment).setVisibility(View.GONE); */
+				
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			
+			} else {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			}
+		}
+		
 		if (m_activeFeedId == 0) {
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
 			ft.replace(R.id.feeds_fragment, frag);
 			ft.commit();
-		} else {
-			//
 		}
 	}
 
@@ -362,7 +396,7 @@ public class OfflineActivity extends FragmentActivity  {
 		refreshFeeds();
 
 	}
-
+	
 	public void initMainMenu() {
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
@@ -388,7 +422,7 @@ public class OfflineActivity extends FragmentActivity  {
 					OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 					
 					if (hf != null) {
-						int numSelected = hf.getSelectedArticles().size();
+						int numSelected = 0; // hf.getSelectedArticles().size();
 						
 						if (numSelected != 0) {
 							m_menu.setGroupVisible(R.id.menu_group_headlines, false);
@@ -515,6 +549,8 @@ public class OfflineActivity extends FragmentActivity  {
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
+		
+		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(); 

@@ -47,7 +47,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private int m_feedId;
 	private int m_activeArticleId;
 	private boolean m_combinedMode = true;
-	private ArrayList<Integer> m_selectedArticles = new ArrayList<Integer>();
 	
 	private SharedPreferences m_prefs;
 	
@@ -63,10 +62,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 	};
 	
-	public List<Integer> getSelectedArticles() {
-		return m_selectedArticles;
-	}
-	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -80,15 +75,15 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		getActivity().getMenuInflater().inflate(R.menu.headlines_menu, menu);
 		
-		if (m_selectedArticles.size() > 0) {
-			menu.setHeaderTitle(R.string.headline_context_multiple);
-			menu.setGroupVisible(R.id.menu_group_single_article, false);
-		} else {
+		//if (m_selectedArticles.size() > 0) {
+		//	menu.setHeaderTitle(R.string.headline_context_multiple);
+		//	menu.setGroupVisible(R.id.menu_group_single_article, false);
+		//} else {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 			Cursor c = getArticleAtPosition(info.position);
 			menu.setHeaderTitle(c.getString(c.getColumnIndex("title")));
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
-		}
+		//}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
@@ -352,23 +347,25 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			CheckBox cb = (CheckBox) v.findViewById(R.id.selected);
 
 			if (cb != null) {
-				cb.setChecked(m_selectedArticles.contains(article));
+				cb.setChecked(article.getInt(article.getColumnIndex("selected")) == 1);
 				cb.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
+
+						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+								"WHERE " + BaseColumns._ID + " = ?");
 						
-						if (cb.isChecked()) {
-							if (!m_selectedArticles.contains(new Integer(articleId)))
-								m_selectedArticles.add(new Integer(articleId));
-						} else {
-							m_selectedArticles.remove(new Integer(articleId));
-						}
+						stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
+						stmtUpdate.bindLong(2, articleId);
+						stmtUpdate.execute();
+						stmtUpdate.close();
+						
+						refresh();
 						
 						((OfflineActivity)getActivity()).initMainMenu();
 						
-						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
 				});
 			}
@@ -391,20 +388,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			int position = m_adapter.getPosition(getArticleById(id));
 			list.setSelection(position);
 		} */
-	}
-
-	public void setSelection(ArticlesSelection select) {
-		m_selectedArticles.clear();
-		
-		/* if (select != ArticlesSelection.NONE) {
-			for (Article a : m_articles) {
-				if (select == ArticlesSelection.ALL || select == ArticlesSelection.UNREAD && a.unread) {
-					m_selectedArticles.add(a);
-				}
-			}
-		} */
-		
-		m_adapter.notifyDataSetChanged();
 	}
 
 	public Cursor getArticleAtPosition(int position) {

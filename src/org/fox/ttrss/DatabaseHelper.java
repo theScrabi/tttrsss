@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final String TAG = this.getClass().getSimpleName();
-	public static final String DATABASE_NAME = "OfflineStorage";
+	public static final String DATABASE_NAME = "OfflineStorage.db";
 	public static final int DATABASE_VERSION = 1;
 	
 	public DatabaseHelper(Context context) {
@@ -40,7 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "link TEXT, " +
                 "feed_id INTEGER, " +
                 "tags TEXT, " +
-                "content TEXT" +
+                "content TEXT," +
+                "selected BOOLEAN" +
                 ");");
 		
 		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
