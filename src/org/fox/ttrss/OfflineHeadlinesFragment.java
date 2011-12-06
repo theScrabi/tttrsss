@@ -66,7 +66,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public void onDestroy() {
 		super.onDestroy();
 		
-		m_cursor.close();
+		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
+	}
+	
+	public int getSelectedArticleCount() {
+		Cursor c = ((OfflineActivity)getActivity()).getReadableDb().query("articles", 
+				new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
+		c.moveToFirst();
+		int selected = c.getInt(0);
+		c.close();
+		
+		return selected;
 	}
 	
 	@Override
@@ -75,27 +85,30 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		getActivity().getMenuInflater().inflate(R.menu.headlines_menu, menu);
 		
-		//if (m_selectedArticles.size() > 0) {
-		//	menu.setHeaderTitle(R.string.headline_context_multiple);
-		//	menu.setGroupVisible(R.id.menu_group_single_article, false);
-		//} else {
+		if (getSelectedArticleCount() > 0) {
+			menu.setHeaderTitle(R.string.headline_context_multiple);
+			menu.setGroupVisible(R.id.menu_group_single_article, false);
+		} else {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 			Cursor c = getArticleAtPosition(info.position);
 			menu.setHeaderTitle(c.getString(c.getColumnIndex("title")));
+			//c.close();
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
-		//}
+		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
 	
 	public void refresh() {
-		if (m_cursor != null) m_cursor.close();
+		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
 		
 		m_cursor = createCursor();
 		
-		m_adapter.changeCursor(m_cursor);
-		m_adapter.notifyDataSetChanged();
+		if (m_cursor != null) {
+			m_adapter.changeCursor(m_cursor);
+			m_adapter.notifyDataSetChanged();
+		}
 	}
 	
 	@Override
@@ -393,7 +406,18 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public Cursor getArticleAtPosition(int position) {
 		return (Cursor) m_adapter.getItem(position);
 	}
-	
+
+	public int getArticleIdAtPosition(int position) {
+		Cursor c = getArticleAtPosition(position);
+		
+		if (c != null) {
+			int id = c.getInt(0);
+			return id;
+		}		
+		
+		return 0;
+	}
+
 	public int getActiveArticleId() {
 		return m_activeArticleId;
 	}

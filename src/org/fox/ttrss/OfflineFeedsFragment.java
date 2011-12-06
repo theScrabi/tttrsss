@@ -61,12 +61,14 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 	
 	public void refresh() {
-		if (m_cursor != null) m_cursor.close();
+		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
 		
 		m_cursor = createCursor();
 		
-		m_adapter.changeCursor(m_cursor);
-		m_adapter.notifyDataSetChanged();
+		if (m_cursor != null) {
+			m_adapter.changeCursor(m_cursor);
+			m_adapter.notifyDataSetChanged();
+		}
 	}
 	
 	@Override
@@ -101,7 +103,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void onDestroy() {
 		super.onDestroy();
 		
-		m_cursor.close();
+		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
 	}
 
 	@Override
@@ -259,6 +261,18 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		sortFeeds();
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
+	}
+
+	public int getFeedIdAtPosition(int position) {
+		Cursor c = (Cursor)m_adapter.getItem(position);
+		
+		if (c != null) {
+			int feedId = c.getInt(0);
+			c.close();
+			return feedId;
+		}
+		
+		return 0;
 	}
 
 }
