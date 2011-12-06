@@ -7,7 +7,7 @@
             <item
                 android:id="@+id/back_to_categories"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
-                android:showAsAction="ifRoom|withText"
+                android:showAsAction=""
                 android:title="@string/back_to_categories"/>
 
             <item

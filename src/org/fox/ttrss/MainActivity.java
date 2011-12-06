@@ -1,11 +1,13 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
+import android.app.ActionBar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -47,7 +49,6 @@ import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends FragmentActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
-	
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
@@ -67,9 +68,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private int m_apiLevel = 0;
 	private boolean m_isOffline = false;
 	
+	private ActionBar m_bar = null;
+	private Tab m_feedTab;
+	private Tab m_rootTab;
+	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
-
 
 	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 
@@ -416,6 +420,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
+		
+		m_bar = getActionBar();
+	    
+	    m_bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    m_bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+	    //m_bar.setDisplayHomeAsUpEnabled(true); TODO
+		
 		if (!m_compatMode) {
 			new TransitionHelper((LinearLayout)findViewById(R.id.main));
 		}
@@ -432,6 +443,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					m_isLicensed = 1;
 					Log.d(TAG, "license apk found");
 					break;
+				}
+			}
+			
+			if (!m_compatMode && !m_smallScreenMode) {
+				if (m_enableCats && !m_prefs.getBoolean("browse_cats_like_feeds", false)) {
+					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
+					m_bar.addTab(m_rootTab);
 				}
 			}
 			
@@ -660,6 +678,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
             			refreshFeeds();
         			}
     				m_activeFeed = null;
+    				
+    				
         			initMainMenu();
 
         		} else if (m_activeCategory != null) {
@@ -676,13 +696,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	        	if (m_selectedArticle != null) {
 	        		closeArticle();
 	        	} else if (m_activeCategory != null) {
-	        		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-            		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-
-        			m_activeCategory = null;
-        			
-        			initMainMenu();
-        			refreshCategories();
+	        		closeCategory();
 	        	} else {
 	        		finish();
 	        	}
@@ -694,14 +708,18 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
     }
 	
 	private void closeCategory() {
-		
-		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
 
-		m_activeCategory = null;
-		
-		initMainMenu();
-		refreshCategories();	
+		if (m_bar != null) {
+			m_bar.selectTab(m_rootTab);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+	
+			m_activeCategory = null;
+			
+			initMainMenu();
+			refreshCategories();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1367,17 +1385,27 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	public void viewCategory(FeedCategory cat, boolean openAsFeed) {
 		
+		Log.d(TAG, "viewCategory");
+		
 		if (!openAsFeed) {
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+			if (m_bar != null) {
+				if (m_feedTab != null) m_bar.removeTab(m_feedTab);
+				
+				m_feedTab = m_bar.newTab().setText(cat.title).setTabListener(new CategoryTabListener(cat));
+				m_bar.addTab(m_feedTab);
+				m_bar.selectTab(m_feedTab);
+			} else {
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 
-			m_activeCategory = cat;
-
-			FeedsFragment frag = new FeedsFragment();
-	
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-			ft.replace(R.id.feeds_fragment, frag);
-			ft.commit();
+				m_activeCategory = cat;
+				
+				FeedsFragment frag = new FeedsFragment();
+		
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+				ft.replace(R.id.feeds_fragment, frag);
+				ft.commit();
+			}
 		} else {
 			if (m_smallScreenMode) findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
@@ -1740,6 +1768,76 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		viewCategory(cat, browse && cat.id >= 0);
 	}
 	
+	private class RootTabListener implements ActionBar.TabListener {
+
+		@Override
+		public void onTabReselected(Tab arg0,
+				android.app.FragmentTransaction arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTabSelected(Tab arg0, android.app.FragmentTransaction arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTabUnselected(Tab arg0,
+				android.app.FragmentTransaction arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	
+	
+	private class CategoryTabListener implements ActionBar.TabListener {
+		
+		private FeedCategory m_cat = null;
+		
+		public CategoryTabListener(FeedCategory cat) {
+			m_cat = cat;
+		}
+		
+		@Override
+		public void onTabReselected(Tab tab,
+				android.app.FragmentTransaction _ft) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTabSelected(Tab tab, android.app.FragmentTransaction _ft) {
+			if (m_cat != null) {
+				m_activeCategory = m_cat;
+				
+				initMainMenu();
+				
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+				
+				FeedsFragment frag = new FeedsFragment();
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+				ft.replace(R.id.feeds_fragment, frag);
+				ft.commit();
+			}
+		}
+
+		@Override
+		public void onTabUnselected(Tab tab,
+				android.app.FragmentTransaction _ft) {
+			
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+	
+			m_activeCategory = null;
+			
+			initMainMenu();
+			refreshCategories();
+		}
+	}
 
 }
