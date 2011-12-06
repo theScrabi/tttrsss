@@ -253,6 +253,8 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void sortFeeds() {
 		try {
 			refresh();
+		} catch (NullPointerException e) {
+			// activity is gone?
 		} catch  (IllegalStateException e) {
 			// we're probably closing and DB is gone already
 		}

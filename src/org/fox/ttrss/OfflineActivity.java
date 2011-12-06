@@ -4,6 +4,7 @@ import org.fox.ttrss.OnlineServices.RelativeArticle;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,6 +64,9 @@ public class OfflineActivity extends FragmentActivity implements OfflineServices
 		}
 
 		super.onCreate(savedInstanceState);
+		
+		NotificationManager nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOADING);
 
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
 	

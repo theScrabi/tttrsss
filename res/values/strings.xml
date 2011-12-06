@@ -98,8 +98,12 @@
 	<string name="no_feeds">No feeds to display</string>
 	<string name="no_headlines">No articles to display</string>
 	<string name="dialog_offline_prompt">Login failed, but you have stored offline data. Would you like to go offline?</string>
+	<string name="dialog_offline_success">Offline mode is ready</string>
 	<string name="dialog_offline_go">Go offline</string>
 	<string name="dialog_cancel">Cancel</string>
 	<string name="syncing_offline_data">Synchronizing offline data...</string>
 	<string name="dialog_offline_switch_prompt">Download unread articles and go offline?</string>
+	<string name="notify_downloading_articles">Downloading articles (%1$d)...</string>
+	<string name="notify_downloading_init">Starting download...</string>
+	<string name="notify_downloading_feeds">Downloading feeds...</string>
 </resources>

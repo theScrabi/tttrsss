@@ -8,9 +8,13 @@ import java.util.TimerTask;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
@@ -19,6 +23,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
@@ -43,8 +48,6 @@ import com.google.gson.reflect.TypeToken;
 public class MainActivity extends FragmentActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private final int OFFLINE_SYNC_SEQ = 60;
-	private final int OFFLINE_SYNC_MAX = 500;
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
@@ -62,11 +65,37 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_enableCats = false;
 	private int  m_isLicensed = -1;
 	private int m_apiLevel = 0;
-	private int m_articleOffset = 0;
 	private boolean m_isOffline = false;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
+
+
+	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context content, Intent intent) {
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).  
+				setMessage(R.string.dialog_offline_success).
+				setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent refresh = new Intent(MainActivity.this, OfflineActivity.class);
+						startActivity(refresh);
+						finish();
+					}
+				}).
+				setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//
+					}
+				});
+			
+			AlertDialog dlg = builder.create();
+			dlg.show();
+			
+		}
+	};
 	
 	public void updateHeadlines() {
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
@@ -311,13 +340,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		return m_unreadOnly;
 	}
 
-	private void setUnreadArticlesOnly(boolean unread) {
+	/* private void setUnreadArticlesOnly(boolean unread) {
 		m_unreadArticlesOnly = unread;
 		
 		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 		
 		if (frag != null) frag.refresh(false);
-	}
+	} */
 	
 	@Override
 	public boolean getUnreadArticlesOnly() {
@@ -375,6 +404,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		setContentView(R.layout.main);
 
 		initDatabase();
+		
+		IntentFilter filter = new IntentFilter("org.fox.ttrss.intent.action.DownloadComplete");
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+		
+		registerReceiver(m_broadcastReceiver, filter);
 		
 		m_isOffline = m_prefs.getBoolean("offline_mode_active", false);
 		
@@ -460,27 +494,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void offlineGetArticles() {
-		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
-
-		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
-		
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "getHeadlines");
-				put("sid", m_sessionId);
-				put("feed_id", "-4");
-				put("view_mode", "unread");
-				put("show_content", "true");
-				put("skip", String.valueOf(m_articleOffset));
-				put("limit", String.valueOf(OFFLINE_SYNC_SEQ));
-			}			 
-		};
-		
-		req.execute(map);
-	}
-
-	@SuppressWarnings("unchecked")
 	private void switchOffline() {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
@@ -488,75 +501,30 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					
-					Log.d(TAG, "offline: starting");
-					
 					if (m_sessionId != null) {
-					
-						findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-						findViewById(R.id.main).setVisibility(View.INVISIBLE);
-						
-						setLoadingStatus(R.string.offline_downloading, true);
-						
-						// Download feeds
-						
-						getWritableDb().execSQL("DELETE FROM feeds;");
-						
-						ApiRequest req = new ApiRequest(getApplicationContext()) {
+						Log.d(TAG, "offline: starting");
+
+						ServiceConnection m_serviceConnection = new ServiceConnection() {
+							
 							@Override
-							protected void onPostExecute(JsonElement content) {
-								if (content != null) {
-									
-									try {
-										Type listType = new TypeToken<List<Feed>>() {}.getType();
-										List<Feed> feeds = new Gson().fromJson(content, listType);
-										
-										SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
-												"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
-										"VALUES (?, ?, ?, ?, ?);");
-										
-										for (Feed feed : feeds) {
-											stmtInsert.bindLong(1, feed.id);
-											stmtInsert.bindString(2, feed.title);
-											stmtInsert.bindString(3, feed.feed_url);
-											stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
-											stmtInsert.bindLong(5, feed.cat_id);
-				
-											stmtInsert.execute();
-										}
-
-										stmtInsert.close();
-
-										Log.d(TAG, "offline: done downloading feeds");
-										
-										m_articleOffset = 0;
-										
-										getWritableDb().execSQL("DELETE FROM articles;");
-				
-										offlineGetArticles();
-									} catch (Exception e) {
-										e.printStackTrace();
-										setLoadingStatus(R.string.offline_switch_error, false);
-									}
-								
-								} else {
-									setLoadingStatus(getErrorMessage(), false);
-									// TODO error, could not download feeds, properly report API error (toast)
-								}
+							public void onServiceDisconnected(ComponentName name) {
+								Log.d(TAG, "download service disconnected");
+							}
+							
+							@Override
+							public void onServiceConnected(ComponentName name, IBinder service) {
+								Log.d(TAG, "download service connected");
+								//((OfflineDownloadService.LocalBinder)service).getService().download();
 							}
 						};
 						
-						HashMap<String,String> map = new HashMap<String,String>() {
-							{
-								put("op", "getFeeds");
-								put("sid", m_sessionId);
-								put("cat_id", "-3");
-								put("unread_only", "true");
-							}			 
-						};
+						Intent intent = new Intent(MainActivity.this, OfflineDownloadService.class);
+						intent.putExtra("sessionId", m_sessionId);
 						
-						req.execute(map);
-					} else {
-						switchOfflineSuccess();
+						startService(intent);
+						
+						//bindService(intent, m_serviceConnection, Context.BIND_AUTO_CREATE);
+					            
 					}
 				}
 			}).
@@ -1082,6 +1050,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public void onDestroy() {
 		super.onDestroy();
 	
+		unregisterReceiver(m_broadcastReceiver);
+		
 		m_readableDb.close();
 		m_writableDb.close();
 		
@@ -1340,7 +1310,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			if (hasOfflineData()) {
 				
-				AlertDialog.Builder builder = new AlertDialog.Builder(m_context).  
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).  
 					setMessage(R.string.dialog_offline_prompt).
 					setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int which) {
@@ -1514,7 +1484,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 		} else {
 		
-			LoginRequest ar = new LoginRequest(this); // do not use getApplicationContext() here because alertdialog chokes on it
+			LoginRequest ar = new LoginRequest(getApplicationContext());
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
@@ -1770,78 +1740,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		viewCategory(cat, browse && cat.id >= 0);
 	}
 	
-	public class OfflineArticlesRequest extends ApiRequest {
-		public OfflineArticlesRequest(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected void onPostExecute(JsonElement content) {
-			if (content != null) {
-				try {
-					Type listType = new TypeToken<List<Article>>() {}.getType();
-					List<Article> articles = new Gson().fromJson(content, listType);
 	
-					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
-							"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-	
-					for (Article article : articles) {
-	
-						String tagsString = "";
-						
-						for (String t : article.tags) {
-							tagsString += t + ", ";
-						}
-						
-						tagsString = tagsString.replaceAll(", $", "");
-						
-						stmtInsert.bindLong(1, article.id);
-						stmtInsert.bindLong(2, article.unread ? 1 : 0);
-						stmtInsert.bindLong(3, article.marked ? 1 : 0);
-						stmtInsert.bindLong(4, article.published ? 1 : 0);
-						stmtInsert.bindLong(5, article.updated);
-						stmtInsert.bindLong(6, article.is_updated ? 1 : 0);
-						stmtInsert.bindString(7, article.title);
-						stmtInsert.bindString(8, article.link);
-						stmtInsert.bindLong(9, article.feed_id);
-						stmtInsert.bindString(10, tagsString); // comma-separated tags
-						stmtInsert.bindString(11, article.content);
-						
-						try {
-							stmtInsert.execute();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-	
-					}
-
-					stmtInsert.close();
-
-					//m_canGetMoreArticles = articles.size() == 30;
-					m_articleOffset += articles.size();
-	
-					Log.d(TAG, "offline: received " + articles.size() + " articles");
-					
-					if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < OFFLINE_SYNC_MAX) {
-						offlineGetArticles();
-					} else {
-						switchOfflineSuccess();
-					}
-					
-					return;
-					
-				} catch (Exception e) {
-					setLoadingStatus(R.string.offline_switch_error, false);
-					Log.d(TAG, "offline: failed: exception when loading articles");
-					e.printStackTrace();
-				}
-				
-			} else {
-				Log.d(TAG, "offline: failed: " + getErrorMessage());
-				setLoadingStatus(getErrorMessage(), false);
-			}
-		}
-	}
 
 }
