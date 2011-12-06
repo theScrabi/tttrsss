@@ -249,9 +249,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 
 	public void sortFeeds() {
-		// TODO implement
-		
-		m_adapter.notifyDataSetInvalidated();
+		try {
+			refresh();
+		} catch  (IllegalStateException e) {
+			// we're probably closing and DB is gone already
+		}
 	}
 	
 	@Override

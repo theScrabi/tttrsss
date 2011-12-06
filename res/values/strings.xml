@@ -86,6 +86,7 @@
     <string name="error_other_error">Error: unknown error (see log)</string>
     <string name="error_api_disabled">Error: API disabled for this user</string>
     <string name="error_api_unknown">Error: unknown API error (see log)</string>
+    <string name="error_api_incorrect_usage">Error: incorrect API usage</string>
     <string name="error_login_failed">Error: username or password incorrect</string>
     <string name="error_invalid_api_url">Error: invalid API URL</string>
 	<string name="combined_mode_summary">Displays full article text inline, instead of a separate panel</string>
@@ -96,4 +97,8 @@
 	<string name="offline_switch_error">Failed to prepare offline mode (see log)</string>
 	<string name="no_feeds">No feeds to display</string>
 	<string name="no_headlines">No articles to display</string>
+	<string name="dialog_offline_prompt">Login failed, but you have stored offline data. Would you like to go offline?</string>
+	<string name="dialog_offline_go">Go offline</string>
+	<string name="dialog_cancel">Cancel</string>
+	<string name="syncing_offline_data">Synchronizing offline data...</string>
 </resources>

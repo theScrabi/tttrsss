@@ -37,7 +37,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private final String TAG = this.getClass().getSimpleName();
 
 	public enum ApiError { NO_ERROR, HTTP_UNAUTHORIZED, HTTP_FORBIDDEN, HTTP_NOT_FOUND, 
-		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED, INVALID_URL };
+		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED, INVALID_URL, INCORRECT_USAGE };
 	
 	public static final int API_STATUS_OK = 0;
 	public static final int API_STATUS_ERR = 1;
@@ -94,6 +94,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			return R.string.error_login_failed;
 		case INVALID_URL:
 			return R.string.error_invalid_api_url;
+		case INCORRECT_USAGE:
+			return R.string.error_api_incorrect_usage;
 		default:
 			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
 			return R.string.error_unknown;
@@ -202,6 +204,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 						m_lastError = ApiError.LOGIN_FAILED;
 					} else if (error.equals("NOT_LOGGED_IN")) {
 						m_lastError = ApiError.LOGIN_FAILED;
+					} else if (error.equals("INCORRECT_USAGE")) {
+						m_lastError = ApiError.INCORRECT_USAGE;
 					} else {
 						Log.d(TAG, "Unknown API error: " + error);
 						m_lastError = ApiError.API_UNKNOWN;

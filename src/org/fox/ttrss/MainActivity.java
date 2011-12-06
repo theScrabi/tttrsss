@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
@@ -79,6 +80,36 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		return m_apiLevel;
 	}
 	
+	public boolean hasPendingOfflineData() {
+		Cursor c = getReadableDb().query("articles", 
+				new String[] { "COUNT(*)" }, "modified = 1", null, null, null, null);
+		if (c.moveToFirst()) {
+			int modified = c.getInt(0);
+			c.close();
+			
+			return modified > 0;
+		}
+		
+		return false;
+	}
+
+	public void clearPendingOfflineData() {
+		getWritableDb().execSQL("UPDATE articles SET modified = 0");
+	}
+
+	public boolean hasOfflineData() {
+		Cursor c = getReadableDb().query("articles", 
+				new String[] { "COUNT(*)" }, null, null, null, null, null);
+		if (c.moveToFirst()) {
+			int modified = c.getInt(0);
+			c.close();
+			
+			return modified > 0;
+		}
+		
+		return false;
+	}
+
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleUnread(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
@@ -1031,6 +1062,135 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_writableDb.close();
 		
 	}
+
+	private void syncOfflineRead() {
+		Log.d(TAG, "syncing modified offline data... (read)");
+
+		final String ids = getOfflineModifiedIds(ModifiedCriteria.READ);
+		
+		if (ids.length() > 0) {
+			ApiRequest req = new ApiRequest(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(JsonElement result) {
+					if (result != null) {
+						syncOfflineMarked();
+					} else {
+						setLoadingStatus(getErrorMessage(), false);
+					}
+				}
+			};
+			
+			@SuppressWarnings("serial")
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("sid", m_sessionId);
+					put("op", "updateArticle");
+					put("article_ids", ids);
+					put("mode", "0");
+					put("field", "2");
+				}			 
+			};
+
+			req.execute(map);
+		} else {
+			syncOfflineMarked();
+		}
+	}
+
+	private void syncOfflineMarked() {
+		Log.d(TAG, "syncing modified offline data... (marked)");
+
+		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
+		
+		if (ids.length() > 0) {
+			ApiRequest req = new ApiRequest(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(JsonElement result) {
+					if (result != null) {
+						syncOfflinePublished();
+					} else {
+						setLoadingStatus(getErrorMessage(), false);
+					}
+				}
+			};
+			
+			@SuppressWarnings("serial")
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("sid", m_sessionId);
+					put("op", "updateArticle");
+					put("article_ids", ids);
+					put("mode", "0");
+					put("field", "0");
+				}			 
+			};
+
+			req.execute(map);
+		} else {
+			syncOfflinePublished();
+		}
+	}
+
+	private void syncOfflinePublished() {
+		Log.d(TAG, "syncing modified offline data... (published)");
+
+		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
+		
+		if (ids.length() > 0) {
+			ApiRequest req = new ApiRequest(getApplicationContext()) {
+				@Override
+				protected void onPostExecute(JsonElement result) {
+					if (result != null) {
+						loginSuccessInitUI();
+						loginSuccess();
+						clearPendingOfflineData();
+					} else {
+						setLoadingStatus(getErrorMessage(), false);
+					}
+				}
+			};
+			
+			@SuppressWarnings("serial")
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("sid", m_sessionId);
+					put("op", "updateArticle");
+					put("article_ids", ids);
+					put("mode", "0");
+					put("field", "1");
+				}			 
+			};
+
+			req.execute(map);
+		} else {
+			loginSuccessInitUI();
+			loginSuccess();
+			clearPendingOfflineData();
+		}
+	}
+
+	private void syncOfflineData() {
+		setLoadingStatus(R.string.syncing_offline_data, true);
+		syncOfflineRead();
+	}
+	
+	private void loginSuccessInitUI() {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		
+		if (m_enableCats) {
+			FeedCategoriesFragment frag = new FeedCategoriesFragment();
+			ft.replace(R.id.cats_fragment, frag);
+		} else {
+			FeedsFragment frag = new FeedsFragment(); 
+			ft.replace(R.id.feeds_fragment, frag);
+		}
+
+		try {
+			ft.commit();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	private void loginSuccess() {
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
@@ -1054,6 +1214,42 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		m_refreshTimer = new Timer("Refresh");
 		
 		m_refreshTimer.schedule(m_refreshTask, 60*1000L, 120*1000L);
+	}
+	
+	private enum ModifiedCriteria { READ, MARKED, PUBLISHED };
+		
+	private String getOfflineModifiedIds(ModifiedCriteria criteria) {
+		
+		String criteriaStr = "";
+		
+		switch (criteria) {
+		case READ:
+			criteriaStr = "unread = 0";
+			break;
+		case MARKED:
+			criteriaStr = "marked = 1";
+			break;
+		case PUBLISHED:
+			criteriaStr = "published = 1";
+			break;
+		}
+		
+		Cursor c = getReadableDb().query("articles", 
+				null, "modified = 1 AND " + criteriaStr, null, null, null, null);
+
+		String tmp = "";
+		
+		while (c.moveToNext()) {
+			tmp += c.getInt(0) + ",";
+		}
+
+		tmp = tmp.replaceAll(",$", "");
+		
+		//Log.d(TAG, "getOfflineModifiedIds " + criteria + " = " + tmp);
+		
+		c.close();
+		
+		return tmp;
 	}
 	
 	private class LoginRequest extends ApiRequest {
@@ -1081,20 +1277,14 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 								
 								Log.d(TAG, "Received API level: " + m_apiLevel);
 								
-								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-								
-								if (m_enableCats) {
-									FeedCategoriesFragment frag = new FeedCategoriesFragment();
-									ft.replace(R.id.cats_fragment, frag);
-								} else {
-									FeedsFragment frag = new FeedsFragment(); 
-									ft.replace(R.id.feeds_fragment, frag);
-								}
+								if (hasPendingOfflineData()) {
 
-								try {
-									ft.commit();
-								} catch (IllegalStateException e) {
-									e.printStackTrace();
+									syncOfflineData();
+									
+									//loginSuccess();
+								} else {
+									loginSuccessInitUI();
+									loginSuccess();
 								}
 
 							}
@@ -1112,7 +1302,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 						
 						setLoadingStatus(R.string.loading_message, true);
 						
-						loginSuccess();
 						return;
 					}
 							
@@ -1124,6 +1313,26 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			m_sessionId = null;
 
 			setLoadingStatus(getErrorMessage(), false);
+			
+			if (hasOfflineData()) {
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(m_context).  
+					setMessage(R.string.dialog_offline_prompt).
+					setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) {
+			        	switchOfflineSuccess();
+			        }
+					}).
+					setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) {
+			        	//
+			        }
+			    });
+				
+				AlertDialog dlg = builder.create();
+				dlg.show();
+			} 
+			
 			//m_menu.findItem(R.id.login).setVisible(true);
 		}
 
@@ -1278,7 +1487,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			
 		} else {
 		
-			LoginRequest ar = new LoginRequest(getApplicationContext());
+			LoginRequest ar = new LoginRequest(this); // do not use getApplicationContext() here because alertdialog chokes on it
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
