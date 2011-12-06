@@ -2,13 +2,13 @@
 
     <group android:id="@+id/menu_group_logged_in" >
 
-        <item
-            android:id="@+id/go_offline"
-            android:icon="@drawable/ic_menu_cloud"
-            android:showAsAction="ifRoom|withText"
-            android:title="@string/go_offline"/>
-
         <group android:id="@+id/menu_group_feeds" >
+
+            <item
+                android:id="@+id/go_offline"
+                android:icon="@drawable/ic_menu_cloud"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/go_offline"/>
 
             <item
                 android:id="@+id/back_to_categories"
@@ -36,6 +36,12 @@
         </group>
 
         <group android:id="@+id/menu_group_headlines" >
+            
+            <item
+                android:id="@+id/go_offline"
+                android:icon="@drawable/ic_menu_cloud"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/go_offline"/>
 
             <item
                 android:id="@+id/headlines_mark_as_read"

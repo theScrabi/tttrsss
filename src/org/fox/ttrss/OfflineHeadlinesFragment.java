@@ -2,9 +2,7 @@ package org.fox.ttrss;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.jsoup.Jsoup;

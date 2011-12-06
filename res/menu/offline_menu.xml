@@ -31,6 +31,13 @@
     <group android:id="@+id/menu_group_headlines" >
 
         <item
+            android:id="@+id/go_online"
+            android:icon="@drawable/ic_menu_cloud"
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/go_online"
+            android:visible="false"/>
+
+        <item
             android:id="@+id/headlines_mark_as_read"
             android:icon="@drawable/ic_menu_tick"
             android:title="@string/headlines_mark_as_read"/>

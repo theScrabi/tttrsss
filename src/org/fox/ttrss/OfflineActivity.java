@@ -1,25 +1,15 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.fox.ttrss.ArticleOps.RelativeArticle;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -36,12 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.ads.c;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 public class OfflineActivity extends FragmentActivity  {
 	private final String TAG = this.getClass().getSimpleName();
@@ -109,9 +93,6 @@ public class OfflineActivity extends FragmentActivity  {
 		if (!m_compatMode) {
 			new TransitionHelper((LinearLayout)findViewById(R.id.main));
 		}
-
-		List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
-		
 
 		initMainMenu();
 		
@@ -529,7 +510,8 @@ public class OfflineActivity extends FragmentActivity  {
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);	
 		} else {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 			
 		}
 
