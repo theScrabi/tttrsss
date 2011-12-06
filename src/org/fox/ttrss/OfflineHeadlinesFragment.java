@@ -131,6 +131,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
 		view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
@@ -146,7 +147,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_feedId = ((OfflineActivity)activity).getActiveOfflineFeedId();
+		m_feedId = ((OfflineActivity)activity).getActiveFeedId();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}

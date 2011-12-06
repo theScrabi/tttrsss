@@ -89,7 +89,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
-		list.setEmptyView(view.findViewById(R.id.no_unread_feeds));
+		list.setEmptyView(view.findViewById(R.id.no_feeds));
 		registerForContextMenu(list);
 
 		view.findViewById(R.id.loading_container).setVisibility(View.GONE);

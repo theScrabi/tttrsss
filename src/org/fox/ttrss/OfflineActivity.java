@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.fox.ttrss.ArticleOps.RelativeArticle;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -187,7 +189,7 @@ public class OfflineActivity extends FragmentActivity  {
 		finish();
 	}
 	
-	public int getActiveOfflineFeedId() {
+	public int getActiveFeedId() {
 		return m_activeFeedId;
 	}
 	
@@ -735,67 +737,106 @@ public class OfflineActivity extends FragmentActivity  {
     	}
 	}
 
-	/* @Override
+	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 	    int action = event.getAction();
 	    int keyCode = event.getKeyCode();
 	        switch (keyCode) {
 	        case KeyEvent.KEYCODE_VOLUME_DOWN:
 	            if (action == KeyEvent.ACTION_DOWN) {
-	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+	            	
+	            	OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+	            	
+	            	int nextId = getRelativeArticleId(m_selectedArticleId, m_activeFeedId, RelativeArticle.AFTER);
+	            	
+	            	if (nextId != 0 && ohf != null) {
+	            		if (m_prefs.getBoolean("combined_mode", false)) {
+	            			ohf.setActiveArticleId(nextId);
+	            			
+	            			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+	            					"WHERE " + BaseColumns._ID + " = ?");
+	            			
+	            			stmt.bindLong(1, nextId);
+	            			stmt.execute();
+	            			stmt.close();
 
-	            	if (hf != null && m_activeFeed != null) {
-	            		Article base = hf.getArticleById(hf.getActiveArticleId());
-	            		
-	            		Article next = base != null ? getRelativeArticle(base, RelativeArticle.AFTER) : hf.getArticleAtPosition(0);
-	            		
-	            		if (next != null) {
-	            			hf.setActiveArticleId(next.id);
-	            			
-	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
-	            			
-	            			if (combinedMode || m_selectedArticle == null) {
-	            				next.unread = false;
-	            				saveArticleUnread(next);
-	            			} else {
-	            				openArticle(next, 0);
-	            			}
-	            		}
+	            		} else {
+	            			openArticle(nextId, 0);
+	            		}	            		
 	            	}
 	            }
 	            return true;
 	        case KeyEvent.KEYCODE_VOLUME_UP:
 	            if (action == KeyEvent.ACTION_UP) {
-	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+	            	
+	            	OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+	            	
+	            	int prevId = getRelativeArticleId(m_selectedArticleId, m_activeFeedId, RelativeArticle.BEFORE);
+	            	
+	            	if (prevId != 0 && ohf != null) {
+	            		if (m_prefs.getBoolean("combined_mode", false)) {
+	            			ohf.setActiveArticleId(prevId);
+	            			
+	            			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+	            					"WHERE " + BaseColumns._ID + " = ?");
+	            			
+	            			stmt.bindLong(1, prevId);
+	            			stmt.execute();
+	            			stmt.close();
 
-	            	if (hf != null && m_activeFeed != null) {
-	            		Article base = hf.getArticleById(hf.getActiveArticleId());
-	            		
-	            		Article prev = base != null ? getRelativeArticle(base, RelativeArticle.BEFORE) : hf.getArticleAtPosition(0);
-	            		
-	            		if (prev != null) {
-	            			hf.setActiveArticleId(prev.id);
-	            			
-	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
-	            			
-	            			if (combinedMode || m_selectedArticle == null) {
-	            				prev.unread = false;
-	            				saveArticleUnread(prev);
-	            			} else {
-	            				openArticle(prev, 0);
-	            			}
-	            		}
+	            		} else {
+	            			openArticle(prevId, 0);
+	            		}	            		
 	            	}
-
 	            }
 	            return true;
 	        default:
 	            return super.dispatchKeyEvent(event);
 	        }
-	    } */
+	    }
 
 	public void deselectAllArticles() {
 		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+	}
+	
+	public int getRelativeArticleId(int baseId, int feedId, ArticleOps.RelativeArticle mode) {
+		
+		Cursor c;
+		
+		/* if (baseId == 0) {
+			c = getReadableDb().query("articles", 
+					null, "feed_id = ?", 
+					new String[] { String.valueOf(feedId) }, null, null, "updated DESC LIMIT 1");
+			
+			if (c.moveToFirst()) {
+				baseId = c.getInt(0);
+			}
+			
+			c.close();
+			
+			return baseId;
+		} */
+		
+		if (mode == RelativeArticle.BEFORE) {		
+			c = getReadableDb().query("articles", 
+					null, "updated > (SELECT updated FROM articles WHERE "+BaseColumns._ID+" = ?) AND feed_id = ?", 
+					new String[] { String.valueOf(baseId), String.valueOf(feedId) }, null, null, "updated  LIMIT 1");
+			
+		} else {
+			c = getReadableDb().query("articles", 
+					null, "updated < (SELECT updated FROM articles WHERE "+BaseColumns._ID+" = ?) AND feed_id = ?", 
+					new String[] { String.valueOf(baseId), String.valueOf(feedId) }, null, null, "updated DESC LIMIT 1");
+		}
+
+		int id = 0;
+		
+		if (c.moveToFirst()) {		
+			id = c.getInt(0);
+		}
+		
+		c.close();
+
+		return id;
 	}
 	
 	public void viewFeed(int feedId) {
@@ -827,6 +868,13 @@ public class OfflineActivity extends FragmentActivity  {
 		if (hf != null) {
 			hf.setActiveArticleId(articleId);
 		}
+
+		SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+				"WHERE " + BaseColumns._ID + " = ?");
+		
+		stmt.bindLong(1, articleId);
+		stmt.execute();
+		stmt.close();
 		
 		OfflineArticleFragment frag = new OfflineArticleFragment();
 		

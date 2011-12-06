@@ -7,7 +7,6 @@ import org.fox.ttrss.ArticleOps.RelativeArticle;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -26,7 +25,6 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
 public class OfflineArticleFragment extends Fragment implements OnClickListener {
@@ -35,6 +33,8 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 
 	private SharedPreferences m_prefs;
 	private int m_articleId;
+	private int m_nextArticleId;
+	private int m_prevArticleId;
 	private GestureDetector m_gestureDetector;
 	private View.OnTouchListener m_gestureListener;
 	private Cursor m_cursor;
@@ -44,6 +44,8 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 
 		if (savedInstanceState != null) {
 			m_articleId = savedInstanceState.getInt("articleId");
+			m_prevArticleId = savedInstanceState.getInt("prevArticleId");
+			m_nextArticleId = savedInstanceState.getInt("nextArticleId");
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
@@ -163,21 +165,21 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 			ImageView next = (ImageView)view.findViewById(R.id.next_article);
 			
 			if (next != null) {
-//				if (m_nextArticle != null) {
-//					next.setOnClickListener(this);
-//				} else {
+				if (m_nextArticleId != 0) {
+					next.setOnClickListener(this);
+				} else {
 					next.setImageResource(R.drawable.ic_next_article_disabled);
-//				}
+				}
 			}
 			
 			ImageView prev = (ImageView)view.findViewById(R.id.prev_article);
 			
 			if (prev != null) {
-//				if (m_prevArticle != null) {
-//					prev.setOnClickListener(this);
-//				} else {
+				if (m_prevArticleId != 0) {
+					prev.setOnClickListener(this);
+				} else {
 					prev.setImageResource(R.drawable.ic_prev_article_disabled);
-//				}
+				}
 			}
 
 		} 
@@ -197,6 +199,9 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		super.onSaveInstanceState(out);
 		
 		out.putInt("articleId", m_articleId);
+		out.putInt("prevArticleId", m_prevArticleId);
+		out.putInt("nextArticleId", m_nextArticleId);
+
 	}
 	
 	@Override
@@ -205,21 +210,21 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
-		m_articleId = ((OfflineActivity)activity).getSelectedArticleId();
-		/* m_articleOps = (ArticleOps)activity;
-		m_article = m_articleOps.getSelectedArticle(); 
+		OfflineActivity oa = (OfflineActivity)activity;
 		
-		m_prevArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.BEFORE);
-		m_nextArticle = m_articleOps.getRelativeArticle(m_article, RelativeArticle.AFTER); */
+		m_articleId = oa.getSelectedArticleId();
+		
+		m_prevArticleId = oa.getRelativeArticleId(m_articleId, oa.getActiveFeedId(), RelativeArticle.BEFORE);
+		m_nextArticleId = oa.getRelativeArticleId(m_articleId, oa.getActiveFeedId(), RelativeArticle.AFTER);
 	}
 
 	@Override
 	public void onClick(View v) {
-		/* if (v.getId() == R.id.next_article) {
-			m_articleOps.openArticle(m_nextArticle, 0);
+		if (v.getId() == R.id.next_article) {
+			((OfflineActivity)getActivity()).openArticle(m_nextArticleId, 0);
 		} else if (v.getId() == R.id.prev_article) {
-			m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
-		} */
+			((OfflineActivity)getActivity()).openArticle(m_prevArticleId, R.anim.slide_right);
+		}
 	}
 	
 	// http://blog.blackmoonit.com/2010/07/gesture-detection-swipe-detection_4292.html
@@ -238,14 +243,14 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
                 if (dX>0) {
                     //Log.d(TAG, "Right swipe");
                     
-                    //if (m_prevArticle != null)
-                    //	m_articleOps.openArticle(m_prevArticle, R.anim.slide_right);
-                    
+                	if (m_prevArticleId != 0)
+                		((OfflineActivity)getActivity()).openArticle(m_prevArticleId, 0);
+                	
                 } else {
                     //Log.d(TAG, "Left swipe");
-                    
-                    //if (m_nextArticle != null)
-                    //	m_articleOps.openArticle(m_nextArticle, 0);
+
+                	if (m_nextArticleId != 0)
+                		((OfflineActivity)getActivity()).openArticle(m_nextArticleId, 0);
 
                 }
                 return true;
