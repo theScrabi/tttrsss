@@ -696,10 +696,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		HeadlinesFragment hf = null;
-		
-		if (m_sessionId != null)
-			hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		final HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
 		case R.id.preferences:
@@ -732,7 +729,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.headlines_select:
 			if (hf != null) {
-				final HeadlinesFragment fhf = hf;
 				Dialog dialog = new Dialog(this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setTitle(R.string.headlines_select_dialog);
@@ -743,13 +739,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 						case 0:
-							fhf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
 							break;
 						case 1:
-							fhf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
 							break;
 						case 2:
-							fhf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+							hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
 							break;
 						}
 						dialog.cancel();
@@ -1014,13 +1010,13 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				m_menu.setGroupVisible(R.id.menu_group_article, false);
 				m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 
-				if (m_isOffline) {
+				/* if (m_isOffline) {
 					m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 					m_menu.findItem(R.id.go_online).setVisible(true);
 					
-				} else {
+				} else { */
 					m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
-				}
+				//}
 			}
 		}		
 	}

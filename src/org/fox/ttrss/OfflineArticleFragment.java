@@ -205,7 +205,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
-		m_articleId = ((OfflineActivity)activity).getSelectedOfflineArticleId();
+		m_articleId = ((OfflineActivity)activity).getSelectedArticleId();
 		/* m_articleOps = (ArticleOps)activity;
 		m_article = m_articleOps.getSelectedArticle(); 
 		

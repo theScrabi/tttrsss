@@ -54,14 +54,18 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 	
 	public Cursor createCursor() {
-		if (m_cursor != null) m_cursor.close();
+		String unreadOnly = ((OfflineActivity)getActivity()).getUnreadOnly() ? "unread > 0" : null;
 		
 		return ((OfflineActivity)getActivity()).getReadableDb().query("feeds_unread", 
-				null, null, null, null, null, "title");
+				null, unreadOnly, null, null, null, "title");
 	}
 	
 	public void refresh() {
-		m_adapter.changeCursor(createCursor());
+		if (m_cursor != null) m_cursor.close();
+		
+		m_cursor = createCursor();
+		
+		m_adapter.changeCursor(m_cursor);
 		m_adapter.notifyDataSetChanged();
 	}
 	
@@ -127,7 +131,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				((OfflineActivity)getActivity()).offlineViewFeed(feedId);
+				((OfflineActivity)getActivity()).viewFeed(feedId);
 				
 				m_selectedFeedId = feedId;
 				

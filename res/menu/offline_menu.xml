@@ -1,0 +1,115 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <group android:id="@+id/menu_group_feeds" >
+
+        <item
+            android:id="@+id/go_online"
+            android:icon="@drawable/ic_menu_cloud"
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/go_online"
+            android:visible="false"/>
+
+        <item
+            android:id="@+id/back_to_categories"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/back_to_categories"/>
+
+        <item
+            android:id="@+id/show_feeds"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:showAsAction=""
+            android:title="@string/menu_all_feeds"/>
+
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_menu_exit"
+            android:showAsAction=""
+            android:title="@string/logout"/>
+    </group>
+
+    <group android:id="@+id/menu_group_headlines" >
+
+        <item
+            android:id="@+id/headlines_mark_as_read"
+            android:icon="@drawable/ic_menu_tick"
+            android:title="@string/headlines_mark_as_read"/>
+
+        <item
+            android:id="@+id/headlines_select"
+            android:icon="@drawable/ic_menu_database"
+            android:title="@string/headlines_select"/>
+    </group>
+
+    <group android:id="@+id/menu_group_headlines_selection" >
+
+        <item
+            android:id="@+id/selection_toggle_unread"
+            android:icon="@android:drawable/ic_menu_rotate"
+            android:showAsAction=""
+            android:title="@string/selection_toggle_unread"/>
+
+        <item
+            android:id="@+id/selection_toggle_marked"
+            android:icon="@drawable/ic_menu_marked"
+            android:showAsAction=""
+            android:title="@string/selection_toggle_marked"/>
+
+        <item
+            android:id="@+id/selection_toggle_published"
+            android:icon="@drawable/ic_menu_rss"
+            android:showAsAction=""
+            android:title="@string/selection_toggle_published"/>
+
+        <item
+            android:id="@+id/selection_select_none"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:showAsAction=""
+            android:title="@string/selection_select_none"/>
+    </group>
+
+    <group android:id="@+id/menu_group_article" >
+
+        <item
+            android:id="@+id/share_article"
+            android:icon="@android:drawable/ic_menu_share"
+            android:showAsAction="ifRoom"
+            android:title="@string/share_article"/>
+
+        <item
+            android:id="@+id/toggle_marked"
+            android:icon="@drawable/ic_menu_marked"
+            android:showAsAction=""
+            android:title="@string/article_toggle_marked"/>
+
+        <item
+            android:id="@+id/toggle_published"
+            android:icon="@drawable/ic_menu_rss"
+            android:showAsAction=""
+            android:title="@string/article_toggle_published"/>
+
+        <item
+            android:id="@+id/set_unread"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:showAsAction=""
+            android:title="@string/article_set_unread"/>
+
+        <item
+            android:id="@+id/close_article"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:showAsAction="ifRoom"
+            android:title="@string/close_article"/>
+
+        <item
+            android:id="@+id/catchup_above"
+            android:icon="@drawable/ic_menu_tick"
+            android:title="@string/article_mark_read_above"/>
+    </group>
+
+    <item
+        android:id="@+id/preferences"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction=""
+        android:title="@string/preferences"/>
+
+</menu>

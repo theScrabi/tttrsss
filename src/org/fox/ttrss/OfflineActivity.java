@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
@@ -51,8 +52,8 @@ public class OfflineActivity extends FragmentActivity  {
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	
-	private int m_activeOfflineFeedId = 0;
-	private int m_selectedOfflineArticleId = 0;
+	private int m_activeFeedId = 0;
+	private int m_selectedArticleId = 0;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -82,8 +83,8 @@ public class OfflineActivity extends FragmentActivity  {
 		if (savedInstanceState != null) {
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
-			m_activeOfflineFeedId = savedInstanceState.getInt("offlineActiveFeedId");
-			m_selectedOfflineArticleId = savedInstanceState.getInt("offlineArticleId");
+			m_activeFeedId = savedInstanceState.getInt("offlineActiveFeedId");
+			m_selectedArticleId = savedInstanceState.getInt("offlineArticleId");
 		}
 		
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -119,7 +120,7 @@ public class OfflineActivity extends FragmentActivity  {
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
 		findViewById(R.id.main).setVisibility(View.VISIBLE);
 
-		if (m_activeOfflineFeedId == 0) {
+		if (m_activeFeedId == 0) {
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			OfflineFeedsFragment frag = new OfflineFeedsFragment(); 
 			ft.replace(R.id.feeds_fragment, frag);
@@ -154,7 +155,7 @@ public class OfflineActivity extends FragmentActivity  {
 	}
 	
 	public int getActiveOfflineFeedId() {
-		return m_activeOfflineFeedId;
+		return m_activeFeedId;
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -177,8 +178,23 @@ public class OfflineActivity extends FragmentActivity  {
 
 		out.putBoolean("unreadOnly", m_unreadOnly);
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
-		out.putInt("offlineActiveFeedId", m_activeOfflineFeedId);
-		out.putInt("offlineArticleId", m_selectedOfflineArticleId);
+		out.putInt("offlineActiveFeedId", m_activeFeedId);
+		out.putInt("offlineArticleId", m_selectedArticleId);
+	}
+	
+	public void setUnreadOnly(boolean unread) {
+		m_unreadOnly = unread;
+		
+		refreshFeeds();
+		
+		/*if (!m_enableCats || m_activeCategory != null )
+			refreshFeeds();
+		else
+			refreshCategories(); */
+	}
+	
+	public boolean getUnreadOnly() {
+		return m_unreadOnly;
 	}
 
 	@Override
@@ -198,7 +214,7 @@ public class OfflineActivity extends FragmentActivity  {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
+		inflater.inflate(R.menu.offline_menu, menu);
 		
 		m_menu = menu;
 		
@@ -206,11 +222,11 @@ public class OfflineActivity extends FragmentActivity  {
 		
 		MenuItem item = menu.findItem(R.id.show_feeds);
 		
-		/* if (getUnreadOnly()) {
+		if (getUnreadOnly()) {
 			item.setTitle(R.string.menu_all_feeds);
 		} else {
 			item.setTitle(R.string.menu_unread_feeds);
-		} */
+		}
 
 		return true;
 	}
@@ -228,9 +244,9 @@ public class OfflineActivity extends FragmentActivity  {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	
         	if (m_smallScreenMode) {
-        		if (m_selectedOfflineArticleId != 0) {
+        		if (m_selectedArticleId != 0) {
         			closeArticle();
-        		} else if (m_activeOfflineFeedId != 0) {
+        		} else if (m_activeFeedId != 0) {
         			if (m_compatMode) {
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
         			}
@@ -244,14 +260,14 @@ public class OfflineActivity extends FragmentActivity  {
         				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
         			//}
-    				m_activeOfflineFeedId = 0;
+    				m_activeFeedId = 0;
         			initMainMenu();
 
         		} else {
         			finish();
         		}
         	} else {
-	        	if (m_selectedOfflineArticleId != 0) {
+	        	if (m_selectedArticleId != 0) {
 	        		closeArticle();
 	        	} else {
 	        		finish();
@@ -263,7 +279,33 @@ public class OfflineActivity extends FragmentActivity  {
         return super.onKeyDown(keyCode, event);
     }
 	
-	@SuppressWarnings("unchecked")
+	public Cursor getArticleById(int articleId) {
+		Cursor c = getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
+				new String[] { String.valueOf(articleId) }, null, null, null);
+		
+		c.moveToFirst();
+		
+		return c;
+	}
+	
+	public void shareArticle(int articleId) {
+
+		Cursor article = getArticleById(articleId);
+		
+		if (article.isFirst()) {
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, article.getString(article.getColumnIndex("title")));
+			intent.putExtra(Intent.EXTRA_TEXT, article.getString(article.getColumnIndex("link")));
+
+			startActivity(Intent.createChooser(intent, getString(R.id.share_article)));
+		}
+		
+		article.close();
+	}
+
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -274,6 +316,19 @@ public class OfflineActivity extends FragmentActivity  {
 		case R.id.go_online:
 			switchOnline();
 			return true;
+		case R.id.share_article:
+			shareArticle(m_selectedArticleId);
+			return true;
+		case R.id.show_feeds:
+			setUnreadOnly(!getUnreadOnly());
+
+			if (getUnreadOnly()) {
+				item.setTitle(R.string.menu_all_feeds);
+			} else {
+				item.setTitle(R.string.menu_unread_feeds);
+			}
+			
+			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -281,7 +336,11 @@ public class OfflineActivity extends FragmentActivity  {
 	}
 
 	public void refreshFeeds() {
-		// TODO
+		OfflineFeedsFragment frag = (OfflineFeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
+		
+		if (frag != null) {
+			frag.refresh();
+		}
 	}
 	
 	private void closeArticle() {
@@ -297,7 +356,7 @@ public class OfflineActivity extends FragmentActivity  {
 			
 		}
 
-		m_selectedOfflineArticleId = 0;
+		m_selectedArticleId = 0;
 
 		initMainMenu();
 		refreshFeeds();
@@ -306,13 +365,57 @@ public class OfflineActivity extends FragmentActivity  {
 
 	public void initMainMenu() {
 		if (m_menu != null) {
-			m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+			
+			if (m_selectedArticleId != 0) {
+				m_menu.setGroupVisible(R.id.menu_group_article, true);
+				
+				m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
+				
+				if (m_smallScreenMode) {
+					m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+				} else {
+					m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
+				}
+			
+			} else {
+				if (m_activeFeedId != 0) {
+					
+					OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+					
+					if (hf != null) {
+						int numSelected = hf.getSelectedArticles().size();
+						
+						if (numSelected != 0) {
+							m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+						} else {
+							m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+						}
+						
+					} else {
+						m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+					}
+					
+					m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
+				} else {
+					m_menu.setGroupVisible(R.id.menu_group_feeds, true); 
+				}
 
-			m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
+				if (!m_smallScreenMode || m_activeFeedId == 0) {
+					m_menu.findItem(R.id.show_feeds).setVisible(true);
+				}
+				
+				//m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
+				m_menu.findItem(R.id.back_to_categories).setVisible(false);
+				
+			}
 			m_menu.findItem(R.id.go_online).setVisible(true);
 		}
 	}		
@@ -403,8 +506,8 @@ public class OfflineActivity extends FragmentActivity  {
 	        }
 	    } */
 
-	public void offlineViewFeed(int feedId) {
-		m_activeOfflineFeedId = feedId;
+	public void viewFeed(int feedId) {
+		m_activeFeedId = feedId;
 		
 		initMainMenu();
 		
@@ -420,8 +523,8 @@ public class OfflineActivity extends FragmentActivity  {
 		
 	}
 
-	public void openOfflineArticle(int articleId, int compatAnimation) {
-		m_selectedOfflineArticleId = articleId;
+	public void openArticle(int articleId, int compatAnimation) {
+		m_selectedArticleId = articleId;
 		
 		initMainMenu();
 
@@ -456,7 +559,7 @@ public class OfflineActivity extends FragmentActivity  {
 		
 	}
 
-	public int getSelectedOfflineArticleId() {
-		return m_selectedOfflineArticleId;
+	public int getSelectedArticleId() {
+		return m_selectedArticleId;
 	}
 }

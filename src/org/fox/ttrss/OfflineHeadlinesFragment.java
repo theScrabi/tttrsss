@@ -54,8 +54,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
 	
-	private ArticleOps m_articleOps;
-	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
 		@Override
@@ -97,7 +95,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public void refresh() {
-		m_adapter.changeCursor(createCursor());
+		if (m_cursor != null) m_cursor.close();
+		
+		m_cursor = createCursor();
+		
+		m_adapter.changeCursor(m_cursor);
 		m_adapter.notifyDataSetChanged();
 	}
 	
@@ -129,8 +131,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public Cursor createCursor() {
-		if (m_cursor != null) m_cursor.close();
-		
 		return ((OfflineActivity)getActivity()).getReadableDb().query("articles", 
 				null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 	}
@@ -140,7 +140,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		super.onAttach(activity);
 		m_feedId = ((OfflineActivity)activity).getActiveOfflineFeedId();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_articleOps = (ArticleOps) activity;
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}
 
@@ -154,21 +153,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			Cursor cursor = (Cursor)list.getItemAtPosition(position);
 			
 			m_activeArticleId = cursor.getInt(0);
-			
-			if (m_combinedMode) { 
-				SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
-						"WHERE " + BaseColumns._ID + " = ?");
-				
-				stmtUpdate.bindLong(1, m_activeArticleId);
-				stmtUpdate.execute();
-				stmtUpdate.close();
 
-				refresh();
-			} else {
-				((OfflineActivity)getActivity()).openOfflineArticle(m_activeArticleId, 0);
+			SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+					"WHERE " + BaseColumns._ID + " = ?");
+			
+			stmtUpdate.bindLong(1, m_activeArticleId);
+			stmtUpdate.execute();
+			stmtUpdate.close();
+
+			if (!m_combinedMode) { 
+				((OfflineActivity)getActivity()).openArticle(m_activeArticleId, 0);
 			}
 			
-			
+			refresh();
 		}
 	}
 
