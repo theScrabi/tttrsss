@@ -101,4 +101,5 @@
 	<string name="dialog_offline_go">Go offline</string>
 	<string name="dialog_cancel">Cancel</string>
 	<string name="syncing_offline_data">Synchronizing offline data...</string>
+	<string name="dialog_offline_switch_prompt">Download unread articles and go offline?</string>
 </resources>

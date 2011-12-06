@@ -56,8 +56,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public Cursor createCursor() {
 		String unreadOnly = ((OfflineActivity)getActivity()).getUnreadOnly() ? "unread > 0" : null;
 		
+		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
+		
 		return ((OfflineActivity)getActivity()).getReadableDb().query("feeds_unread", 
-				null, unreadOnly, null, null, null, "title");
+				null, unreadOnly, null, null, null, order);
 	}
 	
 	public void refresh() {

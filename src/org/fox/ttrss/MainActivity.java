@@ -42,6 +42,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends FragmentActivity implements FeedsFragment.OnFeedSelectedListener, ArticleOps, FeedCategoriesFragment.OnCatSelectedListener {
 	private final String TAG = this.getClass().getSimpleName();
+	
+	private final int OFFLINE_SYNC_SEQ = 60;
+	private final int OFFLINE_SYNC_MAX = 500;
 
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
@@ -466,7 +469,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 				put("view_mode", "unread");
 				put("show_content", "true");
 				put("skip", String.valueOf(m_articleOffset));
-				put("limit", "30");
+				put("limit", String.valueOf(OFFLINE_SYNC_SEQ));
 			}			 
 		};
 		
@@ -475,76 +478,93 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 
 	@SuppressWarnings("unchecked")
 	public void switchOffline() {
-		Log.d(TAG, "offline: starting");
 		
-		if (m_sessionId != null) {
-		
-			findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-			findViewById(R.id.main).setVisibility(View.INVISIBLE);
-			
-			setLoadingStatus(R.string.offline_downloading, true);
-			
-			// Download feeds
-			
-			getWritableDb().execSQL("DELETE FROM feeds;");
-			
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement content) {
-					if (content != null) {
-						
-						try {
-							Type listType = new TypeToken<List<Feed>>() {}.getType();
-							List<Feed> feeds = new Gson().fromJson(content, listType);
-							
-							SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
-									"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
-							"VALUES (?, ?, ?, ?, ?);");
-							
-							for (Feed feed : feeds) {
-								stmtInsert.bindLong(1, feed.id);
-								stmtInsert.bindString(2, feed.title);
-								stmtInsert.bindString(3, feed.feed_url);
-								stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
-								stmtInsert.bindLong(5, feed.cat_id);
-	
-								stmtInsert.execute();
-							}
-
-							stmtInsert.close();
-
-							Log.d(TAG, "offline: done downloading feeds");
-							
-							m_articleOffset = 0;
-							
-							getWritableDb().execSQL("DELETE FROM articles;");
-	
-							offlineGetArticles();
-						} catch (Exception e) {
-							e.printStackTrace();
-							setLoadingStatus(R.string.offline_switch_error, false);
-						}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
+			setMessage(R.string.dialog_offline_switch_prompt).
+			setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
 					
+					Log.d(TAG, "offline: starting");
+					
+					if (m_sessionId != null) {
+					
+						findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+						findViewById(R.id.main).setVisibility(View.INVISIBLE);
+						
+						setLoadingStatus(R.string.offline_downloading, true);
+						
+						// Download feeds
+						
+						getWritableDb().execSQL("DELETE FROM feeds;");
+						
+						ApiRequest req = new ApiRequest(getApplicationContext()) {
+							@Override
+							protected void onPostExecute(JsonElement content) {
+								if (content != null) {
+									
+									try {
+										Type listType = new TypeToken<List<Feed>>() {}.getType();
+										List<Feed> feeds = new Gson().fromJson(content, listType);
+										
+										SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
+												"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
+										"VALUES (?, ?, ?, ?, ?);");
+										
+										for (Feed feed : feeds) {
+											stmtInsert.bindLong(1, feed.id);
+											stmtInsert.bindString(2, feed.title);
+											stmtInsert.bindString(3, feed.feed_url);
+											stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
+											stmtInsert.bindLong(5, feed.cat_id);
+				
+											stmtInsert.execute();
+										}
+
+										stmtInsert.close();
+
+										Log.d(TAG, "offline: done downloading feeds");
+										
+										m_articleOffset = 0;
+										
+										getWritableDb().execSQL("DELETE FROM articles;");
+				
+										offlineGetArticles();
+									} catch (Exception e) {
+										e.printStackTrace();
+										setLoadingStatus(R.string.offline_switch_error, false);
+									}
+								
+								} else {
+									setLoadingStatus(getErrorMessage(), false);
+									// TODO error, could not download feeds, properly report API error (toast)
+								}
+							}
+						};
+						
+						HashMap<String,String> map = new HashMap<String,String>() {
+							{
+								put("op", "getFeeds");
+								put("sid", m_sessionId);
+								put("cat_id", "-3");
+								put("unread_only", "true");
+							}			 
+						};
+						
+						req.execute(map);
 					} else {
-						setLoadingStatus(getErrorMessage(), false);
-						// TODO error, could not download feeds, properly report API error (toast)
+						switchOfflineSuccess();
 					}
 				}
-			};
-			
-			HashMap<String,String> map = new HashMap<String,String>() {
-				{
-					put("op", "getFeeds");
-					put("sid", m_sessionId);
-					put("cat_id", "-3");
-					put("unread_only", "true");
-				}			 
-			};
-			
-			req.execute(map);
-		} else {
-			switchOfflineSuccess();
-		}
+			}).
+			setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					//
+				}
+			});
+	
+		AlertDialog dlg = builder.create();
+		dlg.show();
+
 	}
 	
 	public void switchOfflineSuccess() {
@@ -746,10 +766,9 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		case R.id.headlines_select:
 			if (hf != null) {
 				Dialog dialog = new Dialog(this);
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle(R.string.headlines_select_dialog);
-	
-				builder.setSingleChoiceItems(new String[] { getString(R.string.headlines_select_all), 
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+					.setTitle(R.string.headlines_select_dialog)
+					.setSingleChoiceItems(new String[] { getString(R.string.headlines_select_all), 
 						getString(R.string.headlines_select_unread), getString(R.string.headlines_select_none) }, 0, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -1796,7 +1815,7 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 	
 					Log.d(TAG, "offline: received " + articles.size() + " articles");
 					
-					if (articles.size() == 30 && m_articleOffset < 500) {
+					if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < OFFLINE_SYNC_MAX) {
 						offlineGetArticles();
 					} else {
 						switchOfflineSuccess();

@@ -20,12 +20,6 @@
             android:icon="@android:drawable/ic_menu_agenda"
             android:showAsAction=""
             android:title="@string/menu_all_feeds"/>
-
-        <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_menu_exit"
-            android:showAsAction=""
-            android:title="@string/logout"/>
     </group>
 
     <group android:id="@+id/menu_group_headlines" >
