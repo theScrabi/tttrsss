@@ -27,7 +27,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class OfflineActivity extends FragmentActivity  {
+public class OfflineActivity extends FragmentActivity implements OfflineServices  {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -45,6 +45,7 @@ public class OfflineActivity extends FragmentActivity  {
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 	
+	@Override
 	public boolean isSmallScreen() {
 		return m_smallScreenMode;
 	}
@@ -146,21 +147,23 @@ public class OfflineActivity extends FragmentActivity  {
 		}
 	}
 
-	public void initDatabase() {
+	private void initDatabase() {
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		m_writableDb = dh.getWritableDatabase();
 		m_readableDb = dh.getReadableDatabase();
 	}
 	
+	@Override
 	public synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
 	}
 	
+	@Override
 	public synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
 	}
 	
-	public void switchOnline() {
+	private void switchOnline() {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("offline_mode_active", false);
 		editor.commit();
@@ -170,11 +173,12 @@ public class OfflineActivity extends FragmentActivity  {
 		finish();
 	}
 	
+	@Override
 	public int getActiveFeedId() {
 		return m_activeFeedId;
 	}
 	
-	public void setLoadingStatus(int status, boolean showProgress) {
+	private void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView)findViewById(R.id.loading_message);
 		
 		if (tv != null) {
@@ -198,7 +202,7 @@ public class OfflineActivity extends FragmentActivity  {
 		out.putInt("offlineArticleId", m_selectedArticleId);
 	}
 	
-	public void setUnreadOnly(boolean unread) {
+	private void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
 		
 		refreshViews();
@@ -209,6 +213,7 @@ public class OfflineActivity extends FragmentActivity  {
 			refreshCategories(); */
 	}
 	
+	@Override
 	public boolean getUnreadOnly() {
 		return m_unreadOnly;
 	}
@@ -247,7 +252,7 @@ public class OfflineActivity extends FragmentActivity  {
 		return true;
 	}
 
-	public void setMenuLabel(int id, int labelId) {
+	private void setMenuLabel(int id, int labelId) {
 		MenuItem mi = m_menu.findItem(id);
 		
 		if (mi != null) {
@@ -296,7 +301,7 @@ public class OfflineActivity extends FragmentActivity  {
         return super.onKeyDown(keyCode, event);
     }
 	
-	public Cursor getArticleById(int articleId) {
+	private Cursor getArticleById(int articleId) {
 		Cursor c = getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(articleId) }, null, null, null);
 		
@@ -305,7 +310,7 @@ public class OfflineActivity extends FragmentActivity  {
 		return c;
 	}
 	
-	public void shareArticle(int articleId) {
+	private void shareArticle(int articleId) {
 
 		Cursor article = getArticleById(articleId);
 		
@@ -315,7 +320,7 @@ public class OfflineActivity extends FragmentActivity  {
 		}
 	}
 
-	public void shareArticle(Cursor article) {
+	private void shareArticle(Cursor article) {
 
 		if (article != null) {
 			String title = article.getString(article.getColumnIndex("title"));
@@ -332,7 +337,7 @@ public class OfflineActivity extends FragmentActivity  {
 		}
 	}
 
-	public void refreshHeadlines() {
+	private void refreshHeadlines() {
 		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 
 		if (ohf != null) {
@@ -493,7 +498,7 @@ public class OfflineActivity extends FragmentActivity  {
 		}
 	}
 
-	public void refreshFeeds() {
+	private void refreshFeeds() {
 		OfflineFeedsFragment frag = (OfflineFeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
 		
 		if (frag != null) {
@@ -522,7 +527,7 @@ public class OfflineActivity extends FragmentActivity  {
 
 	}
 	
-	public int getSelectedArticleCount() {
+	private int getSelectedArticleCount() {
 		Cursor c = getReadableDb().query("articles", new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -531,6 +536,7 @@ public class OfflineActivity extends FragmentActivity  {
 		return selected;
 	}
 	
+	@Override
 	public void initMainMenu() {
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
@@ -601,7 +607,7 @@ public class OfflineActivity extends FragmentActivity  {
 		
 	}
 
-	public void refreshViews() {
+	private void refreshViews() {
 		refreshFeeds();
 		refreshHeadlines();
 	}
@@ -777,10 +783,11 @@ public class OfflineActivity extends FragmentActivity  {
 	        }
 	    }
 
-	public void deselectAllArticles() {
+	private void deselectAllArticles() {
 		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 	}
 	
+	@Override
 	public int getRelativeArticleId(int baseId, int feedId, OnlineServices.RelativeArticle mode) {
 		
 		Cursor c;
@@ -821,6 +828,7 @@ public class OfflineActivity extends FragmentActivity  {
 		return id;
 	}
 	
+	@Override
 	public void viewFeed(int feedId) {
 		m_activeFeedId = feedId;
 		
@@ -840,6 +848,7 @@ public class OfflineActivity extends FragmentActivity  {
 		
 	}
 
+	@Override
 	public void openArticle(int articleId, int compatAnimation) {
 		m_selectedArticleId = articleId;
 		
@@ -883,6 +892,7 @@ public class OfflineActivity extends FragmentActivity  {
 		
 	}
 
+	@Override
 	public int getSelectedArticleId() {
 		return m_selectedArticleId;
 	}
