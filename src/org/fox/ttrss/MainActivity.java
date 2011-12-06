@@ -442,18 +442,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 		req.execute(map);
 	}
 
-	public void switchOnline() {
-		// TODO upload updated stuff here
-
-		SharedPreferences.Editor editor = m_prefs.edit();
-		editor.putBoolean("offline_mode_active", false);
-		editor.commit();
-		
-		Intent refresh = new Intent(this, MainActivity.class);
-		startActivity(refresh);
-		finish();
-	}
-	
 	@SuppressWarnings("unchecked")
 	public void switchOffline() {
 		Log.d(TAG, "offline: starting");
@@ -714,9 +702,6 @@ public class MainActivity extends FragmentActivity implements FeedsFragment.OnFe
 			return true;
 		case R.id.login:
 			login();
-			return true;
-		case R.id.go_online:
-			switchOnline();
 			return true;
 		case R.id.go_offline:
 			switchOffline();

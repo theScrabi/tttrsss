@@ -338,10 +338,19 @@ public class OfflineActivity extends FragmentActivity  {
 		
 		article.close();
 	}
+	
+	public void updateHeadlines() {
+		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 
+		if (ohf != null) {
+			ohf.refresh();
+		}
+	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+
 		switch (item.getItemId()) {
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
@@ -350,8 +359,99 @@ public class OfflineActivity extends FragmentActivity  {
 		case R.id.go_online:
 			switchOnline();
 			return true;
+		case R.id.close_article:
+			closeArticle();
+			return true;
+		case R.id.back_to_categories:
+			//closeCategory();
+			return true;
+		case R.id.headlines_select:
+			if (ohf != null) {
+				Dialog dialog = new Dialog(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.headlines_select_dialog);
+	
+				builder.setSingleChoiceItems(new String[] { getString(R.string.headlines_select_all), 
+						getString(R.string.headlines_select_unread), getString(R.string.headlines_select_none) }, 0, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:
+							SQLiteStatement stmtSelectAll = getWritableDb().compileStatement("UPDATE articles SET selected = 1 WHERE feed_id = ?");
+							stmtSelectAll.bindLong(1, m_activeFeedId);
+							stmtSelectAll.execute();
+							stmtSelectAll.close();
+							break;
+						case 1:
+							SQLiteStatement stmtSelectUnread = getWritableDb().compileStatement("UPDATE articles SET selected = 1 WHERE feed_id = ? AND unread = 1");
+							stmtSelectUnread.bindLong(1, m_activeFeedId);
+							stmtSelectUnread.execute();
+							stmtSelectUnread.close();
+							break;
+						case 2:
+							deselectAllArticles();
+							break;
+						}
+
+						updateHeadlines();
+						initMainMenu();
+						
+						dialog.cancel();
+					}
+				});
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			return true;
+		case R.id.headlines_mark_as_read:
+			if (m_activeFeedId != 0) {
+				SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET unread = 0 WHERE feed_id = ?");
+				stmt.bindLong(1, m_activeFeedId);
+				stmt.execute();
+				stmt.close();
+				updateHeadlines();
+			}
+			return true;
 		case R.id.share_article:
 			shareArticle(m_selectedArticleId);
+			return true;
+		case R.id.toggle_marked:
+			if (m_selectedArticleId != 0) {
+				SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked WHERE " + BaseColumns._ID + " = ?");
+				stmt.bindLong(1, m_selectedArticleId);
+				stmt.execute();
+				stmt.close();
+				updateHeadlines();
+			}
+			return true;
+		case R.id.selection_select_none:
+		case R.id.selection_toggle_unread:
+		case R.id.selection_toggle_marked:
+		case R.id.selection_toggle_published:
+			return true;
+		case R.id.toggle_published:
+			if (m_selectedArticleId != 0) {
+				SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET published = NOT published WHERE " + BaseColumns._ID + " = ?");
+				stmt.bindLong(1, m_selectedArticleId);
+				stmt.execute();
+				stmt.close();
+				updateHeadlines();
+			}
+			return true;
+		case R.id.catchup_above:
+			if (m_selectedArticleId != 0) {
+				//
+			}
+			return true;
+		case R.id.set_unread:
+			if (m_selectedArticleId != 0) {
+				SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE articles SET unread = 1 WHERE " + BaseColumns._ID + " = ?");
+				stmt.bindLong(1, m_selectedArticleId);
+				stmt.execute();
+				stmt.close();
+				updateHeadlines();
+			}
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
@@ -397,6 +497,15 @@ public class OfflineActivity extends FragmentActivity  {
 
 	}
 	
+	public int getSelectedArticles() {
+		Cursor c = getReadableDb().query("articles", new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
+		c.moveToFirst();
+		int unread = c.getInt(0);
+		c.close();
+		
+		return unread;
+	}
+	
 	public void initMainMenu() {
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
@@ -422,9 +531,7 @@ public class OfflineActivity extends FragmentActivity  {
 					OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 					
 					if (hf != null) {
-						int numSelected = 0; // hf.getSelectedArticles().size();
-						
-						if (numSelected != 0) {
+						if (getSelectedArticles() != 0) {
 							m_menu.setGroupVisible(R.id.menu_group_headlines, false);
 							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
 						} else {
@@ -450,7 +557,6 @@ public class OfflineActivity extends FragmentActivity  {
 				m_menu.findItem(R.id.back_to_categories).setVisible(false);
 				
 			}
-			m_menu.findItem(R.id.go_online).setVisible(true);
 		}
 	}		
 	
@@ -540,6 +646,10 @@ public class OfflineActivity extends FragmentActivity  {
 	        }
 	    } */
 
+	public void deselectAllArticles() {
+		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+	}
+	
 	public void viewFeed(int feedId) {
 		m_activeFeedId = feedId;
 		
@@ -550,7 +660,7 @@ public class OfflineActivity extends FragmentActivity  {
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
 		
-		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+		deselectAllArticles();
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(); 
