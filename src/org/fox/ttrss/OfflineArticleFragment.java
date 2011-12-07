@@ -162,7 +162,11 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 					"</head>" +
 					"<body>" + articleContent + "</body></html>";
 					
-				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+				try {
+					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+				} catch (RuntimeException e) {					
+					e.printStackTrace();
+				}
 				
 				if (m_offlineServices.isSmallScreen())
 					web.setOnTouchListener(m_gestureListener);
