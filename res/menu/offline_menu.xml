@@ -9,11 +9,11 @@
             android:title="@string/go_online"
             android:visible="false"/>
 
-        <item
+        <!--  <item
             android:id="@+id/back_to_categories"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"
             android:showAsAction="ifRoom|withText"
-            android:title="@string/back_to_categories"/>
+            android:title="@string/back_to_categories"/> -->
 
         <item
             android:id="@+id/show_feeds"
@@ -39,35 +39,36 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_menu_database"
+            android:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
     </group>
 
     <group android:id="@+id/menu_group_headlines_selection" >
 
-        <item
-            android:id="@+id/selection_toggle_unread"
-            android:icon="@android:drawable/ic_menu_rotate"
-            android:showAsAction=""
-            android:title="@string/selection_toggle_unread"/>
+            <item
+                android:id="@+id/selection_toggle_unread"
+               	android:icon="@drawable/ic_menu_tick"
+                android:showAsAction="ifRoom"
+                android:title="@string/selection_toggle_unread"/>
 
-        <item
-            android:id="@+id/selection_toggle_marked"
-            android:icon="@drawable/ic_menu_marked"
-            android:showAsAction=""
-            android:title="@string/selection_toggle_marked"/>
+            <item
+                android:id="@+id/selection_toggle_marked"
+                android:icon="@drawable/ic_menu_marked"
+                android:showAsAction="ifRoom"
+                android:title="@string/selection_toggle_marked"/>
 
-        <item
-            android:id="@+id/selection_toggle_published"
-            android:icon="@drawable/ic_menu_rss"
-            android:showAsAction=""
-            android:title="@string/selection_toggle_published"/>
+            <item
+                android:id="@+id/selection_toggle_published"
+                android:icon="@drawable/ic_menu_rss"
+                android:showAsAction="ifRoom"
+                android:title="@string/selection_toggle_published"/>
 
-        <item
-            android:id="@+id/selection_select_none"
-            android:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:showAsAction=""
-            android:title="@string/selection_select_none"/>
-    </group>
+            <item
+                android:id="@+id/selection_select_none"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/selection_select_none"/>
+        </group>
 
     <group android:id="@+id/menu_group_article" >
 
@@ -80,13 +81,13 @@
         <item
             android:id="@+id/toggle_marked"
             android:icon="@drawable/ic_menu_marked"
-            android:showAsAction=""
+            android:showAsAction="ifRoom"
             android:title="@string/article_toggle_marked"/>
 
         <item
             android:id="@+id/toggle_published"
             android:icon="@drawable/ic_menu_rss"
-            android:showAsAction=""
+            android:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
 
         <item

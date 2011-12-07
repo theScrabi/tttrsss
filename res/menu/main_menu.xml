@@ -19,13 +19,13 @@
             <item
                 android:id="@+id/update_feeds"
                 android:icon="@android:drawable/ic_menu_rotate"
-                android:showAsAction="ifRoom|"
+                android:showAsAction="ifRoom"
                 android:title="@string/update_feeds"/>
 
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_menu_cloud"
-                android:showAsAction="ifRoom|withText"
+                android:showAsAction=""
                 android:title="@string/go_offline"/>
 
             <item
@@ -39,8 +39,7 @@
 
             <item
                 android:id="@+id/go_offline"
-                android:icon="@drawable/ic_menu_cloud"
-                
+                android:icon="@drawable/ic_menu_cloud"                
                 android:title="@string/go_offline"/>
 
             <item
@@ -60,8 +59,8 @@
 
             <item
                 android:id="@+id/selection_toggle_unread"
-                android:icon="@android:drawable/ic_menu_recent_history"
-                android:showAsAction=""
+                android:icon="@drawable/ic_menu_tick"
+                android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_unread"/>
 
             <item

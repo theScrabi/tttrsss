@@ -64,15 +64,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_unreadArticlesOnly = true;
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
-	private int  m_isLicensed = -1;
+	private int m_isLicensed = -1;
 	private int m_apiLevel = 0;
 	private boolean m_isOffline = false;
-	
-	private ActionBar m_bar = null;
-	private Tab m_catTab;
-	private Tab m_rootTab;
-	private Tab m_feedTab;
-	
+
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 
@@ -80,55 +75,64 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		@Override
 		public void onReceive(Context content, Intent intent) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).  
-				setMessage(R.string.dialog_offline_success).
-				setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						Intent refresh = new Intent(MainActivity.this, OfflineActivity.class);
-						startActivity(refresh);
-						finish();
-					}
-				}).
-				setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						//
-					}
-				});
-			
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					MainActivity.this)
+					.setMessage(R.string.dialog_offline_success)
+					.setPositiveButton(R.string.dialog_offline_go,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent refresh = new Intent(
+											MainActivity.this,
+											OfflineActivity.class);
+									startActivity(refresh);
+									finish();
+								}
+							})
+					.setNegativeButton(R.string.dialog_cancel,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									//
+								}
+							});
+
 			AlertDialog dlg = builder.create();
 			dlg.show();
-			
+
 		}
 	};
-	
+
 	public void updateHeadlines() {
-		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			frag.notifyUpdated();
 		}
 	}
-	
+
 	@Override
 	public boolean getLicensed() {
 		return m_isLicensed == 1;
 	}
-	
+
 	@Override
 	public int getApiLevel() {
 		return m_apiLevel;
 	}
-	
+
 	private boolean hasPendingOfflineData() {
-		Cursor c = getReadableDb().query("articles", 
-				new String[] { "COUNT(*)" }, "modified = 1", null, null, null, null);
+		Cursor c = getReadableDb().query("articles",
+				new String[] { "COUNT(*)" }, "modified = 1", null, null, null,
+				null);
 		if (c.moveToFirst()) {
 			int modified = c.getInt(0);
 			c.close();
-			
+
 			return modified > 0;
 		}
-		
+
 		return false;
 	}
 
@@ -137,15 +141,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	private boolean hasOfflineData() {
-		Cursor c = getReadableDb().query("articles", 
+		Cursor c = getReadableDb().query("articles",
 				new String[] { "COUNT(*)" }, null, null, null, null, null);
 		if (c.moveToFirst()) {
 			int modified = c.getInt(0);
 			c.close();
-			
+
 			return modified > 0;
 		}
-		
+
 		return false;
 	}
 
@@ -153,14 +157,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public void saveArticleUnread(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
 
-		HashMap<String,String> map = new HashMap<String,String>() {
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.unread ? "1" : "0");
 				put("field", "2");
-			}			 
+			}
 		};
 
 		req.execute(map);
@@ -169,15 +173,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleMarked(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
-	
-		HashMap<String,String> map = new HashMap<String,String>() {
+
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.marked ? "1" : "0");
 				put("field", "0");
-			}			 
+			}
 		};
 
 		req.execute(map);
@@ -186,33 +190,33 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticlePublished(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
-	
-		HashMap<String,String> map = new HashMap<String,String>() {
+
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.published ? "1" : "0");
 				put("field", "1");
-			}			 
+			}
 		};
 
 		req.execute(map);
 	}
-	
+
 	public static String articlesToIdString(ArticleList articles) {
 		String tmp = "";
-		
-		for (Article a : articles) 
+
+		for (Article a : articles)
 			tmp += String.valueOf(a.id) + ",";
-		
+
 		return tmp.replaceAll(",$", "");
 	}
 
 	@SuppressWarnings("unchecked")
 	public void catchupFeed(final Feed feed) {
 		Log.d(TAG, "catchupFeed=" + feed);
-		
+
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
 				if (!m_enableCats || m_activeCategory != null)
@@ -220,17 +224,18 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				else
 					refreshCategories();
 			}
-			
+
 		};
-	
+
 		@SuppressWarnings("serial")
-		HashMap<String,String> map = new HashMap<String,String>() {
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "catchupFeed");
 				put("feed_id", String.valueOf(feed.id));
-				if (feed.is_cat) put("is_cat", "1");
-			}			 
+				if (feed.is_cat)
+					put("is_cat", "1");
+			}
 		};
 
 		req.execute(map);
@@ -239,16 +244,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings("unchecked")
 	private void toggleArticlesMarked(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
-	
+
 		@SuppressWarnings("serial")
-		HashMap<String,String> map = new HashMap<String,String>() {
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
 				put("field", "0");
-			}			 
+			}
 		};
 
 		req.execute(map);
@@ -257,16 +262,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings("unchecked")
 	private void toggleArticlesUnread(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
-	
+
 		@SuppressWarnings("serial")
-		HashMap<String,String> map = new HashMap<String,String>() {
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
 				put("field", "2");
-			}			 
+			}
 		};
 
 		req.execute(map);
@@ -275,16 +280,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings("unchecked")
 	private void toggleArticlesPublished(final ArticleList articles) {
 		ApiRequest req = new ApiRequest(getApplicationContext());
-	
+
 		@SuppressWarnings("serial")
-		HashMap<String,String> map = new HashMap<String,String>() {
+		HashMap<String, String> map = new HashMap<String, String>() {
 			{
 				put("sid", m_sessionId);
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
 				put("field", "1");
-			}			 
+			}
 		};
 
 		req.execute(map);
@@ -294,12 +299,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		@Override
 		public void run() {
-			ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-			
+			ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+					.getSystemService(Context.CONNECTIVITY_SERVICE);
+
 			if (cm.getBackgroundDataSetting()) {
 				NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-				if (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected()) {
-			
+				if (networkInfo != null && networkInfo.isAvailable()
+						&& networkInfo.isConnected()) {
+
 					if (!m_enableCats || m_activeCategory != null)
 						refreshFeeds();
 					else
@@ -308,13 +315,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 		}
 	}
-	
+
 	public synchronized void refreshFeeds() {
 		if (m_sessionId != null) {
-			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
-	
+			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.feeds_fragment);
+
 			Log.d(TAG, "Refreshing feeds...");
-	
+
 			if (frag != null) {
 				frag.refresh(true);
 			}
@@ -323,10 +331,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	public synchronized void refreshHeadlines() {
 		if (m_sessionId != null) {
-			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-	
+			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.headlines_fragment);
+
 			Log.d(TAG, "Refreshing headlines...");
-	
+
 			if (frag != null) {
 				frag.refresh(true);
 			}
@@ -335,10 +344,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	public synchronized void refreshCategories() {
 		if (m_sessionId != null) {
-			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
-	
+			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.cats_fragment);
+
 			Log.d(TAG, "Refreshing categories...");
-	
+
 			if (frag != null) {
 				frag.refresh(true);
 			}
@@ -347,26 +357,29 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
-		
-		if (!m_enableCats || m_activeCategory != null )
+
+		if (!m_enableCats || m_activeCategory != null)
 			refreshFeeds();
 		else
 			refreshCategories();
 	}
-	
+
 	@Override
 	public boolean getUnreadOnly() {
 		return m_unreadOnly;
 	}
 
-	/* private void setUnreadArticlesOnly(boolean unread) {
-		m_unreadArticlesOnly = unread;
-		
-		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-		
-		if (frag != null) frag.refresh(false);
-	} */
-	
+	/*
+	 * private void setUnreadArticlesOnly(boolean unread) { m_unreadArticlesOnly
+	 * = unread;
+	 * 
+	 * HeadlinesFragment frag =
+	 * (HeadlinesFragment)getSupportFragmentManager().findFragmentById
+	 * (R.id.headlines_fragment);
+	 * 
+	 * if (frag != null) frag.refresh(false); }
+	 */
+
 	@Override
 	public boolean getUnreadArticlesOnly() {
 		return m_unreadArticlesOnly;
@@ -381,13 +394,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public boolean isSmallScreen() {
 		return m_smallScreenMode;
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());       
+		m_prefs = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
 
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
-		
+
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
 		} else {
@@ -397,56 +411,65 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		super.onCreate(savedInstanceState);
 
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
-	
+
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 			m_activeFeed = savedInstanceState.getParcelable("activeFeed");
-			m_selectedArticle = savedInstanceState.getParcelable("selectedArticle");
-			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
-			m_activeCategory = savedInstanceState.getParcelable("activeCategory");
+			m_selectedArticle = savedInstanceState
+					.getParcelable("selectedArticle");
+			m_unreadArticlesOnly = savedInstanceState
+					.getBoolean("unreadArticlesOnly");
+			m_activeCategory = savedInstanceState
+					.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
 		}
-		
+
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
-		
+
 		Display display = getWindowManager().getDefaultDisplay();
-		
+
 		int width = display.getWidth();
 		int height = display.getHeight();
-		
-		if (height > width) { int tmp = height; width = tmp; height = width; }
-		
-		m_smallScreenMode = width < 960 || height < 720; 
-		
+
+		if (height > width) {
+			int tmp = height;
+			width = tmp;
+			height = width;
+		}
+
+		m_smallScreenMode = width < 960 || height < 720;
+
 		setContentView(R.layout.main);
 
 		initDatabase();
-		
-		IntentFilter filter = new IntentFilter("org.fox.ttrss.intent.action.DownloadComplete");
+
+		IntentFilter filter = new IntentFilter(
+				"org.fox.ttrss.intent.action.DownloadComplete");
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
-		
+
 		registerReceiver(m_broadcastReceiver, filter);
-		
+
 		m_isOffline = m_prefs.getBoolean("offline_mode_active", false);
-		
+
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		
 		if (!m_compatMode) {
-			new TransitionHelper((LinearLayout)findViewById(R.id.main));
+			new TransitionHelper((LinearLayout) findViewById(R.id.main));
 		}
 
 		if (m_isOffline) {
-			Intent offline = new Intent(MainActivity.this, OfflineActivity.class);
+			Intent offline = new Intent(MainActivity.this,
+					OfflineActivity.class);
 			startActivity(offline);
 			finish();
 		} else {
-			List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
-			
+			List<PackageInfo> pkgs = getPackageManager()
+					.getInstalledPackages(0);
+
 			for (PackageInfo p : pkgs) {
 				if ("org.fox.ttrss.key".equals(p.packageName)) {
 					m_isLicensed = 1;
@@ -454,81 +477,62 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					break;
 				}
 			}
-			
-			if (!m_compatMode && !m_smallScreenMode) {
-				
-				m_bar = getActionBar();
-			    
-			    m_bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-			    m_bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
-			    //m_bar.setDisplayHomeAsUpEnabled(true); TODO
-			    
-				if (m_enableCats && !m_prefs.getBoolean("browse_cats_like_feeds", false)) {
-					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
-					m_bar.addTab(m_rootTab);
 
-					if (m_activeCategory != null) {
-						m_catTab = m_bar.newTab().setText(m_activeCategory.title).setTabListener(new CategoryTabListener(m_activeCategory));
-						m_bar.addTab(m_catTab);
-						m_bar.selectTab(m_catTab);
-					}
-				} else if (m_enableCats) {
-					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
-					m_bar.addTab(m_rootTab);
-				} else {
-					m_rootTab = m_bar.newTab().setText("Feeds").setTabListener(new RootTabListener());
-					m_bar.addTab(m_rootTab);
-					
-					if (m_activeFeed != null && m_selectedArticle != null) {
-						m_feedTab = m_bar.newTab().setText(m_activeFeed.title).setTabListener(new FeedTabListener(m_activeFeed, m_selectedArticle));
-						m_bar.addTab(m_feedTab);
-						m_bar.selectTab(m_feedTab);
-					}
-				}
+			if (!m_compatMode && !m_smallScreenMode) {
+				// getActionBar().setDisplayHomeAsUpEnabled(true); TODO
 			}
-			
+
 			if (m_smallScreenMode) {
 				if (m_selectedArticle != null) {
 					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-					findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+					findViewById(R.id.headlines_fragment).setVisibility(
+							View.GONE);
 				} else if (m_activeFeed != null) {
 					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-					findViewById(R.id.article_fragment).setVisibility(View.GONE);
+					findViewById(R.id.article_fragment)
+							.setVisibility(View.GONE);
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				} else {
-					findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-					//findViewById(R.id.article_fragment).setVisibility(View.GONE);
-					
+					findViewById(R.id.headlines_fragment).setVisibility(
+							View.GONE);
+					// findViewById(R.id.article_fragment).setVisibility(View.GONE);
+
 					if (m_enableCats && m_activeCategory == null) {
-						findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-						findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+						findViewById(R.id.feeds_fragment).setVisibility(
+								View.GONE);
+						findViewById(R.id.cats_fragment).setVisibility(
+								View.VISIBLE);
 					} else {
-						findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+						findViewById(R.id.cats_fragment).setVisibility(
+								View.GONE);
 					}
 				}
 			} else {
 				if (m_selectedArticle == null) {
-					findViewById(R.id.article_fragment).setVisibility(View.GONE);
-					
+					findViewById(R.id.article_fragment)
+							.setVisibility(View.GONE);
+
 					if (!m_enableCats || m_activeCategory != null)
-						findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+						findViewById(R.id.cats_fragment).setVisibility(
+								View.GONE);
 					else
-						findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				
+						findViewById(R.id.feeds_fragment).setVisibility(
+								View.GONE);
+
 				} else {
 					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				}
 			}
-			
+
 			if (m_sessionId != null) {
 				loginSuccess();
 			} else {
 				login();
 			}
 		}
-		
+
 	}
 
 	private void initDatabase() {
@@ -536,91 +540,103 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_writableDb = dh.getWritableDatabase();
 		m_readableDb = dh.getReadableDatabase();
 	}
-	
+
 	public synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
 	}
-	
+
 	public synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void switchOffline() {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
-			setMessage(R.string.dialog_offline_switch_prompt).
-			setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					
-					if (m_sessionId != null) {
-						Log.d(TAG, "offline: starting");
 
-						ServiceConnection m_serviceConnection = new ServiceConnection() {
-							
-							@Override
-							public void onServiceDisconnected(ComponentName name) {
-								Log.d(TAG, "download service disconnected");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+				.setMessage(R.string.dialog_offline_switch_prompt)
+				.setPositiveButton(R.string.dialog_offline_go,
+						new Dialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								if (m_sessionId != null) {
+									Log.d(TAG, "offline: starting");
+
+									ServiceConnection m_serviceConnection = new ServiceConnection() {
+
+										@Override
+										public void onServiceDisconnected(
+												ComponentName name) {
+											Log.d(TAG,
+													"download service disconnected");
+										}
+
+										@Override
+										public void onServiceConnected(
+												ComponentName name,
+												IBinder service) {
+											Log.d(TAG,
+													"download service connected");
+											// ((OfflineDownloadService.LocalBinder)service).getService().download();
+										}
+									};
+
+									Intent intent = new Intent(
+											MainActivity.this,
+											OfflineDownloadService.class);
+									intent.putExtra("sessionId", m_sessionId);
+
+									startService(intent);
+
+									// bindService(intent, m_serviceConnection,
+									// Context.BIND_AUTO_CREATE);
+
+								}
 							}
-							
-							@Override
-							public void onServiceConnected(ComponentName name, IBinder service) {
-								Log.d(TAG, "download service connected");
-								//((OfflineDownloadService.LocalBinder)service).getService().download();
+						})
+				.setNegativeButton(R.string.dialog_cancel,
+						new Dialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								//
 							}
-						};
-						
-						Intent intent = new Intent(MainActivity.this, OfflineDownloadService.class);
-						intent.putExtra("sessionId", m_sessionId);
-						
-						startService(intent);
-						
-						//bindService(intent, m_serviceConnection, Context.BIND_AUTO_CREATE);
-					            
-					}
-				}
-			}).
-			setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//
-				}
-			});
-	
+						});
+
 		AlertDialog dlg = builder.create();
 		dlg.show();
 
 	}
-	
+
 	private void switchOfflineSuccess() {
 		logout();
-		//setLoadingStatus(R.string.blank, false);
+		// setLoadingStatus(R.string.blank, false);
 
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("offline_mode_active", true);
 		editor.commit();
-		
+
 		Intent offline = new Intent(MainActivity.this, OfflineActivity.class);
 		startActivity(offline);
 		finish();
-		
+
 	}
-	
+
 	private void setLoadingStatus(int status, boolean showProgress) {
-		TextView tv = (TextView)findViewById(R.id.loading_message);
-		
+		TextView tv = (TextView) findViewById(R.id.loading_message);
+
 		if (tv != null) {
 			tv.setText(status);
 		}
-		
+
 		View pb = findViewById(R.id.loading_progress);
-		
+
 		if (pb != null) {
 			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
 		}
 	}
-				
+
 	@Override
-	public void onSaveInstanceState (Bundle out) {
+	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 
 		out.putString("sessionId", m_sessionId);
@@ -637,9 +653,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public void onResume() {
 		super.onResume();
 
-		boolean needRefresh = !m_prefs.getString("theme", "THEME_DARK").equals(m_themeName) ||
-			m_prefs.getBoolean("enable_cats", false) != m_enableCats;
-		
+		boolean needRefresh = !m_prefs.getString("theme", "THEME_DARK").equals(
+				m_themeName)
+				|| m_prefs.getBoolean("enable_cats", false) != m_enableCats;
+
 		if (needRefresh) {
 			Intent refresh = new Intent(MainActivity.this, MainActivity.class);
 			startActivity(refresh);
@@ -647,8 +664,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		} else if (m_sessionId != null) {
 			m_refreshTask = new RefreshTask();
 			m_refreshTimer = new Timer("Refresh");
-			
-			m_refreshTimer.schedule(m_refreshTask, 60*1000L, 120*1000L);
+
+			m_refreshTimer.schedule(m_refreshTask, 60 * 1000L, 120 * 1000L);
 		}
 	}
 
@@ -656,165 +673,117 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
-		
+
 		m_menu = menu;
-		
+
 		initMainMenu();
-		
+
 		MenuItem item = menu.findItem(R.id.show_feeds);
-		
+
 		if (getUnreadOnly()) {
 			item.setTitle(R.string.menu_all_feeds);
 		} else {
 			item.setTitle(R.string.menu_unread_feeds);
 		}
 
-		/* item = menu.findItem(R.id.show_all_articles);
-		
-		if (getUnreadArticlesOnly()) {
-			item.setTitle(R.string.show_all_articles);
-		} else {
-			item.setTitle(R.string.show_unread_articles);
-		} */
+		/*
+		 * item = menu.findItem(R.id.show_all_articles);
+		 * 
+		 * if (getUnreadArticlesOnly()) {
+		 * item.setTitle(R.string.show_all_articles); } else {
+		 * item.setTitle(R.string.show_unread_articles); }
+		 */
 
 		return true;
 	}
 
 	private void setMenuLabel(int id, int labelId) {
 		MenuItem mi = m_menu.findItem(id);
-		
+
 		if (mi != null) {
 			mi.setTitle(labelId);
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
-    	if (m_smallScreenMode) {
-    		if (m_selectedArticle != null) {
-    			closeArticle();
-    		} else if (m_activeFeed != null) {
-    			if (m_compatMode) {
-    				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
-    			}
-    			
-    			if (m_activeFeed != null && m_activeFeed.is_cat) {
-    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-    				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-    				
-        			refreshCategories();
-    			} else {
-    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-    				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+		if (m_smallScreenMode) {
+			if (m_selectedArticle != null) {
+				closeArticle();
+			} else if (m_activeFeed != null) {
+				if (m_compatMode) {
+					findViewById(R.id.main).setAnimation(
+							AnimationUtils.loadAnimation(this,
+									R.anim.slide_right));
+				}
 
-        			refreshFeeds();
-    			}
+				if (m_activeFeed != null && m_activeFeed.is_cat) {
+					findViewById(R.id.headlines_fragment).setVisibility(
+							View.GONE);
+					findViewById(R.id.cats_fragment)
+							.setVisibility(View.VISIBLE);
+
+					refreshCategories();
+				} else {
+					findViewById(R.id.headlines_fragment).setVisibility(
+							View.GONE);
+					findViewById(R.id.feeds_fragment).setVisibility(
+							View.VISIBLE);
+
+					refreshFeeds();
+				}
 				m_activeFeed = null;
-				
-				
-    			initMainMenu();
 
-    		} else if (m_activeCategory != null) {
-    			if (m_compatMode) {
-    				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
-    			}
+				initMainMenu();
 
-    			closeCategory();
-    			
-    		} else {
-    			finish();
-    		}
-    	} else {
-        	if (m_selectedArticle != null) {
-        		closeArticle();
-        	} else if (m_activeCategory != null) {
-        		closeCategory();
-        	} else {
-        		finish();
-        	}
-    	}
+			} else if (m_activeCategory != null) {
+				if (m_compatMode) {
+					findViewById(R.id.main).setAnimation(
+							AnimationUtils.loadAnimation(this,
+									R.anim.slide_right));
+				}
+
+				closeCategory();
+
+			} else {
+				finish();
+			}
+		} else {
+			if (m_selectedArticle != null) {
+				closeArticle();
+			} else if (m_activeCategory != null) {
+				closeCategory();
+			} else {
+				finish();
+			}
+		}
 	}
-	
-	/* @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-        	
-        	if (m_smallScreenMode) {
-        		if (m_selectedArticle != null) {
-        			closeArticle();
-        		} else if (m_activeFeed != null) {
-        			if (m_compatMode) {
-        				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
-        			}
-        			
-        			if (m_activeFeed != null && m_activeFeed.is_cat) {
-        				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-        				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-        				
-            			refreshCategories();
-        			} else {
-        				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-        				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 
-            			refreshFeeds();
-        			}
-    				m_activeFeed = null;
-    				
-    				
-        			initMainMenu();
-
-        		} else if (m_activeCategory != null) {
-        			if (m_compatMode) {
-        				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
-        			}
-
-        			closeCategory();
-        			
-        		} else {
-        			finish();
-        		}
-        	} else {
-	        	if (m_selectedArticle != null) {
-	        		closeArticle();
-	        	} else if (m_activeCategory != null) {
-	        		closeCategory();
-	        	} else {
-	        		finish();
-	        	}
-        	}
-
-        	return false;
-        }
-        return super.onKeyDown(keyCode, event);
-    } */
-	
 	private void closeCategory() {
 
-		if (m_bar != null && m_catTab != null) {
-			m_bar.selectTab(m_rootTab);
-		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-	
-			m_activeCategory = null;
-			
-			initMainMenu();
-			refreshCategories();
-		}
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+
+		m_activeCategory = null;
+
+		initMainMenu();
+		refreshCategories();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		final HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
 		case R.id.preferences:
-			Intent intent = new Intent(MainActivity.this, PreferencesActivity.class);
+			Intent intent = new Intent(MainActivity.this,
+					PreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.update_feeds:
-			if (!m_enableCats || m_activeCategory != null )
+			if (!m_enableCats || m_activeCategory != null)
 				refreshFeeds();
 			else
 				refreshCategories();
@@ -831,34 +800,39 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.close_article:
 			closeArticle();
 			return true;
-		/* case R.id.back_to_categories:
-			closeCategory();
-			return true; */
+			/*
+			 * case R.id.back_to_categories: closeCategory(); return true;
+			 */
 		case R.id.headlines_select:
 			if (hf != null) {
 				Dialog dialog = new Dialog(this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this)
-					.setTitle(R.string.headlines_select_dialog)
-					.setSingleChoiceItems(new String[] { getString(R.string.headlines_select_all), 
-						getString(R.string.headlines_select_unread), getString(R.string.headlines_select_none) }, 0, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-						case 0:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
-							break;
-						case 1:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
-							break;
-						case 2:
-							hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
-							break;
-						}
-						dialog.cancel();
-						initMainMenu();
-					}
-				});
-				
+						.setTitle(R.string.headlines_select_dialog)
+						.setSingleChoiceItems(
+								new String[] {
+										getString(R.string.headlines_select_all),
+										getString(R.string.headlines_select_unread),
+										getString(R.string.headlines_select_none) },
+								0, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										case 0:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+											break;
+										case 1:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+											break;
+										case 2:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+											break;
+										}
+										dialog.cancel();
+										initMainMenu();
+									}
+								});
+
 				dialog = builder.create();
 				dialog.show();
 			}
@@ -866,25 +840,25 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.headlines_mark_as_read:
 			if (hf != null) {
 				ArticleList articles = hf.getUnreadArticles();
-				
+
 				for (Article a : articles)
 					a.unread = false;
-				
+
 				hf.notifyUpdated();
-	
+
 				ApiRequest req = new ApiRequest(getApplicationContext());
 
 				final String articleIds = articlesToIdString(articles);
 
 				@SuppressWarnings("serial")
-				HashMap<String,String> map = new HashMap<String,String>() {
+				HashMap<String, String> map = new HashMap<String, String>() {
 					{
 						put("sid", m_sessionId);
 						put("op", "updateArticle");
 						put("article_ids", articleIds);
 						put("mode", "0");
 						put("field", "2");
-					}			 
+					}
 				};
 
 				req.execute(map);
@@ -901,7 +875,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			return true;
 		case R.id.selection_select_none:
-			if (hf != null) {				
+			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
 				if (selected.size() > 0) {
 					selected.clear();
@@ -911,13 +885,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			return true;
 		case R.id.selection_toggle_unread:
-			if (hf != null) {				
+			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-				
-				if (selected.size() > 0) {			
+
+				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.unread = !a.unread;
-			
+
 					toggleArticlesUnread(selected);
 					hf.notifyUpdated();
 				}
@@ -926,11 +900,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.selection_toggle_marked:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-			
+
 				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.marked = !a.marked;
-			
+
 					toggleArticlesMarked(selected);
 					hf.notifyUpdated();
 				}
@@ -939,7 +913,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.selection_toggle_published:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-			
+
 				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.published = !a.published;
@@ -989,20 +963,21 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			} else {
 				item.setTitle(R.string.menu_unread_feeds);
 			}
-			
+
 			return true;
-		/* case R.id.show_all_articles:
-			setUnreadArticlesOnly(!getUnreadArticlesOnly());
-	
-			if (getUnreadArticlesOnly()) {
-				item.setTitle(R.string.show_all_articles);
-			} else {
-				item.setTitle(R.string.show_unread_articles);
-			}
-			
-			return true; */
+			/*
+			 * case R.id.show_all_articles:
+			 * setUnreadArticlesOnly(!getUnreadArticlesOnly());
+			 * 
+			 * if (getUnreadArticlesOnly()) {
+			 * item.setTitle(R.string.show_all_articles); } else {
+			 * item.setTitle(R.string.show_unread_articles); }
+			 * 
+			 * return true;
+			 */
 		default:
-			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
+			Log.d(TAG,
+					"onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
 		}
 	}
@@ -1010,33 +985,38 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private void shareArticle(Article article) {
 		if (article != null) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
-			
+
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
 			intent.putExtra(Intent.EXTRA_TEXT, article.link);
 
-			startActivity(Intent.createChooser(intent, getString(R.id.share_article)));
+			startActivity(Intent.createChooser(intent,
+					getString(R.id.share_article)));
 		}
 	}
-	
+
 	private void closeArticle() {
 		if (m_compatMode) {
-			findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+			findViewById(R.id.main).setAnimation(
+					AnimationUtils.loadAnimation(this, R.anim.slide_right));
 		}
 
-		//boolean browseCats = m_prefs.getBoolean("browse_cats_like_feeds", false);
-		
+		// boolean browseCats = m_prefs.getBoolean("browse_cats_like_feeds",
+		// false);
+
 		if (m_smallScreenMode) {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);	
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		} else {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);	
-			
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+
 			if (m_activeFeed != null) {
 				if (m_activeFeed.is_cat) {
-					findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+					findViewById(R.id.cats_fragment)
+							.setVisibility(View.VISIBLE);
 				} else {
-					findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+					findViewById(R.id.feeds_fragment).setVisibility(
+							View.VISIBLE);
 				}
 			}
 		}
@@ -1051,110 +1031,74 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@Override
 	public void initMainMenu() {
 		if (m_menu != null) {
+
+			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+			m_menu.setGroupVisible(R.id.menu_group_article, false);
+
 			if (m_sessionId != null) {
 
-				HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-				int numSelected = 0;
-				
-				if (hf != null)
-					numSelected = hf.getSelectedArticles().size();
-				
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 				
-				if (m_activeFeed == null) {
-					m_menu.setGroupVisible(R.id.menu_group_headlines, false); 
-					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-				}
-				
-				if (m_selectedArticle != null && numSelected == 0) {
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.headlines_fragment);
+
+				int numSelected = 0;
+
+				if (hf != null)
+					numSelected = hf.getSelectedArticles().size();
+
+				if (numSelected != 0) {
+					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
-					
-					m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
-					
-					//if (m_smallScreenMode) {
-						m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-					//} else {
-					//	m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
-					//}
-				
+				} else if (m_activeFeed != null || m_activeCategory != null) {
+					m_menu.setGroupVisible(R.id.menu_group_headlines, true);
 				} else {
-					m_menu.setGroupVisible(R.id.menu_group_article, false);
-
-					if (m_activeFeed != null) {
-						
-						if (numSelected != 0) {
-							m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
-						} else {
-							m_menu.setGroupVisible(R.id.menu_group_headlines, true);
-							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-						}
-							
-						m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
-					} else {
-						m_menu.setGroupVisible(R.id.menu_group_feeds, true); 
-					}
-
-					/* if (!m_smallScreenMode || m_activeFeed == null) {
-						m_menu.findItem(R.id.show_feeds).setVisible(true);
-						m_menu.findItem(R.id.update_feeds).setVisible(true);
-					} */
-					
-					//m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
+					m_menu.setGroupVisible(R.id.menu_group_feeds, true);
 				}
 
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
-				m_menu.setGroupVisible(R.id.menu_group_feeds, false);
-				m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-				m_menu.setGroupVisible(R.id.menu_group_article, false);
-				m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-
-				/* if (m_isOffline) {
-					m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
-					m_menu.findItem(R.id.go_online).setVisible(true);
-					
-				} else { */
-					m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
-				//}
+				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
 			}
-		}		
+		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-		
+
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
 			m_refreshTask = null;
 		}
-		
+
 		if (m_refreshTimer != null) {
 			m_refreshTimer.cancel();
 			m_refreshTimer = null;
 		}
 
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-	
+
 		unregisterReceiver(m_broadcastReceiver);
-		
+
 		m_readableDb.close();
 		m_writableDb.close();
-		
+
 	}
 
 	private void syncOfflineRead() {
 		Log.d(TAG, "syncing modified offline data... (read)");
 
 		final String ids = getOfflineModifiedIds(ModifiedCriteria.READ);
-		
+
 		if (ids.length() > 0) {
 			ApiRequest req = new ApiRequest(getApplicationContext()) {
 				@Override
@@ -1166,16 +1110,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					}
 				}
 			};
-			
+
 			@SuppressWarnings("serial")
-			HashMap<String,String> map = new HashMap<String,String>() {
+			HashMap<String, String> map = new HashMap<String, String>() {
 				{
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
 					put("article_ids", ids);
 					put("mode", "0");
 					put("field", "2");
-				}			 
+				}
 			};
 
 			req.execute(map);
@@ -1188,7 +1132,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "syncing modified offline data... (marked)");
 
 		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
-		
+
 		if (ids.length() > 0) {
 			ApiRequest req = new ApiRequest(getApplicationContext()) {
 				@Override
@@ -1200,16 +1144,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					}
 				}
 			};
-			
+
 			@SuppressWarnings("serial")
-			HashMap<String,String> map = new HashMap<String,String>() {
+			HashMap<String, String> map = new HashMap<String, String>() {
 				{
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
 					put("article_ids", ids);
 					put("mode", "0");
 					put("field", "0");
-				}			 
+				}
 			};
 
 			req.execute(map);
@@ -1222,7 +1166,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "syncing modified offline data... (published)");
 
 		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
-		
+
 		if (ids.length() > 0) {
 			ApiRequest req = new ApiRequest(getApplicationContext()) {
 				@Override
@@ -1236,16 +1180,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					}
 				}
 			};
-			
+
 			@SuppressWarnings("serial")
-			HashMap<String,String> map = new HashMap<String,String>() {
+			HashMap<String, String> map = new HashMap<String, String>() {
 				{
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
 					put("article_ids", ids);
 					put("mode", "0");
 					put("field", "1");
-				}			 
+				}
 			};
 
 			req.execute(map);
@@ -1260,15 +1204,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		setLoadingStatus(R.string.syncing_offline_data, true);
 		syncOfflineRead();
 	}
-	
+
 	private void loginSuccessInitUI() {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		
+
 		if (m_enableCats) {
 			FeedCategoriesFragment frag = new FeedCategoriesFragment();
 			ft.replace(R.id.cats_fragment, frag);
 		} else {
-			FeedsFragment frag = new FeedsFragment(); 
+			FeedsFragment frag = new FeedsFragment();
 			ft.replace(R.id.feeds_fragment, frag);
 		}
 
@@ -1278,37 +1222,39 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void loginSuccess() {
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
 		findViewById(R.id.main).setVisibility(View.VISIBLE);
 
 		m_isOffline = false;
-		
+
 		initMainMenu();
-		
+
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
 			m_refreshTask = null;
 		}
-		
+
 		if (m_refreshTimer != null) {
 			m_refreshTimer.cancel();
 			m_refreshTimer = null;
 		}
-		
+
 		m_refreshTask = new RefreshTask();
 		m_refreshTimer = new Timer("Refresh");
-		
-		m_refreshTimer.schedule(m_refreshTask, 60*1000L, 120*1000L);
+
+		m_refreshTimer.schedule(m_refreshTask, 60 * 1000L, 120 * 1000L);
 	}
-	
-	private enum ModifiedCriteria { READ, MARKED, PUBLISHED };
-		
+
+	private enum ModifiedCriteria {
+		READ, MARKED, PUBLISHED
+	};
+
 	private String getOfflineModifiedIds(ModifiedCriteria criteria) {
-		
+
 		String criteriaStr = "";
-		
+
 		switch (criteria) {
 		case READ:
 			criteriaStr = "unread = 0";
@@ -1320,55 +1266,56 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			criteriaStr = "published = 1";
 			break;
 		}
-		
-		Cursor c = getReadableDb().query("articles", 
-				null, "modified = 1 AND " + criteriaStr, null, null, null, null);
+
+		Cursor c = getReadableDb().query("articles", null,
+				"modified = 1 AND " + criteriaStr, null, null, null, null);
 
 		String tmp = "";
-		
+
 		while (c.moveToNext()) {
 			tmp += c.getInt(0) + ",";
 		}
 
 		tmp = tmp.replaceAll(",$", "");
-		
-		//Log.d(TAG, "getOfflineModifiedIds " + criteria + " = " + tmp);
-		
+
+		// Log.d(TAG, "getOfflineModifiedIds " + criteria + " = " + tmp);
+
 		c.close();
-		
+
 		return tmp;
 	}
-	
+
 	private class LoginRequest extends ApiRequest {
 		public LoginRequest(Context context) {
 			super(context);
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
-				try {			
+				try {
 					JsonObject content = result.getAsJsonObject();
 					if (content != null) {
 						m_sessionId = content.get("session_id").getAsString();
-						
+
 						Log.d(TAG, "Authenticated!");
-						
+
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {
 								if (result != null) {
-									m_apiLevel = result.getAsJsonObject().get("level").getAsInt();
+									m_apiLevel = result.getAsJsonObject()
+											.get("level").getAsInt();
 								} else {
 									m_apiLevel = 0;
 								}
-								
+
 								Log.d(TAG, "Received API level: " + m_apiLevel);
-								
+
 								if (hasPendingOfflineData()) {
 
 									syncOfflineData();
-									
-									//loginSuccess();
+
+									// loginSuccess();
 								} else {
 									loginSuccessInitUI();
 									loginSuccess();
@@ -1376,51 +1323,56 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 							}
 						};
-						
+
 						@SuppressWarnings("serial")
-						HashMap<String,String> map = new HashMap<String,String>() {
+						HashMap<String, String> map = new HashMap<String, String>() {
 							{
 								put("sid", m_sessionId);
 								put("op", "getApiLevel");
-							}			 
+							}
 						};
 
 						req.execute(map);
-						
+
 						setLoadingStatus(R.string.loading_message, true);
-						
+
 						return;
 					}
-							
+
 				} catch (Exception e) {
-					e.printStackTrace();						
+					e.printStackTrace();
 				}
 			}
-	
+
 			m_sessionId = null;
 
 			setLoadingStatus(getErrorMessage(), false);
-			
+
 			if (hasOfflineData()) {
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).  
-					setMessage(R.string.dialog_offline_prompt).
-					setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int which) {
-			        	switchOfflineSuccess();
-			        }
-					}).
-					setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int which) {
-			        	//
-			        }
-			    });
-				
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						MainActivity.this)
+						.setMessage(R.string.dialog_offline_prompt)
+						.setPositiveButton(R.string.dialog_offline_go,
+								new Dialog.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switchOfflineSuccess();
+									}
+								})
+						.setNegativeButton(R.string.dialog_cancel,
+								new Dialog.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										//
+									}
+								});
+
 				AlertDialog dlg = builder.create();
 				dlg.show();
-			} 
-			
-			//m_menu.findItem(R.id.login).setVisible(true);
+			}
+
+			// m_menu.findItem(R.id.login).setVisible(true);
 		}
 
 	}
@@ -1433,25 +1385,27 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public Article getSelectedArticle() {
 		return m_selectedArticle;
 	}
-	
+
 	public void viewFeed(Feed feed, boolean append) {
 		m_activeFeed = feed;
-	
+
 		initMainMenu();
-		
+
 		if (m_smallScreenMode) {
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
-		
+
 		if (!append) {
 			HeadlinesFragment hf = new HeadlinesFragment();
-		
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
 			ft.replace(R.id.headlines_fragment, hf);
 			ft.commit();
 		} else {
-			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.headlines_fragment);
 			if (hf != null) {
 				hf.refresh(true);
 			}
@@ -1459,95 +1413,82 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	public void viewCategory(FeedCategory cat, boolean openAsFeed) {
-		
-		Log.d(TAG, "viewCategory");
-		
-		if (!openAsFeed) {
-			if (m_bar != null) {
-				if (m_catTab != null) m_bar.removeTab(m_catTab);
-				
-				m_catTab = m_bar.newTab().setText(cat.title).setTabListener(new CategoryTabListener(cat));
-				m_bar.addTab(m_catTab);
-				m_bar.selectTab(m_catTab);
-			} else {
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 
-				m_activeCategory = cat;
-				
-				FeedsFragment frag = new FeedsFragment();
-		
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-				ft.replace(R.id.feeds_fragment, frag);
-				ft.commit();
-			}
+		Log.d(TAG, "viewCategory");
+
+		if (!openAsFeed) {
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+
+			m_activeCategory = cat;
+
+			FeedsFragment frag = new FeedsFragment();
+
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+			ft.replace(R.id.feeds_fragment, frag);
+			ft.commit();
 		} else {
-			if (m_smallScreenMode) findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			if (m_smallScreenMode)
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 
 			m_activeFeed = new Feed(cat.id, cat.title, true);
-			
+
 			HeadlinesFragment frag = new HeadlinesFragment();
-	
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
 			ft.replace(R.id.headlines_fragment, frag);
 			ft.commit();
-			
+
 		}
-		
+
 		initMainMenu();
 	}
 
 	public void openArticle(Article article, int compatAnimation) {
 		m_selectedArticle = article;
-		
+
 		if (article.unread) {
 			article.unread = false;
 			saveArticleUnread(article);
 		}
-		
+
 		initMainMenu();
 
-		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-		
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.headlines_fragment);
+
 		if (hf != null) {
 			hf.setActiveArticleId(article.id);
 		}
-		
-		
-		if (m_bar != null) {
-			if (m_feedTab != null) m_bar.removeTab(m_feedTab);
-				
-			m_feedTab = m_bar.newTab().setText(m_activeFeed.title).setTabListener(new FeedTabListener(m_activeFeed, m_selectedArticle));
-			m_bar.addTab(m_feedTab);
-			m_bar.selectTab(m_feedTab);
-		} else {
-			if (m_smallScreenMode) {
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-			} else {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-			}
 
-			ArticleFragment frag = new ArticleFragment();
-			
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-			ft.replace(R.id.article_fragment, frag);
-			ft.commit();
+		if (m_smallScreenMode) {
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		}
+
+		ArticleFragment frag = new ArticleFragment();
+
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.article_fragment, frag);
+		ft.commit();
 
 		if (m_compatMode) {
 			if (compatAnimation == 0)
-				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_left));
+				findViewById(R.id.main).setAnimation(
+						AnimationUtils.loadAnimation(this, R.anim.slide_left));
 			else
-				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, compatAnimation));
+				findViewById(R.id.main).setAnimation(
+						AnimationUtils.loadAnimation(this, compatAnimation));
 		}
-
-			
 	}
-	
+
 	@Override
 	public Feed getActiveFeed() {
 		return m_activeFeed;
@@ -1557,113 +1498,117 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public FeedCategory getActiveCategory() {
 		return m_activeCategory;
 	}
-	
+
 	private void logout() {
 		if (m_refreshTask != null) {
 			m_refreshTask.cancel();
 			m_refreshTask = null;
 		}
-		
+
 		if (m_refreshTimer != null) {
 			m_refreshTimer.cancel();
 			m_refreshTimer = null;
 		}
 
 		m_sessionId = null;
-		
+
 		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
 		findViewById(R.id.main).setVisibility(View.INVISIBLE);
-	
-		TextView tv = (TextView)findViewById(R.id.loading_message);
-		
+
+		TextView tv = (TextView) findViewById(R.id.loading_message);
+
 		if (tv != null) {
-			tv.setText(R.string.login_ready);		
+			tv.setText(R.string.login_ready);
 		}
-		
+
 		findViewById(R.id.loading_progress).setVisibility(View.GONE);
-		
+
 		initMainMenu();
 	}
 
 	@Override
 	@SuppressWarnings({ "unchecked", "serial" })
-	public void login() {		
+	public void login() {
 
 		logout();
-		
+
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
 
 			setLoadingStatus(R.string.login_need_configure, false);
-			
+
 		} else {
-		
+
 			LoginRequest ar = new LoginRequest(getApplicationContext());
-			
-			HashMap<String,String> map = new HashMap<String,String>() {
+
+			HashMap<String, String> map = new HashMap<String, String>() {
 				{
 					put("op", "login");
 					put("user", m_prefs.getString("login", "").trim());
 					put("password", m_prefs.getString("password", "").trim());
-				}			 
+				}
 			};
-	
+
 			ar.execute(map);
-			
+
 			setLoadingStatus(R.string.login_in_progress, true);
 		}
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    
-		HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-		FeedsFragment ff = (FeedsFragment)getSupportFragmentManager().findFragmentById(R.id.feeds_fragment);
-		FeedCategoriesFragment cf = (FeedCategoriesFragment)getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
 
-    	switch (item.getItemId()) {
-    	case R.id.browse_articles:
-    		if (cf != null) {
-    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
-    			if (cat != null) {
-    				viewCategory(cat, true);
-    				cf.setSelectedCategory(cat);
-    			}
-    		}
-    		return true;
-    	case R.id.browse_feeds:
-    		if (cf != null) {
-    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
-    			if (cat != null) {
-    				viewCategory(cat, false);
-    				cf.setSelectedCategory(cat);
-    			}
-    		}
-    		return true;
-    	case R.id.catchup_category:
-    		if (cf != null) {
-    			FeedCategory cat = cf.getCategoryAtPosition(info.position);
-    			if (cat != null) {
-    	    		catchupFeed(new Feed(cat.id, cat.title, true));
-    			}
-    		}
-    		return true;
-    	case R.id.catchup_feed:
-    		if (ff != null) {
-    			Feed feed = ff.getFeedAtPosition(info.position);
-    			if (feed != null) {
-    				catchupFeed(feed);
-    			}
-    		}
-    		return true;
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.headlines_fragment);
+		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.feeds_fragment);
+		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.cats_fragment);
+
+		switch (item.getItemId()) {
+		case R.id.browse_articles:
+			if (cf != null) {
+				FeedCategory cat = cf.getCategoryAtPosition(info.position);
+				if (cat != null) {
+					viewCategory(cat, true);
+					cf.setSelectedCategory(cat);
+				}
+			}
+			return true;
+		case R.id.browse_feeds:
+			if (cf != null) {
+				FeedCategory cat = cf.getCategoryAtPosition(info.position);
+				if (cat != null) {
+					viewCategory(cat, false);
+					cf.setSelectedCategory(cat);
+				}
+			}
+			return true;
+		case R.id.catchup_category:
+			if (cf != null) {
+				FeedCategory cat = cf.getCategoryAtPosition(info.position);
+				if (cat != null) {
+					catchupFeed(new Feed(cat.id, cat.title, true));
+				}
+			}
+			return true;
+		case R.id.catchup_feed:
+			if (ff != null) {
+				Feed feed = ff.getFeedAtPosition(info.position);
+				if (feed != null) {
+					catchupFeed(feed);
+				}
+			}
+			return true;
 		case R.id.selection_toggle_marked:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-			
+
 				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.marked = !a.marked;
-			
+
 					toggleArticlesMarked(selected);
 					hf.notifyUpdated();
 				} else {
@@ -1679,7 +1624,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.selection_toggle_published:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-			
+
 				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.published = !a.published;
@@ -1697,13 +1642,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			return true;
 		case R.id.selection_toggle_unread:
-			if (hf != null) {				
+			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
-				
-				if (selected.size() > 0) {			
+
+				if (selected.size() > 0) {
 					for (Article a : selected)
 						a.unread = !a.unread;
-			
+
 					toggleArticlesUnread(selected);
 					hf.notifyUpdated();
 				} else {
@@ -1742,248 +1687,118 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 			}
 			return true;
-		/* case R.id.set_unread:
-			if (hf != null) {
-				Article article = hf.getArticleAtPosition(info.position);
-				if (article != null) {
-					article.unread = true;
-					saveArticleUnread(article);
-				}
-			}
-			break; */
-			default:
-		    	Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
-				return super.onContextItemSelected(item);
-    	}
+			/*
+			 * case R.id.set_unread: if (hf != null) { Article article =
+			 * hf.getArticleAtPosition(info.position); if (article != null) {
+			 * article.unread = true; saveArticleUnread(article); } } break;
+			 */
+		default:
+			Log.d(TAG,
+					"onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
 	}
-
 
 	@Override
 	public Article getRelativeArticle(Article article, RelativeArticle ra) {
-		HeadlinesFragment frag = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			ArticleList articles = frag.getAllArticles();
 			for (int i = 0; i < articles.size(); i++) {
 				Article a = articles.get(i);
-				
+
 				if (a.id == article.id) {
 					if (ra == RelativeArticle.AFTER) {
 						try {
-							return articles.get(i+1);
+							return articles.get(i + 1);
 						} catch (IndexOutOfBoundsException e) {
 							return null;
 						}
 					} else {
 						try {
-							return articles.get(i-1);
+							return articles.get(i - 1);
 						} catch (IndexOutOfBoundsException e) {
 							return null;
 						}
 					}
 				}
 			}
-		}		
+		}
 		return null;
 	}
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-	    int action = event.getAction();
-	    int keyCode = event.getKeyCode();
-	        switch (keyCode) {
-	        case KeyEvent.KEYCODE_VOLUME_DOWN:
-	            if (action == KeyEvent.ACTION_DOWN) {
-	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		int action = event.getAction();
+		int keyCode = event.getKeyCode();
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			if (action == KeyEvent.ACTION_DOWN) {
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.headlines_fragment);
 
-	            	if (hf != null && m_activeFeed != null) {
-	            		Article base = hf.getArticleById(hf.getActiveArticleId());
-	            		
-	            		Article next = base != null ? getRelativeArticle(base, RelativeArticle.AFTER) : hf.getArticleAtPosition(0);
-	            		
-	            		if (next != null) {
-	            			hf.setActiveArticleId(next.id);
-	            			
-	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
-	            			
-	            			if (combinedMode || m_selectedArticle == null) {
-	            				next.unread = false;
-	            				saveArticleUnread(next);
-	            			} else {
-	            				openArticle(next, 0);
-	            			}
-	            		}
-	            	}
-	            }
-	            return true;
-	        case KeyEvent.KEYCODE_VOLUME_UP:
-	            if (action == KeyEvent.ACTION_UP) {
-	            	HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+				if (hf != null && m_activeFeed != null) {
+					Article base = hf.getArticleById(hf.getActiveArticleId());
 
-	            	if (hf != null && m_activeFeed != null) {
-	            		Article base = hf.getArticleById(hf.getActiveArticleId());
-	            		
-	            		Article prev = base != null ? getRelativeArticle(base, RelativeArticle.BEFORE) : hf.getArticleAtPosition(0);
-	            		
-	            		if (prev != null) {
-	            			hf.setActiveArticleId(prev.id);
-	            			
-	            			boolean combinedMode = m_prefs.getBoolean("combined_mode", false);
-	            			
-	            			if (combinedMode || m_selectedArticle == null) {
-	            				prev.unread = false;
-	            				saveArticleUnread(prev);
-	            			} else {
-	            				openArticle(prev, 0);
-	            			}
-	            		}
-	            	}
+					Article next = base != null ? getRelativeArticle(base,
+							RelativeArticle.AFTER) : hf.getArticleAtPosition(0);
 
-	            }
-	            return true;
-	        default:
-	            return super.dispatchKeyEvent(event);
-	        }
-	    }
-	
+					if (next != null) {
+						hf.setActiveArticleId(next.id);
+
+						boolean combinedMode = m_prefs.getBoolean(
+								"combined_mode", false);
+
+						if (combinedMode || m_selectedArticle == null) {
+							next.unread = false;
+							saveArticleUnread(next);
+						} else {
+							openArticle(next, 0);
+						}
+					}
+				}
+			}
+			return true;
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			if (action == KeyEvent.ACTION_UP) {
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.headlines_fragment);
+
+				if (hf != null && m_activeFeed != null) {
+					Article base = hf.getArticleById(hf.getActiveArticleId());
+
+					Article prev = base != null ? getRelativeArticle(base,
+							RelativeArticle.BEFORE) : hf
+							.getArticleAtPosition(0);
+
+					if (prev != null) {
+						hf.setActiveArticleId(prev.id);
+
+						boolean combinedMode = m_prefs.getBoolean(
+								"combined_mode", false);
+
+						if (combinedMode || m_selectedArticle == null) {
+							prev.unread = false;
+							saveArticleUnread(prev);
+						} else {
+							openArticle(prev, 0);
+						}
+					}
+				}
+
+			}
+			return true;
+		default:
+			return super.dispatchKeyEvent(event);
+		}
+	}
+
 	@Override
 	public void onCatSelected(FeedCategory cat) {
 		Log.d(TAG, "onCatSelected");
 		boolean browse = m_prefs.getBoolean("browse_cats_like_feeds", false);
-		
+
 		viewCategory(cat, browse && cat.id >= 0);
 	}
-	
-	private class RootTabListener implements ActionBar.TabListener {
-
-		@Override
-		public void onTabReselected(Tab arg0,
-				android.app.FragmentTransaction arg1) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onTabSelected(Tab arg0, android.app.FragmentTransaction arg1) {
-			// TODO Auto-generated method stub
-			
-			if (m_catTab != null) m_bar.removeTab(m_catTab);
-			if (m_feedTab != null) m_bar.removeTab(m_feedTab);
-			
-		}
-
-		@Override
-		public void onTabUnselected(Tab arg0,
-				android.app.FragmentTransaction arg1) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	
-	private class CategoryTabListener implements ActionBar.TabListener {
-		
-		private FeedCategory m_cat = null;
-		
-		public CategoryTabListener(FeedCategory cat) {
-			m_cat = cat;
-		}
-		
-		@Override
-		public void onTabReselected(Tab tab,
-				android.app.FragmentTransaction _ft) {
-
-			//closeArticle();
-		}
-
-		@Override
-		public void onTabSelected(Tab tab, android.app.FragmentTransaction _ft) {
-			if (m_cat != null) {
-				m_activeCategory = m_cat;
-				
-				initMainMenu();
-				
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-				
-				FeedsFragment frag = new FeedsFragment();
-				
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-				ft.replace(R.id.feeds_fragment, frag);
-				ft.commit();
-			}
-		}
-
-		@Override
-		public void onTabUnselected(Tab tab,
-				android.app.FragmentTransaction _ft) {
-
-			if (m_selectedArticle != null)
-				closeArticle();
-
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-	
-			m_activeCategory = null;
-			
-			initMainMenu();
-			refreshCategories();
-
-		}
-	}
-	
-private class FeedTabListener implements ActionBar.TabListener {
-		
-		private Feed m_feed = null;
-		private Article m_article = null;
-		
-		public FeedTabListener(Feed cat, Article article) {
-			m_feed = cat;
-			m_article = article;
-		}
-		
-		@Override
-		public void onTabReselected(Tab tab,
-				android.app.FragmentTransaction _ft) {
-
-			refreshHeadlines();
-		}
-
-		@Override
-		public void onTabSelected(Tab tab, android.app.FragmentTransaction _ft) {
-			if (m_feed != null) {
-				
-				m_activeFeed = m_feed;
-				m_selectedArticle = m_article;
-				
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-				
-				ArticleFragment frag = new ArticleFragment();
-				
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-				ft.replace(R.id.article_fragment, frag);
-				ft.commit();
-				
-				initMainMenu();
-				
-			}
-		}
-
-		@Override
-		public void onTabUnselected(Tab tab,
-				android.app.FragmentTransaction _ft) {
-
-			if (m_selectedArticle != null) {
-				closeArticle();
-				refreshFeeds();
-			}
-
-			//m_activeFeed = null;
-			
-			initMainMenu();
-		}
-	}
-
 }
