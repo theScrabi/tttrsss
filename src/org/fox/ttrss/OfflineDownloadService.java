@@ -4,14 +4,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -117,6 +114,7 @@ public class OfflineDownloadService extends IntentService {
 
 		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
 		
+		@SuppressWarnings("serial")
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getHeadlines");
@@ -191,6 +189,7 @@ public class OfflineDownloadService extends IntentService {
 
 		};
 		
+		@SuppressWarnings("serial")
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getFeeds");

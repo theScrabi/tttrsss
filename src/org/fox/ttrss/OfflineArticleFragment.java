@@ -38,6 +38,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 	private GestureDetector m_gestureDetector;
 	private View.OnTouchListener m_gestureListener;
 	private Cursor m_cursor;
+	private OfflineServices m_offlineServices;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -62,12 +63,12 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
             
 		
 		// TODO change to interface?
-		OfflineActivity activity = (OfflineActivity)getActivity();
+		Activity activity = getActivity();
 		
 		if (activity != null) {		
 			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
 			
-			if (!activity.isSmallScreen()) {			
+			if (!m_offlineServices.isSmallScreen()) {			
 				if (orientation % 2 == 0) {
 					view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
 				} else {
@@ -81,7 +82,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
 		}
 		
-		m_cursor = ((OfflineActivity)getActivity()).getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
+		m_cursor = m_offlineServices.getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 
 		m_cursor.moveToFirst();
@@ -137,7 +138,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 					
 				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 				
-				if (activity.isSmallScreen())
+				if (m_offlineServices.isSmallScreen())
 					web.setOnTouchListener(m_gestureListener);
 			}
 			
@@ -210,20 +211,20 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
-		OfflineActivity oa = (OfflineActivity)activity;
+		m_offlineServices = (OfflineServices)activity;
 		
-		m_articleId = oa.getSelectedArticleId();
+		m_articleId = m_offlineServices.getSelectedArticleId();
 		
-		m_prevArticleId = oa.getRelativeArticleId(m_articleId, oa.getActiveFeedId(), RelativeArticle.BEFORE);
-		m_nextArticleId = oa.getRelativeArticleId(m_articleId, oa.getActiveFeedId(), RelativeArticle.AFTER);
+		m_prevArticleId = m_offlineServices.getRelativeArticleId(m_articleId, m_offlineServices.getActiveFeedId(), RelativeArticle.BEFORE);
+		m_nextArticleId = m_offlineServices.getRelativeArticleId(m_articleId, m_offlineServices.getActiveFeedId(), RelativeArticle.AFTER);
 	}
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.next_article) {
-			((OfflineActivity)getActivity()).openArticle(m_nextArticleId, 0);
+			m_offlineServices.openArticle(m_nextArticleId, 0);
 		} else if (v.getId() == R.id.prev_article) {
-			((OfflineActivity)getActivity()).openArticle(m_prevArticleId, R.anim.slide_right);
+			m_offlineServices.openArticle(m_prevArticleId, R.anim.slide_right);
 		}
 	}
 	
@@ -244,13 +245,13 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
                     //Log.d(TAG, "Right swipe");
                     
                 	if (m_prevArticleId != 0)
-                		((OfflineActivity)getActivity()).openArticle(m_prevArticleId, 0);
+                		m_offlineServices.openArticle(m_prevArticleId, 0);
                 	
                 } else {
                     //Log.d(TAG, "Left swipe");
 
                 	if (m_nextArticleId != 0)
-                		((OfflineActivity)getActivity()).openArticle(m_nextArticleId, 0);
+                		m_offlineServices.openArticle(m_nextArticleId, 0);
 
                 }
                 return true;

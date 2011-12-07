@@ -1,13 +1,10 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
-import android.app.ActionBar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -21,13 +18,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -42,10 +37,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends FragmentActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
@@ -324,7 +317,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	public synchronized void refreshFeeds() {
+	private synchronized void refreshFeeds() {
 		if (m_sessionId != null) {
 			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.feeds_fragment);
@@ -337,7 +330,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	public synchronized void refreshHeadlines() {
+	private synchronized void refreshHeadlines() {
 		if (m_sessionId != null) {
 			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.headlines_fragment);
@@ -350,7 +343,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	public synchronized void refreshCategories() {
+	private synchronized void refreshCategories() {
 		if (m_sessionId != null) {
 			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.cats_fragment);

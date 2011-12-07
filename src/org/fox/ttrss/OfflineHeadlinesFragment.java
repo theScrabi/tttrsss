@@ -51,6 +51,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
 	
+	private OfflineServices m_offlineServices;
+	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
 		@Override
@@ -68,7 +70,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public int getSelectedArticleCount() {
-		Cursor c = ((OfflineActivity)getActivity()).getReadableDb().query("articles", 
+		Cursor c = m_offlineServices.getReadableDb().query("articles", 
 				new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -138,14 +140,16 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public Cursor createCursor() {
-		return ((OfflineActivity)getActivity()).getReadableDb().query("articles", 
+		return m_offlineServices.getReadableDb().query("articles", 
 				null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_feedId = ((OfflineActivity)activity).getActiveFeedId();
+		m_offlineServices = (OfflineServices)activity;
+		
+		m_feedId = m_offlineServices.getActiveFeedId();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}
@@ -161,7 +165,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			m_activeArticleId = cursor.getInt(0);
 
-			SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
+			SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
 					"WHERE " + BaseColumns._ID + " = ?");
 			
 			stmtUpdate.bindLong(1, m_activeArticleId);
@@ -169,7 +173,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			stmtUpdate.close();
 
 			if (!m_combinedMode) { 
-				((OfflineActivity)getActivity()).openArticle(m_activeArticleId, 0);
+				m_offlineServices.openArticle(m_activeArticleId, 0);
 			}
 			
 			refresh();
@@ -285,7 +289,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
+						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -306,7 +310,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
+						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -366,7 +370,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
 
-						SQLiteStatement stmtUpdate = ((OfflineActivity)getActivity()).getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
@@ -376,7 +380,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						
 						refresh();
 						
-						((OfflineActivity)getActivity()).initMainMenu();
+						m_offlineServices.initMainMenu();
 						
 					}
 				});

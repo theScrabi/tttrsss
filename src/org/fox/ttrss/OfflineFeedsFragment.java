@@ -36,6 +36,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private int m_selectedFeedId;
 	private boolean m_enableFeedIcons;
 	private Cursor m_cursor;
+	private OfflineServices m_offlineServices;
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -54,11 +55,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 	
 	public Cursor createCursor() {
-		String unreadOnly = ((OfflineActivity)getActivity()).getUnreadOnly() ? "unread > 0" : null;
+		String unreadOnly = m_offlineServices.getUnreadOnly() ? "unread > 0" : null;
 		
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
-		return ((OfflineActivity)getActivity()).getReadableDb().query("feeds_unread", 
+		return m_offlineServices.getReadableDb().query("feeds_unread", 
 				null, unreadOnly, null, null, null, order);
 	}
 	
@@ -110,7 +111,9 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 
 	@Override
 	public void onAttach(Activity activity) {
-		super.onAttach(activity);		
+		super.onAttach(activity);
+		
+		m_offlineServices = (OfflineServices)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
@@ -135,7 +138,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				((OfflineActivity)getActivity()).viewFeed(feedId);
+				m_offlineServices.viewFeed(feedId);
 				
 				m_selectedFeedId = feedId;
 				
