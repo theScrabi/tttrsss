@@ -432,8 +432,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		if (m_isOffline) {
-			Intent refresh = new Intent(this, OfflineActivity.class);
-			startActivity(refresh);
+			Intent offline = new Intent(MainActivity.this, OfflineActivity.class);
+			startActivity(offline);
 			finish();
 		} else {
 			List<PackageInfo> pkgs = getPackageManager().getInstalledPackages(0);
@@ -450,6 +450,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				if (m_enableCats && !m_prefs.getBoolean("browse_cats_like_feeds", false)) {
 					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
 					m_bar.addTab(m_rootTab);
+
+					if (m_activeCategory != null) {
+						m_feedTab = m_bar.newTab().setText(m_activeCategory.title).setTabListener(new CategoryTabListener(m_activeCategory));
+						m_bar.addTab(m_feedTab);
+						m_bar.selectTab(m_feedTab);
+					}
 				}
 			}
 			
@@ -565,8 +571,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		editor.putBoolean("offline_mode_active", true);
 		editor.commit();
 		
-		Intent refresh = new Intent(this, OfflineActivity.class);
-		startActivity(refresh);
+		Intent offline = new Intent(MainActivity.this, OfflineActivity.class);
+		startActivity(offline);
 		finish();
 		
 	}
@@ -607,7 +613,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			m_prefs.getBoolean("enable_cats", false) != m_enableCats;
 		
 		if (needRefresh) {
-			Intent refresh = new Intent(this, MainActivity.class);
+			Intent refresh = new Intent(MainActivity.this, MainActivity.class);
 			startActivity(refresh);
 			finish();
 		} else if (m_sessionId != null) {
@@ -655,6 +661,53 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 	
 	@Override
+	public void onBackPressed() {
+    	if (m_smallScreenMode) {
+    		if (m_selectedArticle != null) {
+    			closeArticle();
+    		} else if (m_activeFeed != null) {
+    			if (m_compatMode) {
+    				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+    			}
+    			
+    			if (m_activeFeed != null && m_activeFeed.is_cat) {
+    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+    				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+    				
+        			refreshCategories();
+    			} else {
+    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+    				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+
+        			refreshFeeds();
+    			}
+				m_activeFeed = null;
+				
+				
+    			initMainMenu();
+
+    		} else if (m_activeCategory != null) {
+    			if (m_compatMode) {
+    				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+    			}
+
+    			closeCategory();
+    			
+    		} else {
+    			finish();
+    		}
+    	} else {
+        	if (m_selectedArticle != null) {
+        		closeArticle();
+        	} else if (m_activeCategory != null) {
+        		closeCategory();
+        	} else {
+        		finish();
+        	}
+    	}
+	}
+	
+	/* @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	
@@ -705,7 +758,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
         	return false;
         }
         return super.onKeyDown(keyCode, event);
-    }
+    } */
 	
 	private void closeCategory() {
 
@@ -729,7 +782,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		switch (item.getItemId()) {
 		case R.id.preferences:
-			Intent intent = new Intent(this, PreferencesActivity.class);
+			Intent intent = new Intent(MainActivity.this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.update_feeds:
@@ -750,9 +803,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.close_article:
 			closeArticle();
 			return true;
-		case R.id.back_to_categories:
+		/* case R.id.back_to_categories:
 			closeCategory();
-			return true;
+			return true; */
 		case R.id.headlines_select:
 			if (hf != null) {
 				Dialog dialog = new Dialog(this);
@@ -1021,7 +1074,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						m_menu.findItem(R.id.update_feeds).setVisible(true);
 					} */
 					
-					m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
+					//m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
 				}
 
 			} else {

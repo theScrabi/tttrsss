@@ -265,6 +265,42 @@ public class OfflineActivity extends FragmentActivity implements OfflineServices
 	}
 	
 	@Override
+	public void onBackPressed() {
+    	if (m_smallScreenMode) {
+    		if (m_selectedArticleId != 0) {
+    			closeArticle();
+    		} else if (m_activeFeedId != 0) {
+    			if (m_compatMode) {
+    				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
+    			}
+    			
+    			/* if (m_activeFeed != null && m_activeFeed.is_cat) {
+    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+    				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+    				
+        			refreshCategories();
+    			} else { */
+    				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+    				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+    			//}
+				m_activeFeedId = 0;
+				refreshViews();
+    			initMainMenu();
+
+    		} else {
+    			finish();
+    		}
+    	} else {
+        	if (m_selectedArticleId != 0) {
+        		closeArticle();
+        	} else {
+        		finish();
+        	}
+    	}
+
+	}
+	
+/*	@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	
@@ -274,14 +310,14 @@ public class OfflineActivity extends FragmentActivity implements OfflineServices
         		} else if (m_activeFeedId != 0) {
         			if (m_compatMode) {
         				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_right));
-        			}
+        			} */
         			
         			/* if (m_activeFeed != null && m_activeFeed.is_cat) {
         				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         				findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
         				
             			refreshCategories();
-        			} else { */
+        			} else { */ /*
         				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
         			//}
@@ -303,7 +339,7 @@ public class OfflineActivity extends FragmentActivity implements OfflineServices
         	return false;
         }
         return super.onKeyDown(keyCode, event);
-    }
+    } */
 	
 	private Cursor getArticleById(int articleId) {
 		Cursor c = getReadableDb().query("articles", null, BaseColumns._ID + "=?", 

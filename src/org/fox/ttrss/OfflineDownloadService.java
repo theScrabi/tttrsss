@@ -203,7 +203,7 @@ public class OfflineDownloadService extends IntentService {
 		req.execute(map);
 	}
 
-	@SuppressWarnings("unchecked")
+	/* @SuppressWarnings("unchecked")
 	private void switchOffline() {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
@@ -292,7 +292,7 @@ public class OfflineDownloadService extends IntentService {
 		AlertDialog dlg = builder.create();
 		dlg.show();
 
-	}
+	} */
 	
 	public void download() {
 		if (!m_downloadInProgress) {

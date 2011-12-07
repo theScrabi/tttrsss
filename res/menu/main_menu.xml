@@ -4,11 +4,11 @@
 
         <group android:id="@+id/menu_group_feeds" >
 
-            <item
+            <!-- <item
                 android:id="@+id/back_to_categories"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/back_to_categories"/>
+                android:title="@string/back_to_categories"/> -->
 
             <item
                 android:id="@+id/show_feeds"
