@@ -54,6 +54,8 @@ public class OfflineActivity extends FragmentActivity implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		initDatabase();
+
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
@@ -96,8 +98,6 @@ public class OfflineActivity extends FragmentActivity implements
 		m_smallScreenMode = width < 960 || height < 720;
 
 		setContentView(R.layout.main);
-
-		initDatabase();
 
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
@@ -236,7 +236,7 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		
 		boolean needRefresh = !m_prefs.getString("theme", "THEME_DARK").equals(
 				m_themeName)
 				|| m_prefs.getBoolean("enable_cats", false) != m_enableCats;

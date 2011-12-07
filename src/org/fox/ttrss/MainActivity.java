@@ -386,6 +386,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		initDatabase();
+
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
@@ -432,8 +434,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_smallScreenMode = width < 960 || height < 720;
 
 		setContentView(R.layout.main);
-
-		initDatabase();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
