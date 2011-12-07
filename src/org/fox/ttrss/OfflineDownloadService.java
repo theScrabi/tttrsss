@@ -140,8 +140,6 @@ public class OfflineDownloadService extends IntentService {
 	private void downloadArticles() {
 		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
 		
-		updateNotification(getString(R.string.notify_downloading_articles, m_articleOffset));
-
 		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
 		
 		@SuppressWarnings("serial")
@@ -196,6 +194,9 @@ public class OfflineDownloadService extends IntentService {
 						m_articleOffset = 0;
 						
 						getWritableDb().execSQL("DELETE FROM articles;");
+						
+						updateNotification(R.string.notify_downloading_articles);
+
 						downloadArticles();
 					} catch (Exception e) {
 						e.printStackTrace();

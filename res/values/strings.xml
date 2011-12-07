@@ -103,7 +103,7 @@
 	<string name="dialog_cancel">Cancel</string>
 	<string name="syncing_offline_data">Synchronizing offline data...</string>
 	<string name="dialog_offline_switch_prompt">Download unread articles and go offline?</string>
-	<string name="notify_downloading_articles">Downloading articles (%1$d)...</string>
+	<string name="notify_downloading_articles">Downloading articles...</string>
 	<string name="notify_downloading_init">Starting download...</string>
 	<string name="notify_downloading_feeds">Downloading feeds...</string>
 	<string name="notify_uploading_sending_data">Sending data to server...</string>
