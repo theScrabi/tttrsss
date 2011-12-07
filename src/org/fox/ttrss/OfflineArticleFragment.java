@@ -130,11 +130,11 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 				}
 				
 				String articleContent = m_cursor.getString(m_cursor.getColumnIndex("content"));
-				
-				if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
-					Document doc = Jsoup.parse(articleContent);
+				Document doc = Jsoup.parse(articleContent);
 					
-					if (doc != null) {
+				if (doc != null) {
+					if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
+						
 						Elements images = doc.select("img");
 						
 						for (Element img : images) {
@@ -144,9 +144,15 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 								img.attr("src", "file://" + ImageCacheService.getCacheFileName(url));
 							}						
 						}
-						
-						articleContent = doc.toString();
 					}
+					
+					// thanks webview for crashing on <video> tag
+					Elements videos = doc.select("video");
+					
+					for (Element video : videos)
+						video.remove();
+					
+					articleContent = doc.toString();
 				}
 				
 				content = 

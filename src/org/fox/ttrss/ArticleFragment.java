@@ -4,6 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.fox.ttrss.OnlineServices.RelativeArticle;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -12,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -112,6 +117,20 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 				} else {
 					cssOverride = "";
 				}
+
+				String articleContent = m_article.content;
+				
+				Document doc = Jsoup.parse(articleContent);
+				
+				if (doc != null) {
+					// thanks webview for crashing on <video> tag
+					Elements videos = doc.select("video");
+					
+					for (Element video : videos)
+						video.remove();
+					
+					articleContent = doc.toString();
+				}
 				
 				content = 
 					"<html>" +
@@ -124,7 +143,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +
-					"<body>" + m_article.content + "</body></html>";
+					"<body>" + articleContent + "</body></html>";
 					
 				try {
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
@@ -206,7 +225,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onSaveInstanceState (Bundle out) {		
 		super.onSaveInstanceState(out);
-		
+
 		out.putParcelable("article", m_article);
 	}
 	
