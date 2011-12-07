@@ -123,14 +123,18 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	private boolean hasPendingOfflineData() {
-		Cursor c = getReadableDb().query("articles",
-				new String[] { "COUNT(*)" }, "modified = 1", null, null, null,
-				null);
-		if (c.moveToFirst()) {
-			int modified = c.getInt(0);
-			c.close();
-
-			return modified > 0;
+		try {
+			Cursor c = getReadableDb().query("articles",
+					new String[] { "COUNT(*)" }, "modified = 1", null, null, null,
+					null);
+			if (c.moveToFirst()) {
+				int modified = c.getInt(0);
+				c.close();
+	
+				return modified > 0;
+			}
+		} catch (IllegalStateException e) {
+			// db is closed? ugh
 		}
 
 		return false;
@@ -141,13 +145,17 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	private boolean hasOfflineData() {
-		Cursor c = getReadableDb().query("articles",
-				new String[] { "COUNT(*)" }, null, null, null, null, null);
-		if (c.moveToFirst()) {
-			int modified = c.getInt(0);
-			c.close();
-
-			return modified > 0;
+		try {
+			Cursor c = getReadableDb().query("articles",
+					new String[] { "COUNT(*)" }, null, null, null, null, null);
+			if (c.moveToFirst()) {
+				int modified = c.getInt(0);
+				c.close();
+	
+				return modified > 0;
+			}
+		} catch (IllegalStateException e) {
+			// db is closed?
 		}
 
 		return false;
