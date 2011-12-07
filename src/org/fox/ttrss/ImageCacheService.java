@@ -12,7 +12,9 @@ import java.util.Date;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.os.Environment;
@@ -117,6 +119,26 @@ public class ImageCacheService extends IntentService {
 	        return null;
 	    }
 	}
+	
+	private void updateNotification(String msg) {
+		Notification notification = new Notification(R.drawable.icon, 
+				getString(R.string.notify_downloading_title), System.currentTimeMillis());
+		
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class), 0);
+		
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+		
+        notification.setLatestEventInfo(this, getString(R.string.notify_downloading_title), msg, contentIntent);
+                       
+        m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
+	}
+
+	private void updateNotification(int msgResId) {
+		updateNotification(getString(msgResId));
+	}
+	
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String url = intent.getStringExtra("url");
@@ -155,6 +177,8 @@ public class ImageCacheService extends IntentService {
 						is.close();
 						
 						m_imagesDownloaded++;
+						
+						updateNotification(getString(R.string.notify_downloading_images, m_imagesDownloaded));
 						
 					} catch (IOException e) {
 						e.printStackTrace();

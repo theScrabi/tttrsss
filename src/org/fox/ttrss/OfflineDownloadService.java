@@ -75,6 +75,9 @@ public class OfflineDownloadService extends IntentService {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 		
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+		
         notification.setLatestEventInfo(this, getString(R.string.notify_downloading_title), msg, contentIntent);
                        
         m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
@@ -115,7 +118,7 @@ public class OfflineDownloadService extends IntentService {
 			intent.addCategory(Intent.CATEGORY_DEFAULT);
 			sendBroadcast(intent);
         } else {
-        	updateNotification("Downloading images...");
+        	updateNotification(getString(R.string.notify_downloading_images, 0));
         }
         
         m_readableDb.close();
@@ -139,6 +142,8 @@ public class OfflineDownloadService extends IntentService {
 	@SuppressWarnings("unchecked")
 	private void downloadArticles() {
 		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
+		
+		updateNotification(getString(R.string.notify_downloading_articles, m_articleOffset));
 		
 		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
 		
@@ -195,8 +200,6 @@ public class OfflineDownloadService extends IntentService {
 						
 						getWritableDb().execSQL("DELETE FROM articles;");
 						
-						updateNotification(R.string.notify_downloading_articles);
-
 						downloadArticles();
 					} catch (Exception e) {
 						e.printStackTrace();

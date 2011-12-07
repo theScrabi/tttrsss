@@ -50,6 +50,9 @@ public class OfflineUploadService extends IntentService {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 		
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+		
         notification.setLatestEventInfo(this, getString(R.string.notify_uploading_title), msg, contentIntent);
                        
         m_nmgr.notify(NOTIFY_UPLOADING, notification);
