@@ -40,7 +40,7 @@
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_menu_cloud"
-                android:showAsAction="ifRoom|withText"
+                
                 android:title="@string/go_offline"/>
 
             <item
@@ -52,6 +52,7 @@
             <item
                 android:id="@+id/headlines_select"
                 android:icon="@drawable/ic_menu_database"
+                android:showAsAction="ifRoom"
                 android:title="@string/headlines_select"/>
         </group>
 
@@ -59,20 +60,20 @@
 
             <item
                 android:id="@+id/selection_toggle_unread"
-                android:icon="@android:drawable/ic_menu_rotate"
+                android:icon="@android:drawable/ic_menu_recent_history"
                 android:showAsAction=""
                 android:title="@string/selection_toggle_unread"/>
 
             <item
                 android:id="@+id/selection_toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_marked"/>
 
             <item
                 android:id="@+id/selection_toggle_published"
                 android:icon="@drawable/ic_menu_rss"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_published"/>
 
             <item
@@ -93,13 +94,13 @@
             <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_marked"/>
 
             <item
                 android:id="@+id/toggle_published"
                 android:icon="@drawable/ic_menu_rss"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
 
             <item

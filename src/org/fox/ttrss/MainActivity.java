@@ -824,6 +824,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				ArticleList selected = hf.getSelectedArticles();
 				if (selected.size() > 0) {
 					selected.clear();
+					initMainMenu();
 					hf.notifyUpdated();
 				}
 			}
@@ -970,62 +971,55 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public void initMainMenu() {
 		if (m_menu != null) {
 			if (m_sessionId != null) {
+
+				HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+				int numSelected = 0;
+				
+				if (hf != null)
+					numSelected = hf.getSelectedArticles().size();
 				
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 				
-				if (m_activeFeed != null) {
-					//m_menu.findItem(R.id.load_more_articles).setVisible(m_canLoadMore);
-					//m_menu.findItem(R.id.show_all_articles).setVisible(true);
-				} else {
+				if (m_activeFeed == null) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, false); 
 					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 				}
 				
-				if (m_selectedArticle != null) {
+				if (m_selectedArticle != null && numSelected == 0) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
 					
 					m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
 					
-					if (m_smallScreenMode) {
+					//if (m_smallScreenMode) {
 						m_menu.setGroupVisible(R.id.menu_group_headlines, false);
 						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-					} else {
-						m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
-					}
+					//} else {
+					//	m_menu.setGroupVisible(R.id.menu_group_headlines, true); 
+					//}
 				
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_article, false);
 
 					if (m_activeFeed != null) {
 						
-						HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-						
-						if (hf != null) {
-							int numSelected = hf.getSelectedArticles().size();
-							
-							if (numSelected != 0) {
-								m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-								m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
-							} else {
-								m_menu.setGroupVisible(R.id.menu_group_headlines, true);
-								m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
-							}
-							
+						if (numSelected != 0) {
+							m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
 						} else {
 							m_menu.setGroupVisible(R.id.menu_group_headlines, true);
 							m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 						}
-						
+							
 						m_menu.setGroupVisible(R.id.menu_group_feeds, false); 
 					} else {
 						m_menu.setGroupVisible(R.id.menu_group_feeds, true); 
 					}
 
-					if (!m_smallScreenMode || m_activeFeed == null) {
+					/* if (!m_smallScreenMode || m_activeFeed == null) {
 						m_menu.findItem(R.id.show_feeds).setVisible(true);
 						m_menu.findItem(R.id.update_feeds).setVisible(true);
-					}
+					} */
 					
 					m_menu.findItem(R.id.back_to_categories).setVisible(m_activeCategory != null);
 				}
@@ -1804,8 +1798,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		@Override
 		public void onTabReselected(Tab tab,
 				android.app.FragmentTransaction _ft) {
-			// TODO Auto-generated method stub
-			
+
+			closeArticle();
 		}
 
 		@Override
@@ -1829,7 +1823,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		@Override
 		public void onTabUnselected(Tab tab,
 				android.app.FragmentTransaction _ft) {
-			
+
+			closeArticle();
+
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
 	
