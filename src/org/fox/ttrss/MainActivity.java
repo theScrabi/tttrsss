@@ -8,12 +8,10 @@ import java.util.TimerTask;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
@@ -21,7 +19,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -36,6 +33,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -60,6 +58,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private int m_isLicensed = -1;
 	private int m_apiLevel = 0;
 	private boolean m_isOffline = false;
+	private boolean m_offlineModeReady = false;
 
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -69,30 +68,23 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		@Override
 		public void onReceive(Context content, Intent intent) {
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					MainActivity.this)
-					.setMessage(R.string.dialog_offline_success)
-					.setPositiveButton(R.string.dialog_offline_go,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									Intent refresh = new Intent(
-											MainActivity.this,
-											OfflineActivity.class);
-									startActivity(refresh);
-									finish();
-								}
-							})
-					.setNegativeButton(R.string.dialog_cancel,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									//
-								}
-							});
+			if (intent.getAction().equals(OfflineDownloadService.INTENT_ACTION_SUCCESS)) {
+			
+				m_offlineModeReady = true;
+				
+				switchOffline();
+				
+			} else if (intent.getAction().equals(OfflineUploadService.INTENT_ACTION_SUCCESS)) {
+				//Log.d(TAG, "offline upload service reports success");
+				
+				if (!m_enableCats || m_activeCategory != null)
+					refreshFeeds();
+				else
+					refreshCategories();
 
-			AlertDialog dlg = builder.create();
-			dlg.show();
+				Toast toast = Toast.makeText(MainActivity.this, R.string.offline_sync_success, Toast.LENGTH_SHORT);
+				toast.show();
+			}
 
 		}
 	};
@@ -131,10 +123,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		return false;
-	}
-
-	public void clearPendingOfflineData() {
-		getWritableDb().execSQL("UPDATE articles SET modified = 0");
 	}
 
 	private boolean hasOfflineData() {
@@ -425,6 +413,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
 			m_isLicensed = savedInstanceState.getInt("isLicensed");
+			m_offlineModeReady = savedInstanceState.getBoolean("offlineModeReady");
 		}
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -446,8 +435,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		initDatabase();
 
-		IntentFilter filter = new IntentFilter(
-				"org.fox.ttrss.intent.action.DownloadComplete");
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
+		filter.addAction(OfflineUploadService.INTENT_ACTION_SUCCESS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 
 		registerReceiver(m_broadcastReceiver, filter);
@@ -552,60 +542,65 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	@SuppressWarnings("unchecked")
 	private void switchOffline() {
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setMessage(R.string.dialog_offline_switch_prompt)
-				.setPositiveButton(R.string.dialog_offline_go,
-						new Dialog.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-								if (m_sessionId != null) {
-									Log.d(TAG, "offline: starting");
-
-									ServiceConnection m_serviceConnection = new ServiceConnection() {
-
-										@Override
-										public void onServiceDisconnected(
-												ComponentName name) {
-											Log.d(TAG,
-													"download service disconnected");
-										}
-
-										@Override
-										public void onServiceConnected(
-												ComponentName name,
-												IBinder service) {
-											Log.d(TAG,
-													"download service connected");
-											// ((OfflineDownloadService.LocalBinder)service).getService().download();
-										}
-									};
-
-									Intent intent = new Intent(
+		if (m_offlineModeReady) {
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					MainActivity.this)
+					.setMessage(R.string.dialog_offline_success)
+					.setPositiveButton(R.string.dialog_offline_go,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent refresh = new Intent(
 											MainActivity.this,
-											OfflineDownloadService.class);
-									intent.putExtra("sessionId", m_sessionId);
-
-									startService(intent);
-
-									// bindService(intent, m_serviceConnection,
-									// Context.BIND_AUTO_CREATE);
-
+											OfflineActivity.class);
+									startActivity(refresh);
+									finish();
 								}
-							}
-						})
-				.setNegativeButton(R.string.dialog_cancel,
-						new Dialog.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								//
-							}
-						});
+							})
+					.setNegativeButton(R.string.dialog_cancel,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									//
+								}
+							});
 
-		AlertDialog dlg = builder.create();
-		dlg.show();
-
+			AlertDialog dlg = builder.create();
+			dlg.show();
+			
+		} else {
+		
+			AlertDialog.Builder builder = new AlertDialog.Builder(this)
+					.setMessage(R.string.dialog_offline_switch_prompt)
+					.setPositiveButton(R.string.dialog_offline_go,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+	
+									if (m_sessionId != null) {
+										Log.d(TAG, "offline: starting");
+	
+										Intent intent = new Intent(
+												MainActivity.this,
+												OfflineDownloadService.class);
+										intent.putExtra("sessionId", m_sessionId);
+	
+										startService(intent);
+									}
+								}
+							})
+					.setNegativeButton(R.string.dialog_cancel,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									//
+								}
+							});
+	
+			AlertDialog dlg = builder.create();
+			dlg.show();
+		}
 	}
 
 	private void switchOfflineSuccess() {
@@ -648,6 +643,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
 		out.putInt("isLicensed", m_isLicensed);
+		out.putBoolean("offlineModeReady", m_offlineModeReady);
 	}
 
 	@Override
@@ -1095,133 +1091,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	}
 
-	private void syncOfflineRead() {
-		Log.d(TAG, "syncing modified offline data... (read)");
-
-		final String ids = getOfflineModifiedIds(ModifiedCriteria.READ);
-
-		if (ids.length() > 0) {
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement result) {
-					if (result != null) {
-						syncOfflineMarked();
-					} else {
-						setLoadingStatus(getErrorMessage(), false);
-					}
-				}
-			};
-
-			@SuppressWarnings("serial")
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("sid", m_sessionId);
-					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "0");
-					put("field", "2");
-				}
-			};
-
-			req.execute(map);
-		} else {
-			syncOfflineMarked();
-		}
-	}
-
-	private void syncOfflineMarked() {
-		Log.d(TAG, "syncing modified offline data... (marked)");
-
-		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
-
-		if (ids.length() > 0) {
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement result) {
-					if (result != null) {
-						syncOfflinePublished();
-					} else {
-						setLoadingStatus(getErrorMessage(), false);
-					}
-				}
-			};
-
-			@SuppressWarnings("serial")
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("sid", m_sessionId);
-					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "0");
-					put("field", "0");
-				}
-			};
-
-			req.execute(map);
-		} else {
-			syncOfflinePublished();
-		}
-	}
-
-	private void syncOfflinePublished() {
-		Log.d(TAG, "syncing modified offline data... (published)");
-
-		final String ids = getOfflineModifiedIds(ModifiedCriteria.MARKED);
-
-		if (ids.length() > 0) {
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement result) {
-					if (result != null) {
-						loginSuccessInitUI();
-						loginSuccess();
-						clearPendingOfflineData();
-					} else {
-						setLoadingStatus(getErrorMessage(), false);
-					}
-				}
-			};
-
-			@SuppressWarnings("serial")
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("sid", m_sessionId);
-					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "0");
-					put("field", "1");
-				}
-			};
-
-			req.execute(map);
-		} else {
-			loginSuccessInitUI();
-			loginSuccess();
-			clearPendingOfflineData();
-		}
-	}
-
 	private void syncOfflineData() {
-		setLoadingStatus(R.string.syncing_offline_data, true);
-		syncOfflineRead();
-	}
+		Log.d(TAG, "offlineSync: starting");
+		
+		Intent intent = new Intent(
+				MainActivity.this,
+				OfflineUploadService.class);
+		
+		intent.putExtra("sessionId", m_sessionId);
 
-	private void loginSuccessInitUI() {
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-		if (m_enableCats) {
-			FeedCategoriesFragment frag = new FeedCategoriesFragment();
-			ft.replace(R.id.cats_fragment, frag);
-		} else {
-			FeedsFragment frag = new FeedsFragment();
-			ft.replace(R.id.feeds_fragment, frag);
-		}
-
-		try {
-			ft.commit();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		}
+		startService(intent);
 	}
 
 	private void loginSuccess() {
@@ -1248,43 +1127,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_refreshTimer.schedule(m_refreshTask, 60 * 1000L, 120 * 1000L);
 	}
 
-	private enum ModifiedCriteria {
-		READ, MARKED, PUBLISHED
-	};
-
-	private String getOfflineModifiedIds(ModifiedCriteria criteria) {
-
-		String criteriaStr = "";
-
-		switch (criteria) {
-		case READ:
-			criteriaStr = "unread = 0";
-			break;
-		case MARKED:
-			criteriaStr = "marked = 1";
-			break;
-		case PUBLISHED:
-			criteriaStr = "published = 1";
-			break;
-		}
-
-		Cursor c = getReadableDb().query("articles", null,
-				"modified = 1 AND " + criteriaStr, null, null, null, null);
-
-		String tmp = "";
-
-		while (c.moveToNext()) {
-			tmp += c.getInt(0) + ",";
-		}
-
-		tmp = tmp.replaceAll(",$", "");
-
-		// Log.d(TAG, "getOfflineModifiedIds " + criteria + " = " + tmp);
-
-		c.close();
-
-		return tmp;
-	}
 
 	private class LoginRequest extends ApiRequest {
 		public LoginRequest(Context context) {
@@ -1312,15 +1154,26 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 								Log.d(TAG, "Received API level: " + m_apiLevel);
 
-								if (hasPendingOfflineData()) {
-
+								if (hasPendingOfflineData())
 									syncOfflineData();
 
-									// loginSuccess();
+								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+								if (m_enableCats) {
+									FeedCategoriesFragment frag = new FeedCategoriesFragment();
+									ft.replace(R.id.cats_fragment, frag);
 								} else {
-									loginSuccessInitUI();
-									loginSuccess();
+									FeedsFragment frag = new FeedsFragment();
+									ft.replace(R.id.feeds_fragment, frag);
 								}
+
+								try {
+									ft.commit();
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								}
+								
+								loginSuccess();
 
 							}
 						};

@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -26,6 +25,7 @@ public class OfflineDownloadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final int NOTIFY_DOWNLOADING = 1;
+	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 
 	private static final int OFFLINE_SYNC_SEQ = 60;
 	private static final int OFFLINE_SYNC_MAX = 500;
@@ -42,10 +42,6 @@ public class OfflineDownloadService extends IntentService {
 		super("OfflineDownloadService");
 	}
 	
-	public OfflineDownloadService(String name) {
-		super(name);
-	}
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -53,18 +49,18 @@ public class OfflineDownloadService extends IntentService {
 		initDatabase();
 	}
 	
-	public boolean getDownloadInProgress() {
+	/* public boolean getDownloadInProgress() {
 		return m_downloadInProgress;
-	}
+	} */
 	
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
-				getString(R.string.app_name), System.currentTimeMillis());
+				getString(R.string.notify_downloading_title), System.currentTimeMillis());
 		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 		
-        notification.setLatestEventInfo(this, getString(R.string.go_offline), msg, contentIntent);
+        notification.setLatestEventInfo(this, getString(R.string.notify_downloading_title), msg, contentIntent);
                        
         m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
 	}
@@ -73,9 +69,13 @@ public class OfflineDownloadService extends IntentService {
 		updateNotification(getString(msgResId));
 	}
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
+	private void downloadFailed() {
+        m_readableDb.close();
+        m_writableDb.close();
+
+        // TODO send notification to activity?
+        
+        m_downloadInProgress = false;
 	}
 	
 	public void downloadComplete() {
@@ -84,7 +84,7 @@ public class OfflineDownloadService extends IntentService {
         m_nmgr.cancel(NOTIFY_DOWNLOADING);
         
         Intent intent = new Intent();
-        intent.setAction("org.fox.ttrss.intent.action.DownloadComplete");
+        intent.setAction(INTENT_ACTION_SUCCESS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(intent);
         
@@ -98,11 +98,11 @@ public class OfflineDownloadService extends IntentService {
 		m_readableDb = dh.getReadableDatabase();
 	}
 	
-	public synchronized SQLiteDatabase getReadableDb() {
+	private synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
 	}
 	
-	public synchronized SQLiteDatabase getWritableDb() {
+	private synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
 	}
 	
@@ -131,13 +131,7 @@ public class OfflineDownloadService extends IntentService {
 	}
 	
 	private void downloadFeeds() {
-		//findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-		//findViewById(R.id.main).setVisibility(View.INVISIBLE);
-		
-		//setLoadingStatus(R.string.offline_downloading, true);
-		
-		// Download feeds
-		
+
 		updateNotification(R.string.notify_downloading_feeds);
 		
 		getWritableDb().execSQL("DELETE FROM feeds;");
@@ -176,14 +170,12 @@ public class OfflineDownloadService extends IntentService {
 					} catch (Exception e) {
 						e.printStackTrace();
 						updateNotification(R.string.offline_switch_error);
-						m_downloadInProgress = false;
-						//setLoadingStatus(R.string.offline_switch_error, false);
+						downloadFailed();
 					}
 				
 				} else {
 					updateNotification(getErrorMessage());
-					m_downloadInProgress = false;
-					// TODO error, could not download feeds, properly report API error (toast)
+					downloadFailed();
 				}
 			}
 
@@ -200,106 +192,6 @@ public class OfflineDownloadService extends IntentService {
 		};
 		
 		req.execute(map);
-	}
-
-	/* @SuppressWarnings("unchecked")
-	private void switchOffline() {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this).  
-			setMessage(R.string.dialog_offline_switch_prompt).
-			setPositiveButton(R.string.dialog_offline_go, new Dialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					
-					Log.d(TAG, "offline: starting");
-					
-					if (m_sessionId != null) {
-					
-						//findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-						//findViewById(R.id.main).setVisibility(View.INVISIBLE);
-						
-						//setLoadingStatus(R.string.offline_downloading, true);
-						
-						// Download feeds
-						
-						getWritableDb().execSQL("DELETE FROM feeds;");
-						
-						ApiRequest req = new ApiRequest(getApplicationContext()) {
-							@Override
-							protected void onPostExecute(JsonElement content) {
-								if (content != null) {
-									
-									try {
-										Type listType = new TypeToken<List<Feed>>() {}.getType();
-										List<Feed> feeds = new Gson().fromJson(content, listType);
-										
-										SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
-												"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
-										"VALUES (?, ?, ?, ?, ?);");
-										
-										for (Feed feed : feeds) {
-											stmtInsert.bindLong(1, feed.id);
-											stmtInsert.bindString(2, feed.title);
-											stmtInsert.bindString(3, feed.feed_url);
-											stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
-											stmtInsert.bindLong(5, feed.cat_id);
-				
-											stmtInsert.execute();
-										}
-
-										stmtInsert.close();
-
-										Log.d(TAG, "offline: done downloading feeds");
-										
-										m_articleOffset = 0;
-										
-										getWritableDb().execSQL("DELETE FROM articles;");
-				
-										downloadArticles();
-									} catch (Exception e) {
-										e.printStackTrace();
-										//setLoadingStatus(R.string.offline_switch_error, false);
-									}
-								
-								} else {
-									//setLoadingStatus(getErrorMessage(), false);
-									// TODO error, could not download feeds, properly report API error (toast)
-								}
-							}
-						};
-						
-						HashMap<String,String> map = new HashMap<String,String>() {
-							{
-								put("op", "getFeeds");
-								put("sid", m_sessionId);
-								put("cat_id", "-3");
-								put("unread_only", "true");
-							}			 
-						};
-						
-						req.execute(map);
-					} else {
-						downloadComplete();
-					}
-				}
-			}).
-			setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//
-				}
-			});
-	
-		AlertDialog dlg = builder.create();
-		dlg.show();
-
-	} */
-	
-	public void download() {
-		if (!m_downloadInProgress) {
-			updateNotification(R.string.notify_downloading_init);
-			m_downloadInProgress = true;
-		
-			downloadFeeds();
-		}
 	}
 	
 	@Override
@@ -377,23 +269,26 @@ public class OfflineDownloadService extends IntentService {
 					updateNotification(R.string.offline_switch_error);
 					Log.d(TAG, "offline: failed: exception when loading articles");
 					e.printStackTrace();
-					m_downloadInProgress = false;
+					downloadFailed();
 				}
 				
 			} else {
 				Log.d(TAG, "offline: failed: " + getErrorMessage());
-				m_downloadInProgress = false;
 				updateNotification(getErrorMessage());
+				downloadFailed();
 			}
 		}
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Bundle extras = intent.getExtras();
+		m_sessionId = intent.getStringExtra("sessionId");
 		
-		m_sessionId = extras.getString("sessionId");
+		if (!m_downloadInProgress) {
+			updateNotification(R.string.notify_downloading_init);
+			m_downloadInProgress = true;
 		
-		download();
+			downloadFeeds();
+		}
 	}
 }
