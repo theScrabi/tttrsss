@@ -4,15 +4,25 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -37,6 +47,9 @@ public class OfflineDownloadService extends IntentService {
 	private NotificationManager m_nmgr;
 	
 	private boolean m_downloadInProgress = false;
+	private boolean m_downloadImages = false;
+	private int m_syncMax;
+	private SharedPreferences m_prefs;
 	
 	public OfflineDownloadService() {
 		super("OfflineDownloadService");
@@ -46,12 +59,14 @@ public class OfflineDownloadService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		m_prefs = PreferenceManager
+						.getDefaultSharedPreferences(getApplicationContext());
+ 
+		m_downloadImages = m_prefs.getBoolean("offline_image_cache_enabled", false);
+		m_syncMax = m_prefs.getInt("offline_sync_max", OFFLINE_SYNC_MAX);
+		
 		initDatabase();
 	}
-	
-	/* public boolean getDownloadInProgress() {
-		return m_downloadInProgress;
-	} */
 	
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
@@ -78,15 +93,30 @@ public class OfflineDownloadService extends IntentService {
         m_downloadInProgress = false;
 	}
 	
+	private boolean isCacheServiceRunning() {
+	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if ("org.fox.ttrss.ImageCacheService".equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	public void downloadComplete() {
 		m_downloadInProgress = false;
 		
-        m_nmgr.cancel(NOTIFY_DOWNLOADING);
-        
-        Intent intent = new Intent();
-        intent.setAction(INTENT_ACTION_SUCCESS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        sendBroadcast(intent);
+        // if cache service is running, it will send a finished intent on its own
+        if (!isCacheServiceRunning()) {
+            m_nmgr.cancel(NOTIFY_DOWNLOADING);
+
+			Intent intent = new Intent();
+			intent.setAction(INTENT_ACTION_SUCCESS);
+			intent.addCategory(Intent.CATEGORY_DEFAULT);
+			sendBroadcast(intent);
+        } else {
+        	updateNotification("Downloading images...");
+        }
         
         m_readableDb.close();
         m_writableDb.close();
@@ -242,6 +272,28 @@ public class OfflineDownloadService extends IntentService {
 						stmtInsert.bindString(10, tagsString); // comma-separated tags
 						stmtInsert.bindString(11, article.content);
 						
+						if (m_downloadImages) {
+							Document doc = Jsoup.parse(article.content);
+							
+							if (doc != null) {
+								Elements images = doc.select("img");
+								
+								for (Element img : images) {
+									String url = img.attr("src");
+									
+									if (url.indexOf("://") != -1) {
+										if (!ImageCacheService.isUrlCached(url)) {										
+											Intent intent = new Intent(OfflineDownloadService.this,
+													ImageCacheService.class);
+										
+											intent.putExtra("url", url);
+											startService(intent);
+										}
+									}
+								}
+							}
+						}
+						
 						try {
 							stmtInsert.execute();
 						} catch (Exception e) {
@@ -257,7 +309,7 @@ public class OfflineDownloadService extends IntentService {
 	
 					Log.d(TAG, "offline: received " + articles.size() + " articles");
 					
-					if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < OFFLINE_SYNC_MAX) {
+					if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < m_syncMax) {
 						downloadArticles();
 					} else {
 						downloadComplete();
@@ -285,6 +337,8 @@ public class OfflineDownloadService extends IntentService {
 		m_sessionId = intent.getStringExtra("sessionId");
 		
 		if (!m_downloadInProgress) {
+			if (m_downloadImages) ImageCacheService.cleanupCache(false);
+			
 			updateNotification(R.string.notify_downloading_init);
 			m_downloadInProgress = true;
 		

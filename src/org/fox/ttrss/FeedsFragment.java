@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -308,7 +309,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						else
 							setLoadingStatus(R.string.blank, false);
 
-						if (m_enableFeedIcons && !m_feedIconsChecked) getFeedIcons();
+						if (m_enableFeedIcons && !m_feedIconsChecked && 
+								Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
+							getFeedIcons();
 
 						return;
 					}

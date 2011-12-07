@@ -110,4 +110,7 @@
 	<string name="notify_downloading_title">Preparing offline mode</string>
 	<string name="notify_uploading_title">Synchronizing offline data</string>
 	<string name="offline_sync_success">Finished synchronizing your offline data</string>
+	<string name="offline_mode">Offline mode</string>
+	<string name="offline_image_cache_enabled">Cache images</string>
+	<string name="offline_image_cache_enabled_summary">Download images to sdcard. This might significantly increase time it takes to go offline.</string>
 </resources>

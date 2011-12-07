@@ -551,6 +551,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							new Dialog.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
+									
+									SharedPreferences.Editor editor = m_prefs.edit();
+									editor.putBoolean("offline_mode_active", true);
+									editor.commit();
+									
 									Intent refresh = new Intent(
 											MainActivity.this,
 											OfflineActivity.class);

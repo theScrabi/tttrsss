@@ -38,6 +38,7 @@
 
         <service android:enabled="true" android:name=".OfflineDownloadService" />
         <service android:enabled="true" android:name=".OfflineUploadService" />
+        <service android:enabled="true" android:name=".ImageCacheService" />
 
         <activity
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

@@ -4,8 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.fox.ttrss.OnlineServices.RelativeArticle;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,6 +19,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -123,6 +129,26 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 					cssOverride = "";
 				}
 				
+				String articleContent = m_cursor.getString(m_cursor.getColumnIndex("content"));
+				
+				if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
+					Document doc = Jsoup.parse(articleContent);
+					
+					if (doc != null) {
+						Elements images = doc.select("img");
+						
+						for (Element img : images) {
+							String url = img.attr("src");
+							
+							if (ImageCacheService.isUrlCached(url)) {						
+								img.attr("src", "file://" + ImageCacheService.getCacheFileName(url));
+							}						
+						}
+						
+						articleContent = doc.toString();
+					}
+				}
+				
 				content = 
 					"<html>" +
 					"<head>" +
@@ -134,7 +160,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +
-					"<body>" + m_cursor.getString(m_cursor.getColumnIndex("content")) + "</body></html>";
+					"<body>" + articleContent + "</body></html>";
 					
 				web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
 				

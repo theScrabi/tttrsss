@@ -1,40 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-<PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  
-   <PreferenceCategory android:title="@string/connection">
-        
-        <EditTextPreference android:summary="@string/login_summary" android:title="@string/login" android:key="login" android:singleLine="true"></EditTextPreference>
-        <EditTextPreference android:title="@string/password" android:key="password" android:singleLine="true" android:password="true"></EditTextPreference>
-        <EditTextPreference android:summary="@string/ttrss_url_summary" android:key="ttrss_url" android:title="@string/ttrss_url" android:singleLine="true" textUri="true" android:hint="@string/default_url"></EditTextPreference>
-        <CheckBoxPreference android:defaultValue="false" android:title="@string/ssl_trust_any" android:key="ssl_trust_any" />                                              
-	</PreferenceCategory>
-   
-   <PreferenceCategory android:title="@string/http_authentication">
-        <EditTextPreference android:title="@string/login" android:summary="@string/http_login_summary" android:key="http_login" android:singleLine="true"></EditTextPreference>
-        <EditTextPreference android:title="@string/password" android:key="http_password" android:singleLine="true" android:password="true"></EditTextPreference>
-   </PreferenceCategory>
-       
-   <PreferenceCategory android:title="@string/look_and_feel">
-      <ListPreference
-           android:title="@string/pref_theme"
-           android:key="theme"
-           android:defaultValue="THEME_DARK"
-           android:entries="@array/pref_theme_names"
-           android:entryValues="@array/pref_theme_values" android:summary="@string/pref_theme_long"/>
-      
-      <CheckBoxPreference android:defaultValue="false" android:title="@string/sort_feeds_by_unread" android:key="sort_feeds_by_unread"/>
-      <CheckBoxPreference android:defaultValue="false" android:title="@string/download_feed_icons" android:key="download_feed_icons"/>
-      <CheckBoxPreference android:defaultValue="false" android:title="@string/enable_cats" android:key="enable_cats" />
-      <CheckBoxPreference android:defaultValue="false" android:title="@string/browse_cats_like_feeds" android:key="browse_cats_like_feeds"
-          android:summary="@string/browse_cats_like_feeds_summary" />
-      <CheckBoxPreference android:defaultValue="false" android:summary="@string/combined_mode_summary" android:title="@string/combined_mode" android:key="combined_mode" />
-   </PreferenceCategory>
+    <PreferenceCategory android:title="@string/connection" >
 
-       
-   <PreferenceCategory android:title="@string/debugging">
-               <CheckBoxPreference android:defaultValue="false" android:title="@string/transport_debugging" android:key="transport_debugging" />
-   </PreferenceCategory>                                              
-       
+        <EditTextPreference
+            android:key="login"
+            android:singleLine="true"
+            android:summary="@string/login_summary"
+            android:title="@string/login" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="password"
+            android:password="true"
+            android:singleLine="true"
+            android:title="@string/password" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:hint="@string/default_url"
+            android:key="ttrss_url"
+            android:singleLine="true"
+            android:summary="@string/ttrss_url_summary"
+            textUri="true"
+            android:title="@string/ttrss_url" >
+        </EditTextPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="ssl_trust_any"
+            android:title="@string/ssl_trust_any" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/http_authentication" >
+
+        <EditTextPreference
+            android:key="http_login"
+            android:singleLine="true"
+            android:summary="@string/http_login_summary"
+            android:title="@string/login" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="http_password"
+            android:password="true"
+            android:singleLine="true"
+            android:title="@string/password" >
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/look_and_feel" >
+
+        <ListPreference
+            android:defaultValue="THEME_DARK"
+            android:entries="@array/pref_theme_names"
+            android:entryValues="@array/pref_theme_values"
+            android:key="theme"
+            android:summary="@string/pref_theme_long"
+            android:title="@string/pref_theme" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="sort_feeds_by_unread"
+            android:title="@string/sort_feeds_by_unread" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="download_feed_icons"
+            android:title="@string/download_feed_icons" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_cats"
+            android:title="@string/enable_cats" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="browse_cats_like_feeds"
+            android:summary="@string/browse_cats_like_feeds_summary"
+            android:title="@string/browse_cats_like_feeds" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="combined_mode"
+            android:summary="@string/combined_mode_summary"
+            android:title="@string/combined_mode" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/offline_mode" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="offline_image_cache_enabled"
+            android:summary="@string/offline_image_cache_enabled_summary"
+            android:title="@string/offline_image_cache_enabled" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/debugging" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="transport_debugging"
+            android:title="@string/transport_debugging" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
