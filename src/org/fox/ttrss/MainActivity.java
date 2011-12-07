@@ -1043,12 +1043,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_selectedArticle = null;
 
-		if (m_bar != null && m_feedTab != null) {
-			m_bar.removeAllTabs();
-			m_bar.addTab(m_rootTab);
-			m_feedTab = null;
-		}
-		
 		initMainMenu();
 		refreshFeeds();
 
@@ -1872,6 +1866,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		public void onTabSelected(Tab arg0, android.app.FragmentTransaction arg1) {
 			// TODO Auto-generated method stub
 			
+			if (m_catTab != null) m_bar.removeTab(m_catTab);
+			if (m_feedTab != null) m_bar.removeTab(m_feedTab);
+			
 		}
 
 		@Override
@@ -1896,7 +1893,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		public void onTabReselected(Tab tab,
 				android.app.FragmentTransaction _ft) {
 
-			closeArticle();
+			//closeArticle();
 		}
 
 		@Override
@@ -1921,7 +1918,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		public void onTabUnselected(Tab tab,
 				android.app.FragmentTransaction _ft) {
 
-			closeArticle();
+			if (m_selectedArticle != null)
+				closeArticle();
 
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
@@ -1930,6 +1928,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			initMainMenu();
 			refreshCategories();
+
 		}
 	}
 	
