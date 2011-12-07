@@ -69,8 +69,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_isOffline = false;
 	
 	private ActionBar m_bar = null;
-	private Tab m_feedTab;
+	private Tab m_catTab;
 	private Tab m_rootTab;
+	private Tab m_feedTab;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -319,14 +320,28 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 		}
 	}
+
+	public synchronized void refreshHeadlines() {
+		if (m_sessionId != null) {
+			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 	
+			Log.d(TAG, "Refreshing headlines...");
+	
+			if (frag != null) {
+				frag.refresh(true);
+			}
+		}
+	}
+
 	public synchronized void refreshCategories() {
-		FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
-
-		Log.d(TAG, "Refreshing categories...");
-
-		if (frag != null) {
-			frag.refresh(true);
+		if (m_sessionId != null) {
+			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentById(R.id.cats_fragment);
+	
+			Log.d(TAG, "Refreshing categories...");
+	
+			if (frag != null) {
+				frag.refresh(true);
+			}
 		}
 	}
 
@@ -421,12 +436,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		
-		m_bar = getActionBar();
-	    
-	    m_bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    m_bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
-	    //m_bar.setDisplayHomeAsUpEnabled(true); TODO
-		
 		if (!m_compatMode) {
 			new TransitionHelper((LinearLayout)findViewById(R.id.main));
 		}
@@ -447,12 +456,31 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			
 			if (!m_compatMode && !m_smallScreenMode) {
+				
+				m_bar = getActionBar();
+			    
+			    m_bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			    m_bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+			    //m_bar.setDisplayHomeAsUpEnabled(true); TODO
+			    
 				if (m_enableCats && !m_prefs.getBoolean("browse_cats_like_feeds", false)) {
 					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
 					m_bar.addTab(m_rootTab);
 
 					if (m_activeCategory != null) {
-						m_feedTab = m_bar.newTab().setText(m_activeCategory.title).setTabListener(new CategoryTabListener(m_activeCategory));
+						m_catTab = m_bar.newTab().setText(m_activeCategory.title).setTabListener(new CategoryTabListener(m_activeCategory));
+						m_bar.addTab(m_catTab);
+						m_bar.selectTab(m_catTab);
+					}
+				} else if (m_enableCats) {
+					m_rootTab = m_bar.newTab().setText("Categories").setTabListener(new RootTabListener());
+					m_bar.addTab(m_rootTab);
+				} else {
+					m_rootTab = m_bar.newTab().setText("Feeds").setTabListener(new RootTabListener());
+					m_bar.addTab(m_rootTab);
+					
+					if (m_activeFeed != null && m_selectedArticle != null) {
+						m_feedTab = m_bar.newTab().setText(m_activeFeed.title).setTabListener(new FeedTabListener(m_activeFeed, m_selectedArticle));
 						m_bar.addTab(m_feedTab);
 						m_bar.selectTab(m_feedTab);
 					}
@@ -762,7 +790,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	
 	private void closeCategory() {
 
-		if (m_bar != null) {
+		if (m_bar != null && m_catTab != null) {
 			m_bar.selectTab(m_rootTab);
 		} else {
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
@@ -1015,6 +1043,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_selectedArticle = null;
 
+		if (m_bar != null && m_feedTab != null) {
+			m_bar.removeAllTabs();
+			m_bar.addTab(m_rootTab);
+			m_feedTab = null;
+		}
+		
 		initMainMenu();
 		refreshFeeds();
 
@@ -1436,11 +1470,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		
 		if (!openAsFeed) {
 			if (m_bar != null) {
-				if (m_feedTab != null) m_bar.removeTab(m_feedTab);
+				if (m_catTab != null) m_bar.removeTab(m_catTab);
 				
-				m_feedTab = m_bar.newTab().setText(cat.title).setTabListener(new CategoryTabListener(cat));
-				m_bar.addTab(m_feedTab);
-				m_bar.selectTab(m_feedTab);
+				m_catTab = m_bar.newTab().setText(cat.title).setTabListener(new CategoryTabListener(cat));
+				m_bar.addTab(m_catTab);
+				m_bar.selectTab(m_catTab);
 			} else {
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
@@ -1486,11 +1520,29 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			hf.setActiveArticleId(article.id);
 		}
 		
-		ArticleFragment frag = new ArticleFragment();
 		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
-		ft.replace(R.id.article_fragment, frag);
-		ft.commit();
+		if (m_bar != null) {
+			if (m_feedTab != null) m_bar.removeTab(m_feedTab);
+				
+			m_feedTab = m_bar.newTab().setText(m_activeFeed.title).setTabListener(new FeedTabListener(m_activeFeed, m_selectedArticle));
+			m_bar.addTab(m_feedTab);
+			m_bar.selectTab(m_feedTab);
+		} else {
+			if (m_smallScreenMode) {
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			} else {
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			}
+
+			ArticleFragment frag = new ArticleFragment();
+			
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+			ft.replace(R.id.article_fragment, frag);
+			ft.commit();
+		}
 
 		if (m_compatMode) {
 			if (compatAnimation == 0)
@@ -1499,15 +1551,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this, compatAnimation));
 		}
 
-		if (m_smallScreenMode) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		}
-				
+			
 	}
 	
 	@Override
@@ -1886,6 +1930,60 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			initMainMenu();
 			refreshCategories();
+		}
+	}
+	
+private class FeedTabListener implements ActionBar.TabListener {
+		
+		private Feed m_feed = null;
+		private Article m_article = null;
+		
+		public FeedTabListener(Feed cat, Article article) {
+			m_feed = cat;
+			m_article = article;
+		}
+		
+		@Override
+		public void onTabReselected(Tab tab,
+				android.app.FragmentTransaction _ft) {
+
+			refreshHeadlines();
+		}
+
+		@Override
+		public void onTabSelected(Tab tab, android.app.FragmentTransaction _ft) {
+			if (m_feed != null) {
+				
+				m_activeFeed = m_feed;
+				m_selectedArticle = m_article;
+				
+				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+				findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+				
+				ArticleFragment frag = new ArticleFragment();
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();			
+				ft.replace(R.id.article_fragment, frag);
+				ft.commit();
+				
+				initMainMenu();
+				
+			}
+		}
+
+		@Override
+		public void onTabUnselected(Tab tab,
+				android.app.FragmentTransaction _ft) {
+
+			if (m_selectedArticle != null) {
+				closeArticle();
+				refreshFeeds();
+			}
+
+			//m_activeFeed = null;
+			
+			initMainMenu();
 		}
 	}
 
