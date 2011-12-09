@@ -828,6 +828,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			closeArticle();
+			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(MainActivity.this,
 					PreferencesActivity.class);
@@ -848,12 +851,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.go_offline:
 			switchOffline();
 			return true;
-		case R.id.close_article:
-			closeArticle();
-			return true;
-			/*
-			 * case R.id.back_to_categories: closeCategory(); return true;
-			 */
 		case R.id.headlines_select:
 			if (hf != null) {
 				Dialog dialog = new Dialog(this);
@@ -1114,6 +1111,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					m_headlinesActionMode.finish();
 				}
 
+				if (!m_compatMode) {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null);
+				}
+				
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);

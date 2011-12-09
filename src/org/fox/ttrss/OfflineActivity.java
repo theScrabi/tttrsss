@@ -427,6 +427,9 @@ public class OfflineActivity extends FragmentActivity implements
 				.findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			closeArticle();
+			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
@@ -434,12 +437,6 @@ public class OfflineActivity extends FragmentActivity implements
 		case R.id.go_online:
 			switchOnline();
 			return true;
-		case R.id.close_article:
-			closeArticle();
-			return true;
-		/* case R.id.back_to_categories:
-			// closeCategory();
-			return true; */
 		case R.id.headlines_select:
 			if (ohf != null) {
 				Dialog dialog = new Dialog(this);
@@ -669,6 +666,10 @@ public class OfflineActivity extends FragmentActivity implements
 			
 			if (numSelected == 0 && m_headlinesActionMode != null) {
 				m_headlinesActionMode.finish();
+			}
+			
+			if (!m_compatMode) {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
 			}
 		}
 	}

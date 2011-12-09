@@ -109,12 +109,6 @@
                 android:title="@string/article_set_unread"/>
 
             <item
-                android:id="@+id/close_article"
-                android:icon="@android:drawable/ic_menu_close_clear_cancel"
-                android:showAsAction="ifRoom"
-                android:title="@string/close_article"/>
-
-            <item
                 android:id="@+id/catchup_above"
                 android:icon="@drawable/ic_menu_tick"
                 android:title="@string/article_mark_read_above"/>
