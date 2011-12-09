@@ -54,7 +54,9 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private ActionMode m_headlinesActionMode;
-	private ActionMode.Callback m_headlinesActionModeCallback = new ActionMode.Callback() {
+	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+	
+	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
@@ -135,6 +137,8 @@ public class OfflineActivity extends FragmentActivity implements
 
 		if (!m_compatMode) {
 			new TransitionHelper((LinearLayout) findViewById(R.id.main));
+			
+			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 
 		initMainMenu();
