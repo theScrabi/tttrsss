@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/selection_toggle_unread"
+        android:icon="@drawable/ic_menu_tick"
+        android:showAsAction="ifRoom"
+        android:title="@string/selection_toggle_unread"/>
+
+    <item
+        android:id="@+id/selection_toggle_marked"
+        android:icon="@drawable/ic_menu_marked"
+        android:showAsAction="ifRoom"
+        android:title="@string/selection_toggle_marked"/>
+
+    <item
+        android:id="@+id/selection_toggle_published"
+        android:icon="@drawable/ic_menu_rss"
+        android:showAsAction="ifRoom"
+        android:title="@string/selection_toggle_published"/>
+
+</menu>

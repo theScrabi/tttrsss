@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.crypto.spec.DESedeKeySpec;
+
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -23,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -63,6 +67,36 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 
+	private ActionMode m_headlinesActionMode;
+	private ActionMode.Callback m_headlinesActionModeCallback = new ActionMode.Callback() {
+		
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+		
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			deselectAllArticles();
+			m_headlinesActionMode = null;
+		}
+		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			
+			 MenuInflater inflater = getMenuInflater();
+	            inflater.inflate(R.menu.headlines_action_menu, menu);
+			
+			return true;
+		}
+		
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			onOptionsItemSelected(item);
+			return false;
+		}
+	};
+	
 	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -771,7 +805,22 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		initMainMenu();
 		refreshCategories();
 	}
+	
+	private void deselectAllArticles() {
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+									.findFragmentById(R.id.headlines_fragment);
 
+		if (hf != null) {
+			ArticleList selected = hf.getSelectedArticles();
+			if (selected.size() > 0) {
+				selected.clear();
+				initMainMenu();
+				hf.notifyUpdated();
+			}
+		}
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -877,14 +926,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			return true;
 		case R.id.selection_select_none:
-			if (hf != null) {
-				ArticleList selected = hf.getSelectedArticles();
-				if (selected.size() > 0) {
-					selected.clear();
-					initMainMenu();
-					hf.notifyUpdated();
-				}
-			}
+			deselectAllArticles();
 			return true;
 		case R.id.selection_toggle_unread:
 			if (hf != null) {
@@ -1053,13 +1095,23 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					numSelected = hf.getSelectedArticles().size();
 
 				if (numSelected != 0) {
-					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+					if (m_compatMode) {
+						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+					} else {
+						if (m_headlinesActionMode == null)
+							m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+					}
+					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
 				} else if (m_activeFeed != null || m_activeCategory != null) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, true);
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_feeds, true);
+				}
+
+				if (numSelected == 0 && m_headlinesActionMode != null) {
+					m_headlinesActionMode.finish();
 				}
 
 			} else {

@@ -17,6 +17,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -52,6 +53,36 @@ public class OfflineActivity extends FragmentActivity implements
 		return m_smallScreenMode;
 	}
 
+	private ActionMode m_headlinesActionMode;
+	private ActionMode.Callback m_headlinesActionModeCallback = new ActionMode.Callback() {
+		
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+		
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			deselectAllArticles();
+			m_headlinesActionMode = null;
+		}
+		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			
+			 MenuInflater inflater = getMenuInflater();
+	            inflater.inflate(R.menu.headlines_action_menu, menu);
+			
+			return true;
+		}
+		
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			onOptionsItemSelected(item);
+			return false;
+		}
+	};
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		initDatabase();
@@ -622,13 +653,22 @@ public class OfflineActivity extends FragmentActivity implements
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			
 			if (numSelected != 0) {
-				m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+				if (m_compatMode) {
+					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
+				} else {
+					if (m_headlinesActionMode == null)
+						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+				}
 			} else if (m_selectedArticleId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_article, true);
 			} else if (m_activeFeedId != 0 /*|| m_activeCategory != null */) {
 				m_menu.setGroupVisible(R.id.menu_group_headlines, true);
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, true);
+			}
+			
+			if (numSelected == 0 && m_headlinesActionMode != null) {
+				m_headlinesActionMode.finish();
 			}
 		}
 	}
