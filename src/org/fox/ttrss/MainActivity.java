@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -1389,7 +1390,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		}
 
-		ArticleFragment frag = new ArticleFragment();
+		Fragment frag;
+		
+		if (m_smallScreenMode) {
+			frag = new ArticlePager(article);
+		} else {
+			frag = new ArticleFragment(article);
+		}
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.article_fragment, frag);
@@ -1716,5 +1723,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		boolean browse = m_prefs.getBoolean("browse_cats_like_feeds", false);
 
 		viewCategory(cat, browse && cat.id >= 0);
+	}
+
+	@Override
+	public void setSelectedArticle(Article article) {
+		m_selectedArticle = article;
+		updateHeadlines();
 	}
 }

@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import com.google.ads.AdView;
 
-public class OfflineArticleFragment extends Fragment implements OnClickListener {
+public class OfflineArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -41,8 +41,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 	private int m_articleId;
 	private int m_nextArticleId;
 	private int m_prevArticleId;
-	private GestureDetector m_gestureDetector;
-	private View.OnTouchListener m_gestureListener;
+
 	private Cursor m_cursor;
 	private OfflineServices m_offlineServices;
 	
@@ -57,17 +56,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
-		m_gestureDetector = new GestureDetector(new MyGestureDetector());
-		m_gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent aEvent) {
-                if (m_gestureDetector.onTouchEvent(aEvent))
-                    return true;
-                else
-                    return false;
-                }
-            };
-            
-		
+	
 		// TODO change to interface?
 		Activity activity = getActivity();
 		
@@ -174,8 +163,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 					e.printStackTrace();
 				}
 				
-				if (m_offlineServices.isSmallScreen())
-					web.setOnTouchListener(m_gestureListener);
+			
 			}
 			
 			TextView dv = (TextView)view.findViewById(R.id.date);
@@ -198,27 +186,7 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 			if (av != null) {
 				av.setVisibility(View.GONE);
 			}
-			
-			ImageView next = (ImageView)view.findViewById(R.id.next_article);
-			
-			if (next != null) {
-				if (m_nextArticleId != 0) {
-					next.setOnClickListener(this);
-				} else {
-					next.setImageResource(R.drawable.ic_next_article_disabled);
-				}
-			}
-			
-			ImageView prev = (ImageView)view.findViewById(R.id.prev_article);
-			
-			if (prev != null) {
-				if (m_prevArticleId != 0) {
-					prev.setOnClickListener(this);
-				} else {
-					prev.setImageResource(R.drawable.ic_prev_article_disabled);
-				}
-			}
-
+	
 		} 
 		
 		return view;    	
@@ -255,53 +223,5 @@ public class OfflineArticleFragment extends Fragment implements OnClickListener 
 		m_nextArticleId = m_offlineServices.getRelativeArticleId(m_articleId, m_offlineServices.getActiveFeedId(), RelativeArticle.AFTER);
 	}
 
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.next_article) {
-			m_offlineServices.openArticle(m_nextArticleId, 0);
-		} else if (v.getId() == R.id.prev_article) {
-			m_offlineServices.openArticle(m_prevArticleId, R.anim.slide_right);
-		}
-	}
-	
-	// http://blog.blackmoonit.com/2010/07/gesture-detection-swipe-detection_4292.html
-	class MyGestureDetector extends SimpleOnGestureListener {
-        private static final int SWIPE_MIN_DISTANCE = 100;
-        private static final int SWIPE_MAX_OFF_PATH = 100;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
- 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float dX = e2.getX()-e1.getX();
-            float dY = e1.getY()-e2.getY();
-            if (Math.abs(dY)<SWIPE_MAX_OFF_PATH &&
-                Math.abs(velocityX)>=SWIPE_THRESHOLD_VELOCITY &&
-                Math.abs(dX)>=SWIPE_MIN_DISTANCE ) {
-                if (dX>0) {
-                    //Log.d(TAG, "Right swipe");
-                    
-                	if (m_prevArticleId != 0)
-                		m_offlineServices.openArticle(m_prevArticleId, 0);
-                	
-                } else {
-                    //Log.d(TAG, "Left swipe");
 
-                	if (m_nextArticleId != 0)
-                		m_offlineServices.openArticle(m_nextArticleId, 0);
-
-                }
-                return true;
-            /* } else if (Math.abs(dX)<SWIPE_MAX_OFF_PATH &&
-                Math.abs(velocityY)>=SWIPE_THRESHOLD_VELOCITY &&
-                Math.abs(dY)>=SWIPE_MIN_DISTANCE ) {
-                if (dY>0) {
-                    Log.d(TAG, "Up swipe");
-                } else {
-                    Log.d(TAG, "Down swipe");
-                }
-                return true; */
-            }
-            return false;
-        }
-    };
 }

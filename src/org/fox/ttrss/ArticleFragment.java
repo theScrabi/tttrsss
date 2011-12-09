@@ -31,16 +31,26 @@ import android.widget.TextView;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
-public class ArticleFragment extends Fragment implements OnClickListener {
+public class ArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
 	private OnlineServices m_onlineServices;
-	private Article m_nextArticle;
-	private Article m_prevArticle;
-	private GestureDetector m_gestureDetector;
+	//private Article m_nextArticle;
+	//private Article m_prevArticle;
+
+	public ArticleFragment() {
+		super();
+	}
+	
+	public ArticleFragment(Article article) {
+		super();
+		
+		m_article = article;
+	}
+	
 	private View.OnTouchListener m_gestureListener;
 	
 	@Override
@@ -51,17 +61,6 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
-
-		m_gestureDetector = new GestureDetector(new MyGestureDetector());
-		m_gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent aEvent) {
-                if (m_gestureDetector.onTouchEvent(aEvent))
-                    return true;
-                else
-                    return false;
-                }
-            };
-            
 		
 		Activity activity = (Activity)getActivity();
 		
@@ -191,26 +190,6 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 					av.setVisibility(View.GONE);
 				}
 			}
-			
-			ImageView next = (ImageView)view.findViewById(R.id.next_article);
-			
-			if (next != null) {
-				if (m_nextArticle != null) {
-					next.setOnClickListener(this);
-				} else {
-					next.setImageResource(R.drawable.ic_next_article_disabled);
-				}
-			}
-			
-			ImageView prev = (ImageView)view.findViewById(R.id.prev_article);
-			
-			if (prev != null) {
-				if (m_prevArticle != null) {
-					prev.setOnClickListener(this);
-				} else {
-					prev.setImageResource(R.drawable.ic_prev_article_disabled);
-				}
-			}
 
 		} 
 		
@@ -228,6 +207,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 
 		out.putParcelable("article", m_article);
 	}
+
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -235,59 +215,7 @@ public class ArticleFragment extends Fragment implements OnClickListener {
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_onlineServices = (OnlineServices)activity;
-		m_article = m_onlineServices.getSelectedArticle(); 
-		
-		m_prevArticle = m_onlineServices.getRelativeArticle(m_article, RelativeArticle.BEFORE);
-		m_nextArticle = m_onlineServices.getRelativeArticle(m_article, RelativeArticle.AFTER);
+		//m_article = m_onlineServices.getSelectedArticle(); 
 	}
 
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.next_article) {
-			m_onlineServices.openArticle(m_nextArticle, 0);
-		} else if (v.getId() == R.id.prev_article) {
-			m_onlineServices.openArticle(m_prevArticle, R.anim.slide_right);
-		}
-	}
-	
-	// http://blog.blackmoonit.com/2010/07/gesture-detection-swipe-detection_4292.html
-	class MyGestureDetector extends SimpleOnGestureListener {
-        private static final int SWIPE_MIN_DISTANCE = 100;
-        private static final int SWIPE_MAX_OFF_PATH = 100;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 100;
- 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float dX = e2.getX()-e1.getX();
-            float dY = e1.getY()-e2.getY();
-            if (Math.abs(dY)<SWIPE_MAX_OFF_PATH &&
-                Math.abs(velocityX)>=SWIPE_THRESHOLD_VELOCITY &&
-                Math.abs(dX)>=SWIPE_MIN_DISTANCE ) {
-                if (dX>0) {
-                    //Log.d(TAG, "Right swipe");
-                    
-                    if (m_prevArticle != null)
-                    	m_onlineServices.openArticle(m_prevArticle, R.anim.slide_right);
-                    
-                } else {
-                    //Log.d(TAG, "Left swipe");
-                    
-                    if (m_nextArticle != null)
-                    	m_onlineServices.openArticle(m_nextArticle, 0);
-
-                }
-                return true;
-            /* } else if (Math.abs(dX)<SWIPE_MAX_OFF_PATH &&
-                Math.abs(velocityY)>=SWIPE_THRESHOLD_VELOCITY &&
-                Math.abs(dY)>=SWIPE_MIN_DISTANCE ) {
-                if (dY>0) {
-                    Log.d(TAG, "Up swipe");
-                } else {
-                    Log.d(TAG, "Down swipe");
-                }
-                return true; */
-            }
-            return false;
-        }
-    };
 }

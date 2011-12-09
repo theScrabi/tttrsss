@@ -24,5 +24,6 @@ public interface OnlineServices {
 	public boolean getUnreadOnly();
 	public boolean getLicensed();
 	public int getApiLevel();
+	public void setSelectedArticle(Article article);
 }
 

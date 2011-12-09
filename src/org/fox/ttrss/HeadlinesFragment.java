@@ -479,6 +479,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public void notifyUpdated() {
 		m_adapter.notifyDataSetChanged();
+		
+		Article article = m_onlineServices.getSelectedArticle();
+		if (article != null) {
+			setActiveArticleId(article.id);
+		}
 	}
 
 	public ArticleList getAllArticles() {
@@ -545,6 +550,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public int getActiveArticleId() {
 		return m_activeArticleId;
+	}
+
+	public int getArticlePosition(Article article) {
+		return m_adapter.getPosition(article);
 	}
 
 	
