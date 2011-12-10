@@ -1,7 +1,10 @@
 package org.fox.ttrss;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,12 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ArticlePager extends Fragment {
+public class OfflineArticlePager extends Fragment {
 
 	private PagerAdapter m_adapter;
-	private OnlineServices m_onlineServices;
-	private HeadlinesFragment m_hf; 
-	private Article m_article;
+	private OfflineServices m_offlineServices;
+	private OfflineHeadlinesFragment m_hf;
+	private int m_articleId;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 		
@@ -25,30 +28,30 @@ public class ArticlePager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			Article article = m_hf.getArticleAtPosition(position);
+			int articleId = m_hf.getArticleIdAtPosition(position);
 			
-			if (article != null) {
-				ArticleFragment af = new ArticleFragment(article);
-				return af;
-			}
-			return null;
+			if (articleId != 0) {
+				return new OfflineArticleFragment(articleId);
+			} 
+			
+			return null; 
 		}
 
 		@Override
 		public int getCount() {
-			return m_hf.getAllArticles().size();
+			return m_hf.getArticleCount();
 		}
 		
 	}
 	
-	public ArticlePager() {
+	public OfflineArticlePager() {
 		super();
 	}
 	
-	public ArticlePager(Article article) {
+	public OfflineArticlePager(int articleId) {
 		super();
-		
-		m_article = article;
+
+		m_articleId = articleId;
 	}
 	
 	@Override
@@ -59,7 +62,7 @@ public class ArticlePager extends Fragment {
 		
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
-		int position = m_hf.getArticlePosition(m_article);
+		int position = m_hf.getArticleIdPosition(m_articleId);
 		
 		pager.setAdapter(m_adapter);
 		pager.setCurrentItem(position);
@@ -75,14 +78,18 @@ public class ArticlePager extends Fragment {
 
 			@Override
 			public void onPageSelected(int position) {
-				Article article = m_hf.getArticleAtPosition(position);
+				int articleId = m_hf.getArticleIdAtPosition(position);
 				
-				if (article != null) {
-					if (article.unread) {
-						article.unread = false;
-						m_onlineServices.saveArticleUnread(article);
-					}
-					m_onlineServices.setSelectedArticle(article);
+				if (articleId != 0) {
+					m_offlineServices.setSelectedArticleId(articleId);
+					
+					SQLiteStatement stmt = m_offlineServices.getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
+									+ " = ?");
+	
+					stmt.bindLong(1, articleId);
+					stmt.execute();
+					stmt.close();
 				}
 			}
 		});
@@ -94,8 +101,8 @@ public class ArticlePager extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_hf = (HeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
-		m_onlineServices = (OnlineServices)activity;
+		m_hf = (OfflineHeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		m_offlineServices = (OfflineServices)activity;
 	}
 
 }

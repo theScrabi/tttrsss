@@ -39,19 +39,23 @@ public class OfflineArticleFragment extends Fragment {
 
 	private SharedPreferences m_prefs;
 	private int m_articleId;
-	private int m_nextArticleId;
-	private int m_prevArticleId;
-
 	private Cursor m_cursor;
 	private OfflineServices m_offlineServices;
 	
+	public OfflineArticleFragment() {
+		super();
+	}
+	
+	public OfflineArticleFragment(int articleId) {
+		super();
+		m_articleId = articleId;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
 			m_articleId = savedInstanceState.getInt("articleId");
-			m_prevArticleId = savedInstanceState.getInt("prevArticleId");
-			m_nextArticleId = savedInstanceState.getInt("nextArticleId");
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
@@ -204,9 +208,6 @@ public class OfflineArticleFragment extends Fragment {
 		super.onSaveInstanceState(out);
 		
 		out.putInt("articleId", m_articleId);
-		out.putInt("prevArticleId", m_prevArticleId);
-		out.putInt("nextArticleId", m_nextArticleId);
-
 	}
 	
 	@Override
@@ -216,11 +217,6 @@ public class OfflineArticleFragment extends Fragment {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
 		m_offlineServices = (OfflineServices)activity;
-		
-		m_articleId = m_offlineServices.getSelectedArticleId();
-		
-		m_prevArticleId = m_offlineServices.getRelativeArticleId(m_articleId, m_offlineServices.getActiveFeedId(), RelativeArticle.BEFORE);
-		m_nextArticleId = m_offlineServices.getRelativeArticleId(m_articleId, m_offlineServices.getActiveFeedId(), RelativeArticle.AFTER);
 	}
 
 

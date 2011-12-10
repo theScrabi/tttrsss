@@ -107,6 +107,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		if (m_cursor != null) {
 			m_adapter.changeCursor(m_cursor);
+			setActiveArticleId(m_offlineServices.getSelectedArticleId());
 			m_adapter.notifyDataSetChanged();
 		}
 	}
@@ -229,7 +230,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		public int getItemViewType(int position) {
 			Cursor c = (Cursor) getItem(position);
 			
-			if (c.getLong(0) == m_activeArticleId) {
+			//Log.d(TAG, "@gIVT " + position + " " + c.getInt(0) + " vs " + m_activeArticleId);
+			
+			if (c.getInt(0) == m_activeArticleId) {
 				return VIEW_SELECTED;
 			} else if (c.getInt(c.getColumnIndex("unread")) == 1) {
 				return VIEW_UNREAD;
@@ -394,16 +397,15 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		m_adapter.notifyDataSetChanged();
 	}
 
-	public void setActiveArticleId(int id) {
-		m_activeArticleId = id;
-		m_adapter.notifyDataSetChanged();
+	public void setActiveArticleId(int articleId) {
+		m_activeArticleId = articleId;
+	//	m_adapter.notifyDataSetChanged();
 		
-		/* ListView list = (ListView)getView().findViewById(R.id.headlines);
+		ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
 		if (list != null) {
-			int position = m_adapter.getPosition(getArticleById(id));
-			list.setSelection(position);
-		} */
+			list.setSelection(getArticleIdPosition(articleId));
+		} 
 	}
 
 	public Cursor getArticleAtPosition(int position) {
@@ -411,18 +413,31 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public int getArticleIdAtPosition(int position) {
-		Cursor c = getArticleAtPosition(position);
+		/*Cursor c = getArticleAtPosition(position);
 		
 		if (c != null) {
 			int id = c.getInt(0);
 			return id;
-		}		
+		}		*/
 		
-		return 0;
+		return (int) m_adapter.getItemId(position);
 	}
 
 	public int getActiveArticleId() {
 		return m_activeArticleId;
+	}
+
+	public int getArticleIdPosition(int articleId) {
+		for (int i = 0; i < m_adapter.getCount(); i++) {
+			if (articleId == m_adapter.getItemId(i))
+				return i;
+		}
+		
+		return 0;
+	}
+	
+	public int getArticleCount() {
+		return m_adapter.getCount();
 	}
 	
 }

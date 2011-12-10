@@ -1070,7 +1070,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_selectedArticle = null;
 
 		initMainMenu();
-		refreshFeeds();
+		
+		if (!m_enableCats || m_activeCategory != null)
+			refreshFeeds();
+		else
+			refreshCategories();
 
 	}
 

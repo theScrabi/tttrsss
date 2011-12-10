@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -625,11 +626,12 @@ public class OfflineActivity extends FragmentActivity implements
 
 		}
 
+		// we don't want to lose selected article in headlines so we refresh them before setting selected id to 0
+		refreshViews();
+
 		m_selectedArticleId = 0;
 
 		initMainMenu();
-		refreshViews();
-
 	}
 
 	private int getSelectedArticleCount() {
@@ -990,12 +992,18 @@ public class OfflineActivity extends FragmentActivity implements
 		stmt.execute();
 		stmt.close();
 
-		OfflineArticleFragment frag = new OfflineArticleFragment();
+		Fragment frag;
+		
+		if (m_smallScreenMode) {
+			frag = new OfflineArticlePager(articleId);
+		} else {
+			frag = new OfflineArticleFragment(articleId);
+		}
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
-
+		
 		if (m_compatMode) {
 			if (compatAnimation == 0)
 				findViewById(R.id.main).setAnimation(
@@ -1019,5 +1027,11 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public int getSelectedArticleId() {
 		return m_selectedArticleId;
+	}
+
+	@Override
+	public void setSelectedArticleId(int articleId) {
+		m_selectedArticleId = articleId;
+		refreshViews();
 	}
 }

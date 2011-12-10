@@ -13,4 +13,5 @@ public interface OfflineServices {
 	public int getSelectedArticleId();
 	public void initMainMenu();
 	public boolean isSmallScreen();
+	public void setSelectedArticleId(int articleId);
 }
