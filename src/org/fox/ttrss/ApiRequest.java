@@ -201,7 +201,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 					if (error.equals("LOGIN_ERROR")) {
 						m_lastError = ApiError.LOGIN_FAILED;
 					} else if (error.equals("API_DISABLED")) {
-						m_lastError = ApiError.LOGIN_FAILED;
+						m_lastError = ApiError.API_DISABLED;
 					} else if (error.equals("NOT_LOGGED_IN")) {
 						m_lastError = ApiError.LOGIN_FAILED;
 					} else if (error.equals("INCORRECT_USAGE")) {
