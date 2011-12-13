@@ -410,9 +410,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
+			String articleContent = article.content != null ? article.content : "";
+
 			if (te != null) {
 				if (!m_combinedMode) {			
-					String articleContent = article.content != null ? article.content : "";
 					String excerpt = Jsoup.parse(articleContent).text(); 
 				
 					if (excerpt.length() > 100)
@@ -431,7 +432,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					content.setMovementMethod(LinkMovementMethod.getInstance());
 					
 					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
-					content.setText(Html.fromHtml(article.content, m_dummyGetter, null));
+					content.setText(Html.fromHtml(articleContent, m_dummyGetter, null));
 					
 				} else {
 					content.setVisibility(View.GONE);
