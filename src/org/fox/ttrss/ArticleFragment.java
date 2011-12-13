@@ -117,7 +117,7 @@ public class ArticleFragment extends Fragment {
 					cssOverride = "";
 				}
 
-				String articleContent = m_article.content;
+				String articleContent = m_article.content != null ? m_article.content : "";
 				
 				Document doc = Jsoup.parse(articleContent);
 				
