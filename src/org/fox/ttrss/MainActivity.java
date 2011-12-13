@@ -1212,11 +1212,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {
+								m_apiLevel = 0;
+
 								if (result != null) {
-									m_apiLevel = result.getAsJsonObject()
-											.get("level").getAsInt();
-								} else {
-									m_apiLevel = 0;
+									try {
+										m_apiLevel = result.getAsJsonObject()
+													.get("level").getAsInt();
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 								}
 
 								Log.d(TAG, "Received API level: " + m_apiLevel);
