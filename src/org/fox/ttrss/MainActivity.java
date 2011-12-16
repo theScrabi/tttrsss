@@ -479,7 +479,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		registerReceiver(m_broadcastReceiver, filter);
 
-		m_isOffline = m_prefs.getBoolean("offline_mode_active", false);
+		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+		
+		m_isOffline = localPrefs.getBoolean("offline_mode_active", false);
 
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
@@ -591,7 +593,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 								public void onClick(DialogInterface dialog,
 										int which) {
 									
-									SharedPreferences.Editor editor = m_prefs.edit();
+									SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+									SharedPreferences.Editor editor = localPrefs.edit();
 									editor.putBoolean("offline_mode_active", true);
 									editor.commit();
 									
