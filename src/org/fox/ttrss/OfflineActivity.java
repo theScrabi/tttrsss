@@ -5,6 +5,7 @@ import org.fox.ttrss.OnlineServices.RelativeArticle;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -215,7 +216,8 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private void switchOnline() {
-		SharedPreferences.Editor editor = m_prefs.edit();
+		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", false);
 		editor.commit();
 
