@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -111,9 +112,9 @@ public class OfflineArticleFragment extends Fragment {
 				String cssOverride = "";
 				
 				
-				//WebSettings ws = web.getSettings();
-				//ws.setSupportZoom(true);
-				//ws.setBuiltInZoomControls(true);
+				WebSettings ws = web.getSettings();
+				ws.setSupportZoom(true);
+				ws.setBuiltInZoomControls(true);
 
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 					cssOverride = "body { background : black; color : #e0e0e0}\n";			
