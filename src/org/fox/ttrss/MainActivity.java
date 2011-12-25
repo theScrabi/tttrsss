@@ -1,5 +1,7 @@
 package org.fox.ttrss;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -13,6 +15,8 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -40,8 +44,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends FragmentActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
@@ -1024,6 +1030,78 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			 * 
 			 * return true;
 			 */
+		case R.id.set_labels:
+			if (m_selectedArticle != null) {
+			
+				ApiRequest req = new ApiRequest(getApplicationContext()) {
+					@Override
+					protected void onPostExecute(JsonElement result) {
+						if (result != null) {
+							Type listType = new TypeToken<List<Label>>() {}.getType();
+							final List<Label> labels = new Gson().fromJson(result, listType);
+
+							CharSequence[] items = new CharSequence[labels.size()];
+							final int[] itemIds = new int[labels.size()];
+							boolean[] checkedItems = new boolean[labels.size()];
+							
+							for (int i = 0; i < labels.size(); i++) {
+								items[i] = labels.get(i).caption;
+								itemIds[i] = labels.get(i).id;
+								checkedItems[i] = labels.get(i).checked;
+							}
+							
+							Dialog dialog = new Dialog(MainActivity.this);
+							AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+									.setTitle("Set labels")
+									.setMultiChoiceItems(items, checkedItems, new OnMultiChoiceClickListener() {
+										
+										@Override
+										public void onClick(DialogInterface dialog, int which, final boolean isChecked) {
+											final int labelId = itemIds[which];
+											
+											@SuppressWarnings("serial")
+											HashMap<String, String> map = new HashMap<String, String>() {
+												{
+													put("sid", m_sessionId);
+													put("op", "setArticleLabel");
+													put("label_id", String.valueOf(labelId));
+													put("article_ids", String.valueOf(m_selectedArticle.id));
+													if (isChecked) put("assign", "true");
+												}
+											};
+											
+											ApiRequest req = new ApiRequest(m_context);
+											req.execute(map);
+											
+										}
+									}).setPositiveButton("Close", new OnClickListener() {
+										
+										@Override
+										public void onClick(DialogInterface dialog, int which) {
+											dialog.cancel();
+										}
+									});
+
+							dialog = builder.create();
+							dialog.show();
+
+						}
+					}
+				};
+
+				@SuppressWarnings("serial")
+				HashMap<String, String> map = new HashMap<String, String>() {
+					{
+						put("sid", m_sessionId);
+						put("op", "getLabels");
+						put("article_id", String.valueOf(m_selectedArticle.id));
+					}
+				};
+				
+				req.execute(map);
+				
+			}
+			return true;
 		default:
 			Log.d(TAG,
 					"onOptionsItemSelected, unhandled id=" + item.getItemId());
@@ -1126,6 +1204,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				if (!m_compatMode) {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null);
 				}
+				
+				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 				
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);

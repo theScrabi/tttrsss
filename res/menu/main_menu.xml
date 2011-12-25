@@ -112,6 +112,12 @@
                 android:id="@+id/catchup_above"
                 android:icon="@drawable/ic_menu_tick"
                 android:title="@string/article_mark_read_above"/>
+            
+            <item
+                android:id="@+id/set_labels"
+                android:icon="@drawable/ic_menu_marked"
+                android:title="@string/article_set_labels"/>
+            
         </group>
     </group>
 
