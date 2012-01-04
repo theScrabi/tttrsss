@@ -474,7 +474,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			height = width;
 		}
 
-		m_smallScreenMode = width < 960 || height < 720;
+		m_smallScreenMode = m_compatMode || (width < 960 || height < 720);
 
 		setContentView(R.layout.main);
 
