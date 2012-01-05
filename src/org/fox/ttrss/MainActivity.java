@@ -469,11 +469,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		int height = display.getHeight();
 
 		if (height > width) {
-			int tmp = height;
-			width = tmp;
-			height = width;
+			int tmp = width;
+			width = height;
+			height = tmp;
 		}
-
+		
 		m_smallScreenMode = m_compatMode || (width < 960 || height < 720);
 
 		setContentView(R.layout.main);
