@@ -133,7 +133,7 @@
             android:id="@+id/login"
             android:icon="@android:drawable/ic_menu_rotate"
             android:showAsAction="ifRoom|withText"
-            android:title="@string/login"/>
+            android:title="@string/login_login"/>
     </group>
 
 </menu>
