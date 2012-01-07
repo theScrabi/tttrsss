@@ -7,7 +7,7 @@
             android:key="login"
             android:singleLine="true"
             android:summary="@string/login_summary"
-            android:title="@string/login_login" >
+            android:title="@string/login" >
         </EditTextPreference>
 
         <EditTextPreference
@@ -38,7 +38,7 @@
             android:key="http_login"
             android:singleLine="true"
             android:summary="@string/http_login_summary"
-            android:title="@string/login_login" >
+            android:title="@string/login" >
         </EditTextPreference>
 
         <EditTextPreference
