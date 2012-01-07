@@ -7,9 +7,9 @@
     <string name="app_name">Tiny Tiny RSS</string>
     <string name="login_need_configure">Bitte erst Einstellungen überprüfen.</string>
     <string name="login_ready">Bereit zur Anmeldung</string>
-    <string name="login_login">Anmelden</string>
+    <string name="login_login">Benutzername</string>
     <string name="logout">Abmelden</string>
-    <string name="login">Benutzername</string>
+    <string name="login">Anmelden</string>
     <string name="debugging">Debugging</string>
     <string name="password">Passwort</string>
     <string name="default_url">http://example.domain/tt-rss/</string>
