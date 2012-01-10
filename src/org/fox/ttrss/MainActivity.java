@@ -333,10 +333,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				if (networkInfo != null && networkInfo.isAvailable()
 						&& networkInfo.isConnected()) {
 
-					if (!m_enableCats || m_activeCategory != null)
-						refreshFeeds();
-					else
-						refreshCategories();
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (!m_enableCats || m_activeCategory != null)
+								refreshFeeds();
+							else
+								refreshCategories();
+						}
+					});
+					
 				}
 			}
 		}
