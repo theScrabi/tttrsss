@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -120,20 +121,8 @@ public class OfflineActivity extends FragmentActivity implements
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		Display display = getWindowManager().getDefaultDisplay();
-
-		int width = display.getWidth();
-		int height = display.getHeight();
-
-		Log.d(TAG, "WxH=" + width + "x" + height);
-
-		/* if (height > width) {
-			int tmp = width;
-			width = height;
-			height = tmp;
-		} */
-		
-		m_smallScreenMode = m_compatMode || (width < 960 || height < 720);
+		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
+				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
 		setContentView(R.layout.main);
 
@@ -149,7 +138,6 @@ public class OfflineActivity extends FragmentActivity implements
 		initMainMenu();
 
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
-		findViewById(R.id.main).setVisibility(View.VISIBLE);
 
 		if (m_smallScreenMode) {
 			if (m_selectedArticleId != 0) {

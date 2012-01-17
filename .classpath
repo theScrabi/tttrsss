@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="lib/gson-1.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/jsoup-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/fox/workspace/org.fox.ttrss/libs/gson-1.7.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/fox/workspace/org.fox.ttrss/libs/jsoup-1.6.1.jar"/>
 	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/fox/android-sdk-windows/extras/google/admob_ads_sdk/GoogleAdMobAdsSdk-4.3.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>

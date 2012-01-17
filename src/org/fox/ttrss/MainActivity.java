@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -470,21 +471,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		Display display = getWindowManager().getDefaultDisplay();
-
-		int width = display.getWidth();
-		int height = display.getHeight();
+		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
+				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		
-		Log.d(TAG, "WxH=" + width + "x" + height);
-
-		/* if (height > width) {
-			int tmp = width;
-			width = height;
-			height = tmp;
-		} */
-		
-		m_smallScreenMode = m_compatMode || (width < 960 || height < 720);
-
 		setContentView(R.layout.main);
 
 		IntentFilter filter = new IntentFilter();
@@ -1266,8 +1255,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private void loginSuccess() {
 		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
-		findViewById(R.id.main).setVisibility(View.VISIBLE);
-
+		
 		m_isOffline = false;
 
 		initMainMenu();
@@ -1538,7 +1526,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_sessionId = null;
 
 		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
-		findViewById(R.id.main).setVisibility(View.INVISIBLE);
 
 		TextView tv = (TextView) findViewById(R.id.loading_message);
 
