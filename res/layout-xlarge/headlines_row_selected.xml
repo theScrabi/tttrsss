@@ -41,6 +41,7 @@
                 android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:textColor="?headlineSelectedTextColor"
                 android:text="{Title...}"
                 android:textSize="16sp" >
             </TextView>
@@ -50,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="{Content excerpt...}"
-                android:textColor="#909090"
+                android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
         </LinearLayout>

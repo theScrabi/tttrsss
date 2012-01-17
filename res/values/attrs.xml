@@ -13,4 +13,10 @@
     <attr name="headlineSeparatorUnread" format="reference|color" />
     <attr name="headlineSeparatorSelected" format="reference|color" />
     <attr name="headlineSeparatorNormal" format="reference|color" />
+    <attr name="feedlistTextColor" format="reference|color" />
+    <attr name="feedlistSelectedTextColor" format="reference|color" />
+    <attr name="headlineTextColor" format="reference|color" />
+    <attr name="headlineSelectedTextColor" format="reference|color" />
+    <attr name="headlineExcerptTextColor" format="reference|color" />
+    <attr name="headlineSelectedExcerptTextColor" format="reference|color" />
 </resources>

@@ -33,6 +33,7 @@
                 android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:textColor="?headlineSelectedTextColor"
                 android:text="There are many variations of passages of Lorem Ipsum available"
                 android:textSize="16sp" />
 
@@ -49,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."
-                    android:textColor="#909090"
+                    android:textColor="?headlineSelectedExcerptTextColor"
                     android:textSize="13sp" />
             </LinearLayout>
 
