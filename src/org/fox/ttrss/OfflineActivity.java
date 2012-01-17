@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
@@ -124,12 +125,14 @@ public class OfflineActivity extends FragmentActivity implements
 		int width = display.getWidth();
 		int height = display.getHeight();
 
-		if (height > width) {
+		Log.d(TAG, "WxH=" + width + "x" + height);
+
+		/* if (height > width) {
 			int tmp = width;
 			width = height;
 			height = tmp;
-		}
-
+		} */
+		
 		m_smallScreenMode = m_compatMode || (width < 960 || height < 720);
 
 		setContentView(R.layout.main);
@@ -138,7 +141,7 @@ public class OfflineActivity extends FragmentActivity implements
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			new TransitionHelper((LinearLayout) findViewById(R.id.main));
+			new TransitionHelper((ViewGroup) findViewById(R.id.main));
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -158,7 +161,7 @@ public class OfflineActivity extends FragmentActivity implements
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			} else {
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				//findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 				// findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
 				/*
