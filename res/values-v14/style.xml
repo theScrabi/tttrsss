@@ -1,0 +1,34 @@
+<resources>
+	<style name="LightTheme" parent="android:Theme.Holo.Light">
+		<item name="feedlistDivider">@android:drawable/divider_horizontal_bright</item>
+		<item name="feedlistBackground">#fafafa</item>
+		<item name="unreadCounterColor">#0000ff</item>
+		<item name="headlinesBackground">#ffffff</item>
+		<item name="articleDivider">#96c5ff</item>
+		<item name="articleHeader">@android:color/transparent</item>		
+		<item name="headlineSelectedBackground">#fff7d5</item>
+		<item name="headlineUnreadBackground">#ffffff</item>
+		<item name="headlineNormalBackground">@android:color/transparent</item>
+		<item name="feedsSelectedBackground">#96C5FF</item>
+		<item name="headlineSeparatorUnread">#96C5FF</item>
+		<item name="headlineSeparatorNormal">#909090</item>
+		<item name="headlineSeparatorSelected">#DBC981</item>
+	</style>
+
+	<style name="DarkTheme" parent="android:Theme.Holo">
+		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="feedlistBackground">#101010</item>
+		<item name="unreadCounterColor">#303030</item>
+		<item name="headlinesBackground">#000000</item>
+		<item name="articleDivider">#33b5e5</item>
+		<item name="articleHeader">@android:color/transparent</item>
+		<item name="headlineSelectedBackground">#195668</item>
+		<item name="headlineUnreadBackground">#303030</item>
+		<item name="headlineNormalBackground">@android:color/transparent</item>
+		<item name="feedsSelectedBackground">#195668</item>
+		<item name="headlineSeparatorUnread">#33b5e5</item>
+		<item name="headlineSeparatorNormal">#303030</item>
+		<item name="headlineSeparatorSelected">#33b5e5</item>
+	</style>
+	    
+</resources>

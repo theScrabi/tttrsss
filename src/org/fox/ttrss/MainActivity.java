@@ -503,7 +503,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			if (findViewById(R.id.main_flipper) != null)
+				new TransitionHelper((ViewGroup) findViewById(R.id.main_flipper));
+			else
+				new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 
