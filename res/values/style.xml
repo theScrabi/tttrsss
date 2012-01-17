@@ -27,21 +27,21 @@
         <item name="feedlistBackground">#101010</item>
         <item name="unreadCounterColor">#303030</item>
         <item name="headlinesBackground">#000000</item>
-        <item name="articleDivider">#303060</item>
+        <item name="articleDivider">#F5B800</item>
         <item name="articleHeader">@android:color/transparent</item>
-        <item name="headlineSelectedBackground">#303060</item>
+        <item name="headlineSelectedBackground">#F5B800</item>
         <item name="headlineUnreadBackground">#303030</item>
         <item name="headlineNormalBackground">@android:color/transparent</item>
-        <item name="feedsSelectedBackground">#303060</item>
-        <item name="headlineSeparatorUnread">#303060</item>
-        <item name="headlineSeparatorNormal">#303030</item>
-        <item name="headlineSeparatorSelected">#47478E</item>
+        <item name="feedsSelectedBackground">#F5B800</item>
+        <item name="headlineSeparatorUnread">#F5B800</item>
+        <item name="headlineSeparatorNormal">#F5B800</item>
+        <item name="headlineSeparatorSelected">#F5B800</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineTextColor">@android:color/primary_text_dark</item>
-        <item name="headlineSelectedTextColor">@android:color/primary_text_dark</item>
+        <item name="headlineSelectedTextColor">@android:color/black</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
-        <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
     </style>
 
 </resources>
