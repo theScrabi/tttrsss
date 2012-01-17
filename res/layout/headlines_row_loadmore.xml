@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?headlineTextColor"
-            android:text="Loading, please wait..." />
+            android:text="@string/loading_message" />
     </LinearLayout>
 
 </LinearLayout>
