@@ -137,7 +137,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		initMainMenu();
 
-		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
+		findViewById(R.id.loading_container).setVisibility(View.GONE);
 
 		if (m_smallScreenMode) {
 			if (m_selectedArticleId != 0) {

@@ -492,10 +492,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			if (findViewById(R.id.main_flipper) != null)
-				new TransitionHelper((ViewGroup) findViewById(R.id.main_flipper));
-			else
-				new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			new TransitionHelper((ViewGroup) findViewById(R.id.main));
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -1254,7 +1251,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	private void loginSuccess() {
-		findViewById(R.id.loading_container).setVisibility(View.INVISIBLE);
+		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		m_isOffline = false;
 
