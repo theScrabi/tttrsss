@@ -305,8 +305,7 @@ public class OfflineActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void onBackPressed() {
+	private void goBack(boolean allowQuit) {
 		if (m_smallScreenMode) {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
@@ -332,17 +331,21 @@ public class OfflineActivity extends FragmentActivity implements
 				refreshViews();
 				initMainMenu();
 
-			} else {
+			} else if (allowQuit) {
 				finish();
 			}
 		} else {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
-			} else {
+			} else if (allowQuit) {
 				finish();
 			}
 		}
-
+	}
+	
+	@Override
+	public void onBackPressed() {
+		goBack(true);
 	}
 
 	/*
@@ -426,7 +429,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			closeArticle();
+			goBack(false);
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
@@ -668,7 +671,11 @@ public class OfflineActivity extends FragmentActivity implements
 			}
 			
 			if (!m_compatMode) {
-				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
+				if (!m_smallScreenMode) {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
+				} else {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
+				}
 			}
 		}
 	}

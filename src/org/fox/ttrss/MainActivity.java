@@ -754,6 +754,35 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	@Override
 	public void onBackPressed() {
+		goBack(true);
+	}
+
+	private void closeCategory() {
+
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+
+		m_activeCategory = null;
+
+		initMainMenu();
+		refreshCategories();
+	}
+	
+	private void deselectAllArticles() {
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+									.findFragmentById(R.id.headlines_fragment);
+
+		if (hf != null) {
+			ArticleList selected = hf.getSelectedArticles();
+			if (selected.size() > 0) {
+				selected.clear();
+				initMainMenu();
+				hf.notifyUpdated();
+			}
+		}
+	}
+	
+	private void goBack(boolean allowQuit) {
 		if (m_smallScreenMode) {
 			if (m_selectedArticle != null) {
 				closeArticle();
@@ -792,7 +821,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 				closeCategory();
 
-			} else {
+			} else if (allowQuit) {
 				finish();
 			}
 		} else {
@@ -800,37 +829,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				closeArticle();
 			} else if (m_activeCategory != null) {
 				closeCategory();
-			} else {
+			} else if (allowQuit) {
 				finish();
 			}
 		}
 	}
-
-	private void closeCategory() {
-
-		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-
-		m_activeCategory = null;
-
-		initMainMenu();
-		refreshCategories();
-	}
-	
-	private void deselectAllArticles() {
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
-									.findFragmentById(R.id.headlines_fragment);
-
-		if (hf != null) {
-			ArticleList selected = hf.getSelectedArticles();
-			if (selected.size() > 0) {
-				selected.clear();
-				initMainMenu();
-				hf.notifyUpdated();
-			}
-		}
-	}
-	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -840,7 +843,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			closeArticle();
+			goBack(false);
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(MainActivity.this,
@@ -1199,7 +1202,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 
 				if (!m_compatMode) {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null);
+					if (!m_smallScreenMode) {
+						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+					} else {
+						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
+					}
 				}
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
