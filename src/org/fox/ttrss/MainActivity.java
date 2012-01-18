@@ -829,6 +829,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				closeArticle();
 			} else if (m_activeCategory != null) {
 				closeCategory();
+			} else if (m_activeFeed != null) {
+				findViewById(R.id.headlines_fragment).setVisibility(
+						View.INVISIBLE);
+				
+				m_activeFeed = null;
+				
+				refreshFeeds();
+				initMainMenu();
+
 			} else if (allowQuit) {
 				finish();
 			}
@@ -1404,6 +1413,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		if (m_smallScreenMode) {
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+		} else {
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
 

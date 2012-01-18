@@ -337,6 +337,13 @@ public class OfflineActivity extends FragmentActivity implements
 		} else {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
+			} else if (m_activeFeedId != 0) {
+				findViewById(R.id.headlines_fragment).setVisibility(View.INVISIBLE);
+				m_activeFeedId = 0;
+				
+				refreshViews();
+				initMainMenu();
+				
 			} else if (allowQuit) {
 				finish();
 			}
@@ -959,6 +966,8 @@ public class OfflineActivity extends FragmentActivity implements
 
 		if (m_smallScreenMode) {
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+		} else {
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
 
