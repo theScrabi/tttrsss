@@ -22,7 +22,7 @@
             android:key="ttrss_url"
             android:singleLine="true"
             android:summary="@string/ttrss_url_summary"
-            textUri="true"
+            android:inputType="textUri"
             android:title="@string/ttrss_url" >
         </EditTextPreference>
 
