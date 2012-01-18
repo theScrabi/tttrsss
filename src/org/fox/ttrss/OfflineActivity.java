@@ -633,6 +633,10 @@ public class OfflineActivity extends FragmentActivity implements
 		refreshViews();
 
 		m_selectedArticleId = 0;
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.article_fragment, new DummyFragment());
+		ft.commit();
 
 		initMainMenu();
 	}

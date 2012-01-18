@@ -526,16 +526,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							.setVisibility(View.GONE);
 					findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 				} else {					
-					//findViewById(R.id.headlines_fragment).setVisibility(
-					//		View.GONE);
-					
-					//findViewById(R.id.article_fragment).setVisibility(View.GONE);
+					findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+					findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
 					if (m_enableCats && m_activeCategory == null) {
-						findViewById(R.id.feeds_fragment).setVisibility(
-								View.GONE);
 						findViewById(R.id.cats_fragment).setVisibility(
 								View.VISIBLE);
+						findViewById(R.id.feeds_fragment).setVisibility(
+								View.GONE);
 					} else {
 						findViewById(R.id.cats_fragment).setVisibility(
 								View.GONE);
@@ -759,8 +757,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private void closeCategory() {
 
-		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 
 		m_activeCategory = null;
 
@@ -794,17 +792,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 
 				if (m_activeFeed != null && m_activeFeed.is_cat) {
+					findViewById(R.id.cats_fragment)
+						.setVisibility(View.VISIBLE);
 					findViewById(R.id.headlines_fragment).setVisibility(
 							View.GONE);
-					findViewById(R.id.cats_fragment)
-							.setVisibility(View.VISIBLE);
-
 					refreshCategories();
 				} else {
-					findViewById(R.id.headlines_fragment).setVisibility(
-							View.GONE);
 					findViewById(R.id.feeds_fragment).setVisibility(
 							View.VISIBLE);
+					findViewById(R.id.headlines_fragment).setVisibility(
+							View.GONE);
 
 					refreshFeeds();
 				}
@@ -1141,8 +1138,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		// false);
 
 		if (m_smallScreenMode) {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
 		} else {
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
@@ -1158,6 +1155,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		m_selectedArticle = null;
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.article_fragment, new DummyFragment());
+		ft.commit();
 
 		initMainMenu();
 		
@@ -1407,13 +1408,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	public void viewFeed(Feed feed, boolean append) {
+		Log.d(TAG, "viewFeeed/" + feed.id);
+		
 		m_activeFeed = feed;
 
 		initMainMenu();
 
 		if (m_smallScreenMode) {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 		} else {
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 		}
@@ -1439,8 +1442,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "viewCategory");
 
 		if (!openAsFeed) {
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
+			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 
 			m_activeCategory = cat;
 
@@ -1451,9 +1454,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			ft.replace(R.id.feeds_fragment, frag);
 			ft.commit();
 		} else {
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+
 			if (m_smallScreenMode)
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 
 			m_activeFeed = new Feed(cat.id, cat.title, true);
 
@@ -1487,12 +1491,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		if (m_smallScreenMode) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		} else {
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 		}
 
 		Fragment frag;
