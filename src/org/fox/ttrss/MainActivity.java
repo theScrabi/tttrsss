@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -853,6 +854,44 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case android.R.id.home:
 			goBack(false);
 			return true;
+		case R.id.search:
+			if (hf != null && m_compatMode) {
+				Dialog dialog = new Dialog(this);
+
+				final EditText edit = new EditText(this);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.search)
+						.setPositiveButton(getString(R.string.search),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										String query = edit.getText().toString().trim();
+										
+										hf.setSearchQuery(query);
+
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										//
+
+									}
+								}).setView(edit);
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			
+			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(MainActivity.this,
 					PreferencesActivity.class);
@@ -1465,11 +1504,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		if (!append) {
 			
-			MenuItem search = m_menu.findItem(R.id.search);
+			if (m_menu != null) {
+				MenuItem search = m_menu.findItem(R.id.search);
 			
-			if (search != null && !m_compatMode) {
-				SearchView sv = (SearchView) search.getActionView();
-				sv.setQuery("", false);				
+				if (search != null && !m_compatMode) {
+					SearchView sv = (SearchView) search.getActionView();
+					sv.setQuery("", false);				
+				}
 			}
 			
 			HeadlinesFragment hf = new HeadlinesFragment();
