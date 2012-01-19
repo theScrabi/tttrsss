@@ -111,7 +111,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
-			m_searchQuery = savedInstanceState.getString("searchQuery", "");
+			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -225,7 +225,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putBoolean("combinedMode", m_combinedMode);
-		out.putString("searchQuery", m_searchQuery);
+		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
