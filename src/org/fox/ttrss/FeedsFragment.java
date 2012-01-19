@@ -64,7 +64,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private FeedList m_feeds = new FeedList();
 	private OnlineServices m_onlineServices;
 	private int m_selectedFeedId;
-	private static final String ICON_PATH = "/org.fox.ttrss/icons/";
+	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	

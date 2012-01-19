@@ -26,7 +26,7 @@ public class ImageCacheService extends IntentService {
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	
-	private static final String CACHE_PATH = "/org.fox.ttrss/image-cache/";
+	private static final String CACHE_PATH = "/data/org.fox.ttrss/image-cache/";
 
 	private int m_imagesDownloaded = 0;
 	

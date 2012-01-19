@@ -32,7 +32,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
-	private static final String ICON_PATH = "/org.fox.ttrss/icons/";
+	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
 	private int m_selectedFeedId;
 	private boolean m_enableFeedIcons;
 	private Cursor m_cursor;
