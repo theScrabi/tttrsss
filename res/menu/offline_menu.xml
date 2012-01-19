@@ -26,11 +26,17 @@
 
         <item
             android:id="@+id/go_online"
-            android:icon="@drawable/ic_menu_cloud"
-            android:showAsAction="ifRoom|withText"
+            android:icon="@drawable/ic_menu_cloud"            
             android:title="@string/go_online"
             android:visible="false"/>
 
+        <item
+                android:id="@+id/search"
+                android:actionViewClass="android.widget.SearchView"
+                android:icon="@android:drawable/ic_menu_search"
+                android:showAsAction="ifRoom"
+                android:title="@string/search"/>
+        
         <item
             android:id="@+id/headlines_mark_as_read"
             android:icon="@drawable/ic_menu_tick"

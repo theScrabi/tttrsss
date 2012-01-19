@@ -283,5 +283,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		
 		return 0;
 	}
+	
+	public void setSelectedFeedId(int feedId) {
+		m_selectedFeedId = feedId;
+		refresh();
+	}
 
 }

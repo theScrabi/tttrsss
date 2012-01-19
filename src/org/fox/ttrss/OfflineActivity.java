@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,7 +22,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 public class OfflineActivity extends FragmentActivity implements
@@ -328,6 +329,14 @@ public class OfflineActivity extends FragmentActivity implements
 				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				// }
 				m_activeFeedId = 0;
+				
+				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.feeds_fragment);
+				
+				if (ff != null) {
+					ff.setSelectedFeedId(0);
+				}
+				
 				refreshViews();
 				initMainMenu();
 
@@ -340,6 +349,13 @@ public class OfflineActivity extends FragmentActivity implements
 			} else if (m_activeFeedId != 0) {
 				findViewById(R.id.headlines_fragment).setVisibility(View.INVISIBLE);
 				m_activeFeedId = 0;
+				
+				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.feeds_fragment);
+				
+				if (ff != null) {
+					ff.setSelectedFeedId(0);
+				}
 				
 				refreshViews();
 				initMainMenu();
@@ -431,12 +447,50 @@ public class OfflineActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
+		final OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			goBack(false);
+			return true;
+		case R.id.search:
+			if (ohf != null && m_compatMode) {
+				Dialog dialog = new Dialog(this);
+
+				final EditText edit = new EditText(this);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.search)
+						.setPositiveButton(getString(R.string.search),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										String query = edit.getText().toString().trim();
+										
+										ohf.setSearchQuery(query);
+
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										//
+
+									}
+								}).setView(edit);
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
@@ -671,8 +725,46 @@ public class OfflineActivity extends FragmentActivity implements
 				}
 			} else if (m_selectedArticleId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_article, true);
-			} else if (m_activeFeedId != 0 /*|| m_activeCategory != null */) {
+			} else if (m_activeFeedId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+				
+				MenuItem search = m_menu.findItem(R.id.search);
+				
+				if (!m_compatMode) {
+					SearchView searchView = (SearchView) search.getActionView();
+					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+						private String query = "";
+						
+						@Override
+						public boolean onQueryTextSubmit(String query) {
+							OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
+									.findFragmentById(R.id.headlines_fragment);
+							
+							if (frag != null) {
+								frag.setSearchQuery(query);
+								this.query = query;
+							}
+							
+							return false;
+						}
+						
+						@Override
+						public boolean onQueryTextChange(String newText) {
+							if (newText.equals("") && !newText.equals(this.query)) {
+								OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
+										.findFragmentById(R.id.headlines_fragment);
+								
+								if (frag != null) {
+									frag.setSearchQuery(newText);
+									this.query = newText;
+								}
+							}
+							
+							return false;
+						}
+					});
+				}
+				
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, true);
 			}
@@ -977,6 +1069,15 @@ public class OfflineActivity extends FragmentActivity implements
 
 		deselectAllArticles();
 
+		if (m_menu != null) {
+			MenuItem search = m_menu.findItem(R.id.search);
+		
+			if (search != null && !m_compatMode) {
+				SearchView sv = (SearchView) search.getActionView();
+				sv.setQuery("", false);				
+			}
+		}
+		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment();
 		ft.replace(R.id.headlines_fragment, frag);

@@ -45,6 +45,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private int m_feedId;
 	private int m_activeArticleId;
 	private boolean m_combinedMode = true;
+	private String m_searchQuery = "";
 	
 	private SharedPreferences m_prefs;
 	
@@ -120,6 +121,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			//m_selectedArticles = savedInstanceState.getParcelableArrayList("selectedArticles");
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
+			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -141,8 +143,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public Cursor createCursor() {
-		return m_offlineServices.getReadableDb().query("articles", 
-				null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+		if (m_searchQuery.equals("")) {
+			return m_offlineServices.getReadableDb().query("articles", 
+					null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+		} else {
+			return m_offlineServices.getReadableDb().query("articles", 
+					null, "feed_id = ? AND (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
+					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
+		}
 	}
 	
 	@Override
@@ -189,6 +197,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		out.putInt("activeArticleId", m_activeArticleId);
 		//out.putParcelableArrayList("selectedArticles", m_selectedArticles);
 		out.putBoolean("combinedMode", m_combinedMode);
+		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -438,6 +447,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	public int getArticleCount() {
 		return m_adapter.getCount();
+	}
+
+	public void setSearchQuery(String query) {
+		if (!m_searchQuery.equals(query)) {
+			m_searchQuery = query;
+			refresh();
+		}
 	}
 	
 }
