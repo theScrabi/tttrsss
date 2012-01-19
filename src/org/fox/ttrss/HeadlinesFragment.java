@@ -519,7 +519,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public Article getArticleAtPosition(int position) {
-		return m_adapter.getItem(position);
+		try {
+			return m_adapter.getItem(position);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 	
 	public Article getArticleById(int id) {

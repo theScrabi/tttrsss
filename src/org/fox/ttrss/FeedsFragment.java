@@ -544,6 +544,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	}
 
 	public Feed getFeedAtPosition(int position) {
-		return m_adapter.getItem(position);
+		try {
+			return m_adapter.getItem(position);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 }
