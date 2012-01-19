@@ -1568,6 +1568,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			m_activeFeed = new Feed(cat.id, cat.title, true);
 
+			if (m_menu != null) {
+				MenuItem search = m_menu.findItem(R.id.search);
+			
+				if (search != null && !m_compatMode) {
+					SearchView sv = (SearchView) search.getActionView();
+					sv.setQuery("", false);				
+				}
+			}
+			
 			HeadlinesFragment frag = new HeadlinesFragment();
 
 			FragmentTransaction ft = getSupportFragmentManager()
