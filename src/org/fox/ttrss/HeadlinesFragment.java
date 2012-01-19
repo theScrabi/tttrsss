@@ -58,6 +58,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private boolean m_refreshInProgress = false;
 	private boolean m_canLoadMore = false;
 	private boolean m_combinedMode = true;
+	private String m_searchQuery = "";
 	
 	private SharedPreferences m_prefs;
 	
@@ -110,6 +111,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
+			m_searchQuery = savedInstanceState.getString("searchQuery", "");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -201,6 +203,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				put("skip", String.valueOf(fskip));
 				
 				if (isCat) put("is_cat", "true");
+				
+				if (m_searchQuery.length() != 0) {
+					put("search", m_searchQuery);
+					put("search_mode", "");
+					put("match_on", "both");
+				}
 			}			 
 		};
 
@@ -217,6 +225,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putBoolean("combinedMode", m_combinedMode);
+		out.putString("searchQuery", m_searchQuery);
 	}
 
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -560,6 +569,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public int getArticlePosition(Article article) {
 		return m_adapter.getPosition(article);
+	}
+
+	public void setSearchQuery(String query) {
+		if (!m_searchQuery.equals(query)) {
+			m_searchQuery = query;
+			refresh(false);
+		}
 	}
 
 	

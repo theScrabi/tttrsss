@@ -31,6 +31,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SearchViewCompat;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Display;
@@ -43,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1201,8 +1203,52 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
-				} else if (m_activeFeed != null || m_activeCategory != null) {
+				} else if (m_activeFeed != null) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+					
+					MenuItem search = m_menu.findItem(R.id.search);
+					
+					if (search != null && !m_compatMode) {
+						SearchView searchView = (SearchView) search.getActionView();
+						searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+							private String query = "";
+							
+							@Override
+							public boolean onQueryTextSubmit(String query) {
+								Log.d(TAG, "Search/onQueryTextSubmit");
+								
+								HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+										.findFragmentById(R.id.headlines_fragment);
+								
+								if (frag != null) {
+									frag.setSearchQuery(query);
+									this.query = query;
+								}
+								
+								return false;
+							}
+							
+							@Override
+							public boolean onQueryTextChange(String newText) {
+								// TODO Auto-generated method stub
+								
+								Log.d(TAG, "Search/onQueryTextChange: " + newText);
+								
+								if (newText.equals("") && !newText.equals(this.query)) {
+									HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+											.findFragmentById(R.id.headlines_fragment);
+									
+									if (frag != null) {
+										frag.setSearchQuery(newText);
+										this.query = newText;
+									}
+								}
+								
+								return false;
+							}
+						});
+					}
+					
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_feeds, true);
 				}
@@ -1422,6 +1468,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		if (!append) {
+			
+			MenuItem search = m_menu.findItem(R.id.search);
+			
+			if (search != null && !m_compatMode) {
+				SearchView sv = (SearchView) search.getActionView();
+				sv.setQuery("", false);				
+			}
+			
 			HeadlinesFragment hf = new HeadlinesFragment();
 
 			FragmentTransaction ft = getSupportFragmentManager()

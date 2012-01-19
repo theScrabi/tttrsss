@@ -4,11 +4,13 @@
 
         <group android:id="@+id/menu_group_feeds" >
 
-            <!-- <item
+            <!--
+                 <item
                 android:id="@+id/back_to_categories"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/back_to_categories"/> -->
+                android:title="@string/back_to_categories"/>
+            -->
 
             <item
                 android:id="@+id/show_feeds"
@@ -39,8 +41,15 @@
 
             <item
                 android:id="@+id/go_offline"
-                android:icon="@drawable/ic_menu_cloud"                
+                android:icon="@drawable/ic_menu_cloud"
                 android:title="@string/go_offline"/>
+
+            <item
+                android:id="@+id/search"
+                android:actionViewClass="android.widget.SearchView"
+                android:icon="@android:drawable/ic_menu_search"
+                android:showAsAction="ifRoom"
+                android:title="@string/search"/>
 
             <item
                 android:id="@+id/headlines_mark_as_read"
@@ -112,12 +121,11 @@
                 android:id="@+id/catchup_above"
                 android:icon="@drawable/ic_menu_tick"
                 android:title="@string/article_mark_read_above"/>
-            
+
             <item
                 android:id="@+id/set_labels"
                 android:icon="@drawable/ic_menu_marked"
                 android:title="@string/article_set_labels"/>
-            
         </group>
     </group>
 
