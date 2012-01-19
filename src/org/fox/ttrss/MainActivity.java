@@ -799,6 +799,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						.setVisibility(View.VISIBLE);
 					findViewById(R.id.headlines_fragment).setVisibility(
 							View.GONE);
+
 					refreshCategories();
 				} else {
 					findViewById(R.id.feeds_fragment).setVisibility(
@@ -808,6 +809,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 					refreshFeeds();
 				}
+
+				FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.feeds_fragment);
+
+				if (ff != null) {
+					ff.setSelectedFeedId(0);
+				}
+
 				m_activeFeed = null;
 
 				initMainMenu();
@@ -832,6 +841,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			} else if (m_activeFeed != null) {
 				findViewById(R.id.headlines_fragment).setVisibility(
 						View.INVISIBLE);
+				
+				FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.feeds_fragment);
+
+				if (ff != null) {
+					ff.setSelectedFeedId(0);
+				}
 				
 				m_activeFeed = null;
 				

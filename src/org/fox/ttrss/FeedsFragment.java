@@ -550,4 +550,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			return null;
 		}
 	}
+	
+	public void setSelectedFeedId(int feedId) {
+		m_selectedFeedId = feedId;
+	}
+
 }
