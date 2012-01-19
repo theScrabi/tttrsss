@@ -1208,15 +1208,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					
 					MenuItem search = m_menu.findItem(R.id.search);
 					
-					if (search != null && !m_compatMode) {
+					search.setEnabled(m_apiLevel >= 2);
+					
+					if (!m_compatMode) {
 						SearchView searchView = (SearchView) search.getActionView();
 						searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 							private String query = "";
 							
 							@Override
 							public boolean onQueryTextSubmit(String query) {
-								Log.d(TAG, "Search/onQueryTextSubmit");
-								
 								HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 										.findFragmentById(R.id.headlines_fragment);
 								
@@ -1230,10 +1230,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							
 							@Override
 							public boolean onQueryTextChange(String newText) {
-								// TODO Auto-generated method stub
-								
-								Log.d(TAG, "Search/onQueryTextChange: " + newText);
-								
 								if (newText.equals("") && !newText.equals(this.query)) {
 									HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 											.findFragmentById(R.id.headlines_fragment);
