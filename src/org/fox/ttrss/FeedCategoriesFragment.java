@@ -337,4 +337,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		m_selectedCatId = cat.id;
 		m_adapter.notifyDataSetChanged();
 	}
+	
+	public void setSelectedCategoryId(int id) {
+		m_selectedCatId = id;
+	}
 }
