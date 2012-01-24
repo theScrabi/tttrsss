@@ -1178,7 +1178,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
-			intent.putExtra(Intent.EXTRA_TEXT, article.link);
+			intent.putExtra(Intent.EXTRA_TEXT, article.title + " " + article.link);
 
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.share_article)));

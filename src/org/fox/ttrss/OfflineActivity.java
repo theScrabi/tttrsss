@@ -428,7 +428,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, title);
-			intent.putExtra(Intent.EXTRA_TEXT, link);
+			intent.putExtra(Intent.EXTRA_TEXT, title + " " + link);
 
 			startActivity(Intent.createChooser(intent,
 					getString(R.id.share_article)));
