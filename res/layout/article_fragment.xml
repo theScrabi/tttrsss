@@ -106,19 +106,6 @@
             android:layout_weight="1"
             android:padding="3dip" >
         </WebView>
-
-        <!-- Ad Placeholder -->
-
-        <com.google.ads.AdView
-            android:id="@+id/ad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            ads:adSize="BANNER"
-            ads:adUnitId="a14ed24fe8c671c"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            ads:loadAdOnCreate="false" />
     </LinearLayout>
 
 </LinearLayout>

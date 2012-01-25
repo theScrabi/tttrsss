@@ -3,7 +3,6 @@ package org.fox.ttrss;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fox.ttrss.OnlineServices.RelativeArticle;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,21 +15,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
 
 public class ArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
@@ -179,19 +169,6 @@ public class ArticleFragment extends Fragment {
 					tagv.setVisibility(View.GONE);
 				}
 			}			
-			
-			AdView av = (AdView)view.findViewById(R.id.ad);
-			
-			if (av != null) {
-				if (!m_onlineServices.getLicensed()) {
-					AdRequest request = new AdRequest();
-					request.addTestDevice(AdRequest.TEST_EMULATOR);
-					av.loadAd(request);
-				} else {
-					av.setVisibility(View.GONE);
-				}
-			}
-
 		} 
 		
 		return view;    	

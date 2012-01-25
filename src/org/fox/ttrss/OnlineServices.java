@@ -22,7 +22,6 @@ public interface OnlineServices {
 	public boolean getUnreadArticlesOnly();
 	public boolean isSmallScreen();
 	public boolean getUnreadOnly();
-	public boolean getLicensed();
 	public int getApiLevel();
 	public void setSelectedArticle(Article article);
 }

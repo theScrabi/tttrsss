@@ -1,15 +1,11 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.crypto.spec.DESedeKeySpec;
-
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -20,7 +16,6 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,10 +26,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SearchViewCompat;
 import android.util.Log;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +37,6 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,7 +63,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_unreadArticlesOnly = true;
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
-	private int m_isLicensed = -1;
 	private int m_apiLevel = 0;
 	private boolean m_isOffline = false;
 	private boolean m_offlineModeReady = false;
@@ -143,11 +134,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		if (frag != null) {
 			frag.notifyUpdated();
 		}
-	}
-
-	@Override
-	public boolean getLicensed() {
-		return m_isLicensed == 1;
 	}
 
 	@Override
@@ -468,7 +454,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			m_activeCategory = savedInstanceState
 					.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
-			m_isLicensed = savedInstanceState.getInt("isLicensed");
 			m_offlineModeReady = savedInstanceState.getBoolean("offlineModeReady");
 		}
 
@@ -506,17 +491,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			startActivity(offline);
 			finish();
 		} else {
-			List<PackageInfo> pkgs = getPackageManager()
-					.getInstalledPackages(0);
-
-			for (PackageInfo p : pkgs) {
-				if ("org.fox.ttrss.key".equals(p.packageName)) {
-					m_isLicensed = 1;
-					Log.d(TAG, "license apk found");
-					break;
-				}
-			}
-
 			if (m_smallScreenMode) {
 				if (m_selectedArticle != null) {
 					findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
@@ -693,7 +667,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
-		out.putInt("isLicensed", m_isLicensed);
 		out.putBoolean("offlineModeReady", m_offlineModeReady);
 	}
 
