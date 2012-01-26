@@ -86,7 +86,7 @@ public class ArticleFragment extends Fragment {
 					titleStr = m_article.title;
 				
 				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_article.link.replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				title.setText(Html.fromHtml("<a href=\""+m_article.link.trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);

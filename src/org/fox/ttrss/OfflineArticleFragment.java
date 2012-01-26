@@ -91,7 +91,7 @@ public class OfflineArticleFragment extends Fragment {
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
 				
 				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_cursor.getString(m_cursor.getColumnIndex("link")).replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				title.setText(Html.fromHtml("<a href=\""+m_cursor.getString(m_cursor.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
