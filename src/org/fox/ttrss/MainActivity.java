@@ -781,6 +781,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							View.GONE);
 					findViewById(R.id.cats_fragment)
 						.setVisibility(View.VISIBLE);
+					
+					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
+					ft.commit();
 
 					FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
 							.findFragmentById(R.id.cats_fragment);
@@ -795,6 +799,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							View.GONE);
 					findViewById(R.id.feeds_fragment).setVisibility(
 							View.VISIBLE);
+
+					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
+					ft.commit();
 
 					refreshFeeds();
 				}
@@ -839,6 +847,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 				
 				m_activeFeed = null;
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
+				ft.commit();
 				
 				refreshFeeds();
 				initMainMenu();

@@ -7,9 +7,9 @@ import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -339,6 +339,10 @@ public class OfflineActivity extends FragmentActivity implements
 					ff.setSelectedFeedId(0);
 				}
 				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new OfflineHeadlinesFragment());
+				ft.commit();
+				
 				refreshViews();
 				initMainMenu();
 
@@ -358,7 +362,11 @@ public class OfflineActivity extends FragmentActivity implements
 				if (ff != null) {
 					ff.setSelectedFeedId(0);
 				}
-				
+
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new OfflineHeadlinesFragment());
+				ft.commit();
+
 				refreshViews();
 				initMainMenu();
 				
