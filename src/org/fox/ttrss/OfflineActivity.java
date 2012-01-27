@@ -131,7 +131,9 @@ public class OfflineActivity extends FragmentActivity implements
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			if (android.os.Build.VERSION.SDK_INT < 14) {
+				new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			}
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -311,11 +313,11 @@ public class OfflineActivity extends FragmentActivity implements
 			if (m_selectedArticleId != 0) {
 				closeArticle();
 			} else if (m_activeFeedId != 0) {
-				if (m_compatMode) {
+				//if (m_compatMode) {
 					findViewById(R.id.main).setAnimation(
 							AnimationUtils.loadAnimation(this,
 									R.anim.slide_right));
-				}
+				//}
 
 				/*
 				 * if (m_activeFeed != null && m_activeFeed.is_cat) {
@@ -669,7 +671,7 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private void closeArticle() {
-		if (m_compatMode) {
+		if (m_smallScreenMode) {
 			findViewById(R.id.main).setAnimation(
 					AnimationUtils.loadAnimation(this, R.anim.slide_right));
 		}
@@ -1118,7 +1120,7 @@ public class OfflineActivity extends FragmentActivity implements
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
 		
-		if (m_compatMode) {
+		if (m_smallScreenMode) {
 			if (compatAnimation == 0)
 				findViewById(R.id.main).setAnimation(
 						AnimationUtils.loadAnimation(this, R.anim.slide_left));
