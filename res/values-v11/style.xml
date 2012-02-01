@@ -20,6 +20,7 @@
     	<item name="headlineSelectedTextColor">@android:color/primary_text_light</item>
     	<item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
     	<item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
+    	<item name="linkColor">#5858F8</item>
     </style>
 
     <style name="DarkTheme" parent="android:Theme.Holo">
@@ -42,6 +43,7 @@
         <item name="headlineSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="linkColor">#5858F8</item>
     </style>
 
 </resources>

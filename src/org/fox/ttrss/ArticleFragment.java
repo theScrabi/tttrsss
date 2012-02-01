@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,23 +103,19 @@ public class ArticleFragment extends Fragment {
 				ws.setSupportZoom(true);
 				ws.setBuiltInZoomControls(true);
 
-				TypedValue tv = new TypedValue();
-				
-				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-				    getActivity().getTheme().resolveAttribute(android.R.attr.textColorLink, tv, true);
+				TypedValue tv = new TypedValue();				
+			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 
+				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 					cssOverride = "body { background : black; color : #e0e0e0}";
 					view.setBackgroundColor(android.R.color.black);
 					web.setBackgroundColor(android.R.color.black);
 				} else {
-				    getActivity().getTheme().resolveAttribute(android.R.attr.textColorLinkInverse, tv, true);
-
 					cssOverride = "";
 				}
 
-			    int linkColor = tv.data;
-			    String hexColor = String.format("#%06X", (0xFFFFFF & linkColor));
-			    
+
+				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
 
 				String articleContent = m_article.content != null ? m_article.content : "";

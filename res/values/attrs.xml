@@ -19,4 +19,5 @@
     <attr name="headlineSelectedTextColor" format="reference|color" />
     <attr name="headlineExcerptTextColor" format="reference|color" />
     <attr name="headlineSelectedExcerptTextColor" format="reference|color" />
+    <attr name="linkColor" format="reference|color" />
 </resources>
