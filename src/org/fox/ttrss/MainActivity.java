@@ -790,7 +790,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							.findFragmentById(R.id.cats_fragment);
 
 					if (cf != null) {
-						cf.setSelectedCategoryId(0);
+						// can't use 0 here because Uncategorized might be in the buffer
+						cf.setSelectedCategoryId(-1000000);
 					}
 					
 					refreshCategories();
