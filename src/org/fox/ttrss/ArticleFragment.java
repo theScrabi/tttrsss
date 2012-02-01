@@ -102,7 +102,7 @@ public class ArticleFragment extends Fragment {
 				ws.setBuiltInZoomControls(true);
 
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-					cssOverride = "body { background : black; color : #e0e0e0}\n";			
+					cssOverride = "body { background : black; color : #e0e0e0}\na:link {color: #00aae0;} \na:visited { color: #aaaae0;}\n";			
 					web.setBackgroundColor(android.R.color.black);
 				} else {
 					cssOverride = "";
