@@ -689,6 +689,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			m_refreshTimer = new Timer("Refresh");
 
 			m_refreshTimer.schedule(m_refreshTask, 60 * 1000L, 120 * 1000L);
+		} else {
+			login();
 		}
 	}
 
