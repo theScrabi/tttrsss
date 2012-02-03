@@ -418,6 +418,29 @@ public class OfflineActivity extends FragmentActivity implements
 		return c;
 	}
 
+	private Cursor getFeedById(int feedId) {
+		Cursor c = getReadableDb().query("feeds", null,
+				BaseColumns._ID + "=?",
+				new String[] { String.valueOf(feedId) }, null, null, null);
+
+		c.moveToFirst();
+
+		return c;
+	}
+
+	private Intent getShareIntent(Cursor article) {
+		String title = article.getString(article.getColumnIndex("title"));
+		String link = article.getString(article.getColumnIndex("link"));
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_SUBJECT, title);
+		intent.putExtra(Intent.EXTRA_TEXT, title + " " + link);
+
+		return intent;
+	}
+	
 	private void shareArticle(int articleId) {
 
 		Cursor article = getArticleById(articleId);
@@ -429,20 +452,11 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private void shareArticle(Cursor article) {
-
 		if (article != null) {
-			String title = article.getString(article.getColumnIndex("title"));
-			String link = article.getString(article.getColumnIndex("link"));
-
-			Intent intent = new Intent(Intent.ACTION_SEND);
-
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, title);
-			intent.putExtra(Intent.EXTRA_TEXT, title + " " + link);
-
+			Intent intent = getShareIntent(article);
+			
 			startActivity(Intent.createChooser(intent,
 					getString(R.id.share_article)));
-
 		}
 	}
 
@@ -784,10 +798,22 @@ public class OfflineActivity extends FragmentActivity implements
 			}
 			
 			if (!m_compatMode) {
+				
+				if (m_activeFeedId != 0) {
+					Cursor feed = getFeedById(m_activeFeedId);
+					
+					if (feed != null) {					
+						getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
+					}
+				} else {
+					getActionBar().setTitle(R.string.app_name);
+				}
+				
 				if (!m_smallScreenMode) {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
 				} else {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
+					getActionBar().setDisplayShowTitleEnabled(m_selectedArticleId == 0);
 				}
 			}
 		}

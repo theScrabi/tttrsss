@@ -38,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1176,14 +1177,21 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
+	private Intent getShareIntent(Article article) {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
+		intent.putExtra(Intent.EXTRA_TEXT, article.title + " " + article.link);
+
+		return intent;
+	}
+	
 	private void shareArticle(Article article) {
 		if (article != null) {
-			Intent intent = new Intent(Intent.ACTION_SEND);
 
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
-			intent.putExtra(Intent.EXTRA_TEXT, article.title + " " + article.link);
-
+			Intent intent = getShareIntent(article);
+			
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.share_article)));
 		}
@@ -1313,11 +1321,31 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 
 				if (!m_compatMode) {
+					
+					if (m_activeFeed != null) {
+						getActionBar().setTitle(m_activeFeed.title);
+					} else if (m_activeCategory != null) {
+						getActionBar().setTitle(m_activeCategory.title);
+					} else {
+						getActionBar().setTitle(R.string.app_name);
+					}
+					
 					if (!m_smallScreenMode) {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
 					} else {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
+						getActionBar().setDisplayShowTitleEnabled(m_selectedArticle == null);						
 					}
+					
+					if (android.os.Build.VERSION.SDK_INT >= 14) {			
+						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+						
+						if (m_selectedArticle != null) {
+							Log.d(TAG, "setting up share provider");
+							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+						}
+					}
+					
 				}
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
