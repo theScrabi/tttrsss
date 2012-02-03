@@ -1685,6 +1685,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			setLoadingStatus(R.string.login_need_configure, false);
 
+			// launch preferences
+			Intent intent = new Intent(MainActivity.this,
+					PreferencesActivity.class);
+			startActivityForResult(intent, 0);
+
 		} else {
 
 			LoginRequest ar = new LoginRequest(getApplicationContext());

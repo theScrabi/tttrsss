@@ -106,7 +106,9 @@ public class ArticleFragment extends Fragment {
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 			    
 			    // prevent flicker in ics
-			    web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    }
 
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
