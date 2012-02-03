@@ -1334,7 +1334,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
 					} else {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
-						getActionBar().setDisplayShowTitleEnabled(m_selectedArticle == null);						
 					}
 					
 					if (android.os.Build.VERSION.SDK_INT >= 14) {			

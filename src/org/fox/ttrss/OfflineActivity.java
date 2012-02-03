@@ -813,7 +813,6 @@ public class OfflineActivity extends FragmentActivity implements
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
 				} else {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
-					getActionBar().setDisplayShowTitleEnabled(m_selectedArticleId == 0);
 				}
 			}
 		}
