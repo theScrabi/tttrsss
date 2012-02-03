@@ -1430,9 +1430,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 								if (m_enableCats) {
 									FeedCategoriesFragment frag = new FeedCategoriesFragment();
 									ft.replace(R.id.cats_fragment, frag);
+									
+									findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
 								} else {
 									FeedsFragment frag = new FeedsFragment();
 									ft.replace(R.id.feeds_fragment, frag);
+									
+									findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 								}
 
 								try {
@@ -1674,6 +1678,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		findViewById(R.id.loading_progress).setVisibility(View.GONE);
 
+		findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+		findViewById(R.id.cats_fragment).setVisibility(View.GONE);
+		findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+		findViewById(R.id.article_fragment).setVisibility(View.GONE);
+		
 		initMainMenu();
 	}
 
