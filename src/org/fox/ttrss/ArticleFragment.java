@@ -98,22 +98,23 @@ public class ArticleFragment extends Fragment {
 				String content;
 				String cssOverride = "";
 				
-				
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(true);
 				ws.setBuiltInZoomControls(true);
 
 				TypedValue tv = new TypedValue();				
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
+			    
+			    // prevent flicker in ics
+			    web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-					cssOverride = "body { background : black; color : #e0e0e0}";
-					view.setBackgroundColor(android.R.color.black);
-					web.setBackgroundColor(android.R.color.black);
+					cssOverride = "body { background : transparent; color : #e0e0e0}";
+					//view.setBackgroundColor(android.R.color.black);
+					web.setBackgroundColor(android.R.color.transparent);
 				} else {
 					cssOverride = "";
 				}
-
 
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
