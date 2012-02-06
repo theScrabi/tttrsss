@@ -65,6 +65,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	private int m_apiLevel = 0;
+	private boolean m_isLoggingIn = false;
 	private boolean m_isOffline = false;
 	private boolean m_offlineModeReady = false;
 
@@ -539,6 +540,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 			}
 
+			//AppRater.showRateDialog(this, null);
+			AppRater.appLaunched(this);
+			
 			if (m_sessionId != null) {
 				loginSuccess();
 			} else {
@@ -691,7 +695,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			m_refreshTimer.schedule(m_refreshTask, 60 * 1000L, 120 * 1000L);
 		} else {
-			login();
+			if (!m_isLoggingIn) {
+				login();
+			}
 		}
 	}
 
@@ -1426,6 +1432,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		@SuppressWarnings("unchecked")
 		protected void onPostExecute(JsonElement result) {
+			m_isLoggingIn = false;
+			
 			if (result != null) {
 				try {
 					JsonObject content = result.getAsJsonObject();
@@ -1743,6 +1751,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			ar.execute(map);
 
 			setLoadingStatus(R.string.login_in_progress, true);
+			
+			m_isLoggingIn = true;
 		}
 	}
 
