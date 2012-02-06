@@ -152,7 +152,7 @@ public class ArticleFragment extends Fragment {
 					"</head>" +
 					"<body>" + articleContent;
 				
-				if (m_article.attachments.size() != 0) {
+				if (m_article.attachments != null && m_article.attachments.size() != 0) {
 					String attachments = "<div class=\"attachments\">Attachments: ";
 					
 					for (Attachment a : m_article.attachments) {
