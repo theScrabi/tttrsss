@@ -197,6 +197,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				put("sid", sessionId);
 				put("feed_id", String.valueOf(m_feed.id));
 				put("show_content", "true");
+				put("include_attachments", "true");
 				put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
 				put("offset", String.valueOf(0));
 				put("view_mode", showUnread ? "adaptive" : "all_articles");

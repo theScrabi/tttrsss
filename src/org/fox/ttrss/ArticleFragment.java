@@ -1,5 +1,8 @@
 package org.fox.ttrss;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -142,11 +145,41 @@ public class ArticleFragment extends Fragment {
 					//"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					cssOverride +
+					"div.attachments { font-size : 70%; margin-top : 1em; }" +
 					"img { max-width : 98%; height : auto; }" +
 					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +
-					"<body>" + articleContent + "</body></html>";
+					"<body>" + articleContent;
+				
+				if (m_article.attachments.size() != 0) {
+					String attachments = "<div class=\"attachments\">Attachments: ";
+					
+					for (Attachment a : m_article.attachments) {
+						if (a.content_type != null && a.content_url != null && a.content_type.indexOf("image") != -1) {
+							
+							try {
+								URL url = new URL(a.content_url.trim());
+
+								String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
+								
+								content += "<br/><img src=\"" + url.toString().replace("\"", "\\\"") + "\">";
+								
+								attachments += "<a href=\""+url.toString().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
+
+							} catch (MalformedURLException e) {
+								//
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
+						}					
+					}
+					content += attachments.replaceAll(", $", "");
+					content += "</div>";
+				}
+				
+				content += "</body></html>";
 					
 				try {
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);

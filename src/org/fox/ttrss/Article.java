@@ -16,7 +16,8 @@ public class Article implements Parcelable {
 	String title; 
 	String link; 
 	int feed_id; 
-	List<String> tags; 
+	List<String> tags;
+	List<Attachment> attachments;
 	String content;
 	List<List<String>> labels;
 	
@@ -49,6 +50,7 @@ public class Article implements Parcelable {
 		out.writeInt(feed_id);
 		out.writeStringList(tags);
 		out.writeString(content);
+		out.writeList(attachments);
 	}
 	
 	public void readFromParcel(Parcel in) {
@@ -66,6 +68,9 @@ public class Article implements Parcelable {
 		in.readStringList(tags);
 		
 		content = in.readString();
+		
+		attachments = new ArrayList<Attachment>();
+		in.readList(attachments, null);
 	}
 	
 	@SuppressWarnings("rawtypes")
