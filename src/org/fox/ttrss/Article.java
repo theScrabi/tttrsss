@@ -70,7 +70,7 @@ public class Article implements Parcelable {
 		content = in.readString();
 		
 		attachments = new ArrayList<Attachment>();
-		in.readList(attachments, null);
+		in.readList(attachments, Attachment.class.getClassLoader());
 	}
 	
 	@SuppressWarnings("rawtypes")
