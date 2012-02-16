@@ -285,7 +285,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			if (tt != null) {
 				if (m_combinedMode) {
 					tt.setMovementMethod(LinkMovementMethod.getInstance());
-					tt.setText(Html.fromHtml("<a href=\""+article.getString(article.getColumnIndex("link")).replace("\"", "\\\"")+"\">" + 
+					tt.setText(Html.fromHtml("<a href=\""+article.getString(article.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + 
 							article.getString(article.getColumnIndex("title")) + "</a>"));
 				} else {
 					tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));

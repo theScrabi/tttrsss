@@ -378,7 +378,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (tt != null) {
 				if (m_combinedMode) {
 					tt.setMovementMethod(LinkMovementMethod.getInstance());
-					tt.setText(Html.fromHtml("<a href=\""+article.link.replace("\"", "\\\"")+"\">" + article.title + "</a>"));
+					tt.setText(Html.fromHtml("<a href=\""+article.link.trim().replace("\"", "\\\"")+"\">" + article.title + "</a>"));
 				} else {
 					tt.setText(Html.fromHtml(article.title));
 				}
