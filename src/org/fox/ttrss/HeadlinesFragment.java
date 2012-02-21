@@ -1,6 +1,9 @@
 package org.fox.ttrss;
 
+import java.io.File;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -440,6 +443,33 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (content != null) {
 				if (m_combinedMode) {
 					content.setMovementMethod(LinkMovementMethod.getInstance());
+					
+					if (article.attachments != null && article.attachments.size() != 0) {
+						String attachments = "<div style=\"font-size : 70%; margin-top : 1em;\">" + getString(R.string.attachments) + " ";
+						
+						for (Attachment a : article.attachments) {
+							if (a.content_type != null && a.content_url != null && a.content_type.indexOf("image") != -1) {
+								
+								try {
+									URL url = new URL(a.content_url.trim());
+
+									String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
+									
+									articleContent += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
+									
+									attachments += "<a href=\""+url.toString().trim().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
+
+								} catch (MalformedURLException e) {
+									//
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								
+							}					
+						}
+						articleContent += attachments.replaceAll(", $", "");
+						articleContent += "</div>";
+					}
 					
 					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
 					content.setText(Html.fromHtml(articleContent, m_dummyGetter, null));

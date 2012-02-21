@@ -153,7 +153,7 @@ public class ArticleFragment extends Fragment {
 					"<body>" + articleContent;
 				
 				if (m_article.attachments != null && m_article.attachments.size() != 0) {
-					String attachments = "<div class=\"attachments\">Attachments: ";
+					String attachments = "<div class=\"attachments\">" + getString(R.string.attachments) + " ";
 					
 					for (Attachment a : m_article.attachments) {
 						if (a.content_type != null && a.content_url != null && a.content_type.indexOf("image") != -1) {
@@ -163,9 +163,9 @@ public class ArticleFragment extends Fragment {
 
 								String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
 								
-								content += "<br/><img src=\"" + url.toString().replace("\"", "\\\"") + "\">";
+								content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
 								
-								attachments += "<a href=\""+url.toString().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
+								attachments += "<a href=\""+url.toString().trim().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
 
 							} catch (MalformedURLException e) {
 								//
