@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.OnlineServices.RelativeArticle;
 
+import android.animation.LayoutTransition;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -131,8 +132,9 @@ public class OfflineActivity extends FragmentActivity implements
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14) {
-				new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
+				LayoutTransition transitioner = new LayoutTransition();
+				((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
 			}
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.animation.LayoutTransition;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -482,8 +483,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14) {
-				new TransitionHelper((ViewGroup) findViewById(R.id.main));
+			if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
+				LayoutTransition transitioner = new LayoutTransition();
+				((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
 			}
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
