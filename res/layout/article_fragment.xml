@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/linearLayout3"
                 android:layout_alignParentLeft="true"
+                android:textSize="15sp"
                 android:layout_alignParentTop="true"
                 android:layout_weight="1"
                 android:text="There are many variations of passages of Lorem Ipsum available" />

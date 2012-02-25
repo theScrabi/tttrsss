@@ -151,6 +151,18 @@ public class OfflineArticleFragment extends Fragment {
 					articleContent = doc.toString();
 				}
 				
+				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
+				case 0:
+					cssOverride += "body { text-align : justify; font-size : 14px; } ";
+					break;
+				case 1:
+					cssOverride += "body { text-align : justify; font-size : 18px; } ";
+					break;
+				case 2:
+					cssOverride += "body { text-align : justify; font-size : 21px; } ";
+					break;		
+				}
+				
 				content = 
 					"<html>" +
 					"<head>" +
@@ -159,7 +171,6 @@ public class OfflineArticleFragment extends Fragment {
 					"<style type=\"text/css\">" +
 					cssOverride +
 					"img { max-width : 98%; height : auto; }" +
-					"body { text-align : justify; }" +
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent + "</body></html>";

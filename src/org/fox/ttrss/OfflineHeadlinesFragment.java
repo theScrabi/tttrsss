@@ -357,6 +357,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					content.setText(Html.fromHtml(article.getString(article.getColumnIndex("content")), m_dummyGetter, null));
 					
+					switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
+					case 0:
+						content.setTextSize(15F);
+						break;
+					case 1:
+						content.setTextSize(18F);
+						break;
+					case 2:
+						content.setTextSize(21F);
+						break;		
+					}
 				} else {
 					content.setVisibility(View.GONE);
 				}

@@ -469,11 +469,24 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						}
 						articleContent += attachments.replaceAll(", $", "");
 						articleContent += "</div>";
+						
 					}
 					
 					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
 					content.setText(Html.fromHtml(articleContent, m_dummyGetter, null));
-					
+
+					switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
+					case 0:
+						content.setTextSize(15F);
+						break;
+					case 1:
+						content.setTextSize(18F);
+						break;
+					case 2:
+						content.setTextSize(21F);
+						break;		
+					}
+
 				} else {
 					content.setVisibility(View.GONE);
 				}

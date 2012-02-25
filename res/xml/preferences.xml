@@ -19,10 +19,10 @@
 
         <EditTextPreference
             android:hint="@string/default_url"
+            android:inputType="textUri"
             android:key="ttrss_url"
             android:singleLine="true"
             android:summary="@string/ttrss_url_summary"
-            android:inputType="textUri"
             android:title="@string/ttrss_url" >
         </EditTextPreference>
 
@@ -58,6 +58,13 @@
             android:key="theme"
             android:summary="@string/pref_theme_long"
             android:title="@string/pref_theme" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_font_size_names"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="font_size"
+            android:title="@string/pref_font_size" />
 
         <CheckBoxPreference
             android:defaultValue="false"
