@@ -84,7 +84,7 @@
     <string name="error_parse_error">Erreur: Echec de l\'analyse JSON</string>
     <string name="error_io_error">Erreur: I/O Echec (serveur en panne?)</string>
     <string name="error_other_error">Erreur: erreur inconnue (voir enregistrement)</string>
-    <string name="error_api_disabled">Erreur: API désactivé pour cet usager</string>
+    <!--  <string name="error_api_disabled">Erreur: API désactivé pour cet usager</string> -->
     <string name="error_api_unknown">Erreur: API inconnu erreur (voir enregistrement)</string>
     <string name="error_api_incorrect_usage">Erreur: utilisation incorrecte de l\'API</string>
     <string name="error_login_failed">Erreur: nom d\'utilisateur ou mot de passe incorrect</string>

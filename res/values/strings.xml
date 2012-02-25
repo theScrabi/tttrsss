@@ -84,7 +84,7 @@
     <string name="error_parse_error">Error: JSON parse failed</string>
     <string name="error_io_error">Error: I/O failure (server down?)</string>
     <string name="error_other_error">Error: unknown error (see log)</string>
-    <string name="error_api_disabled">Error: API disabled for this user</string>
+    <string name="error_api_disabled">Error: Please enable external API access in tt-rss Preferences - Advanced</string>
     <string name="error_api_unknown">Error: unknown API error (see log)</string>
     <string name="error_api_incorrect_usage">Error: incorrect API usage</string>
     <string name="error_login_failed">Error: username or password incorrect</string>

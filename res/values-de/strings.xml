@@ -84,7 +84,7 @@
     <string name="error_parse_error">Fehler: JSON parsen fehlgeschlagen</string>
     <string name="error_io_error">Fehler: I/O Fehler (Server nicht erreichbar?)</string>
     <string name="error_other_error">Fehler: Unbekannter Fehler (siehe Log)</string>
-    <string name="error_api_disabled">Fehler: API für diesen Benutzer abgeschlatet</string>
+    <!-- <string name="error_api_disabled">Fehler: API für diesen Benutzer abgeschlatet</string> -->
     <string name="error_api_unknown">Fehler: unbekannter API Fehler (siehe Log)</string>
     <string name="error_api_incorrect_usage">Fehler: falsche API Benutzung</string>
     <string name="error_login_failed">Fehler: Benutzername und Passwort falsch</string>
