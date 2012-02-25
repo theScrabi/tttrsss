@@ -133,8 +133,10 @@ public class OfflineActivity extends FragmentActivity implements
 
 		if (!m_compatMode) {
 			if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
-				LayoutTransition transitioner = new LayoutTransition();
-				((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
+				if (!m_smallScreenMode) {
+					LayoutTransition transitioner = new LayoutTransition();
+					((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
+				}
 			}
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
