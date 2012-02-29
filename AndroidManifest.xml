@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.fox.ttrss"
-    android:versionCode="64"
-    android:versionName="0.5.1" >
+    android:versionCode="66"
+    android:versionName="0.5.2" >
 
     <uses-sdk android:minSdkVersion="7" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:allowBackup="true"
@@ -49,6 +50,8 @@
             android:enabled="true"
             android:name=".ImageCacheService" />
 
+        <service android:name="BillingService" />
+                
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIwG6zsGB4qo6ZhjfwIJpm9WI7AqmWaoRXm6ZJnA" />

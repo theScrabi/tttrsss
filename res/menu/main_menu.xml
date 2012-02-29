@@ -135,7 +135,12 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:showAsAction=""
         android:title="@string/preferences"/>
-
+    
+    <item
+        android:id="@+id/donate"
+        android:showAsAction=""
+        android:title="@string/donate"/>
+    
     <group android:id="@+id/menu_group_logged_out" >
 
         <item

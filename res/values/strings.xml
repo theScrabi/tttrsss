@@ -122,4 +122,8 @@
     <string name="font_size_medium">Medium</string>
     <string name="font_size_large">Large</string>
     <string name="pref_font_size">Article text size</string>
+    <string name="donate">Donate</string>
+    <string name="dialog_close">Close</string>
+    <string name="donate_select">Please select the donation</string>
+    <string name="donate_do">Donate!</string>
 </resources>
