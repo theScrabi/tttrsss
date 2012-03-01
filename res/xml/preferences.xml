@@ -92,6 +92,11 @@
             android:key="combined_mode"
             android:summary="@string/combined_mode_summary"
             android:title="@string/combined_mode" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="tablet_article_swipe"
+            android:title="@string/tablet_article_swipe" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/offline_mode" >

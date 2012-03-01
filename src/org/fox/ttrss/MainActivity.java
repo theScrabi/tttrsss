@@ -1709,7 +1709,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		Fragment frag;
 		
-		if (m_smallScreenMode) {
+		if (m_smallScreenMode || m_prefs.getBoolean("tablet_article_swipe", false)) {
 			frag = new ArticlePager(article);
 		} else {
 			frag = new ArticleFragment(article);
