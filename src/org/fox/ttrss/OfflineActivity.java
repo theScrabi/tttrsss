@@ -439,7 +439,7 @@ public class OfflineActivity extends FragmentActivity implements
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
 		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_SUBJECT, title);
+		//intent.putExtra(Intent.EXTRA_SUBJECT, title);
 		intent.putExtra(Intent.EXTRA_TEXT, title + " " + link);
 
 		return intent;
