@@ -7,6 +7,7 @@ public class FeedCategory implements Parcelable {
 	int id;
 	String title;
 	int unread;
+	int order_id;
 	
 	public FeedCategory(Parcel in) {
 		readFromParcel(in);
@@ -16,6 +17,7 @@ public class FeedCategory implements Parcelable {
 		this.id = id;
 		this.title = title;
 		this.unread = unread;
+		this.order_id = 0;
 	}
 
 	@Override
@@ -28,12 +30,14 @@ public class FeedCategory implements Parcelable {
 		out.writeInt(id);
 		out.writeString(title);
 		out.writeInt(unread);
+		out.writeInt(order_id);
 	}
 	
 	public void readFromParcel(Parcel in) {
 		id = in.readInt();
 		title = in.readString();
 		unread = in.readInt();
+		order_id = in.readInt();
 	}
 	
 	@SuppressWarnings("rawtypes")

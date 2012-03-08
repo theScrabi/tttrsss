@@ -92,7 +92,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 	}
-	
+
+	class FeedOrderComparator implements Comparator<Feed> {
+
+		@Override
+		public int compare(Feed a, Feed b) {
+			if (a.id >= 0 && b.id >= 0)
+				if (a.order_id != 0 && b.order_id != 0)
+					return a.order_id - b.order_id;
+				else
+					return a.title.compareTo(b.title);
+			else
+				return a.id - b.id;
+		}
+		
+	}
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -424,7 +439,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
 			cmp = new FeedUnreadComparator();
 		} else {
-			cmp = new FeedTitleComparator();
+			if (m_onlineServices.getApiLevel() >= 3) {
+				cmp = new FeedOrderComparator();				
+			} else {
+				cmp = new FeedTitleComparator();
+			}
 		}
 		
 		Collections.sort(m_feeds, cmp);

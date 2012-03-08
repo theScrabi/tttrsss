@@ -759,7 +759,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentById(R.id.cats_fragment);
 
 		if (cf != null) {
-			cf.setSelectedCategoryId(0);
+			// should be nonexistant feed_id (0 is Uncategorized)
+			cf.setSelectedCategoryId(-10000);
 		}
 
 		initMainMenu();

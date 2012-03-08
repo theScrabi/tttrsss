@@ -11,6 +11,7 @@ public class Feed implements Comparable<Feed>, Parcelable {
 	boolean has_icon;
 	int cat_id;
 	int last_updated;
+	int order_id;
 	boolean is_cat;
 	
 	public Feed(int id, String title, boolean is_cat) {
@@ -46,6 +47,7 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		out.writeInt(cat_id);
 		out.writeInt(last_updated);
 		out.writeInt(is_cat ? 1 : 0);
+		out.writeInt(order_id);
 	}
 	
 	public void readFromParcel(Parcel in) {
@@ -57,6 +59,7 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		cat_id = in.readInt();
 		last_updated = in.readInt();
 		is_cat = in.readInt() == 1;
+		order_id = in.readInt();
 	}
 	
 	@SuppressWarnings("rawtypes")

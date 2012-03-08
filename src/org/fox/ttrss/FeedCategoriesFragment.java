@@ -63,7 +63,22 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		}
 		
 	}
-	
+
+	class CatOrderComparator implements Comparator<FeedCategory> {
+
+		@Override
+		public int compare(FeedCategory a, FeedCategory b) {
+			if (a.id >= 0 && b.id >= 0)
+				if (a.order_id != 0 && b.order_id != 0)
+					return a.order_id - b.order_id;
+				else
+					return a.title.compareTo(b.title);
+			else
+				return a.id - b.id;
+		}
+		
+	}
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -234,7 +249,11 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
 			cmp = new CatUnreadComparator();
 		} else {
-			cmp = new CatTitleComparator();
+			if (m_onlineServices.getApiLevel() >= 3) {
+				cmp = new CatOrderComparator();
+			} else {
+				cmp = new CatTitleComparator();
+			}
 		}
 		
 		Collections.sort(m_cats, cmp);
