@@ -167,14 +167,16 @@ public class ArticleFragment extends Fragment {
 					String attachments = "<div class=\"attachments\">" + getString(R.string.attachments) + " ";
 					
 					for (Attachment a : m_article.attachments) {
-						if (a.content_type != null && a.content_url != null && a.content_type.indexOf("image") != -1) {
+						if (a.content_type != null && a.content_url != null) {
 							
 							try {
 								URL url = new URL(a.content_url.trim());
 
 								String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
 								
-								content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
+								if (a.content_type.indexOf("image") != -1) {
+									content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
+								}
 								
 								attachments += "<a href=\""+url.toString().trim().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
 
