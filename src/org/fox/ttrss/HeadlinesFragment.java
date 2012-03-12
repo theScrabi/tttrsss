@@ -16,9 +16,11 @@ import org.jsoup.Jsoup;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -38,9 +40,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -444,34 +448,67 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				if (m_combinedMode) {
 					content.setMovementMethod(LinkMovementMethod.getInstance());
 					
+					final Spinner spinner = (Spinner) v.findViewById(R.id.attachments);
+					
+					ArrayList<Attachment> spinnerArray = new ArrayList<Attachment>();
+					
+					ArrayAdapter<Attachment> spinnerArrayAdapter = new ArrayAdapter<Attachment>(
+				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+					
+					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+					
 					if (article.attachments != null && article.attachments.size() != 0) {
-						String attachments = "<div style=\"font-size : 70%; margin-top : 1em;\">" + getString(R.string.attachments) + " ";
-						
 						for (Attachment a : article.attachments) {
 							if (a.content_type != null && a.content_url != null) {
 								
 								try {
 									URL url = new URL(a.content_url.trim());
 
-									String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
-									
 									if (a.content_type.indexOf("image") != -1) {
 										articleContent += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
 									}
 									
-									attachments += "<a href=\""+url.toString().trim().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
+									spinnerArray.add(a);
 
 								} catch (MalformedURLException e) {
 									//
 								} catch (Exception e) {
 									e.printStackTrace();
-								}
-								
+								}								
 							}					
 						}
-						articleContent += attachments.replaceAll(", $", "");
-						articleContent += "</div>";
 						
+						spinner.setAdapter(spinnerArrayAdapter);
+						
+						Button attachmentsView = (Button) v.findViewById(R.id.attachment_view);
+						
+						attachmentsView.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Attachment attachment = (Attachment) spinner.getSelectedItem();
+								
+								Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(attachment.content_url));
+								startActivity(browserIntent);
+							}
+						});
+						
+						Button attachmentsCopy = (Button) v.findViewById(R.id.attachment_copy);
+						
+						attachmentsCopy.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Attachment attachment = (Attachment) spinner.getSelectedItem();
+
+								if (attachment != null) {
+									m_onlineServices.copyToClipboard(attachment.content_url);
+								}
+							}
+						});
+						
+					} else {
+						v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 					}
 					
 					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
@@ -491,6 +528,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				} else {
 					content.setVisibility(View.GONE);
+					v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				}
 				
 			}

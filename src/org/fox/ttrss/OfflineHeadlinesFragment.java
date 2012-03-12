@@ -291,7 +291,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 				}
 			}
-
+			
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
 			
 			if (marked != null) {
@@ -370,9 +370,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					}
 				} else {
 					content.setVisibility(View.GONE);
-				}
-				
+				}				
 			}
+			
+			v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 			
 			TextView dv = (TextView) v.findViewById(R.id.date);
 			

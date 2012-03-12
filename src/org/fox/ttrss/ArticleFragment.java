@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.jsoup.Jsoup;
@@ -12,7 +13,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -23,11 +27,17 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ArticleFragment extends Fragment {
@@ -178,22 +188,27 @@ public class ArticleFragment extends Fragment {
 					"</head>" +
 					"<body>" + articleContent;
 				
+				final Spinner spinner = (Spinner) view.findViewById(R.id.attachments);
+				
 				if (m_article.attachments != null && m_article.attachments.size() != 0) {
-					String attachments = "<div class=\"attachments\">" + getString(R.string.attachments) + " ";
+					ArrayList<Attachment> spinnerArray = new ArrayList<Attachment>();
+					
+					ArrayAdapter<Attachment> spinnerArrayAdapter = new ArrayAdapter<Attachment>(
+				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+					
+					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 					
 					for (Attachment a : m_article.attachments) {
 						if (a.content_type != null && a.content_url != null) {
 							
 							try {
 								URL url = new URL(a.content_url.trim());
-
-								String atitle = (a.title != null && a.title.length() > 0) ? a.title : new File(url.getFile()).getName();
 								
 								if (a.content_type.indexOf("image") != -1) {
 									content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
 								}
 								
-								attachments += "<a href=\""+url.toString().trim().replace("\"", "\\\"") + "\">" + atitle + "</a>, ";
+								spinnerArray.add(a);
 
 							} catch (MalformedURLException e) {
 								//
@@ -203,8 +218,38 @@ public class ArticleFragment extends Fragment {
 							
 						}					
 					}
-					content += attachments.replaceAll(", $", "");
-					content += "</div>";
+					
+					spinner.setAdapter(spinnerArrayAdapter);
+					
+					Button attachmentsView = (Button) view.findViewById(R.id.attachment_view);
+					
+					attachmentsView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Attachment attachment = (Attachment) spinner.getSelectedItem();
+							
+							Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(attachment.content_url));
+							startActivity(browserIntent);
+						}
+					});
+					
+					Button attachmentsCopy = (Button) view.findViewById(R.id.attachment_copy);
+					
+					attachmentsCopy.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Attachment attachment = (Attachment) spinner.getSelectedItem();
+
+							if (attachment != null) {
+								m_onlineServices.copyToClipboard(attachment.content_url);
+							}
+						}
+					});
+					
+				} else {
+					view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				}
 				
 				content += "</body></html>";

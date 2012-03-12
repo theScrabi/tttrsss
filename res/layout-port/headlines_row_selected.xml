@@ -98,7 +98,6 @@
 
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/content"
         android:text="Article content"
@@ -106,4 +105,31 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
+    <LinearLayout
+            android:id="@+id/attachments_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0" >
+
+            <Spinner
+                android:id="@+id/attachments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:prompt="@string/attachments_prompt" />
+
+            <Button
+                android:id="@+id/attachment_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="@string/attachment_view" />
+
+            <Button
+                android:id="@+id/attachment_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="@string/attachment_copy" />
+        </LinearLayout>
 </LinearLayout>

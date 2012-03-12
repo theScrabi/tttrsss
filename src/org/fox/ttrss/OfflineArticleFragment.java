@@ -165,6 +165,8 @@ public class OfflineArticleFragment extends Fragment {
 					articleContent = doc.toString();
 				}
 				
+				view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
+				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
 					cssOverride += "body { text-align : justify; font-size : 14px; } ";
