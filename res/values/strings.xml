@@ -127,4 +127,6 @@
     <string name="donate_select">Please select the donation</string>
     <string name="donate_do">Donate!</string>
     <string name="tablet_article_swipe">Swipe between articles</string>
+    <string name="article_link_copy">Copy link to clipboard</string>
+    <string name="text_copied_to_clipboard">Text copied to clipboard</string>
 </resources>

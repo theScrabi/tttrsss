@@ -23,7 +23,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -1819,6 +1818,26 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentById(R.id.cats_fragment);
 
 		switch (item.getItemId()) {
+		case R.id.article_link_save:
+			if (m_selectedArticle != null) {
+				if (android.os.Build.VERSION.SDK_INT < 11) {				
+					@SuppressWarnings("deprecation")
+					android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+					clipboard.setText(m_selectedArticle.link);
+				} else {
+					android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+					clipboard.setText(m_selectedArticle.link);
+				}
+				
+				Toast toast = Toast.makeText(MainActivity.this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			return true;
+		case R.id.article_link_share:
+			if (m_selectedArticle != null) {
+				shareArticle(m_selectedArticle);
+			}
+			return true;		
 		case R.id.browse_articles:
 			if (cf != null) {
 				FeedCategory cat = cf.getCategoryAtPosition(info.position);

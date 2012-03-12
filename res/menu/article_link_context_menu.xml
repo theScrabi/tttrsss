@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/article_link_share"
+        android:showAsAction=""
+        android:title="@string/share_article"/>
+
+    <item
+        android:id="@+id/article_link_save"
+        android:showAsAction=""
+        android:title="@string/article_link_copy"/>
+
+</menu>

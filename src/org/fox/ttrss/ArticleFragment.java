@@ -20,12 +20,15 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
@@ -48,6 +51,17 @@ public class ArticleFragment extends Fragment {
 	}
 	
 	private View.OnTouchListener m_gestureListener;
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+		
+		getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+		menu.setHeaderTitle(m_article.title);
+		
+		super.onCreateContextMenu(menu, v, menuInfo);		
+		
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -92,6 +106,7 @@ public class ArticleFragment extends Fragment {
 				
 				title.setMovementMethod(LinkMovementMethod.getInstance());
 				title.setText(Html.fromHtml("<a href=\""+m_article.link.trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				registerForContextMenu(title);
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
