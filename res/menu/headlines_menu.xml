@@ -22,6 +22,11 @@
         android:showAsAction=""
         android:title="@string/share_article"/>
 
+        <item
+        android:id="@+id/article_link_copy"
+        android:showAsAction=""
+        android:title="@string/article_link_copy"/>
+    
     <item
         android:id="@+id/catchup_above"
         android:showAsAction=""

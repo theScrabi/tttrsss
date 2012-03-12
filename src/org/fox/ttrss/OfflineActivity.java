@@ -854,9 +854,15 @@ public class OfflineActivity extends FragmentActivity implements
 				.findFragmentById(R.id.feeds_fragment);
 
 		switch (item.getItemId()) {
-		case R.id.article_link_save:
+		case R.id.article_link_copy:
 			if (m_selectedArticleId != 0) {
-				Cursor article = getArticleById(m_selectedArticleId);
+				Cursor article = null;
+				
+				if (m_selectedArticleId != 0) {
+					article = getArticleById(m_selectedArticleId);
+				} else if (info != null) {
+					article = hf.getArticleAtPosition(info.position);
+				}
 				
 				if (article != null) {				
 					if (android.os.Build.VERSION.SDK_INT < 11) {				

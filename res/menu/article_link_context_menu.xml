@@ -6,7 +6,7 @@
         android:title="@string/share_article"/>
 
     <item
-        android:id="@+id/article_link_save"
+        android:id="@+id/article_link_copy"
         android:showAsAction=""
         android:title="@string/article_link_copy"/>
 

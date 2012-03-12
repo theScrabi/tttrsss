@@ -1818,19 +1818,29 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentById(R.id.cats_fragment);
 
 		switch (item.getItemId()) {
-		case R.id.article_link_save:
-			if (m_selectedArticle != null) {
-				if (android.os.Build.VERSION.SDK_INT < 11) {				
-					@SuppressWarnings("deprecation")
-					android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-					clipboard.setText(m_selectedArticle.link);
-				} else {
-					android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-					clipboard.setText(m_selectedArticle.link);
+		case R.id.article_link_copy:
+			if (true) {
+				Article article = null;
+			
+				if (m_selectedArticle != null) {
+					article = m_selectedArticle;
+				} else if (info != null) {
+					article = hf.getArticleAtPosition(info.position);
 				}
 				
-				Toast toast = Toast.makeText(MainActivity.this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
-				toast.show();
+				if (article != null) {
+					if (android.os.Build.VERSION.SDK_INT < 11) {				
+						@SuppressWarnings("deprecation")
+						android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+						clipboard.setText(article.link);
+					} else {
+						android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+						clipboard.setText(article.link);
+					}
+					
+					Toast toast = Toast.makeText(MainActivity.this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
+					toast.show();
+				}
 			}
 			return true;
 		case R.id.article_link_share:
