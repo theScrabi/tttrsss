@@ -349,6 +349,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				}
 			}       	
 
+			ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
+			
+			if (separator != null && m_offlineServices.isSmallScreen()) {
+				separator.setVisibility(View.GONE);
+			}
+			
 			TextView content = (TextView)v.findViewById(R.id.content);
 			
 			if (content != null) {
