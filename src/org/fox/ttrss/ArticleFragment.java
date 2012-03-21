@@ -163,15 +163,17 @@ public class ArticleFragment extends Fragment {
 					articleContent = doc.toString();
 				}
 				
+				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justify;" : "";
+				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
-					cssOverride += "body { text-align : justify; font-size : 14px; } ";
+					cssOverride += "body { "+align+" font-size : 14px; } ";
 					break;
 				case 1:
-					cssOverride += "body { text-align : justify; font-size : 18px; } ";
+					cssOverride += "body { "+align+" font-size : 18px; } ";
 					break;
 				case 2:
-					cssOverride += "body { text-align : justify; font-size : 21px; } ";
+					cssOverride += "body { "+align+" font-size : 21px; } ";
 					break;		
 				}
 				

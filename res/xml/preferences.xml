@@ -97,6 +97,11 @@
             android:defaultValue="false"
             android:key="tablet_article_swipe"
             android:title="@string/tablet_article_swipe" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="justify_article_text"
+            android:title="@string/justify_article_text" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/offline_mode" >

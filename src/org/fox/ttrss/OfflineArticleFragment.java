@@ -167,15 +167,17 @@ public class OfflineArticleFragment extends Fragment {
 				
 				view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				
+				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justified" : "";
+				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
-					cssOverride += "body { text-align : justify; font-size : 14px; } ";
+					cssOverride += "body { "+align+"; font-size : 14px; } ";
 					break;
 				case 1:
-					cssOverride += "body { text-align : justify; font-size : 18px; } ";
+					cssOverride += "body { "+align+"; font-size : 18px; } ";
 					break;
 				case 2:
-					cssOverride += "body { text-align : justify; font-size : 21px; } ";
+					cssOverride += "body { "+align+"; font-size : 21px; } ";
 					break;		
 				}
 				

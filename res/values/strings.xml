@@ -132,4 +132,5 @@
     <string name="attachments_prompt">Select attachment</string>
     <string name="attachment_view">View</string>
     <string name="attachment_copy">Copy URL</string>
+    <string name="justify_article_text">Justify article text</string>
 </resources>
