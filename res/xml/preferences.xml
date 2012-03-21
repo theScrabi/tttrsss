@@ -49,7 +49,7 @@
         </EditTextPreference>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/look_and_feel" >
+    <PreferenceCategory android:key="category_look_and_feel" android:title="@string/look_and_feel" >
 
         <ListPreference
             android:defaultValue="THEME_DARK"
@@ -84,6 +84,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="browse_cats_like_feeds"
+            android:dependency="enable_cats"
             android:summary="@string/browse_cats_like_feeds_summary"
             android:title="@string/browse_cats_like_feeds" />
 
