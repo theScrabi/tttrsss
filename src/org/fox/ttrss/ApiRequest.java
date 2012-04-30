@@ -111,18 +111,10 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		
 		if (m_transportDebugging) Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
 		
-		DefaultHttpClient client;
+		AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
 		
 		if (m_trustAny) {
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
-        
-			HttpParams httpParams = new BasicHttpParams();
-
-			client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
-		} else {
-			client = new DefaultHttpClient();
+			client.getConnectionManager().getSchemeRegistry().register(new Scheme("https", new EasySSLSocketFactory(), 443));
 		}
 
 		try {
@@ -141,6 +133,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				return null;
 			}
 	
+			HttpContext context = null;
+
 			String httpLogin = m_prefs.getString("http_login", "").trim();
 			String httpPassword = m_prefs.getString("http_password", "").trim();
 			
@@ -157,14 +151,18 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				}
 				
 				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
+				CredentialsProvider cp = new BasicCredentialsProvider();
+				context = new BasicHttpContext();
 				
-				client.getCredentialsProvider().setCredentials(
+				cp.setCredentials(
 		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
 		                new UsernamePasswordCredentials(httpLogin, httpPassword));
+
+				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
 			}
 
 			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
-			HttpResponse execute = client.execute(httpPost);
+			HttpResponse execute = client.execute(httpPost, context);
 			
 			m_httpStatusCode = execute.getStatusLine().getStatusCode();
 

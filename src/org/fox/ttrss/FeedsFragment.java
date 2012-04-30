@@ -487,21 +487,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 		protected void downloadFile(String fetchUrl, String outputFile) {
-			DefaultHttpClient client;
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
 			
 			if (m_prefs.getBoolean("ssl_trust_any", false)) {
-				SchemeRegistry schemeRegistry = new SchemeRegistry();
-				schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-				schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
-	        
-				HttpParams httpParams = new BasicHttpParams();
-
-				client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
-			} else {
-				client = new DefaultHttpClient();
+				client.getConnectionManager().getSchemeRegistry().register(new Scheme("https", new EasySSLSocketFactory(), 443));
 			}
 
 			HttpGet httpGet = new HttpGet(fetchUrl);
+			HttpContext context = null;
 
 			String httpLogin = m_prefs.getString("http_login", "");
 			String httpPassword = m_prefs.getString("http_password", "");
@@ -517,15 +510,19 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				}
 				
 				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
+				CredentialsProvider cp = new BasicCredentialsProvider();
+				context = new BasicHttpContext();
 				
-				client.getCredentialsProvider().setCredentials(
+				cp.setCredentials(
 		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
 		                new UsernamePasswordCredentials(httpLogin, httpPassword));
+
+				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
 			}
 			
 
 			try {
-				HttpResponse execute = client.execute(httpGet);
+				HttpResponse execute = client.execute(httpGet, context);
 				
 				InputStream content = execute.getEntity().getContent();
 
