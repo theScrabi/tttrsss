@@ -12,18 +12,24 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -189,6 +195,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				
 				m_apiStatusCode = resultObj.get("status").getAsInt();
 				
+				client.close();
+				
 				switch (m_apiStatusCode) {
 				case API_STATUS_OK:
 					return result.getAsJsonObject().get("content");
@@ -209,6 +217,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 						m_lastError = ApiError.API_UNKNOWN;
 					}		
 				}
+
+				client.close();
 				
 				return null;
 			case 401:
