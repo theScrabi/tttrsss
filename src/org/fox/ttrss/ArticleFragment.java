@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class ArticleFragment extends Fragment {
 		
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
@@ -141,7 +143,7 @@ public class ArticleFragment extends Fragment {
 				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
 					//view.setBackgroundColor(android.R.color.black);
-					web.setBackgroundColor(android.R.color.transparent);
+					web.setBackgroundColor(getResources().getColor(android.R.color.transparent));
 				} else {
 					cssOverride = "";
 				}
