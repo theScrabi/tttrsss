@@ -132,10 +132,12 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			} catch (IllegalArgumentException e) {
 				m_lastError = ApiError.INVALID_URL;
 				e.printStackTrace();
+				client.close();
 				return null;
 			} catch (Exception e) {
 				m_lastError = ApiError.OTHER_ERROR;
 				e.printStackTrace();
+				client.close();
 				return null;
 			}
 	
@@ -153,6 +155,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				} catch (MalformedURLException e) {
 					m_lastError = ApiError.INVALID_URL;
 					e.printStackTrace();
+					client.close();
 					return null;
 				}
 				
@@ -218,8 +221,6 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 					}		
 				}
 
-				client.close();
-				
 				return null;
 			case 401:
 				m_lastError = ApiError.HTTP_UNAUTHORIZED;
@@ -238,6 +239,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				break;
 			}
 			
+			client.close();
 			return null;
 		} catch (javax.net.ssl.SSLPeerUnverifiedException e) {
 			m_lastError = ApiError.SSL_REJECTED;
@@ -253,6 +255,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			e.printStackTrace();
 		}
 		
+		client.close();
 		return null;
 	}
 }

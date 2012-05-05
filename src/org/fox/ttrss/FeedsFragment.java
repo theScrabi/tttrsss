@@ -512,6 +512,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 					targetUrl = new URL(fetchUrl);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
+					client.close();
 					return;
 				}
 				
@@ -543,12 +544,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				
 				fos.close();
 				is.close();
-				
-				client.close();
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
+			client.close();
 		}
 		
 		protected void onPostExecute(Integer result) {
