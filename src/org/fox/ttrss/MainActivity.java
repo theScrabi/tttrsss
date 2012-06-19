@@ -714,7 +714,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_activeCategory = null;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
+		if (m_smallScreenMode) {
+			ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
+		} else {
+			ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);
+		}
 		ft.commit();
 
 		initMainMenu();
