@@ -13,7 +13,7 @@
 
     <application
         android:allowBackup="true"
-        android:backupAgent="PrefsBackupAgent"
+        android:backupAgent=".util.PrefsBackupAgent"
         android:hardwareAccelerated="true"
         uiOptions="splitActionBarWhenNarrow"
         android:icon="@drawable/icon"
@@ -42,10 +42,10 @@
 
         <service
             android:enabled="true"
-            android:name=".org.fox.ttrss.offline.OfflineDownloadServicedService" />
+            android:name=".offline.OfflineDownloadService" />
         <service
             android:enabled="true"
-       		android:name=".org.fox.ttrss.offline.OfflineUploadServiceineUploadService" />
+       		android:name=".offline.OfflineUploadService" />
         <service
             android:enabled="true"
             android:name=".util.ImageCacheService" />
