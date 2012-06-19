@@ -24,6 +24,9 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.util.EasySSLSocketFactory;
 
 import android.app.Activity;
 import android.app.Fragment;

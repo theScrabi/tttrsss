@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.billing;
 
 import android.app.Service;
 import android.content.ComponentName;

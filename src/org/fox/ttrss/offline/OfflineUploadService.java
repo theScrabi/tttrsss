@@ -1,6 +1,13 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
 import java.util.HashMap;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.R.drawable;
+import org.fox.ttrss.R.string;
+import org.fox.ttrss.util.DatabaseHelper;
 
 import com.google.gson.JsonElement;
 

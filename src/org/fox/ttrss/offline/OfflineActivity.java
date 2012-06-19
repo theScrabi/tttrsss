@@ -1,6 +1,18 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
+import org.fox.ttrss.DummyFragment;
+import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.OnlineServices;
+import org.fox.ttrss.PreferencesActivity;
+import org.fox.ttrss.R;
 import org.fox.ttrss.OnlineServices.RelativeArticle;
+import org.fox.ttrss.R.anim;
+import org.fox.ttrss.R.id;
+import org.fox.ttrss.R.layout;
+import org.fox.ttrss.R.menu;
+import org.fox.ttrss.R.string;
+import org.fox.ttrss.R.style;
+import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;

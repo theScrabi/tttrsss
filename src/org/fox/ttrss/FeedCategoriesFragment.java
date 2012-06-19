@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.fox.ttrss.types.FeedCategory;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;

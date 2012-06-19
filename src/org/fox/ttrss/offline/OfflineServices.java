@@ -1,4 +1,7 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
+
+import org.fox.ttrss.OnlineServices;
+import org.fox.ttrss.OnlineServices.RelativeArticle;
 
 import android.database.sqlite.SQLiteDatabase;
 

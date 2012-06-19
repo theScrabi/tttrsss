@@ -6,6 +6,18 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.fox.ttrss.billing.BillingHelper;
+import org.fox.ttrss.billing.BillingService;
+import org.fox.ttrss.offline.OfflineActivity;
+import org.fox.ttrss.offline.OfflineDownloadService;
+import org.fox.ttrss.offline.OfflineUploadService;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.Label;
+import org.fox.ttrss.util.AppRater;
+import org.fox.ttrss.util.DatabaseHelper;
+
 import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name=".OfflineActivity" >
+            android:name=".offline.OfflineActivity" >
         </activity>
         <activity
             android:label="@string/app_name"
@@ -42,15 +42,15 @@
 
         <service
             android:enabled="true"
-            android:name=".OfflineDownloadService" />
+            android:name=".org.fox.ttrss.offline.OfflineDownloadServicedService" />
         <service
             android:enabled="true"
-            android:name=".OfflineUploadService" />
+       		android:name=".org.fox.ttrss.offline.OfflineUploadServiceineUploadService" />
         <service
             android:enabled="true"
-            android:name=".ImageCacheService" />
+            android:name=".util.ImageCacheService" />
 
-        <service android:name="BillingService" />
+        <service android:name=".billing.BillingService" />
                 
         <meta-data
             android:name="com.google.android.backup.api_key"

@@ -1,5 +1,9 @@
 package org.fox.ttrss;
 
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+
 public interface OnlineServices {
 	public enum RelativeArticle { BEFORE, AFTER };
 	

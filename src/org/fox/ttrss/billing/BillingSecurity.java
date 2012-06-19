@@ -1,6 +1,6 @@
 // Copyright 2010 Google Inc. All Rights Reserved.
 
-package org.fox.ttrss;
+package org.fox.ttrss.billing;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.fox.ttrss.BillingConstants.PurchaseState;
+import org.fox.ttrss.billing.BillingConstants.PurchaseState;
 import org.fox.ttrss.util.Base64;
 import org.fox.ttrss.util.Base64DecoderException;
 

@@ -1,10 +1,16 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.fox.ttrss.R;
+import org.fox.ttrss.R.drawable;
+import org.fox.ttrss.R.id;
+import org.fox.ttrss.R.layout;
+import org.fox.ttrss.R.menu;
+import org.fox.ttrss.R.string;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;

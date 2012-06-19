@@ -20,6 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.fox.ttrss.util.EasySSLSocketFactory;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,9 +1,18 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.R.drawable;
+import org.fox.ttrss.R.string;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.DatabaseHelper;
+import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

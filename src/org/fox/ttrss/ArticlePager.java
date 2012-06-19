@@ -1,5 +1,8 @@
 package org.fox.ttrss;
 
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.util.FragmentStatePagerAdapter;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;

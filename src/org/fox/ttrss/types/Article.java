@@ -1,25 +1,26 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 // TODO: serialize Labels
 public class Article implements Parcelable {
-	int id;
-	boolean unread; 
-	boolean marked; 
-	boolean published; 
-	int updated; 
-	boolean is_updated; 
-	String title; 
-	String link; 
-	int feed_id; 
-	List<String> tags;
-	List<Attachment> attachments;
-	String content;
-	List<List<String>> labels;
+	public int id;
+	public boolean unread; 
+	public boolean marked; 
+	public boolean published; 
+	public int updated; 
+	public boolean is_updated; 
+	public String title; 
+	public String link; 
+	public int feed_id; 
+	public List<String> tags;
+	public List<Attachment> attachments;
+	public String content;
+	public List<List<String>> labels;
 	
 	public Article(Parcel in) {
 		readFromParcel(in);

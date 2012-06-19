@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -8,12 +8,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Attachment implements Parcelable {
-	int id;
-	String content_url;
-	String content_type;
-	String title;
-	String duration;
-	int post_id;
+	public int id;
+	public String content_url;
+	public String content_type;
+	public String title;
+	public String duration;
+	public int post_id;
 	
 	public Attachment(Parcel in) {
 		readFromParcel(in);

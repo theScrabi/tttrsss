@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.util;
 
 // From http://androidsnippets.com/prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
 

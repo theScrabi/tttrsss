@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.billing;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,9 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.vending.billing.IMarketBillingService;
-import org.fox.ttrss.BillingSecurity.VerifiedPurchase;
-import org.fox.ttrss.BillingConstants.ResponseCode;
+
+import org.fox.ttrss.billing.BillingConstants.ResponseCode;
+import org.fox.ttrss.billing.BillingSecurity.VerifiedPurchase;
 
 public class BillingHelper {
 
@@ -34,7 +35,7 @@ public class BillingHelper {
 		mCompletedHandler = handler;
 	}
 	
-	protected static boolean isBillingSupported() {
+	public static boolean isBillingSupported() {
 		if (amIDead()) {
 			return false;
 		}
@@ -67,7 +68,7 @@ public class BillingHelper {
 	 * @param activityContext
 	 * @param itemId
 	 */
-	protected static void requestPurchase(Context activityContext, String itemId){
+	public static void requestPurchase(Context activityContext, String itemId){
 		if (amIDead()) {
 			return;
 		}

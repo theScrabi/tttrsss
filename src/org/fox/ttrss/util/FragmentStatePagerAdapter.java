@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.fox.ttrss;
+package org.fox.ttrss.util;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

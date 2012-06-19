@@ -1,13 +1,13 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class FeedCategory implements Parcelable {
-	int id;
-	String title;
-	int unread;
-	int order_id;
+	public int id;
+	public String title;
+	public int unread;
+	public int order_id;
 	
 	public FeedCategory(Parcel in) {
 		readFromParcel(in);

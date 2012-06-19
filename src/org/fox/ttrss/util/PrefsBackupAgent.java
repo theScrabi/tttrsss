@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.util;
 
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.SharedPreferencesBackupHelper;

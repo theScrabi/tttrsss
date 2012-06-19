@@ -1,18 +1,18 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Feed implements Comparable<Feed>, Parcelable {
-	String feed_url;
-	String title;
-	int id;
-	int unread;
-	boolean has_icon;
-	int cat_id;
-	int last_updated;
-	int order_id;
-	boolean is_cat;
+	public String feed_url;
+	public String title;
+	public int id;
+	public int unread;
+	public boolean has_icon;
+	public int cat_id;
+	public int last_updated;
+	public int order_id;
+	public boolean is_cat;
 	
 	public Feed(int id, String title, boolean is_cat) {
 		this.id = id;
