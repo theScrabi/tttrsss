@@ -164,7 +164,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 
 				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
 			}
-
+			
 			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
 			HttpResponse execute = client.execute(httpPost, context);
 			

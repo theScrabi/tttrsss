@@ -35,6 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
@@ -119,6 +120,8 @@ public class OfflineActivity extends FragmentActivity implements
 		}
 
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		NotificationManager nmgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOADING);
@@ -205,19 +208,15 @@ public class OfflineActivity extends FragmentActivity implements
 		return m_activeFeedId;
 	}
 
-	private void setLoadingStatus(int status, boolean showProgress) {
+	/* private void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView) findViewById(R.id.loading_message);
 
 		if (tv != null) {
 			tv.setText(status);
 		}
 
-		View pb = findViewById(R.id.loading_progress);
-
-		if (pb != null) {
-			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-		}
-	}
+		setProgressBarIndeterminateVisibility(showProgress);
+	} */
 
 	@Override
 	public void onSaveInstanceState(Bundle out) {

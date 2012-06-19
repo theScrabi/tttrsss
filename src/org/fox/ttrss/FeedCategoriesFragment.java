@@ -17,11 +17,13 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -120,7 +122,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (m_cats == null || m_cats.size() == 0)
 			refresh(false);
 		else
-			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
+			getActivity().setProgressBarIndeterminateVisibility(false);
 		
 		return view; 
 	}
@@ -151,13 +153,9 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (tv != null) {
 				tv.setText(status);
 			}
-			
-			View pb = getView().findViewById(R.id.loading_progress);
-			
-			if (pb != null) {
-				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-			}
 		}
+	
+		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -169,14 +167,12 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (sessionId != null) {
 			
-			if (!background) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						setLoadingStatus(R.string.blank, true);
-					}
-				});
-			}
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					setLoadingStatus(R.string.blank, true);
+				}
+			});
 			
 			@SuppressWarnings("serial")
 			HashMap<String,String> map = new HashMap<String,String>() {

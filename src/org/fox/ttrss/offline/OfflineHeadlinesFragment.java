@@ -151,7 +151,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
+		getActivity().setProgressBarIndeterminateVisibility(false);
 
 		return view;    	
 	}
@@ -213,21 +213,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
-	public void setLoadingStatus(int status, boolean showProgress) {
+	/* public void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			
 			if (tv != null) {
 				tv.setText(status);
-			}
-			
-			View pb = getView().findViewById(R.id.loading_progress);
-			
-			if (pb != null) {
-				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-			}
+			}	
 		}
-	}
+		
+		getActivity().setProgressBarIndeterminateVisibility(showProgress);
+	} */
 	
 	private class ArticleListAdapter extends SimpleCursorAdapter {
 		public ArticleListAdapter(Context context, int layout, Cursor c,

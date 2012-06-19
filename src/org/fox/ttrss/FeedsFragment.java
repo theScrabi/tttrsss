@@ -162,7 +162,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (m_feeds == null || m_feeds.size() == 0)
 			refresh(false);
 		else
-			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
+			getActivity().setProgressBarIndeterminateVisibility(false);
 		
 		return view;    	
 	}
@@ -219,14 +219,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		if (sessionId != null) {
 			
-			if (!background) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						setLoadingStatus(R.string.blank, true);
-					}
-				});
-			}
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					setLoadingStatus(R.string.blank, true);
+				}
+			});
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
@@ -251,13 +249,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			if (tv != null) {
 				tv.setText(status);
 			}
-			
-			View pb = getView().findViewById(R.id.loading_progress);
-			
-			if (pb != null) {
-				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-			}
 		}
+		
+		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })

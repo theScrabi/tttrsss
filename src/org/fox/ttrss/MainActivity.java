@@ -48,6 +48,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
@@ -451,7 +452,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		super.onCreate(savedInstanceState);
-	
+
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  
+		
 		m_themeName = m_prefs.getString("theme", "THEME_DARK");
 
 		if (savedInstanceState != null) {
@@ -623,12 +626,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		if (tv != null) {
 			tv.setText(status);
 		}
-
-		View pb = findViewById(R.id.loading_progress);
-
-		if (pb != null) {
-			pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-		}
+		
+		setProgressBarIndeterminateVisibility(showProgress);
 	}
 
 	@Override
@@ -1325,6 +1324,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private void loginSuccess() {
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
+		setProgressBarIndeterminateVisibility(false);
 		
 		m_isOffline = false;
 
@@ -1629,8 +1629,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		if (tv != null) {
 			tv.setText(R.string.login_ready);
 		}
-
-		findViewById(R.id.loading_progress).setVisibility(View.GONE);
 		
 		initMainMenu();
 	}

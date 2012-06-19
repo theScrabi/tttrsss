@@ -5,7 +5,6 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout android:id="@+id/loading_container" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent">
-        <ProgressBar android:layout_width="wrap_content" style="?android:attr/progressBarStyleLarge" android:id="@+id/loading_progress" android:layout_height="wrap_content"></ProgressBar>
         <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message" android:layout_height="wrap_content" ></TextView>
     </LinearLayout>
     <ListView android:id="@+id/feeds" android:layout_height="match_parent" android:layout_width="match_parent"></ListView>

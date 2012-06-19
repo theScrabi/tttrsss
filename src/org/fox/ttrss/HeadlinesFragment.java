@@ -148,7 +148,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
 			refresh(false);
 		else
-			view.findViewById(R.id.loading_progress).setVisibility(View.GONE);
+			getActivity().setProgressBarIndeterminateVisibility(false);
 
 		return view;    	
 	}
@@ -254,13 +254,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (tv != null) {
 				tv.setText(status);
 			}
-			
-			View pb = getView().findViewById(R.id.loading_progress);
-			
-			if (pb != null) {
-				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-			}
 		}
+		
+		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	private class HeadlinesRequest extends ApiRequest {

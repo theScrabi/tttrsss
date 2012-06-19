@@ -153,21 +153,17 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
-	public void setLoadingStatus(int status, boolean showProgress) {
+	/* public void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			
 			if (tv != null) {
 				tv.setText(status);
 			}
-			
-			View pb = getView().findViewById(R.id.loading_progress);
-			
-			if (pb != null) {
-				pb.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-			}
 		}
-	}
+		
+		getActivity().setProgressBarIndeterminateVisibility(showProgress);
+	} */
 	
 	private class FeedListAdapter extends SimpleCursorAdapter {
 		
