@@ -33,6 +33,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedList;
 import org.fox.ttrss.util.EasySSLSocketFactory;
 
 import android.app.Activity;

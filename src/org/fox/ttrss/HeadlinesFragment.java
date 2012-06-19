@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
 import org.jsoup.Jsoup;

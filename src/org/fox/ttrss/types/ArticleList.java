@@ -1,8 +1,7 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 
 import java.util.ArrayList;
 
-import org.fox.ttrss.types.Article;
 
 import android.os.Parcel;
 import android.os.Parcelable;

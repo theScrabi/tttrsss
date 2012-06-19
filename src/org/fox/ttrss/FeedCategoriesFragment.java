@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedCategoryList;
 
 import android.app.Activity;
 import android.content.Context;

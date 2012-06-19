@@ -1,16 +1,15 @@
-package org.fox.ttrss;
+package org.fox.ttrss.types;
 
 import java.util.ArrayList;
 
-import org.fox.ttrss.types.Feed;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 @SuppressWarnings("serial")
-public class FeedList extends ArrayList<Feed> implements Parcelable {
+public class FeedCategoryList extends ArrayList<FeedCategory> implements Parcelable {
 
-		public FeedList() { }
+		public FeedCategoryList() { }
 	
 		@Override
 		public int describeContents() {
@@ -20,7 +19,7 @@ public class FeedList extends ArrayList<Feed> implements Parcelable {
 		@Override
 		public void writeToParcel(Parcel out, int flags) {
 			out.writeInt(this.size());
-			for (Feed feed : this) {
+			for (FeedCategory feed : this) {
 				out.writeParcelable(feed, flags);
 			}
 		}
@@ -29,25 +28,25 @@ public class FeedList extends ArrayList<Feed> implements Parcelable {
 			int length = in.readInt();
 			
 			for (int i = 0; i < length; i++) {
-				Feed feed = in.readParcelable(Feed.class.getClassLoader());
+				FeedCategory feed = in.readParcelable(Feed.class.getClassLoader());
 				this.add(feed);
 			}
 			
 		}
 				
-		public FeedList(Parcel in) {
+		public FeedCategoryList(Parcel in) {
 			readFromParcel(in);
 		}
 		
 		@SuppressWarnings("rawtypes")
 		public static final Parcelable.Creator CREATOR =
 	    	new Parcelable.Creator() {
-	            public FeedList createFromParcel(Parcel in) {
-	                return new FeedList(in);
+	            public FeedCategoryList createFromParcel(Parcel in) {
+	                return new FeedCategoryList(in);
 	            }
 	 
-	            public FeedList[] newArray(int size) {
-	                return new FeedList[size];
+	            public FeedCategoryList[] newArray(int size) {
+	                return new FeedCategoryList[size];
 	            }
 	        };
 	}
