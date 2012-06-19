@@ -491,12 +491,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			//if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
-				//if (!m_smallScreenMode) {
-					LayoutTransition transitioner = new LayoutTransition();
-					((ViewGroup) findViewById(R.id.fragment_container)).setLayoutTransition(transitioner);
-				//}
-			//}
+			
+			if (!m_smallScreenMode) {
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null ? View.GONE : View.VISIBLE);
+				findViewById(R.id.article_fragment).setVisibility(m_selectedArticle != null ? View.VISIBLE : View.GONE);
+			}
+			
+			LayoutTransition transitioner = new LayoutTransition();
+			((ViewGroup) findViewById(R.id.fragment_container)).setLayoutTransition(transitioner);
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -762,13 +764,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				closeArticle();
 			} else if (m_activeCategory != null) {
 				closeCategory();
-			} else if (m_activeFeed != null) {
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.fragment_container, new FeedsFragment(m_activeCategory), FRAG_FEEDS);
-				ft.commit();
-
-				initMainMenu();
-
+			/* } else if (m_activeFeed != null) {
+				m_activeFeed = null;
+				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+				initMainMenu(); */
+				
 			} else if (allowQuit) {
 				finish();
 			}
@@ -1150,8 +1150,15 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_selectedArticle = null;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
-		ft.show(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+		
+		if (m_smallScreenMode) {
+			ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
+			ft.show(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			ft.replace(R.id.article_fragment, new DummyFragment(), FRAG_ARTICLE);
+		}
 		ft.commit();
 
 		initMainMenu();
@@ -1249,11 +1256,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						getActionBar().setTitle(R.string.app_name);
 					}
 					
-					if (!m_smallScreenMode) {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
-					} else {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
-					}
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
 					
 					if (android.os.Build.VERSION.SDK_INT >= 14) {			
 						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
@@ -1381,10 +1384,19 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 								if (m_enableCats) {
 									FeedCategoriesFragment frag = new FeedCategoriesFragment();
-									ft.replace(R.id.fragment_container, frag, FRAG_CATS);
+									if (m_smallScreenMode) {
+										ft.replace(R.id.fragment_container, frag, FRAG_CATS);
+									} else {
+										ft.replace(R.id.feeds_fragment, frag, FRAG_CATS);
+									}
+
 								} else {
 									FeedsFragment frag = new FeedsFragment();
-									ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+									if (m_smallScreenMode) {
+										ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+									} else {
+										ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
+									}
 								}
 
 								try {
@@ -1482,7 +1494,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
-			ft.replace(R.id.fragment_container, hf, FRAG_HEADLINES);
+			
+			if (m_smallScreenMode) {			
+				ft.replace(R.id.fragment_container, hf, FRAG_HEADLINES);
+			} else {
+				findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+			}
 			ft.commit();
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
@@ -1504,7 +1522,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
-			ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+			
+			if (m_smallScreenMode) {			
+				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+			} else {				
+				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
+			}
 			ft.commit();
 			
 			
@@ -1524,7 +1547,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
-			ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
+			if (m_smallScreenMode) {
+				ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
+			} else {
+				findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+				ft.replace(R.id.headlines_fragment, frag, FRAG_HEADLINES);
+			}
 			ft.commit();
 
 		}
@@ -1558,8 +1586,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
-		ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
+		if (m_smallScreenMode) {
+			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
+		}
 		ft.commit();
 	}
 

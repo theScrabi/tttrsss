@@ -1,8 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    >
 
     <LinearLayout
         android:id="@+id/loading_container"
@@ -24,35 +24,34 @@
             android:gravity="center_horizontal"
             android:text="@string/loading_message"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/feeds_fragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3" >
-    </FrameLayout>
+    <LinearLayout
+        android:orientation="horizontal" 
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <FrameLayout
-        android:id="@+id/cats_fragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3" >
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/feeds_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3" >
+        </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/headlines_fragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5" >
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/headlines_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5" >
+        </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/article_fragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5" >
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/article_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5" >
+        </FrameLayout>
+    </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

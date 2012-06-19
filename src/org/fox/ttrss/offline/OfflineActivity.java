@@ -153,7 +153,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 
-		if (m_smallScreenMode) {
+		/* if (m_smallScreenMode) {
 			if (m_selectedArticleId != 0) {
 				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
@@ -166,34 +166,18 @@ public class OfflineActivity extends FragmentActivity implements
 				//findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 				// findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
-				/*
-				 * if (m_enableCats && m_activeCategory == null) {
-				 * findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				 * findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-				 * } else {
-				 * findViewById(R.id.cats_fragment).setVisibility(View.GONE); }
-				 */
-
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			}
 		} else {
 			if (m_selectedArticleId == 0) {
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-
-				/*
-				 * if (!m_enableCats || m_activeCategory != null)
-				 * findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				 * else
-				 * findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				 */
-
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 
 			} else {
 				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
 			}
-		}
+		} */
 
 		if (m_activeFeedId == 0) {
 			FragmentTransaction ft = getSupportFragmentManager()
@@ -1205,16 +1189,6 @@ public class OfflineActivity extends FragmentActivity implements
 				findViewById(R.id.main).setAnimation(
 						AnimationUtils.loadAnimation(this, compatAnimation));
 		}
-
-		if (m_smallScreenMode) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
-		}
-
 	}
 
 	@Override

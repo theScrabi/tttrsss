@@ -96,6 +96,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_feed = feed;
 	}
 	
+	public HeadlinesFragment() {
+		//
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
