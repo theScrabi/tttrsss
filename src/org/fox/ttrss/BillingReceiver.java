@@ -1,17 +1,17 @@
 package org.fox.ttrss;
 
-import static org.fox.ttrss.BillingConstants.*;
-
-import java.util.ArrayList;
-
+import static org.fox.ttrss.BillingConstants.ACTION_NOTIFY;
+import static org.fox.ttrss.BillingConstants.ACTION_PURCHASE_STATE_CHANGED;
+import static org.fox.ttrss.BillingConstants.ACTION_RESPONSE_CODE;
+import static org.fox.ttrss.BillingConstants.INAPP_REQUEST_ID;
+import static org.fox.ttrss.BillingConstants.INAPP_RESPONSE_CODE;
+import static org.fox.ttrss.BillingConstants.INAPP_SIGNATURE;
+import static org.fox.ttrss.BillingConstants.INAPP_SIGNED_DATA;
+import static org.fox.ttrss.BillingConstants.NOTIFICATION_ID;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
 import android.util.Log;
-
-import org.fox.ttrss.BillingConstants;
-import org.fox.ttrss.BillingSecurity.VerifiedPurchase;
 
 public class BillingReceiver extends BroadcastReceiver {
 

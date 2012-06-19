@@ -46,7 +46,6 @@ public class OfflineActivity extends Activity implements
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 
 	private int m_activeFeedId = 0;
@@ -99,8 +98,6 @@ public class OfflineActivity extends Activity implements
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
-
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
 		} else {
@@ -124,24 +121,21 @@ public class OfflineActivity extends Activity implements
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
+		m_smallScreenMode = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
 				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
 		setContentView(R.layout.main);
 
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14 /* || android.os.Build.VERSION.SDK_INT == 15 */) {
-				if (!m_smallScreenMode) {
-					LayoutTransition transitioner = new LayoutTransition();
-					((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
-				}
+		if (android.os.Build.VERSION.SDK_INT < 14 /* || android.os.Build.VERSION.SDK_INT == 15 */) {
+			if (!m_smallScreenMode) {
+				LayoutTransition transitioner = new LayoutTransition();
+				((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
 			}
-			
-			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
+		
+		m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 
 		initMainMenu();
 
@@ -483,44 +477,6 @@ public class OfflineActivity extends Activity implements
 		case android.R.id.home:
 			goBack(false);
 			return true;
-		case R.id.search:
-			if (ohf != null && m_compatMode) {
-				Dialog dialog = new Dialog(this);
-
-				final EditText edit = new EditText(this);
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(this)
-						.setTitle(R.string.search)
-						.setPositiveButton(getString(R.string.search),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										String query = edit.getText().toString().trim();
-										
-										ohf.setSearchQuery(query);
-
-									}
-								})
-						.setNegativeButton(getString(R.string.cancel),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										//
-
-									}
-								}).setView(edit);
-				
-				dialog = builder.create();
-				dialog.show();
-			}
-			
-			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
@@ -746,12 +702,8 @@ public class OfflineActivity extends Activity implements
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			
 			if (numSelected != 0) {
-				if (m_compatMode) {
-					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
-				} else {
-					if (m_headlinesActionMode == null)
-						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
-				}
+				if (m_headlinesActionMode == null)
+					m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
 			} else if (m_selectedArticleId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_article, true);
 			} else if (m_activeFeedId != 0) {
@@ -759,40 +711,38 @@ public class OfflineActivity extends Activity implements
 				
 				MenuItem search = m_menu.findItem(R.id.search);
 				
-				if (!m_compatMode) {
-					SearchView searchView = (SearchView) search.getActionView();
-					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-						private String query = "";
+				SearchView searchView = (SearchView) search.getActionView();
+				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+					private String query = "";
+					
+					@Override
+					public boolean onQueryTextSubmit(String query) {
+						OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getFragmentManager()
+								.findFragmentById(R.id.headlines_fragment);
 						
-						@Override
-						public boolean onQueryTextSubmit(String query) {
+						if (frag != null) {
+							frag.setSearchQuery(query);
+							this.query = query;
+						}
+						
+						return false;
+					}
+					
+					@Override
+					public boolean onQueryTextChange(String newText) {
+						if (newText.equals("") && !newText.equals(this.query)) {
 							OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getFragmentManager()
 									.findFragmentById(R.id.headlines_fragment);
 							
 							if (frag != null) {
-								frag.setSearchQuery(query);
-								this.query = query;
+								frag.setSearchQuery(newText);
+								this.query = newText;
 							}
-							
-							return false;
 						}
 						
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							if (newText.equals("") && !newText.equals(this.query)) {
-								OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getFragmentManager()
-										.findFragmentById(R.id.headlines_fragment);
-								
-								if (frag != null) {
-									frag.setSearchQuery(newText);
-									this.query = newText;
-								}
-							}
-							
-							return false;
-						}
-					});
-				}
+						return false;
+					}
+				});
 				
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, true);
@@ -802,23 +752,20 @@ public class OfflineActivity extends Activity implements
 				m_headlinesActionMode.finish();
 			}
 			
-			if (!m_compatMode) {
+			if (m_activeFeedId != 0) {
+				Cursor feed = getFeedById(m_activeFeedId);
 				
-				if (m_activeFeedId != 0) {
-					Cursor feed = getFeedById(m_activeFeedId);
-					
-					if (feed != null) {					
-						getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
-					}
-				} else {
-					getActionBar().setTitle(R.string.app_name);
+				if (feed != null) {					
+					getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
 				}
-				
-				if (!m_smallScreenMode) {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
-				} else {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
-				}
+			} else {
+				getActionBar().setTitle(R.string.app_name);
+			}
+			
+			if (!m_smallScreenMode) {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
+			} else {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
 			}
 		}
 	}
@@ -1145,7 +1092,7 @@ public class OfflineActivity extends Activity implements
 		if (m_menu != null) {
 			MenuItem search = m_menu.findItem(R.id.search);
 		
-			if (search != null && !m_compatMode) {
+			if (search != null) {
 				SearchView sv = (SearchView) search.getActionView();
 				sv.setQuery("", false);				
 			}

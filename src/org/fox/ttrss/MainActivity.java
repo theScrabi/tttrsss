@@ -63,7 +63,6 @@ public class MainActivity extends Activity implements OnlineServices {
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	private int m_apiLevel = 0;
 	private boolean m_isLoggingIn = false;
@@ -435,8 +434,6 @@ public class MainActivity extends Activity implements OnlineServices {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
-
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
 		} else {
@@ -463,7 +460,7 @@ public class MainActivity extends Activity implements OnlineServices {
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
+		m_smallScreenMode = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
 				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		
 		setContentView(R.layout.main);
@@ -481,18 +478,11 @@ public class MainActivity extends Activity implements OnlineServices {
 
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
-				if (!m_smallScreenMode) {
-					LayoutTransition transitioner = new LayoutTransition();
-					((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
-				}
-			}
-			
-			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
-		}
+		LayoutTransition transitioner = new LayoutTransition();
+		((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
+
+		m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 
 		if (m_isOffline) {
 			Intent offline = new Intent(MainActivity.this,
@@ -926,44 +916,6 @@ public class MainActivity extends Activity implements OnlineServices {
 		case android.R.id.home:
 			goBack(false);
 			return true;
-		case R.id.search:
-			if (hf != null && m_compatMode) {
-				Dialog dialog = new Dialog(this);
-
-				final EditText edit = new EditText(this);
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(this)
-						.setTitle(R.string.search)
-						.setPositiveButton(getString(R.string.search),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										String query = edit.getText().toString().trim();
-										
-										hf.setSearchQuery(query);
-
-									}
-								})
-						.setNegativeButton(getString(R.string.cancel),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										//
-
-									}
-								}).setView(edit);
-				
-				dialog = builder.create();
-				dialog.show();
-			}
-			
-			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(MainActivity.this,
 					PreferencesActivity.class);
@@ -1312,12 +1264,8 @@ public class MainActivity extends Activity implements OnlineServices {
 					numSelected = hf.getSelectedArticles().size();
 
 				if (numSelected != 0) {
-					if (m_compatMode) {
-						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
-					} else {
-						if (m_headlinesActionMode == null)
-							m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
-					}
+					if (m_headlinesActionMode == null)
+						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
 					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
@@ -1328,40 +1276,38 @@ public class MainActivity extends Activity implements OnlineServices {
 					
 					search.setEnabled(m_apiLevel >= 2);
 					
-					if (!m_compatMode) {
-						SearchView searchView = (SearchView) search.getActionView();
-						searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-							private String query = "";
+					SearchView searchView = (SearchView) search.getActionView();
+					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+						private String query = "";
+						
+						@Override
+						public boolean onQueryTextSubmit(String query) {
+							HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
+									.findFragmentById(R.id.headlines_fragment);
 							
-							@Override
-							public boolean onQueryTextSubmit(String query) {
+							if (frag != null) {
+								frag.setSearchQuery(query);
+								this.query = query;
+							}
+							
+							return false;
+						}
+						
+						@Override
+						public boolean onQueryTextChange(String newText) {
+							if (newText.equals("") && !newText.equals(this.query)) {
 								HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
 										.findFragmentById(R.id.headlines_fragment);
 								
 								if (frag != null) {
-									frag.setSearchQuery(query);
-									this.query = query;
+									frag.setSearchQuery(newText);
+									this.query = newText;
 								}
-								
-								return false;
 							}
 							
-							@Override
-							public boolean onQueryTextChange(String newText) {
-								if (newText.equals("") && !newText.equals(this.query)) {
-									HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
-											.findFragmentById(R.id.headlines_fragment);
-									
-									if (frag != null) {
-										frag.setSearchQuery(newText);
-										this.query = newText;
-									}
-								}
-								
-								return false;
-							}
+							return false;
+						}
 						});
-					}
 					
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_feeds, true);
@@ -1371,32 +1317,28 @@ public class MainActivity extends Activity implements OnlineServices {
 					m_headlinesActionMode.finish();
 				}
 
-				if (!m_compatMode) {
-					
-					if (m_activeFeed != null) {
-						getActionBar().setTitle(m_activeFeed.title);
-					} else if (m_activeCategory != null) {
-						getActionBar().setTitle(m_activeCategory.title);
-					} else {
-						getActionBar().setTitle(R.string.app_name);
-					}
-					
-					if (!m_smallScreenMode) {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
-					} else {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
-					}
-					
-					if (android.os.Build.VERSION.SDK_INT >= 14) {			
-						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-						
-						if (m_selectedArticle != null) {
-							Log.d(TAG, "setting up share provider");
-							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
-						}
-					}
-					
+				if (m_activeFeed != null) {
+					getActionBar().setTitle(m_activeFeed.title);
+				} else if (m_activeCategory != null) {
+					getActionBar().setTitle(m_activeCategory.title);
+				} else {
+					getActionBar().setTitle(R.string.app_name);
 				}
+				
+				if (!m_smallScreenMode) {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+				} else {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
+				}
+				
+				if (android.os.Build.VERSION.SDK_INT >= 14) {			
+					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+					
+					if (m_selectedArticle != null) {
+						Log.d(TAG, "setting up share provider");
+						shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+					}
+					}
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 
@@ -1615,7 +1557,7 @@ public class MainActivity extends Activity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1663,7 +1605,7 @@ public class MainActivity extends Activity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
