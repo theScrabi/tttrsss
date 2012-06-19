@@ -2,6 +2,8 @@ package org.fox.ttrss;
 
 import java.util.ArrayList;
 
+import org.fox.ttrss.types.Feed;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 

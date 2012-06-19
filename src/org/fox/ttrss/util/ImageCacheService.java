@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,6 +9,12 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.R.drawable;
+import org.fox.ttrss.R.string;
+import org.fox.ttrss.offline.OfflineDownloadService;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
@@ -53,7 +59,7 @@ public class ImageCacheService extends IntentService {
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 	}
 
-	protected static boolean isUrlCached(String url) {
+	public static boolean isUrlCached(String url) {
 		String hashedUrl = md5(url);
 		
 		File storage = Environment.getExternalStorageDirectory();
@@ -63,7 +69,7 @@ public class ImageCacheService extends IntentService {
 		return file.exists();
 	}
 
-	protected static String getCacheFileName(String url) {
+	public static String getCacheFileName(String url) {
 		String hashedUrl = md5(url);
 		
 		File storage = Environment.getExternalStorageDirectory();
@@ -73,7 +79,7 @@ public class ImageCacheService extends IntentService {
 		return file.getAbsolutePath();
 	}
 	
-	protected static void cleanupCache(boolean deleteAll) {
+	public static void cleanupCache(boolean deleteAll) {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			File storage = Environment.getExternalStorageDirectory();
 			File cachePath = new File(storage.getAbsolutePath() + CACHE_PATH);

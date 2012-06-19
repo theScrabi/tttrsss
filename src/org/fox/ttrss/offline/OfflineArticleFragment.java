@@ -1,28 +1,34 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.fox.ttrss.R;
+import org.fox.ttrss.R.attr;
+import org.fox.ttrss.R.id;
+import org.fox.ttrss.R.layout;
+import org.fox.ttrss.R.menu;
+import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;

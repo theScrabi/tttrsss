@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.fox.ttrss"
-    android:versionCode="72"
-    android:versionName="0.5.7" >
+    android:versionCode="73"
+    android:versionName="0.6.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="14" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,7 +13,7 @@
 
     <application
         android:allowBackup="true"
-        android:backupAgent="PrefsBackupAgent"
+        android:backupAgent=".util.PrefsBackupAgent"
         android:hardwareAccelerated="true"
         uiOptions="splitActionBarWhenNarrow"
         android:icon="@drawable/icon"
@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:name=".OfflineActivity" >
+            android:name=".offline.OfflineActivity" >
         </activity>
         <activity
             android:label="@string/app_name"
@@ -42,15 +42,15 @@
 
         <service
             android:enabled="true"
-            android:name=".OfflineDownloadService" />
+            android:name=".offline.OfflineDownloadService" />
         <service
             android:enabled="true"
-            android:name=".OfflineUploadService" />
+       		android:name=".offline.OfflineUploadService" />
         <service
             android:enabled="true"
-            android:name=".ImageCacheService" />
+            android:name=".util.ImageCacheService" />
 
-        <service android:name="BillingService" />
+        <service android:name=".billing.BillingService" />
                 
         <meta-data
             android:name="com.google.android.backup.api_key"

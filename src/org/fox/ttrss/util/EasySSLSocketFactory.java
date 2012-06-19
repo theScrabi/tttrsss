@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.util;
 
 import java.io.IOException;  
 import java.net.InetAddress;  

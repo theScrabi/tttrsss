@@ -6,9 +6,24 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.fox.ttrss.billing.BillingHelper;
+import org.fox.ttrss.billing.BillingService;
+import org.fox.ttrss.offline.OfflineActivity;
+import org.fox.ttrss.offline.OfflineDownloadService;
+import org.fox.ttrss.offline.OfflineUploadService;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.Label;
+import org.fox.ttrss.util.AppRater;
+import org.fox.ttrss.util.DatabaseHelper;
+
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,9 +39,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -48,7 +60,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends FragmentActivity implements OnlineServices {
+public class MainActivity extends Activity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -63,7 +75,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	private int m_apiLevel = 0;
 	private boolean m_isLoggingIn = false;
@@ -133,7 +144,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	};
 
 	public void updateHeadlines() {
-		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+		HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			frag.notifyUpdated();
@@ -351,7 +362,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private synchronized void refreshFeeds() {
 		if (m_sessionId != null) {
-			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager()
+			FeedsFragment frag = (FeedsFragment) getFragmentManager()
 					.findFragmentById(R.id.feeds_fragment);
 
 			Log.d(TAG, "Refreshing feeds...");
@@ -364,7 +375,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private synchronized void refreshHeadlines() {
 		if (m_sessionId != null) {
-			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+			HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
 					.findFragmentById(R.id.headlines_fragment);
 
 			Log.d(TAG, "Refreshing headlines...");
@@ -377,7 +388,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private synchronized void refreshCategories() {
 		if (m_sessionId != null) {
-			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager()
+			FeedCategoriesFragment frag = (FeedCategoriesFragment) getFragmentManager()
 					.findFragmentById(R.id.cats_fragment);
 
 			Log.d(TAG, "Refreshing categories...");
@@ -407,7 +418,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	 * = unread;
 	 * 
 	 * HeadlinesFragment frag =
-	 * (HeadlinesFragment)getSupportFragmentManager().findFragmentById
+	 * (HeadlinesFragment)getFragmentManager().findFragmentById
 	 * (R.id.headlines_fragment);
 	 * 
 	 * if (frag != null) frag.refresh(false); }
@@ -435,8 +446,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
-
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
 		} else {
@@ -463,7 +472,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
+		m_smallScreenMode = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
 				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 		
 		setContentView(R.layout.main);
@@ -481,18 +490,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
 		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14 || android.os.Build.VERSION.SDK_INT == 15) {
-				if (!m_smallScreenMode) {
-					LayoutTransition transitioner = new LayoutTransition();
-					((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
-				}
-			}
-			
-			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
-		}
+		LayoutTransition transitioner = new LayoutTransition();
+		((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
+
+		m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 
 		if (m_isOffline) {
 			Intent offline = new Intent(MainActivity.this,
@@ -754,7 +756,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_activeCategory = null;
 		
-		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
+		FeedCategoriesFragment cf = (FeedCategoriesFragment) getFragmentManager()
 				.findFragmentById(R.id.cats_fragment);
 
 		if (cf != null) {
@@ -767,7 +769,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 	
 	private void deselectAllArticles() {
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+		HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 									.findFragmentById(R.id.headlines_fragment);
 
 		if (hf != null) {
@@ -797,11 +799,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					findViewById(R.id.cats_fragment)
 						.setVisibility(View.VISIBLE);
 					
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					FragmentTransaction ft = getFragmentManager().beginTransaction();
 					ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
 					ft.commit();
 
-					FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
+					FeedCategoriesFragment cf = (FeedCategoriesFragment) getFragmentManager()
 							.findFragmentById(R.id.cats_fragment);
 
 					if (cf != null) {
@@ -816,14 +818,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					findViewById(R.id.feeds_fragment).setVisibility(
 							View.VISIBLE);
 
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					FragmentTransaction ft = getFragmentManager().beginTransaction();
 					ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
 					ft.commit();
 
 					refreshFeeds();
 				}
 
-				FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+				FeedsFragment ff = (FeedsFragment) getFragmentManager()
 						.findFragmentById(R.id.feeds_fragment);
 
 				if (ff != null) {
@@ -855,7 +857,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				findViewById(R.id.headlines_fragment).setVisibility(
 						View.INVISIBLE);
 				
-				FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+				FeedsFragment ff = (FeedsFragment) getFragmentManager()
 						.findFragmentById(R.id.feeds_fragment);
 
 				if (ff != null) {
@@ -864,7 +866,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				
 				m_activeFeed = null;
 				
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
 				ft.commit();
 				
@@ -880,7 +882,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+		final HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
 
 		switch (item.getItemId()) {
@@ -925,44 +927,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			return true;
 		case android.R.id.home:
 			goBack(false);
-			return true;
-		case R.id.search:
-			if (hf != null && m_compatMode) {
-				Dialog dialog = new Dialog(this);
-
-				final EditText edit = new EditText(this);
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(this)
-						.setTitle(R.string.search)
-						.setPositiveButton(getString(R.string.search),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										String query = edit.getText().toString().trim();
-										
-										hf.setSearchQuery(query);
-
-									}
-								})
-						.setNegativeButton(getString(R.string.cancel),
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										
-										//
-
-									}
-								}).setView(edit);
-				
-				dialog = builder.create();
-				dialog.show();
-			}
-			
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(MainActivity.this,
@@ -1276,7 +1240,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_selectedArticle = null;
 		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.article_fragment, new DummyFragment());
 		ft.commit();
 
@@ -1303,7 +1267,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 				
-				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 						.findFragmentById(R.id.headlines_fragment);
 
 				int numSelected = 0;
@@ -1312,12 +1276,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					numSelected = hf.getSelectedArticles().size();
 
 				if (numSelected != 0) {
-					if (m_compatMode) {
-						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
-					} else {
-						if (m_headlinesActionMode == null)
-							m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
-					}
+					if (m_headlinesActionMode == null)
+						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
 					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
@@ -1328,40 +1288,38 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					
 					search.setEnabled(m_apiLevel >= 2);
 					
-					if (!m_compatMode) {
-						SearchView searchView = (SearchView) search.getActionView();
-						searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-							private String query = "";
+					SearchView searchView = (SearchView) search.getActionView();
+					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+						private String query = "";
+						
+						@Override
+						public boolean onQueryTextSubmit(String query) {
+							HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
+									.findFragmentById(R.id.headlines_fragment);
 							
-							@Override
-							public boolean onQueryTextSubmit(String query) {
-								HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+							if (frag != null) {
+								frag.setSearchQuery(query);
+								this.query = query;
+							}
+							
+							return false;
+						}
+						
+						@Override
+						public boolean onQueryTextChange(String newText) {
+							if (newText.equals("") && !newText.equals(this.query)) {
+								HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
 										.findFragmentById(R.id.headlines_fragment);
 								
 								if (frag != null) {
-									frag.setSearchQuery(query);
-									this.query = query;
+									frag.setSearchQuery(newText);
+									this.query = newText;
 								}
-								
-								return false;
 							}
 							
-							@Override
-							public boolean onQueryTextChange(String newText) {
-								if (newText.equals("") && !newText.equals(this.query)) {
-									HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
-											.findFragmentById(R.id.headlines_fragment);
-									
-									if (frag != null) {
-										frag.setSearchQuery(newText);
-										this.query = newText;
-									}
-								}
-								
-								return false;
-							}
+							return false;
+						}
 						});
-					}
 					
 				} else {
 					m_menu.setGroupVisible(R.id.menu_group_feeds, true);
@@ -1371,32 +1329,28 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					m_headlinesActionMode.finish();
 				}
 
-				if (!m_compatMode) {
-					
-					if (m_activeFeed != null) {
-						getActionBar().setTitle(m_activeFeed.title);
-					} else if (m_activeCategory != null) {
-						getActionBar().setTitle(m_activeCategory.title);
-					} else {
-						getActionBar().setTitle(R.string.app_name);
-					}
-					
-					if (!m_smallScreenMode) {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
-					} else {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
-					}
-					
-					if (android.os.Build.VERSION.SDK_INT >= 14) {			
-						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-						
-						if (m_selectedArticle != null) {
-							Log.d(TAG, "setting up share provider");
-							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
-						}
-					}
-					
+				if (m_activeFeed != null) {
+					getActionBar().setTitle(m_activeFeed.title);
+				} else if (m_activeCategory != null) {
+					getActionBar().setTitle(m_activeCategory.title);
+				} else {
+					getActionBar().setTitle(R.string.app_name);
 				}
+				
+				if (!m_smallScreenMode) {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+				} else {
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeFeed != null || m_activeCategory != null);
+				}
+				
+				if (android.os.Build.VERSION.SDK_INT >= 14) {			
+					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+					
+					if (m_selectedArticle != null) {
+						Log.d(TAG, "setting up share provider");
+						shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+					}
+					}
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 
@@ -1509,7 +1463,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 								if (hasPendingOfflineData())
 									syncOfflineData();
 
-								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+								FragmentTransaction ft = getFragmentManager().beginTransaction();
 
 								if (m_enableCats) {
 									FeedCategoriesFragment frag = new FeedCategoriesFragment();
@@ -1615,7 +1569,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1623,12 +1577,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			HeadlinesFragment hf = new HeadlinesFragment();
 
-			FragmentTransaction ft = getSupportFragmentManager()
+			FragmentTransaction ft = getFragmentManager()
 					.beginTransaction();
 			ft.replace(R.id.headlines_fragment, hf);
 			ft.commit();
 		} else {
-			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+			HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 					.findFragmentById(R.id.headlines_fragment);
 			if (hf != null) {
 				hf.refresh(true);
@@ -1648,7 +1602,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			FeedsFragment frag = new FeedsFragment();
 
-			FragmentTransaction ft = getSupportFragmentManager()
+			FragmentTransaction ft = getFragmentManager()
 					.beginTransaction();
 			ft.replace(R.id.feeds_fragment, frag);
 			ft.commit();
@@ -1663,7 +1617,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1671,7 +1625,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			HeadlinesFragment frag = new HeadlinesFragment();
 
-			FragmentTransaction ft = getSupportFragmentManager()
+			FragmentTransaction ft = getFragmentManager()
 					.beginTransaction();
 			ft.replace(R.id.headlines_fragment, frag);
 			ft.commit();
@@ -1691,7 +1645,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		initMainMenu();
 
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+		HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
 
 		if (hf != null) {
@@ -1715,7 +1669,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			frag = new ArticleFragment(article);
 		}
 
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.article_fragment, frag);
 		ft.commit();
 
@@ -1810,11 +1764,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+		HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
-		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
+		FeedsFragment ff = (FeedsFragment) getFragmentManager()
 				.findFragmentById(R.id.feeds_fragment);
-		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
+		FeedCategoriesFragment cf = (FeedCategoriesFragment) getFragmentManager()
 				.findFragmentById(R.id.cats_fragment);
 
 		switch (item.getItemId()) {
@@ -1972,7 +1926,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	@Override
 	public Article getRelativeArticle(Article article, RelativeArticle ra) {
-		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+		HeadlinesFragment frag = (HeadlinesFragment) getFragmentManager()
 				.findFragmentById(R.id.headlines_fragment);
 		if (frag != null) {
 			ArticleList articles = frag.getAllArticles();
@@ -2006,7 +1960,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			if (action == KeyEvent.ACTION_DOWN) {
-				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 						.findFragmentById(R.id.headlines_fragment);
 
 				if (hf != null && m_activeFeed != null) {
@@ -2033,7 +1987,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (action == KeyEvent.ACTION_UP) {
-				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
+				HeadlinesFragment hf = (HeadlinesFragment) getFragmentManager()
 						.findFragmentById(R.id.headlines_fragment);
 
 				if (hf != null && m_activeFeed != null) {

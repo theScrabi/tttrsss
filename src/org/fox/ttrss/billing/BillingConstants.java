@@ -1,4 +1,4 @@
-package org.fox.ttrss;
+package org.fox.ttrss.billing;
 
 
 public class BillingConstants {
