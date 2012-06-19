@@ -46,6 +46,11 @@ public class OfflineActivity extends FragmentActivity implements
 		OfflineServices {
 	private final String TAG = this.getClass().getSimpleName();
 
+	protected final static String FRAG_HEADLINES = "headlines";
+	protected final static String FRAG_ARTICLE = "article";
+	protected final static String FRAG_FEEDS = "feeds";
+	//protected final static String FRAG_CATS = "cats";
+	
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private Menu m_menu;
@@ -139,12 +144,13 @@ public class OfflineActivity extends FragmentActivity implements
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
 		if (!m_compatMode) {
-			if (android.os.Build.VERSION.SDK_INT < 14 /* || android.os.Build.VERSION.SDK_INT == 15 */) {
-				if (!m_smallScreenMode) {
-					LayoutTransition transitioner = new LayoutTransition();
-					((ViewGroup) findViewById(R.id.main)).setLayoutTransition(transitioner);
-				}
+			if (!m_smallScreenMode) {
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 ? View.GONE : View.VISIBLE);
+				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
+			
+			LayoutTransition transitioner = new LayoutTransition();
+			((ViewGroup) findViewById(R.id.fragment_container)).setLayoutTransition(transitioner);
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -153,37 +159,16 @@ public class OfflineActivity extends FragmentActivity implements
 
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 
-		/* if (m_smallScreenMode) {
-			if (m_selectedArticleId != 0) {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-			} else if (m_activeFeedId != 0) {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			} else {
-				//findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				// findViewById(R.id.article_fragment).setVisibility(View.GONE);
-
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			}
-		} else {
-			if (m_selectedArticleId == 0) {
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-
-			} else {
-				findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-				findViewById(R.id.cats_fragment).setVisibility(View.GONE);
-			}
-		} */
-
 		if (m_activeFeedId == 0) {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			OfflineFeedsFragment frag = new OfflineFeedsFragment();
-			ft.replace(R.id.feeds_fragment, frag);
+			if (m_smallScreenMode) {
+				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+			} else {
+				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
+			}
+				
 			ft.commit();
 		}
 	}
@@ -308,34 +293,10 @@ public class OfflineActivity extends FragmentActivity implements
 			if (m_selectedArticleId != 0) {
 				closeArticle();
 			} else if (m_activeFeedId != 0) {
-				//if (m_compatMode) {
-					findViewById(R.id.main).setAnimation(
-							AnimationUtils.loadAnimation(this,
-									R.anim.slide_right));
-				//}
-
-				/*
-				 * if (m_activeFeed != null && m_activeFeed.is_cat) {
-				 * findViewById
-				 * (R.id.headlines_fragment).setVisibility(View.GONE);
-				 * findViewById(R.id.cats_fragment).setVisibility(View.VISIBLE);
-				 * 
-				 * refreshCategories(); } else {
-				 */
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-				// }
 				m_activeFeedId = 0;
 				
-				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.feeds_fragment);
-				
-				if (ff != null) {
-					ff.setSelectedFeedId(0);
-				}
-				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.headlines_fragment, new OfflineHeadlinesFragment());
+				ft.replace(R.id.fragment_container, new OfflineFeedsFragment(), FRAG_FEEDS);
 				ft.commit();
 				
 				refreshViews();
@@ -347,23 +308,23 @@ public class OfflineActivity extends FragmentActivity implements
 		} else {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
-			} else if (m_activeFeedId != 0) {
+			/* } else if (m_activeFeedId != 0) {
 				findViewById(R.id.headlines_fragment).setVisibility(View.INVISIBLE);
 				m_activeFeedId = 0;
 				
 				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.feeds_fragment);
+						.findFragmentByTag(FRAG_FEEDS);
 				
 				if (ff != null) {
 					ff.setSelectedFeedId(0);
 				}
 
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.headlines_fragment, new OfflineHeadlinesFragment());
+				ft.replace(R.id.fragment_container, new OfflineHeadlinesFragment(), FRAG_HEADLINES);
 				ft.commit();
 
 				refreshViews();
-				initMainMenu();
+				initMainMenu(); */
 				
 			} else if (allowQuit) {
 				finish();
@@ -457,7 +418,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 	private void refreshHeadlines() {
 		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.headlines_fragment);
+				.findFragmentByTag(FRAG_HEADLINES);
 
 		if (ohf != null) {
 			ohf.refresh();
@@ -467,7 +428,7 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		final OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.headlines_fragment);
+				.findFragmentByTag(FRAG_HEADLINES);
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -680,7 +641,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 	private void refreshFeeds() {
 		OfflineFeedsFragment frag = (OfflineFeedsFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.feeds_fragment);
+				.findFragmentByTag(FRAG_FEEDS);
 
 		if (frag != null) {
 			frag.refresh();
@@ -688,27 +649,21 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private void closeArticle() {
-		if (m_smallScreenMode) {
-			findViewById(R.id.main).setAnimation(
-					AnimationUtils.loadAnimation(this, R.anim.slide_right));
-		}
-
-		if (m_smallScreenMode) {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.article_fragment).setVisibility(View.GONE);
-			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
-
-		}
-
 		// we don't want to lose selected article in headlines so we refresh them before setting selected id to 0
 		refreshViews();
 
 		m_selectedArticleId = 0;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.article_fragment, new DummyFragment());
+		
+		if (m_smallScreenMode) {
+			ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
+			ft.show(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
+			findViewById(R.id.article_fragment).setVisibility(View.GONE);
+			ft.replace(R.id.article_fragment, new DummyFragment(), FRAG_ARTICLE);
+		}
 		ft.commit();
 
 		initMainMenu();
@@ -757,7 +712,7 @@ public class OfflineActivity extends FragmentActivity implements
 						@Override
 						public boolean onQueryTextSubmit(String query) {
 							OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
-									.findFragmentById(R.id.headlines_fragment);
+									.findFragmentByTag(FRAG_HEADLINES);
 							
 							if (frag != null) {
 								frag.setSearchQuery(query);
@@ -771,7 +726,7 @@ public class OfflineActivity extends FragmentActivity implements
 						public boolean onQueryTextChange(String newText) {
 							if (newText.equals("") && !newText.equals(this.query)) {
 								OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
-										.findFragmentById(R.id.headlines_fragment);
+										.findFragmentByTag(FRAG_HEADLINES);
 								
 								if (frag != null) {
 									frag.setSearchQuery(newText);
@@ -839,9 +794,9 @@ public class OfflineActivity extends FragmentActivity implements
 				.getMenuInfo();
 
 		OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.headlines_fragment);
+				.findFragmentByTag(FRAG_HEADLINES);
 		OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.feeds_fragment);
+				.findFragmentByTag(FRAG_FEEDS);
 
 		switch (item.getItemId()) {
 		case R.id.article_link_copy:
@@ -1004,7 +959,7 @@ public class OfflineActivity extends FragmentActivity implements
 			if (action == KeyEvent.ACTION_DOWN) {
 
 				OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.headlines_fragment);
+						.findFragmentByTag(FRAG_HEADLINES);
 
 				int nextId = getRelativeArticleId(m_selectedArticleId,
 						m_activeFeedId, RelativeArticle.AFTER);
@@ -1033,7 +988,7 @@ public class OfflineActivity extends FragmentActivity implements
 			if (action == KeyEvent.ACTION_UP) {
 
 				OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.headlines_fragment);
+						.findFragmentByTag(FRAG_HEADLINES);
 
 				int prevId = getRelativeArticleId(m_selectedArticleId,
 						m_activeFeedId, RelativeArticle.BEFORE);
@@ -1123,13 +1078,6 @@ public class OfflineActivity extends FragmentActivity implements
 
 		initMainMenu();
 
-		if (m_smallScreenMode) {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
-		}
-
 		deselectAllArticles();
 
 		if (m_menu != null) {
@@ -1142,8 +1090,14 @@ public class OfflineActivity extends FragmentActivity implements
 		}
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment();
-		ft.replace(R.id.headlines_fragment, frag);
+		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(feedId);
+		
+		if (m_smallScreenMode) {
+			ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
+		} else {
+			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
+			ft.replace(R.id.headlines_fragment, frag, FRAG_HEADLINES);
+		}
 		ft.commit();
 
 	}
@@ -1155,7 +1109,7 @@ public class OfflineActivity extends FragmentActivity implements
 		initMainMenu();
 
 		OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.headlines_fragment);
+				.findFragmentByTag(FRAG_HEADLINES);
 
 		if (hf != null) {
 			hf.setActiveArticleId(articleId);
@@ -1171,24 +1125,24 @@ public class OfflineActivity extends FragmentActivity implements
 
 		Fragment frag;
 		
-		if (m_smallScreenMode) {
+		if (m_smallScreenMode || m_prefs.getBoolean("tablet_article_swipe", false)) {
 			frag = new OfflineArticlePager(articleId);
 		} else {
 			frag = new OfflineArticleFragment(articleId);
 		}
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.article_fragment, frag);
-		ft.commit();
 		
 		if (m_smallScreenMode) {
-			if (compatAnimation == 0)
-				findViewById(R.id.main).setAnimation(
-						AnimationUtils.loadAnimation(this, R.anim.slide_left));
-			else
-				findViewById(R.id.main).setAnimation(
-						AnimationUtils.loadAnimation(this, compatAnimation));
+			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
+		} else {
+			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 		}
+		
+		ft.commit();
 	}
 
 	@Override

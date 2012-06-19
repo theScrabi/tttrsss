@@ -69,6 +69,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 	};
 	
+	public OfflineHeadlinesFragment(int feedId) {
+		m_feedId = feedId;
+	}
+	
+	public OfflineHeadlinesFragment() {
+		//
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -164,7 +172,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		super.onAttach(activity);
 		m_offlineServices = (OfflineServices)activity;
 		
-		m_feedId = m_offlineServices.getActiveFeedId();
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}

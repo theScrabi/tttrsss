@@ -105,7 +105,7 @@ public class OfflineArticlePager extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_hf = (OfflineHeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		m_hf = (OfflineHeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentByTag(OfflineActivity.FRAG_HEADLINES);
 		m_offlineServices = (OfflineServices)activity;
 	}
 
