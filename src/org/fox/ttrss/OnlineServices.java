@@ -20,8 +20,8 @@ public interface OnlineServices {
 	
 	public void initMainMenu();
 	public void login();
-	public Feed getActiveFeed();
-	public FeedCategory getActiveCategory();
+	//public Feed getActiveFeed();
+	//public FeedCategory getActiveCategory();
 	public String getSessionId();
 	public boolean getUnreadArticlesOnly();
 	public boolean isSmallScreen();

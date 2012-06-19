@@ -92,6 +92,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		return m_selectedArticles;
 	}
 	
+	public HeadlinesFragment(Feed feed) {
+		m_feed = feed;
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -150,7 +154,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		super.onAttach(activity);
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_onlineServices = (OnlineServices) activity;
-		m_feed = m_onlineServices.getActiveFeed();
 
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
 	}

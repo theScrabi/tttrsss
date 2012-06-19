@@ -96,7 +96,7 @@ public class ArticlePager extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_hf = (HeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
+		m_hf = (HeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentByTag(MainActivity.FRAG_HEADLINES);
 		m_onlineServices = (OnlineServices)activity;
 	}
 
