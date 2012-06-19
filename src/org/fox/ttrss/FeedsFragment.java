@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,14 +20,8 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fox.ttrss.types.Feed;
@@ -73,10 +66,20 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private FeedListAdapter m_adapter;
 	private FeedList m_feeds = new FeedList();
 	private OnlineServices m_onlineServices;
-	private int m_selectedFeedId;
+	private Feed m_selectedFeed;
+	private FeedCategory m_activeCategory;
 	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
+	
+	public FeedsFragment() {
+		
+		
+	}
+	
+	public FeedsFragment(FeedCategory cat) {
+		m_activeCategory = cat;
+	}
 	
 	class FeedUnreadComparator implements Comparator<Feed> {
 
@@ -138,9 +141,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
 		if (savedInstanceState != null) {
-			m_selectedFeedId = savedInstanceState.getInt("selectedFeedId");
+			m_selectedFeed = savedInstanceState.getParcelable("selectedFeed");
 			m_feeds = savedInstanceState.getParcelable("feeds");
 			m_feedIconsChecked = savedInstanceState.getBoolean("feedIconsChecked");
+			m_activeCategory = savedInstanceState.getParcelable("activeCat");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -177,19 +181,17 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		m_onlineServices = (OnlineServices)activity;
 		
-		Feed activeFeed = m_onlineServices.getActiveFeed();
-		
-		if (activeFeed != null)
-			m_selectedFeedId = activeFeed.id;
+		//m_selectedFeed = m_onlineServices.getActiveFeed();
 	}
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putInt("selectedFeedId", m_selectedFeedId);
+		out.putParcelable("selectedFeed", m_selectedFeed);
 		out.putParcelable("feeds", m_feeds);
 		out.putBoolean("feedIconsChecked", m_feedIconsChecked);
+		out.putParcelable("activeCat", m_activeCategory);	
 	}
 	
 	@Override
@@ -199,16 +201,16 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
 			m_onlineServices.onFeedSelected(feed);
-			m_selectedFeedId = feed.id;
+			m_selectedFeed = feed;
 			m_adapter.notifyDataSetChanged();
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
-		FeedCategory cat = m_onlineServices.getActiveCategory();
+		//FeedCategory cat = m_onlineServices.getActiveCategory();
 
-		final int catId = (cat != null) ? cat.id : -4;
+		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
 		final String sessionId = m_onlineServices.getSessionId();
 		final boolean unreadOnly = m_onlineServices.getUnreadOnly();
@@ -375,7 +377,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
 			
-			if (feed.id == m_selectedFeedId) {
+			if (m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -579,8 +581,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 	}
 	
-	public void setSelectedFeedId(int feedId) {
-		m_selectedFeedId = feedId;
+	public Feed getSelectedFeed() {
+		return m_selectedFeed;
+	}	
+	
+	public void setSelectedFeed(Feed feed) {
+		m_selectedFeed = feed;		
 	}
 
 }

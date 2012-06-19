@@ -41,7 +41,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
-	private int m_selectedCatId = -100;
+	private FeedCategory m_selectedCat;
 	private OnlineServices m_onlineServices;
 
 	class CatUnreadComparator implements Comparator<FeedCategory> {
@@ -105,7 +105,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 		if (savedInstanceState != null) {
-			m_selectedCatId = savedInstanceState.getInt("selectedCatId");
+			m_selectedCat = savedInstanceState.getParcelable("selectedCat");
 			m_cats = savedInstanceState.getParcelable("cats");
 		}	
 		
@@ -140,7 +140,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putInt("selectedCatId", m_selectedCatId);
+		out.putParcelable("selectedCat", m_selectedCat);
 		out.putParcelable("cats", m_cats);
 	}
 
@@ -285,7 +285,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		public int getItemViewType(int position) {
 			FeedCategory cat = items.get(position);
 			
-			if (cat.id == m_selectedCatId) {
+			if (m_selectedCat != null && cat.id == m_selectedCat.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -350,17 +350,17 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
 			m_onlineServices.onCatSelected(cat);
-			m_selectedCatId = cat.id;
+			m_selectedCat = cat;
 			m_adapter.notifyDataSetChanged();
 		}
 	}
 
 	public void setSelectedCategory(FeedCategory cat) {
-		m_selectedCatId = cat.id;
+		m_selectedCat = cat;
 		m_adapter.notifyDataSetChanged();
 	}
 	
-	public void setSelectedCategoryId(int id) {
-		m_selectedCatId = id;
-	}
+	public FeedCategory getSelectedCategory() {
+		return m_selectedCat;
+	}	
 }

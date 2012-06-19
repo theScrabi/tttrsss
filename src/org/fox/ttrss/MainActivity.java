@@ -771,8 +771,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentById(R.id.cats_fragment);
 
 		if (cf != null) {
-			// should be nonexistant feed_id (0 is Uncategorized)
-			cf.setSelectedCategoryId(-10000);
+			cf.setSelectedCategory(null);
 		}
 
 		initMainMenu();
@@ -818,8 +817,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							.findFragmentById(R.id.cats_fragment);
 
 					if (cf != null) {
-						// can't use 0 here because Uncategorized might be in the buffer
-						cf.setSelectedCategoryId(-1000000);
+						cf.setSelectedCategory(null);
 					}
 					
 					refreshCategories();
@@ -840,7 +838,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						.findFragmentById(R.id.feeds_fragment);
 
 				if (ff != null) {
-					ff.setSelectedFeedId(0);
+					ff.setSelectedFeed(null);
 				}
 
 				m_activeFeed = null;
@@ -872,7 +870,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						.findFragmentById(R.id.feeds_fragment);
 
 				if (ff != null) {
-					ff.setSelectedFeedId(0);
+					ff.setSelectedFeed(null);
 				}
 				
 				m_activeFeed = null;
@@ -881,7 +879,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				ft.replace(R.id.headlines_fragment, new HeadlinesFragment());
 				ft.commit();
 				
-				refreshFeeds();
+				refreshFeeds();				
 				initMainMenu();
 
 			} else if (allowQuit) {
