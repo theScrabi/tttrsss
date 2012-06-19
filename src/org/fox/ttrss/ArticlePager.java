@@ -1,12 +1,12 @@
 package org.fox.ttrss;
 
 import org.fox.ttrss.types.Article;
-import org.fox.ttrss.util.FragmentStatePagerAdapter;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +57,7 @@ public class ArticlePager extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		View view = inflater.inflate(R.layout.article_pager, container, false);
 	
-		m_adapter = new PagerAdapter(getActivity().getFragmentManager());
+		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
@@ -96,7 +96,7 @@ public class ArticlePager extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_hf = (HeadlinesFragment) getActivity().getFragmentManager().findFragmentById(R.id.headlines_fragment);
+		m_hf = (HeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.headlines_fragment);
 		m_onlineServices = (OnlineServices)activity;
 	}
 
