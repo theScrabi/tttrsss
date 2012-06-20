@@ -301,6 +301,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				}
 			}
 			
+			TextView ft = (TextView)v.findViewById(R.id.feed_title);
+			
+			if (ft != null) {
+				ft.setVisibility(View.GONE);
+			}
+			
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
 			
 			if (marked != null) {
