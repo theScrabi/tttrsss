@@ -137,11 +137,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				
 			} else if (intent.getAction().equals(OfflineUploadService.INTENT_ACTION_SUCCESS)) {
 				//Log.d(TAG, "offline upload service reports success");
-				
-				if (!m_enableCats || m_activeCategory != null)
-					refreshFeeds();
-				else
-					refreshCategories();
+
+				refresh();
 
 				Toast toast = Toast.makeText(MainActivity.this, R.string.offline_sync_success, Toast.LENGTH_SHORT);
 				toast.show();
@@ -264,10 +261,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				if (!m_enableCats || m_activeCategory != null)
-					refreshFeeds();
-				else
-					refreshCategories();
+				refresh();
 			}
 
 		};
@@ -320,6 +314,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		};
 
 		req.execute(map);
+		refresh();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -355,10 +350,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							if (!m_enableCats || m_activeCategory != null)
-								refreshFeeds();
-							else
-								refreshCategories();
+							refresh();
 						}
 					});
 					
@@ -367,16 +359,24 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	private synchronized void refreshFeeds() {
+	private synchronized void refresh() {
 		if (m_sessionId != null) {
-			FeedsFragment frag = (FeedsFragment) getSupportFragmentManager()
+			FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
 					.findFragmentByTag(FRAG_FEEDS);
 
-			Log.d(TAG, "Refreshing feeds...");
-
-			if (frag != null) {
-				frag.refresh(true);
+			if (ff != null) {
+				Log.d(TAG, "Refreshing feeds...");
+				ff.refresh(true);
 			}
+			
+			FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
+					.findFragmentByTag(FRAG_CATS);
+
+			if (cf != null) {
+				Log.d(TAG, "Refreshing categories...");
+				cf.refresh(true);
+			}
+
 		}
 	}
 
@@ -393,26 +393,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	} */
 
-	private synchronized void refreshCategories() {
-		if (m_sessionId != null) {
-			FeedCategoriesFragment frag = (FeedCategoriesFragment) getSupportFragmentManager()
-					.findFragmentByTag(FRAG_CATS);
-
-			Log.d(TAG, "Refreshing categories...");
-
-			if (frag != null) {
-				frag.refresh(true);
-			}
-		}
-	}
-
 	private void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
-
-		if (!m_enableCats || m_activeCategory != null)
-			refreshFeeds();
-		else
-			refreshCategories();
+		refresh();
 	}
 
 	@Override
@@ -621,7 +604,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private void cancelOfflineSync() {		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this)
 		.setMessage(R.string.dialog_offline_sync_in_progress)
-		.setPositiveButton(R.string.dialog_offline_sync_stop,
+		.setNegativeButton(R.string.dialog_offline_sync_stop,
 				new Dialog.OnClickListener() {
 					public void onClick(DialogInterface dialog,
 							int which) {
@@ -636,14 +619,27 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 									OfflineDownloadService.class);
 
 							stopService(intent);
+							
+							dialog.dismiss();
+							
+							Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+							refresh.putExtra("sessionId", m_sessionId);
+							startActivity(refresh);
+							finish();							
 						}
 					}
 				})
-		.setNegativeButton(R.string.dialog_cancel,
+		.setPositiveButton(R.string.dialog_offline_sync_continue,
 				new Dialog.OnClickListener() {
 					public void onClick(DialogInterface dialog,
 							int which) {
-						//
+					
+						dialog.dismiss();
+						
+						Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+						refresh.putExtra("sessionId", m_sessionId);
+						startActivity(refresh);
+						finish();
 					}
 				});
 
@@ -766,7 +762,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		ft.commit();
 
 		initMainMenu();
-		refreshCategories();
+		refresh();
 	}
 	
 	private void deselectAllArticles() {
@@ -810,13 +806,17 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		} else {
 			if (m_selectedArticle != null) {
 				closeArticle();
+				refresh();
+			} else if (m_activeFeed != null) {
+				m_activeFeed = null;
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+				ft.commit();
+				
+				initMainMenu();
 			} else if (m_activeCategory != null) {
 				closeCategory();
-			/* } else if (m_activeFeed != null) {
-				m_activeFeed = null;
-				findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-				initMainMenu(); */
-				
 			} else if (allowQuit) {
 				finish();
 			}
@@ -916,10 +916,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.update_feeds:
-			if (!m_enableCats || m_activeCategory != null)
-				refreshFeeds();
-			else
-				refreshCategories();
+			refresh();
 			return true;
 		case R.id.logout:
 			logout();
@@ -989,6 +986,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				};
 
 				req.execute(map);
+				refresh();
 			}
 			return true;
 		case R.id.share_article:
@@ -997,8 +995,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.toggle_marked:
 			if (m_selectedArticle != null) {
 				m_selectedArticle.marked = !m_selectedArticle.marked;
-				saveArticleMarked(m_selectedArticle);
-				updateHeadlines();
+				saveArticleMarked(m_selectedArticle);				
+				//updateHeadlines();
 			}
 			return true;
 		case R.id.selection_select_none:
@@ -1015,6 +1013,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					toggleArticlesUnread(selected);
 					hf.notifyUpdated();
 				}
+				refresh();
 			}
 			return true;
 		case R.id.selection_toggle_marked:
@@ -1085,16 +1084,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 
 			return true;
-			/*
-			 * case R.id.show_all_articles:
-			 * setUnreadArticlesOnly(!getUnreadArticlesOnly());
-			 * 
-			 * if (getUnreadArticlesOnly()) {
-			 * item.setTitle(R.string.show_all_articles); } else {
-			 * item.setTitle(R.string.show_unread_articles); }
-			 * 
-			 * return true;
-			 */
 		case R.id.set_labels:
 			if (m_selectedArticle != null) {
 			

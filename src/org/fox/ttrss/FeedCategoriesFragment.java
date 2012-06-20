@@ -155,7 +155,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 		}
 	
-		getActivity().setProgressBarIndeterminateVisibility(showProgress);
+		if (getActivity() != null)
+			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings("unchecked")

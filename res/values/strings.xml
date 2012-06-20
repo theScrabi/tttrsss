@@ -135,4 +135,5 @@
     <string name="justify_article_text">Justify article text</string>
     <string name="dialog_offline_sync_in_progress">Offline sync in progress</string>
     <string name="dialog_offline_sync_stop">Stop syncing</string>
+    <string name="dialog_offline_sync_continue">Continue</string>
 </resources>

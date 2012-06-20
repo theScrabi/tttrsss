@@ -256,7 +256,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		}
 		
-		getActivity().setProgressBarIndeterminateVisibility(showProgress);
+		if (getActivity() != null)
+			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	private class HeadlinesRequest extends ApiRequest {

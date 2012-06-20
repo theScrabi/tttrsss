@@ -251,7 +251,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 		}
 		
-		getActivity().setProgressBarIndeterminateVisibility(showProgress);
+		if (getActivity() != null)
+			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })

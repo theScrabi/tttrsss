@@ -58,21 +58,21 @@
                     android:id="@+id/tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.7"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="{TAGS}"
-                    android:textSize="10sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.2"
                     android:gravity="right"
                     android:text="{DATE}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="10sp" />
+                    android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
 
