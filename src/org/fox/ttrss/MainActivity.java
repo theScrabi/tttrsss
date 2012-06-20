@@ -494,6 +494,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
+		
+		if (m_smallScreenMode) {
+			if (m_selectedArticle != null) {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+				ft.commit();
+			}
+		}
 
 		if (m_isOffline) {
 			Intent offline = new Intent(MainActivity.this,
