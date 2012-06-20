@@ -8,12 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class ArticlePager extends Fragment {
 
+	private final String TAG = "ArticlePager";
 	private PagerAdapter m_adapter;
 	private OnlineServices m_onlineServices;
 	private HeadlinesFragment m_hf; 
@@ -85,6 +87,13 @@ public class ArticlePager extends Fragment {
 						m_onlineServices.saveArticleUnread(article);
 					}
 					m_onlineServices.setSelectedArticle(article);
+					
+					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
+					
+					if (position == m_adapter.getCount() - 5) {
+						m_hf.refresh(true);
+						m_adapter.notifyDataSetChanged();
+					}
 				}
 			}
 		});
