@@ -58,7 +58,7 @@
                 android:textSize="13sp" >
             </TextView>
         </LinearLayout>
-
+
         <LinearLayout
             android:id="@+id/linerLayout3"
             android:layout_width="wrap_content"
@@ -68,12 +68,24 @@
             android:padding="3dip" >
 
             <TextView
+                android:id="@+id/feed_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="{Feed title...}"
+                android:textColor="?headlineExcerptTextColor"
+                android:textSize="11sp" />
+
+            <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:text="Jan 01"
                 android:textColor="#909090"
-                android:textSize="13sp" >
+                android:textSize="11sp" >
             </TextView>
 
             <LinearLayout
@@ -100,6 +112,7 @@
                 </ImageView>
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
     <TextView

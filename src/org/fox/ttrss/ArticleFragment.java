@@ -281,7 +281,9 @@ public class ArticleFragment extends Fragment {
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
-				if (m_article.tags != null) {
+				if (m_article.feed_title != null) {
+					tagv.setText(m_article.feed_title);
+				} else if (m_article.tags != null) {
 					String tagsStr = "";
 				
 					for (String tag : m_article.tags)

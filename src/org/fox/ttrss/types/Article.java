@@ -21,6 +21,7 @@ public class Article implements Parcelable {
 	public List<Attachment> attachments;
 	public String content;
 	public List<List<String>> labels;
+	public String feed_title;
 	
 	public Article(Parcel in) {
 		readFromParcel(in);
@@ -52,6 +53,7 @@ public class Article implements Parcelable {
 		out.writeStringList(tags);
 		out.writeString(content);
 		out.writeList(attachments);
+		out.writeString(feed_title);
 	}
 	
 	public void readFromParcel(Parcel in) {
@@ -72,6 +74,8 @@ public class Article implements Parcelable {
 		
 		attachments = new ArrayList<Attachment>();
 		in.readList(attachments, Attachment.class.getClassLoader());
+		
+		feed_title = in.readString();
 	}
 	
 	@SuppressWarnings("rawtypes")

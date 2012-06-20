@@ -399,6 +399,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
+			TextView ft = (TextView)v.findViewById(R.id.feed_title);
+			
+			if (ft != null) {
+				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
+					ft.setText(article.feed_title);					
+				} else {
+					ft.setVisibility(View.GONE);
+				}
+				
+			}
+			
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
 			
 			if (marked != null) {
