@@ -20,6 +20,7 @@ import org.fox.ttrss.util.AppRater;
 import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -1201,6 +1202,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		initMainMenu();
 	}
 
+	@SuppressLint({ "NewApi", "NewApi", "NewApi" })
 	@Override
 	public void initMainMenu() {
 		if (m_menu != null) {
