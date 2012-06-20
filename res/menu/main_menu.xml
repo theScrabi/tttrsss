@@ -127,6 +127,11 @@
                 android:id="@+id/set_labels"
                 android:icon="@drawable/ic_menu_marked"
                 android:title="@string/article_set_labels"/>
+            
+            <item
+	            android:id="@+id/article_set_note"
+            	android:showAsAction=""
+            	android:title="@string/article_set_note"/>
         </group>
     </group>
 

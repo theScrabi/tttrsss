@@ -116,6 +116,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
 		
+		menu.findItem(R.id.set_labels).setEnabled(m_onlineServices.getApiLevel() >= 1);
+		menu.findItem(R.id.article_set_note).setEnabled(m_onlineServices.getApiLevel() >= 1);
+		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}

@@ -247,6 +247,24 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		req.execute(map);
 	}
 
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void saveArticleNote(final Article article, final String note) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", "1");
+				put("data", note);
+				put("field", "3");
+			}
+		};
+
+		req.execute(map);
+	}
+
 	public static String articlesToIdString(ArticleList articles) {
 		String tmp = "";
 
@@ -936,6 +954,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		case R.id.go_offline:
 			switchOffline();
 			return true;
+		case R.id.article_set_note:
+			if (m_selectedArticle != null) {
+				editArticleNote(m_selectedArticle);				
+			}
+			return true;
 		case R.id.headlines_select:
 			if (hf != null) {
 				Dialog dialog = new Dialog(this);
@@ -1095,74 +1118,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			return true;
 		case R.id.set_labels:
 			if (m_selectedArticle != null) {
-			
-				ApiRequest req = new ApiRequest(getApplicationContext()) {
-					@Override
-					protected void onPostExecute(JsonElement result) {
-						if (result != null) {
-							Type listType = new TypeToken<List<Label>>() {}.getType();
-							final List<Label> labels = new Gson().fromJson(result, listType);
-
-							CharSequence[] items = new CharSequence[labels.size()];
-							final int[] itemIds = new int[labels.size()];
-							boolean[] checkedItems = new boolean[labels.size()];
-							
-							for (int i = 0; i < labels.size(); i++) {
-								items[i] = labels.get(i).caption;
-								itemIds[i] = labels.get(i).id;
-								checkedItems[i] = labels.get(i).checked;
-							}
-							
-							Dialog dialog = new Dialog(MainActivity.this);
-							AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-									.setTitle(R.string.article_set_labels)
-									.setMultiChoiceItems(items, checkedItems, new OnMultiChoiceClickListener() {
-										
-										@Override
-										public void onClick(DialogInterface dialog, int which, final boolean isChecked) {
-											final int labelId = itemIds[which];
-											
-											@SuppressWarnings("serial")
-											HashMap<String, String> map = new HashMap<String, String>() {
-												{
-													put("sid", m_sessionId);
-													put("op", "setArticleLabel");
-													put("label_id", String.valueOf(labelId));
-													put("article_ids", String.valueOf(m_selectedArticle.id));
-													if (isChecked) put("assign", "true");
-												}
-											};
-											
-											ApiRequest req = new ApiRequest(m_context);
-											req.execute(map);
-											
-										}
-									}).setPositiveButton(R.string.dialog_close, new OnClickListener() {
-										
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											dialog.cancel();
-										}
-									});
-
-							dialog = builder.create();
-							dialog.show();
-
-						}
-					}
-				};
-
-				@SuppressWarnings("serial")
-				HashMap<String, String> map = new HashMap<String, String>() {
-					{
-						put("sid", m_sessionId);
-						put("op", "getLabels");
-						put("article_id", String.valueOf(m_selectedArticle.id));
-					}
-				};
-				
-				req.execute(map);
-				
+				editArticleLabels(m_selectedArticle);				
 			}
 			return true;
 		default:
@@ -1172,6 +1128,105 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
+	private void editArticleNote(final Article article) {
+		String note = "";
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);  
+		builder.setTitle(article.title);
+		final EditText topicEdit = new EditText(this);
+		topicEdit.setText(note);
+		builder.setView(topicEdit);
+		
+		builder.setPositiveButton(R.string.article_set_note, new Dialog.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	        	saveArticleNote(article, topicEdit.getText().toString().trim());
+	        	article.published = true;	        	
+	        	saveArticlePublished(article);
+	        	updateHeadlines();	        	
+	        }
+	    });
+		
+		builder.setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	        	//
+	        }
+	    });
+		
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+
+	private void editArticleLabels(Article article) {
+		final int articleId = article.id;									
+
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			@Override
+			protected void onPostExecute(JsonElement result) {
+				if (result != null) {
+					Type listType = new TypeToken<List<Label>>() {}.getType();
+					final List<Label> labels = new Gson().fromJson(result, listType);
+
+					CharSequence[] items = new CharSequence[labels.size()];
+					final int[] itemIds = new int[labels.size()];
+					boolean[] checkedItems = new boolean[labels.size()];
+					
+					for (int i = 0; i < labels.size(); i++) {
+						items[i] = labels.get(i).caption;
+						itemIds[i] = labels.get(i).id;
+						checkedItems[i] = labels.get(i).checked;
+					}
+					
+					Dialog dialog = new Dialog(MainActivity.this);
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+							.setTitle(R.string.article_set_labels)
+							.setMultiChoiceItems(items, checkedItems, new OnMultiChoiceClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which, final boolean isChecked) {
+									final int labelId = itemIds[which];
+									
+									@SuppressWarnings("serial")
+									HashMap<String, String> map = new HashMap<String, String>() {
+										{
+											put("sid", m_sessionId);
+											put("op", "setArticleLabel");
+											put("label_id", String.valueOf(labelId));
+											put("article_ids", String.valueOf(articleId));
+											if (isChecked) put("assign", "true");
+										}
+									};
+									
+									ApiRequest req = new ApiRequest(m_context);
+									req.execute(map);
+									
+								}
+							}).setPositiveButton(R.string.dialog_close, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.cancel();
+								}
+							});
+
+					dialog = builder.create();
+					dialog.show();
+
+				}
+			}
+		};
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "getLabels");
+				put("article_id", String.valueOf(articleId));
+			}
+		};
+		
+		req.execute(map);
+	}
+	
 	private Intent getShareIntent(Article article) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
@@ -1317,6 +1372,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
+				m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
 
 				m_menu.findItem(R.id.donate).setVisible(BillingHelper.isBillingSupported());
 								
@@ -1744,7 +1800,37 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_selectedArticle != null) {
 				shareArticle(m_selectedArticle);
 			}
-			return true;		
+			return true;
+		case R.id.set_labels:
+			if (true) {
+				Article article = null;
+			
+				if (m_selectedArticle != null) {
+					article = m_selectedArticle;
+				} else if (info != null) {
+					article = hf.getArticleAtPosition(info.position);
+				}
+			
+				if (article != null) {
+					editArticleLabels(article);				
+				}
+			}
+			return true;
+		case R.id.article_set_note:
+			if (true) {
+				Article article = null;
+			
+				if (m_selectedArticle != null) {
+					article = m_selectedArticle;
+				} else if (info != null) {
+					article = hf.getArticleAtPosition(info.position);
+				}
+			
+				if (article != null) {
+					editArticleNote(article);				
+				}
+			}
+			return true;
 		case R.id.browse_articles:
 			if (cf != null) {
 				FeedCategory cat = cf.getCategoryAtPosition(info.position);
