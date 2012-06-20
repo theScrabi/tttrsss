@@ -24,13 +24,16 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -39,14 +42,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class OfflineDownloadService extends IntentService {
+public class OfflineDownloadService extends Service {
 
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
+	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
 
-	private static final int OFFLINE_SYNC_SEQ = 60;
+	private static final int OFFLINE_SYNC_SEQ = 40;
 	private static final int OFFLINE_SYNC_MAX = 500;
 	
 	private SQLiteDatabase m_writableDb;
@@ -59,11 +63,21 @@ public class OfflineDownloadService extends IntentService {
 	private boolean m_downloadImages = false;
 	private int m_syncMax;
 	private SharedPreferences m_prefs;
+	private boolean m_canProceed = true;
 	
-	public OfflineDownloadService() {
-		super("OfflineDownloadService");
-	}
+	private final IBinder m_binder = new LocalBinder();
 	
+    public class LocalBinder extends Binder {
+        OfflineDownloadService getService() {
+            return OfflineDownloadService.this;
+        }
+    }
+	
+    @Override
+    public IBinder onBind(Intent intent) {
+        return m_binder;
+    }
+    
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -81,8 +95,11 @@ public class OfflineDownloadService extends IntentService {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_downloading_title), System.currentTimeMillis());
 		
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.setAction(INTENT_ACTION_CANCEL);
+		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                intent, 0);
 		
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
@@ -100,6 +117,8 @@ public class OfflineDownloadService extends IntentService {
         m_readableDb.close();
         m_writableDb.close();
 
+        m_nmgr.cancel(NOTIFY_DOWNLOADING);
+        
         // TODO send notification to activity?
         
         m_downloadInProgress = false;
@@ -209,7 +228,11 @@ public class OfflineDownloadService extends IntentService {
 						
 						getWritableDb().execSQL("DELETE FROM articles;");
 						
-						downloadArticles();
+						if (m_canProceed) { 
+							downloadArticles();
+						} else {
+							downloadFailed();
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						updateNotification(R.string.offline_switch_error);
@@ -240,8 +263,10 @@ public class OfflineDownloadService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		
 		m_nmgr.cancel(NOTIFY_DOWNLOADING);
+
+		m_canProceed = false;
+		Log.d(TAG, "onDestroy");
 		
 		//m_readableDb.close();
 		//m_writableDb.close();
@@ -320,12 +345,16 @@ public class OfflineDownloadService extends IntentService {
 					//m_canGetMoreArticles = articles.size() == 30;
 					m_articleOffset += articles.size();
 	
-					Log.d(TAG, "offline: received " + articles.size() + " articles");
+					Log.d(TAG, "offline: received " + articles.size() + " articles; canProc=" + m_canProceed);
 					
-					if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < m_syncMax) {
-						downloadArticles();
+					if (m_canProceed) {
+						if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < m_syncMax) {
+							downloadArticles();
+						} else {
+							downloadComplete();
+						}
 					} else {
-						downloadComplete();
+						downloadFailed();
 					}
 					
 					return;
@@ -346,7 +375,7 @@ public class OfflineDownloadService extends IntentService {
 	}
 
 	@Override
-	protected void onHandleIntent(Intent intent) {
+	public void onStart(Intent intent, int startId) {
 		m_sessionId = intent.getStringExtra("sessionId");
 		
 		if (!m_downloadInProgress) {

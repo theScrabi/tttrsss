@@ -133,4 +133,6 @@
     <string name="attachment_view">View</string>
     <string name="attachment_copy">Copy URL</string>
     <string name="justify_article_text">Justify article text</string>
+    <string name="dialog_offline_sync_in_progress">Offline sync in progress</string>
+    <string name="dialog_offline_sync_stop">Stop syncing</string>
 </resources>

@@ -49,7 +49,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
@@ -87,7 +86,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private int m_apiLevel = 0;
 	private boolean m_isLoggingIn = false;
 	private boolean m_isOffline = false;
-	private boolean m_offlineModeReady = false;
+	private int m_offlineModeStatus = 0;
 	private int m_selectedProduct = -1;
 
 	private SQLiteDatabase m_readableDb;
@@ -132,7 +131,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			if (intent.getAction().equals(OfflineDownloadService.INTENT_ACTION_SUCCESS)) {
 			
-				m_offlineModeReady = true;
+				m_offlineModeStatus = 2;
 				
 				switchOffline();
 				
@@ -381,7 +380,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	private synchronized void refreshHeadlines() {
+	/* private synchronized void refreshHeadlines() {
 		if (m_sessionId != null) {
 			HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 					.findFragmentByTag(FRAG_HEADLINES);
@@ -392,7 +391,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				frag.refresh(true);
 			}
 		}
-	}
+	} */
 
 	private synchronized void refreshCategories() {
 		if (m_sessionId != null) {
@@ -452,6 +451,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		super.onCreate(savedInstanceState);
+		
+		if (OfflineDownloadService.INTENT_ACTION_CANCEL.equals(getIntent().getAction())) {
+			cancelOfflineSync();
+		}
+		
+		//Log.d(TAG, "started with intent action=" + intentAction);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  
 		
@@ -468,7 +473,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			m_activeCategory = savedInstanceState
 					.getParcelable("activeCategory");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
-			m_offlineModeReady = savedInstanceState.getBoolean("offlineModeReady");
+			m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
 		}
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
@@ -537,9 +542,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		return m_writableDb;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void switchOffline() {
-		if (m_offlineModeReady) {
+		if (m_offlineModeStatus == 2) {
 			
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					MainActivity.this)
@@ -548,6 +552,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							new Dialog.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
+									
+									m_offlineModeStatus = 0;
 									
 									SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 									SharedPreferences.Editor editor = localPrefs.edit();
@@ -565,14 +571,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							new Dialog.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									//
+
+									m_offlineModeStatus = 0;
+
 								}
 							});
 
 			AlertDialog dlg = builder.create();
 			dlg.show();
 			
-		} else {
+		} else if (m_offlineModeStatus == 0) {
 		
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)
 					.setMessage(R.string.dialog_offline_switch_prompt)
@@ -583,6 +591,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	
 									if (m_sessionId != null) {
 										Log.d(TAG, "offline: starting");
+										
+										m_offlineModeStatus = 1;
 	
 										Intent intent = new Intent(
 												MainActivity.this,
@@ -603,9 +613,44 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	
 			AlertDialog dlg = builder.create();
 			dlg.show();
+		} else if (m_offlineModeStatus == 1) {
+			cancelOfflineSync();
 		}
 	}
 
+	private void cancelOfflineSync() {		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+		.setMessage(R.string.dialog_offline_sync_in_progress)
+		.setPositiveButton(R.string.dialog_offline_sync_stop,
+				new Dialog.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						if (m_sessionId != null) {
+							Log.d(TAG, "offline: stopping");
+							
+							m_offlineModeStatus = 0;
+
+							Intent intent = new Intent(
+									MainActivity.this,
+									OfflineDownloadService.class);
+
+							stopService(intent);
+						}
+					}
+				})
+		.setNegativeButton(R.string.dialog_cancel,
+				new Dialog.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int which) {
+						//
+					}
+				});
+
+		AlertDialog dlg = builder.create();
+		dlg.show();
+	}
+	
 	private void switchOfflineSuccess() {
 		logout();
 		// setLoadingStatus(R.string.blank, false);
@@ -641,7 +686,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putParcelable("activeCategory", m_activeCategory);
 		out.putInt("apiLevel", m_apiLevel);
-		out.putBoolean("offlineModeReady", m_offlineModeReady);
+		out.putInt("offlineModeStatus", m_offlineModeStatus);
 	}
 
 	@Override
@@ -1601,13 +1646,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		ft.commit();
 	}
 
-	private Feed getActiveFeed() {
+	/* private Feed getActiveFeed() {
 		return m_activeFeed;
 	}
 
 	private FeedCategory getActiveCategory() {
 		return m_activeCategory;
-	}
+	} */
 
 	private void logout() {
 		if (m_refreshTask != null) {
