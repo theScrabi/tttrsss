@@ -122,6 +122,7 @@ public class OfflineDownloadService extends Service {
         // TODO send notification to activity?
         
         m_downloadInProgress = false;
+        stopSelf();
 	}
 	
 	private boolean isCacheServiceRunning() {
@@ -151,6 +152,8 @@ public class OfflineDownloadService extends Service {
         
         m_readableDb.close();
         m_writableDb.close();
+        
+        stopSelf();
 	}
 	
 	private void initDatabase() {

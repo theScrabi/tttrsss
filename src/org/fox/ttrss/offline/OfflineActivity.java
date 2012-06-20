@@ -121,7 +121,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		super.onCreate(savedInstanceState);
 		
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		NotificationManager nmgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOADING);
