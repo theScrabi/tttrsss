@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -89,6 +90,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private boolean m_isOffline = false;
 	private int m_offlineModeStatus = 0;
 	private int m_selectedProduct = -1;
+	private long m_lastRefresh = 0;
 
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
@@ -379,7 +381,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	private synchronized void refresh() {
-		if (m_sessionId != null) {
+		Date date = new Date();
+
+		if (m_sessionId != null && date.getTime() - m_lastRefresh > 5000) {
+			 
 			FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
 					.findFragmentByTag(FRAG_FEEDS);
 
@@ -396,6 +401,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				cf.refresh(true);
 			}
 
+			m_lastRefresh = date.getTime();
 		}
 	}
 
@@ -1732,6 +1738,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			findViewById(R.id.feeds_fragment).setVisibility(orientation % 2 != 0 ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
+			
+			if (orientation % 2 == 0) refresh();
 		}
 		ft.commit();
 	}
