@@ -420,6 +420,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private void setUnreadOnly(boolean unread) {
 		m_unreadOnly = unread;
+		m_lastRefresh = 0;
 		refresh();
 	}
 
@@ -975,6 +976,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.update_feeds:
+			m_lastRefresh = 0;
 			refresh();
 			return true;
 		case R.id.logout:
@@ -1390,7 +1392,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						getActionBar().setTitle(R.string.app_name);
 					}
 					
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+					if (m_smallScreenMode) {
+						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+					} else {
+						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null || m_activeFeed != null);
+					}
 					
 					if (android.os.Build.VERSION.SDK_INT >= 14) {			
 						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();

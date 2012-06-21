@@ -75,7 +75,7 @@ public class OfflineArticleFragment extends Fragment {
 		// TODO change to interface?
 		Activity activity = getActivity();
 		
-		if (activity != null) {		
+		/* if (activity != null) {		
 			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
 			
 			if (!m_offlineServices.isSmallScreen()) {			
@@ -90,7 +90,7 @@ public class OfflineArticleFragment extends Fragment {
 			}
 		} else {
 			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
-		}
+		} */
 		
 		m_cursor = m_offlineServices.getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
@@ -193,6 +193,7 @@ public class OfflineArticleFragment extends Fragment {
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
 					//"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
+					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
 					"img { max-width : 98%; height : auto; }" +
 					"</style>" +

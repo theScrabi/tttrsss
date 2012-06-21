@@ -5,6 +5,7 @@
         <item name="feedlistBackground">#fafafa</item>
         <item name="unreadCounterColor">#0000ff</item>
         <item name="headlinesBackground">#ffffff</item>
+        <item name="headlinesBackgroundSolid">#ffffff</item>
         <item name="articleDivider">#96c5ff</item>
         <item name="articleHeader">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#fff7d5</item>
@@ -17,6 +18,7 @@
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_light</item>
         <item name="headlineTextColor">@android:color/primary_text_light</item>
+        <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
         <item name="headlineSelectedTextColor">@android:color/primary_text_light</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
@@ -28,6 +30,7 @@
         <item name="feedlistBackground">#101010</item>
         <item name="unreadCounterColor">#303030</item>
         <item name="headlinesBackground">#000000</item>
+        <item name="headlinesBackgroundSolid">#000000</item>
         <item name="articleDivider">#F5B800</item>
         <item name="articleHeader">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#F5B800</item>
@@ -40,6 +43,7 @@
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineTextColor">@android:color/primary_text_dark</item>
+        <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedTextColor">@android:color/black</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/black</item>

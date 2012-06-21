@@ -4,6 +4,44 @@
     android:layout_height="fill_parent" >
 
     <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/feeds_fragment"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:background="?feedlistBackground" >
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/vertical_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:id="@+id/headlines_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:background="?headlinesBackgroundSolid" >
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/article_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?articleHeader" 
+                android:layout_weight="0.5" >
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/loading_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,41 +55,5 @@
             android:gravity="center_horizontal"
             android:text="@string/loading_message"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal" 
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    
-    <FrameLayout
-        android:id="@+id/feeds_fragment"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0" >
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/vertical_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <FrameLayout
-            android:id="@+id/headlines_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5" >
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/article_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5" >
-        </FrameLayout>
-    </LinearLayout>
-
     </LinearLayout>
 </FrameLayout>

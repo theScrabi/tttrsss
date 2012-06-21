@@ -4,6 +4,7 @@
     <attr name="feedlistBackground" format="reference|color" />
     <attr name="unreadCounterColor" format="reference|color" />
     <attr name="headlinesBackground" format="reference|color" />
+    <attr name="headlinesBackgroundSolid" format="reference|color" />
     <attr name="articleHeader" format="reference|color" />
     <attr name="articleDivider" format="reference|color" />
     <attr name="headlineSelectedBackground" format="reference|color" />
@@ -16,6 +17,7 @@
     <attr name="feedlistTextColor" format="reference|color" />
     <attr name="feedlistSelectedTextColor" format="reference|color" />
     <attr name="headlineTextColor" format="reference|color" />
+    <attr name="headlineUnreadTextColor" format="reference|color" />
     <attr name="headlineSelectedTextColor" format="reference|color" />
     <attr name="headlineExcerptTextColor" format="reference|color" />
     <attr name="headlineSelectedExcerptTextColor" format="reference|color" />

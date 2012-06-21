@@ -12,13 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <ImageView
-            android:id="@+id/headlines_separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?headlineSeparatorUnread"
-            android:paddingRight="4dip" />
-
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
@@ -34,7 +27,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="There are many variations of passages of Lorem Ipsum available"
-                android:textColor="?headlineTextColor"
+                android:textColor="?headlineUnreadTextColor"
                 android:textSize="16sp" />
 
             <LinearLayout

@@ -464,11 +464,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}       	
 
-			ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
+			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
 			
 			if (separator != null && m_onlineServices.isSmallScreen()) {
 				separator.setVisibility(View.GONE);
-			}
+			} */
 
 			TextView content = (TextView)v.findViewById(R.id.content);
 			

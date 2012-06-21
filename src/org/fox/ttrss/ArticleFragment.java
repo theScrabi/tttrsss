@@ -88,7 +88,7 @@ public class ArticleFragment extends Fragment {
 		
 		Activity activity = (Activity)getActivity();
 		
-		if (activity != null) {		
+		/* if (activity != null) {		
 			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
 			
 			if (!m_onlineServices.isSmallScreen()) {			
@@ -103,7 +103,7 @@ public class ArticleFragment extends Fragment {
 			}
 		} else {
 			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
-		}
+		} */
 		
 		if (m_article != null) {
 			
@@ -187,6 +187,7 @@ public class ArticleFragment extends Fragment {
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
 					//"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
+					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
 					"div.attachments { font-size : 70%; margin-top : 1em; }" +
 					"img { max-width : 98%; height : auto; }" +

@@ -12,13 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <ImageView
-            android:id="@+id/headlines_separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?headlineSeparatorSelected"
-            android:paddingRight="4dip" />
-
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
