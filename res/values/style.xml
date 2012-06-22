@@ -21,6 +21,7 @@
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="linkColor">#5858F8</item>
+        <item name="loadingBackground">@android:color/white</item>
     </style>
 
     <style name="DarkTheme" parent="android:Theme.Black.NoTitleBar">
@@ -44,6 +45,7 @@
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
         <item name="linkColor">#5858F8</item>
+        <item name="loadingBackground">@android:color/black</item>
     </style>
 
 </resources>
