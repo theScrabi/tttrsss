@@ -11,7 +11,6 @@ public interface OnlineServices {
 	public void saveArticleUnread(final Article article);
 	public void saveArticleMarked(final Article article);
 	public void saveArticlePublished(final Article article);
-	public void updateHeadlines();
 	public void openArticle(Article article, int compatAnimation);
 	public Article getRelativeArticle(Article article, RelativeArticle ra);
 	
@@ -20,8 +19,6 @@ public interface OnlineServices {
 	
 	public void initMainMenu();
 	public void login();
-	//public Feed getActiveFeed();
-	//public FeedCategory getActiveCategory();
 	public String getSessionId();
 	public boolean getUnreadArticlesOnly();
 	public boolean isSmallScreen();

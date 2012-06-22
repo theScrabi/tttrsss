@@ -1300,9 +1300,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);	
 			findViewById(R.id.article_fragment).setVisibility(View.GONE);
 			ft.replace(R.id.article_fragment, new DummyFragment(), FRAG_ARTICLE);
+
+			updateHeadlines();
 		}
 		ft.commit();
-
+		
 		initMainMenu();
 	}
 
@@ -1717,7 +1719,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				.findFragmentByTag(FRAG_HEADLINES);
 
 		if (hf != null) {
-			hf.setActiveArticleId(article.id);
+			hf.setActiveArticle(article);
 		}
 
 		Fragment frag;
@@ -2044,13 +2046,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						.findFragmentByTag(FRAG_HEADLINES);
 
 				if (hf != null && m_activeFeed != null) {
-					Article base = hf.getArticleById(hf.getActiveArticleId());
+					Article base = hf.getActiveArticle();
 
 					Article next = base != null ? getRelativeArticle(base,
 							RelativeArticle.AFTER) : hf.getArticleAtPosition(0);
 
 					if (next != null) {
-						hf.setActiveArticleId(next.id);
+						hf.setActiveArticle(next);
 
 						boolean combinedMode = m_prefs.getBoolean(
 								"combined_mode", false);
@@ -2071,14 +2073,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						.findFragmentByTag(FRAG_HEADLINES);
 
 				if (hf != null && m_activeFeed != null) {
-					Article base = hf.getArticleById(hf.getActiveArticleId());
+					Article base = hf.getActiveArticle();
 
 					Article prev = base != null ? getRelativeArticle(base,
 							RelativeArticle.BEFORE) : hf
 							.getArticleAtPosition(0);
 
 					if (prev != null) {
-						hf.setActiveArticleId(prev.id);
+						hf.setActiveArticle(prev);
 
 						boolean combinedMode = m_prefs.getBoolean(
 								"combined_mode", false);

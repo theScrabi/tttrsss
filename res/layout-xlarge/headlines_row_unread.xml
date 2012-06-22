@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jan 01"
-                android:textColor="#909090"
+                android:textColor="?headlineExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
 

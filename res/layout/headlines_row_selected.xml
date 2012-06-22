@@ -66,7 +66,7 @@
                 android:gravity="center_horizontal|right"
                 android:singleLine="true"
                 android:text="{Feed title...}"
-                android:textColor="?headlineExcerptTextColor"
+                android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="10sp" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="Jan 01"
-                android:textColor="#909090"
+                android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="10sp" >
             </TextView>
 

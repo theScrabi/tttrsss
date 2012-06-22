@@ -64,7 +64,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
-	private int m_activeArticleId;
+	private Article m_activeArticle;
 	private boolean m_refreshInProgress = false;
 	private boolean m_canLoadMore = false;
 	private boolean m_combinedMode = true;
@@ -128,7 +128,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
 			m_articles = savedInstanceState.getParcelable("articles");
-			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
+			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
@@ -183,7 +183,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_onlineServices.openArticle(article, 0);
 				}
 				
-				m_activeArticleId = article.id;
+				m_activeArticle = article;
 				m_adapter.notifyDataSetChanged();
 			}
 		}
@@ -245,7 +245,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		out.putParcelable("feed", m_feed);
 		out.putParcelable("articles", m_articles);
-		out.putInt("activeArticleId", m_activeArticleId);
+		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putBoolean("combinedMode", m_combinedMode);
@@ -355,7 +355,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (a.id == -1) {
 				return VIEW_LOADMORE;
-			} else if (a.id == m_activeArticleId) {
+			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
 				return VIEW_SELECTED;
 			} else if (a.unread) {
 				return VIEW_UNREAD;
@@ -606,23 +606,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_adapter.notifyDataSetChanged();
 		
 		Article article = m_onlineServices.getSelectedArticle();
-		if (article != null) {
-			setActiveArticleId(article.id);
-		}
+
+		setActiveArticle(article);
 	}
 
 	public ArticleList getAllArticles() {
 		return m_articles;
 	}
 
-	public void setActiveArticleId(int id) {
-		m_activeArticleId = id;
+	public void setActiveArticle(Article article) {
+		m_activeArticle = article;
 		m_adapter.notifyDataSetChanged();
 		
 		ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
-		if (list != null) {
-			int position = m_adapter.getPosition(getArticleById(id));
+		if (list != null && article != null) {
+			int position = m_adapter.getPosition(article);
 			list.setSelection(position);
 		}
 	}
@@ -677,8 +676,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		// no-op
 	}
 
-	public int getActiveArticleId() {
-		return m_activeArticleId;
+	public Article getActiveArticle() {
+		return m_activeArticle;
 	}
 
 	public int getArticlePosition(Article article) {
