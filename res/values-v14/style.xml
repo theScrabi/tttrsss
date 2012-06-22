@@ -5,7 +5,7 @@
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
-		<item name="articleHeader">#ffffff</item>
+		<item name="articleBackground">#ffffff</item>
 		<item name="headlineSelectedBackground">#ffffff</item>
 		<item name="headlineUnreadBackground">@android:color/transparent</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
@@ -22,15 +22,15 @@
 
 	<style name="DarkTheme" parent="android:Theme.Holo">
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
-		<item name="feedlistBackground">@android:color/transparent</item>
+		<item name="feedlistBackground">@drawable/ics_divider_vertical</item>
 		<item name="unreadCounterColor">#303030</item>
-		<item name="headlinesBackground">#101010</item>
-		<item name="headlinesBackgroundSolid">#101010</item>
-		<item name="articleHeader">@android:color/transparent</item>
-		<item name="headlineSelectedBackground">#33b5e5</item>
+		<item name="headlinesBackground">@drawable/ics_divider_vertical</item>
+		<item name="headlinesBackgroundSolid">@android:color/transparent</item>
+		<item name="articleBackground">@android:color/transparent</item>
+		<item name="headlineSelectedBackground">@color/ics_cyan</item>
 		<item name="headlineUnreadBackground">@android:color/transparent</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
-		<item name="feedsSelectedBackground">#33b5e5</item>
+		<item name="feedsSelectedBackground">@color/ics_cyan</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/black</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
@@ -38,7 +38,7 @@
         <item name="headlineSelectedTextColor">@android:color/black</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
-        <item name="linkColor">#33b5e5</item>
+        <item name="linkColor">@color/ics_cyan</item>
 	</style>
 
 </resources>

@@ -35,7 +35,7 @@
                 android:id="@+id/article_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="?articleHeader" 
+                android:background="?articleBackground" 
                 android:layout_weight="0.5" >
             </FrameLayout>
         </LinearLayout>

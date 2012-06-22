@@ -5,7 +5,7 @@
     <attr name="unreadCounterColor" format="reference|color" />
     <attr name="headlinesBackground" format="reference|color" />
     <attr name="headlinesBackgroundSolid" format="reference|color" />
-    <attr name="articleHeader" format="reference|color" />
+    <attr name="articleBackground" format="reference|color" />
     <attr name="headlineSelectedBackground" format="reference|color" />
     <attr name="headlineUnreadBackground" format="reference|color" />
     <attr name="headlineNormalBackground" format="reference|color" />

@@ -3,5 +3,6 @@
 
     <color name="feeds_light">#e0e0e0</color>
     <color name="headlines_light">#f0f0f0</color>
+    <color name="ics_cyan">#33b5e5</color>
 
 </resources>

@@ -6,7 +6,7 @@
         <item name="unreadCounterColor">#0000ff</item>
         <item name="headlinesBackground">#ffffff</item>
         <item name="headlinesBackgroundSolid">#ffffff</item>
-        <item name="articleHeader">@android:color/transparent</item>
+        <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#fff7d5</item>
         <item name="headlineUnreadBackground">#ffffff</item>
         <item name="headlineNormalBackground">#f0f0f0</item>
@@ -27,7 +27,7 @@
         <item name="unreadCounterColor">#303030</item>
         <item name="headlinesBackground">#000000</item>
         <item name="headlinesBackgroundSolid">#000000</item>
-        <item name="articleHeader">@android:color/transparent</item>
+        <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#F5B800</item>
         <item name="headlineUnreadBackground">#303030</item>
         <item name="headlineNormalBackground">@android:color/transparent</item>
