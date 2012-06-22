@@ -34,30 +34,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class OfflineFeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class OfflineFeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
-	private FeedListAdapter m_adapter;
-	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
-	private int m_selectedFeedId;
-	private int m_catId = -1;
-	private boolean m_enableFeedIcons;
+	private FeedCategoryListAdapter m_adapter;
+	private int m_selectedCatId;
 	private Cursor m_cursor;
 	private OfflineServices m_offlineServices;
 	
-	public OfflineFeedsFragment() {
-		//
-	}
-	
-	public OfflineFeedsFragment(int catId) {
-		m_catId = catId;
-	}
-
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		Cursor cursor = (Cursor)m_adapter.getItem(info.position);
@@ -70,16 +59,12 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 	
 	public Cursor createCursor() {
-		String unreadOnly = m_offlineServices.getUnreadOnly() ? "unread > 0" : "1";
+		String unreadOnly = BaseColumns._ID + "> 0 AND " + (m_offlineServices.getUnreadOnly() ? "unread > 0" : "1");
+		
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
-		if (m_catId != -1) {
-			return m_offlineServices.getReadableDb().query("feeds_unread", 
-					null, unreadOnly + " AND cat_id = ?",  new String[] { String.valueOf(m_catId) }, null, null, order);
-		} else {		
-			return m_offlineServices.getReadableDb().query("feeds_unread", 
+		return m_offlineServices.getReadableDb().query("cats_unread", 
 				null, unreadOnly, null, null, null, order);
-		}
 	}
 	
 	public void refresh() {
@@ -97,8 +82,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
 		if (savedInstanceState != null) {
-			m_selectedFeedId = savedInstanceState.getInt("selectedFeedId");
-			m_catId = savedInstanceState.getInt("catId");
+			m_selectedCatId = savedInstanceState.getInt("selectedFeedId");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -107,7 +91,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		
 		m_cursor = createCursor();
 		
-		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
+		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
 
 		list.setAdapter(m_adapter);
@@ -116,8 +100,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		registerForContextMenu(list);
 
 		view.findViewById(R.id.loading_container).setVisibility(View.GONE);
-		
-		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
 		return view;    	
 	}
@@ -144,8 +126,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putInt("selectedFeedId", m_selectedFeedId);
-		out.putInt("catId", m_catId);
+		out.putInt("selectedFeedId", m_selectedCatId);
 	}
 	
 	@Override
@@ -159,10 +140,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				m_offlineServices.viewFeed(feedId);
+				m_offlineServices.onCatSelected(feedId);
 				
 				if (!m_offlineServices.isSmallScreen())
-					m_selectedFeedId = feedId;
+					m_selectedCatId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
 			}
@@ -181,10 +162,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	} */
 	
-	private class FeedListAdapter extends SimpleCursorAdapter {
+	private class FeedCategoryListAdapter extends SimpleCursorAdapter {
 		
 
-		public FeedListAdapter(Context context, int layout, Cursor c,
+		public FeedCategoryListAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int flags) {
 			super(context, layout, c, from, to, flags);
 		}
@@ -203,7 +184,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (cursor.getLong(0) == m_selectedFeedId) {
+			if (cursor.getLong(0) == m_selectedCatId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -246,32 +227,14 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 			ImageView icon = (ImageView)v.findViewById(R.id.icon);
 			
 			if (icon != null) {
-				
-				if (m_enableFeedIcons) {
-					
-					File storage = Environment.getExternalStorageDirectory();
-					
-					File iconFile = new File(storage.getAbsolutePath() + ICON_PATH + cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)) + ".ico");
-					if (iconFile.exists()) {
-						Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
-						if (bmpOrig != null) {
-							icon.setImageBitmap(bmpOrig);
-						}
-					} else {
-						icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
-					}
-					
-				} else {
-					icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
-				}
-				
+				icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 			}
 
 			return v;
 		} 
 	}
 
-	public void sortFeeds() {
+	public void sortCategories() {
 		try {
 			refresh();
 		} catch (NullPointerException e) {
@@ -285,25 +248,23 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 
-		sortFeeds();
-		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
-		
+		sortCategories();
 	}
 
-	public int getFeedIdAtPosition(int position) {
+	public int getCatIdAtPosition(int position) {
 		Cursor c = (Cursor)m_adapter.getItem(position);
 		
 		if (c != null) {
-			int feedId = c.getInt(0);
+			int catId = c.getInt(0);
 			c.close();
-			return feedId;
+			return catId;
 		}
 		
 		return 0;
 	}
 	
 	public void setSelectedFeedId(int feedId) {
-		m_selectedFeedId = feedId;
+		m_selectedCatId = feedId;
 		refresh();
 	}
 

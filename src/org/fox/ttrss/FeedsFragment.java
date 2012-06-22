@@ -201,7 +201,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
 			m_onlineServices.onFeedSelected(feed);
-			m_selectedFeed = feed;
+			
+			if (!m_onlineServices.isSmallScreen())
+				m_selectedFeed = feed;
+			
 			m_adapter.notifyDataSetChanged();
 		}
 	}

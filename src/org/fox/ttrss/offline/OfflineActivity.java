@@ -5,8 +5,8 @@ import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.OnlineServices;
 import org.fox.ttrss.OnlineServices.RelativeArticle;
 import org.fox.ttrss.PreferencesActivity;
-import org.fox.ttrss.util.DatabaseHelper;
 import org.fox.ttrss.R;
+import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
 import android.app.AlertDialog;
@@ -35,12 +35,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class OfflineActivity extends FragmentActivity implements
@@ -50,7 +47,7 @@ public class OfflineActivity extends FragmentActivity implements
 	protected final static String FRAG_HEADLINES = "headlines";
 	protected final static String FRAG_ARTICLE = "article";
 	protected final static String FRAG_FEEDS = "feeds";
-	//protected final static String FRAG_CATS = "cats";
+	protected final static String FRAG_CATS = "cats";
 	
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
@@ -62,6 +59,8 @@ public class OfflineActivity extends FragmentActivity implements
 	private boolean m_enableCats = false;
 
 	private int m_activeFeedId = 0;
+	private boolean m_activeFeedIsCat = false;
+	private int m_activeCatId = -1;
 	private int m_selectedArticleId = 0;
 
 	private SQLiteDatabase m_readableDb;
@@ -134,10 +133,12 @@ public class OfflineActivity extends FragmentActivity implements
 					.getBoolean("unreadArticlesOnly");
 			m_activeFeedId = savedInstanceState.getInt("offlineActiveFeedId");
 			m_selectedArticleId = savedInstanceState.getInt("offlineArticleId");
+			m_activeFeedIsCat = savedInstanceState.getBoolean("activeFeedIsCat");
+			m_activeCatId = savedInstanceState.getInt("activeCatId");
 		}
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
-
+		
 		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
 				Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
@@ -148,7 +149,9 @@ public class OfflineActivity extends FragmentActivity implements
 
 		if (!m_compatMode) {
 			if (!m_smallScreenMode) {
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 ? View.GONE : View.VISIBLE);
+				int orientation = getWindowManager().getDefaultDisplay().getOrientation();
+				
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && orientation % 2 != 0 ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
 			
@@ -162,14 +165,25 @@ public class OfflineActivity extends FragmentActivity implements
 
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 
-		if (m_activeFeedId == 0) {
+		if (m_activeFeedId == 0 && !m_activeFeedIsCat) {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
-			OfflineFeedsFragment frag = new OfflineFeedsFragment();
-			if (m_smallScreenMode) {
-				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+			
+			Fragment frag = null;
+			String tag = null;
+			
+			if (m_enableCats) {
+				frag = new OfflineFeedCategoriesFragment();
+				tag = FRAG_CATS;
 			} else {
-				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
+				frag = new OfflineFeedsFragment();
+				tag = FRAG_FEEDS;
+			}
+			
+			if (m_smallScreenMode) {
+				ft.replace(R.id.fragment_container, frag, tag);
+			} else {
+				ft.replace(R.id.feeds_fragment, frag, tag);
 			}
 				
 			ft.commit();
@@ -226,6 +240,8 @@ public class OfflineActivity extends FragmentActivity implements
 		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putInt("offlineActiveFeedId", m_activeFeedId);
 		out.putInt("offlineArticleId", m_selectedArticleId);
+		out.putBoolean("activeFeedIsCat", m_activeFeedIsCat);
+		out.putInt("activeCatId", m_activeCatId);
 	}
 
 	private void setUnreadOnly(boolean unread) {
@@ -290,41 +306,47 @@ public class OfflineActivity extends FragmentActivity implements
 	private void goBack(boolean allowQuit) {
 		if (m_smallScreenMode) {
 			if (m_selectedArticleId != 0) {
-				closeArticle();
+				closeArticle();			
 			} else if (m_activeFeedId != 0) {
 				m_activeFeedId = 0;
-				
+
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.fragment_container, new OfflineFeedsFragment(), FRAG_FEEDS);
+
+				if (m_activeFeedIsCat) {
+					ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment(), FRAG_CATS);
+				} else {
+					ft.replace(R.id.fragment_container, new OfflineFeedsFragment(m_activeCatId), FRAG_FEEDS);
+				}
 				ft.commit();
 				
 				refreshViews();
 				initMainMenu();
-
+			} else if (m_activeCatId != -1) {
+				closeCategory();
 			} else if (allowQuit) {
 				finish();
 			}
 		} else {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
-			/* } else if (m_activeFeedId != 0) {
-				findViewById(R.id.headlines_fragment).setVisibility(View.INVISIBLE);
+			} else if (m_activeFeedId != 0) {
 				m_activeFeedId = 0;
 				
 				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
 						.findFragmentByTag(FRAG_FEEDS);
 				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+				ft.commit();
+				
 				if (ff != null) {
-					ff.setSelectedFeedId(0);
+					ff.setSelectedFeedId(-1);
 				}
 
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.fragment_container, new OfflineHeadlinesFragment(), FRAG_HEADLINES);
-				ft.commit();
-
 				refreshViews();
-				initMainMenu(); */
-				
+				initMainMenu();
+			} else if (m_activeCatId != -1) {
+				closeCategory();	
 			} else if (allowQuit) {
 				finish();
 			}
@@ -377,6 +399,16 @@ public class OfflineActivity extends FragmentActivity implements
 		Cursor c = getReadableDb().query("feeds", null,
 				BaseColumns._ID + "=?",
 				new String[] { String.valueOf(feedId) }, null, null, null);
+
+		c.moveToFirst();
+
+		return c;
+	}
+
+	private Cursor getCatById(int catId) {
+		Cursor c = getReadableDb().query("categories", null,
+				BaseColumns._ID + "=?",
+				new String[] { String.valueOf(catId) }, null, null, null);
 
 		c.moveToFirst();
 
@@ -647,10 +679,16 @@ public class OfflineActivity extends FragmentActivity implements
 		}
 	}
 
-	private void closeArticle() {
-		// we don't want to lose selected article in headlines so we refresh them before setting selected id to 0
-		refreshViews();
+	private void refreshCats() {
+		OfflineFeedCategoriesFragment frag = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_CATS);
 
+		if (frag != null) {
+			frag.refresh();
+		}
+	}
+
+	private void closeArticle() {
 		m_selectedArticleId = 0;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -666,6 +704,8 @@ public class OfflineActivity extends FragmentActivity implements
 		ft.commit();
 
 		initMainMenu();
+		
+		refreshViews();
 	}
 
 	private int getSelectedArticleCount() {
@@ -749,11 +789,26 @@ public class OfflineActivity extends FragmentActivity implements
 			if (!m_compatMode) {
 				
 				if (m_activeFeedId != 0) {
-					Cursor feed = getFeedById(m_activeFeedId);
+					if (!m_activeFeedIsCat) {
+						Cursor feed = getFeedById(m_activeFeedId);
 					
-					if (feed != null) {					
-						getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
+						if (feed != null) {					
+							getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
+						}
+					} else {
+						Cursor cat = getCatById(m_activeFeedId);
+						
+						if (cat != null) {					
+							getActionBar().setTitle(cat.getString(cat.getColumnIndex("title")));
+						}
 					}
+				} else if (m_activeCatId != -1) {
+					Cursor cat = getCatById(m_activeCatId);
+					
+					if (cat != null) {					
+						getActionBar().setTitle(cat.getString(cat.getColumnIndex("title")));
+					}
+					
 				} else {
 					getActionBar().setTitle(R.string.app_name);
 				}
@@ -784,6 +839,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 	private void refreshViews() {
 		refreshFeeds();
+		refreshCats();
 		refreshHeadlines();
 	}
 
@@ -796,6 +852,8 @@ public class OfflineActivity extends FragmentActivity implements
 				.findFragmentByTag(FRAG_HEADLINES);
 		OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_FEEDS);
+		OfflineFeedCategoriesFragment cf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_CATS);
 
 		switch (item.getItemId()) {
 		case R.id.article_link_copy:
@@ -832,13 +890,29 @@ public class OfflineActivity extends FragmentActivity implements
 			return true;		
 
 		case R.id.browse_articles:
-			// TODO cat stuff
+			if (cf != null) {
+				int catId = cf.getCatIdAtPosition(info.position);			
+				viewFeed(catId, true);
+			}
 			return true;
 		case R.id.browse_feeds:
-			// TODO cat stuff
+			if (cf != null) {
+				int catId = cf.getCatIdAtPosition(info.position);
+				viewCategory(catId, false);
+			}
 			return true;
 		case R.id.catchup_category:
-			// TODO cat stuff
+			if (cf != null) {
+				int catId = cf.getCatIdAtPosition(info.position);
+
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 0 WHERE feed_id IN (SELECT "+
+							BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+				stmt.bindLong(1, catId);
+				stmt.execute();
+				stmt.close();
+				refreshViews();
+			}
 			return true;
 		case R.id.catchup_feed:
 			if (ff != null) {
@@ -1071,9 +1145,55 @@ public class OfflineActivity extends FragmentActivity implements
 		return id;
 	}
 
+	public void onCatSelected(int catId) {
+		Log.d(TAG, "onCatSelected");
+		boolean browse = m_prefs.getBoolean("browse_cats_like_feeds", false);
+
+		viewCategory(catId, browse);
+	}
+	
+	public void viewCategory(int cat, boolean openAsFeed) {
+
+		Log.d(TAG, "viewCategory");
+
+		if (!openAsFeed) {
+			OfflineFeedsFragment frag = new OfflineFeedsFragment(cat);
+
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+			
+			if (m_smallScreenMode) {			
+				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
+			} else {				
+				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
+			}
+			ft.commit();			
+			
+			m_activeCatId = cat;
+			
+		} else {
+			if (m_menu != null) {
+				MenuItem search = m_menu.findItem(R.id.search);
+			
+				if (search != null && !m_compatMode) {
+					SearchView sv = (SearchView) search.getActionView();
+					sv.setQuery("", false);				
+				}
+			}
+			viewFeed(cat, true);
+		}
+
+		initMainMenu();
+	}
+
 	@Override
 	public void viewFeed(int feedId) {
+		viewFeed(feedId, false);
+	}
+	
+	public void viewFeed(int feedId, boolean isCat) {
 		m_activeFeedId = feedId;
+		m_activeFeedIsCat = isCat;
 
 		initMainMenu();
 
@@ -1089,7 +1209,7 @@ public class OfflineActivity extends FragmentActivity implements
 		}
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(feedId);
+		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(feedId, isCat);
 		
 		if (m_smallScreenMode) {
 			ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
@@ -1136,9 +1256,10 @@ public class OfflineActivity extends FragmentActivity implements
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(View.GONE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
+			
+			refreshViews();
 		}
 		
 		ft.commit();
@@ -1152,6 +1273,22 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public void setSelectedArticleId(int articleId) {
 		m_selectedArticleId = articleId;
+		refreshViews();
+	}
+	
+	private void closeCategory() {
+		m_activeCatId = -1;
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		if (m_smallScreenMode) {
+			ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment(), FRAG_CATS);
+		} else {
+			ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);
+		}
+		ft.commit();
+
+		initMainMenu();
+		
 		refreshViews();
 	}
 }

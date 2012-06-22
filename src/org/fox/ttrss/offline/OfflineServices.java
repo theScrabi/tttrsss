@@ -11,6 +11,7 @@ public interface OfflineServices {
 	public SQLiteDatabase getWritableDb();
 	public int getRelativeArticleId(int baseId, int feedId, OnlineServices.RelativeArticle mode);
 	public void viewFeed(int feedId);
+	public void onCatSelected(int catId);
 	public void openArticle(int articleId, int compatAnimation);
 	public boolean getUnreadOnly();
 	public int getSelectedArticleId();

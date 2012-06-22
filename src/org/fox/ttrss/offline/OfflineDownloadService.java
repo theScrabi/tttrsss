@@ -316,9 +316,9 @@ public class OfflineDownloadService extends Service {
 		@SuppressWarnings("serial")
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
-				put("op", "getFeeds");
+				put("op", "getCategories");
 				put("sid", m_sessionId);
-				put("cat_id", "-3");
+				//put("cat_id", "-3");
 				put("unread_only", "true");
 			}			 
 		};
@@ -451,7 +451,7 @@ public class OfflineDownloadService extends Service {
 			updateNotification(R.string.notify_downloading_init);
 			m_downloadInProgress = true;
 		
-			downloadFeeds();
+			downloadCategories();
 		}
 	}
 }

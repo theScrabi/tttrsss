@@ -49,6 +49,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private int m_feedId;
+	private boolean m_feedIsCat = false;
 	private int m_activeArticleId;
 	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
@@ -69,10 +70,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 	};
 	
-	public OfflineHeadlinesFragment(int feedId) {
+	public OfflineHeadlinesFragment(int feedId, boolean isCat) {
 		m_feedId = feedId;
+		m_feedIsCat = isCat;
 	}
-	
+
 	public OfflineHeadlinesFragment() {
 		//
 	}
@@ -136,6 +138,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			//m_selectedArticles = savedInstanceState.getParcelableArrayList("selectedArticles");
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
+			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -160,12 +163,20 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public Cursor createCursor() {
+		String feedClause = null;
+		
+		if (m_feedIsCat) {
+			feedClause = "feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)";
+		} else {
+			feedClause = "feed_id = ?";
+		}
+		
 		if (m_searchQuery.equals("")) {
 			return m_offlineServices.getReadableDb().query("articles", 
-					null, "feed_id = ?", new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+					null, feedClause, new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 		} else {
 			return m_offlineServices.getReadableDb().query("articles", 
-					null, "feed_id = ? AND (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
+					null, feedClause + " AND (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
 		}
 	}
@@ -214,6 +225,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		//out.putParcelableArrayList("selectedArticles", m_selectedArticles);
 		out.putBoolean("combinedMode", m_combinedMode);
 		out.putCharSequence("searchQuery", m_searchQuery);
+		out.putBoolean("feedIsCat", m_feedIsCat);
 	}
 
 	/* public void setLoadingStatus(int status, boolean showProgress) {

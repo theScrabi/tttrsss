@@ -1694,19 +1694,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					sv.setQuery("", false);				
 				}
 			}
-			
-			/* HeadlinesFragment frag = new HeadlinesFragment(m_activeFeed);
-
-			FragmentTransaction ft = getSupportFragmentManager()
-					.beginTransaction();
-			if (m_smallScreenMode) {
-				ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
-			} else {
-				findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
-				ft.replace(R.id.headlines_fragment, frag, FRAG_HEADLINES);
-			}
-			ft.commit(); */
-
 			viewFeed(feed, false);
 		}
 

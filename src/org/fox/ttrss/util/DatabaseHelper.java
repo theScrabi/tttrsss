@@ -60,9 +60,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("CREATE VIEW feeds_unread AS SELECT feeds."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
 				"feeds.title AS title, " +
+				"cat_id, " +
 				"SUM(articles.unread) AS unread FROM feeds " +
 				"LEFT JOIN articles ON (articles.feed_id = feeds."+BaseColumns._ID+") " +
 				"GROUP BY feeds."+BaseColumns._ID+", feeds.title;");
+		
+		//sqlite> select categories._id,categories.title,sum(articles.unread) from categories left j
+		//oin feeds on (feeds.cat_id = categories._id) left join articles on (articles.feed_id = fee
+		//ds._id) group by categories._id;
+		
+		db.execSQL("CREATE VIEW cats_unread AS SELECT categories."+BaseColumns._ID+" AS "+BaseColumns._ID+", " +
+				"categories.title AS title, " +
+				"SUM(articles.unread) AS unread FROM categories " +
+				"LEFT JOIN feeds ON (feeds.cat_id = categories."+BaseColumns._ID+") "+
+				"LEFT JOIN articles ON (articles.feed_id = feeds."+BaseColumns._ID+") " +
+				"GROUP BY categories."+BaseColumns._ID+", categories.title;");
+
 	}
 
 	@Override
