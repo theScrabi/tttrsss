@@ -3,7 +3,7 @@
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?headlineSelectedBackground"
+    android:background="?headlineSelectedBackgroundSolid"
     android:gravity="center_vertical"
     android:orientation="vertical" >
 

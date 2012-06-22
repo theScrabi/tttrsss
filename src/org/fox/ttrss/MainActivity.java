@@ -833,10 +833,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					
 					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-					Fragment cats = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 
 					ft.show(cats);
 					ft.remove(headlines);
+					
+					cats.setSelectedCategory(null);
 					
 					//ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
 					ft.commit();
@@ -844,10 +846,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					
 					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-					Fragment feeds = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 
 					ft.show(feeds);
 					ft.remove(headlines);
+					
+					feeds.setSelectedFeed(null);
 					
 					ft.commit();
 				}

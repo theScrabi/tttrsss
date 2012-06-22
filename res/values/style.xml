@@ -8,9 +8,11 @@
         <item name="headlinesBackgroundSolid">#ffffff</item>
         <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#fff7d5</item>
+        <item name="headlineSelectedBackgroundSolid">#fff7d5</item>
         <item name="headlineUnreadBackground">#ffffff</item>
         <item name="headlineNormalBackground">#f0f0f0</item>
         <item name="feedsSelectedBackground">#96C5FF</item>
+        <item name="feedsSelectedBackgroundSolid">#96C5FF</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_light</item>
         <item name="headlineTextColor">@android:color/primary_text_light</item>
@@ -29,9 +31,11 @@
         <item name="headlinesBackgroundSolid">#000000</item>
         <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#F5B800</item>
+        <item name="headlineSelectedBackgroundSolid">#F5B800</item>
         <item name="headlineUnreadBackground">#303030</item>
         <item name="headlineNormalBackground">@android:color/transparent</item>
         <item name="feedsSelectedBackground">#F5B800</item>
+        <item name="feedsSelectedBackgroundSolid">#F5B800</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineTextColor">@android:color/primary_text_dark</item>

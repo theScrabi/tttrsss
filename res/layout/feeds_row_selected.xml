@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:background="?feedsSelectedBackground"
+    android:background="?feedsSelectedBackgroundSolid"
     android:gravity="center_vertical"
     android:id="@+id/feeds_row" android:layout_width="match_parent" android:paddingBottom="4dip" android:paddingLeft="8dip" android:paddingRight="8dip" android:paddingTop="4dip">
 
