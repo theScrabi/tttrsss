@@ -10,7 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	public static final String DATABASE_NAME = "OfflineStorage.db";
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		db.execSQL("DROP TABLE IF EXISTS categories;");
 		db.execSQL("DROP TABLE IF EXISTS feeds;");
 		db.execSQL("DROP TABLE IF EXISTS articles;");
 		db.execSQL("DROP VIEW IF EXISTS feeds_unread;");
@@ -29,6 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "title TEXT, " +
                 "has_icon BOOLEAN, " +
                 "cat_id INTEGER" +
+                ");");                
+
+		db.execSQL("CREATE TABLE IF NOT EXISTS categories (" +
+                BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "title TEXT" +
                 ");");                
 
 		db.execSQL("CREATE TABLE IF NOT EXISTS articles (" +

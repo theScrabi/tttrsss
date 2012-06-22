@@ -11,6 +11,7 @@ import org.fox.ttrss.R.drawable;
 import org.fox.ttrss.R.string;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.DatabaseHelper;
 import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
@@ -262,6 +263,69 @@ public class OfflineDownloadService extends Service {
 		
 		req.execute(map);
 	}
+
+	private void downloadCategories() {
+
+		updateNotification(R.string.notify_downloading_feeds);
+		
+		getWritableDb().execSQL("DELETE FROM categories;");
+		
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			@Override
+			protected void onPostExecute(JsonElement content) {
+				if (content != null) {
+					
+					try {
+						Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
+						List<FeedCategory> cats = new Gson().fromJson(content, listType);
+						
+						SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO categories " +
+								"("+BaseColumns._ID+", title) " +
+						"VALUES (?, ?);");
+						
+						for (FeedCategory cat : cats) {
+							stmtInsert.bindLong(1, cat.id);
+							stmtInsert.bindString(2, cat.title);
+
+							stmtInsert.execute();
+						}
+
+						stmtInsert.close();
+
+						Log.d(TAG, "offline: done downloading categories");
+						
+						if (m_canProceed) { 
+							downloadFeeds();
+						} else {
+							downloadFailed();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						updateNotification(R.string.offline_switch_error);
+						downloadFailed();
+					}
+				
+				} else {
+					updateNotification(getErrorMessage());
+					downloadFailed();
+				}
+			}
+
+		};
+		
+		@SuppressWarnings("serial")
+		HashMap<String,String> map = new HashMap<String,String>() {
+			{
+				put("op", "getFeeds");
+				put("sid", m_sessionId);
+				put("cat_id", "-3");
+				put("unread_only", "true");
+			}			 
+		};
+		
+		req.execute(map);
+	}
+
 	
 	@Override
 	public void onDestroy() {
