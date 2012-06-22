@@ -149,9 +149,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		if (!m_compatMode) {
 			if (!m_smallScreenMode) {
-				int orientation = getWindowManager().getDefaultDisplay().getOrientation();
-				
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && orientation % 2 != 0 ? View.GONE : View.VISIBLE);
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
 			
@@ -1299,5 +1297,10 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public boolean activeFeedIsCat() {
 		return m_activeFeedIsCat;
+	}
+	
+	@Override
+	public int getOrientation() {
+		return getWindowManager().getDefaultDisplay().getOrientation();
 	}
 }

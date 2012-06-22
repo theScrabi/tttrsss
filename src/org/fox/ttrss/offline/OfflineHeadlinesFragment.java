@@ -149,7 +149,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_offlineServices.isSmallScreen())
+		if (m_offlineServices.isSmallScreen() || m_offlineServices.getOrientation() % 2 != 0)
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 		
 		getActivity().setProgressBarIndeterminateVisibility(false);

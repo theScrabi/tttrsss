@@ -445,6 +445,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	@Override
+	public int getOrientation() {
+		return getWindowManager().getDefaultDisplay().getOrientation();
+	}
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		initDatabase();
 
@@ -509,10 +514,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		if (!m_compatMode) {
 			
-			if (!m_smallScreenMode) {
-				int orientation = getWindowManager().getDefaultDisplay().getOrientation();
-				
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && orientation % 2 != 0 ? View.GONE : View.VISIBLE);
+			if (!m_smallScreenMode) {				
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticle != null ? View.VISIBLE : View.GONE);
 			}
 			
@@ -1730,13 +1733,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			int orientation = getWindowManager().getDefaultDisplay().getOrientation();
-			
-			findViewById(R.id.feeds_fragment).setVisibility(orientation % 2 != 0 ? View.GONE : View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			
-			if (orientation % 2 == 0) refresh();
+			if (getOrientation() % 2 == 0) refresh();
 		}
 		ft.commit();
 	}
