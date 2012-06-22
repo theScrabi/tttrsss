@@ -1,22 +1,13 @@
 package org.fox.ttrss.offline;
 
-import java.io.File;
-
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.drawable;
-import org.fox.ttrss.R.id;
-import org.fox.ttrss.R.layout;
-import org.fox.ttrss.R.menu;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;

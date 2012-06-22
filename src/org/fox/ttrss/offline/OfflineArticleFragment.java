@@ -4,10 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.attr;
-import org.fox.ttrss.R.id;
-import org.fox.ttrss.R.layout;
-import org.fox.ttrss.R.menu;
 import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,10 +21,10 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -71,28 +67,8 @@ public class OfflineArticleFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
-	
-		// TODO change to interface?
-		Activity activity = getActivity();
-		
-		/* if (activity != null) {		
-			int orientation = activity.getWindowManager().getDefaultDisplay().getOrientation();
-			
-			if (!m_offlineServices.isSmallScreen()) {			
-				if (orientation % 2 == 0) {
-					view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
-				} else {
-					view.findViewById(R.id.splitter_vertical).setVisibility(View.GONE);
-				}
-			} else {
-				view.findViewById(R.id.splitter_vertical).setVisibility(View.GONE);
-				view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
-			}
-		} else {
-			view.findViewById(R.id.splitter_horizontal).setVisibility(View.GONE);
-		} */
-		
-		m_cursor = m_offlineServices.getReadableDb().query("articles", null, BaseColumns._ID + "=?", 
+		m_cursor = m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 
 		m_cursor.moveToFirst();
@@ -220,8 +196,14 @@ public class OfflineArticleFragment extends Fragment {
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
-				String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
-				tagv.setText(tagsStr);
+				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
+
+				if (feedTitleIndex != -1 && m_offlineServices.activeFeedIsCat()) {
+					tagv.setText(m_cursor.getString(feedTitleIndex));
+				} else {				
+					String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
+					tagv.setText(tagsStr);
+				}
 			}			
 		} 
 		

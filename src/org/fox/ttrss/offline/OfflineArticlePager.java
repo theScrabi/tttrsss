@@ -1,11 +1,8 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.id;
-import org.fox.ttrss.R.layout;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.provider.BaseColumns;

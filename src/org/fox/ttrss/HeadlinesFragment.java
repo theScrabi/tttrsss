@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -3,10 +3,6 @@ package org.fox.ttrss.offline;
 import java.io.File;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.drawable;
-import org.fox.ttrss.R.id;
-import org.fox.ttrss.R.layout;
-import org.fox.ttrss.R.menu;
 
 import android.app.Activity;
 import android.content.Context;
@@ -159,7 +155,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				m_offlineServices.viewFeed(feedId);
+				m_offlineServices.onFeedSelected(feedId);
 				
 				if (!m_offlineServices.isSmallScreen())
 					m_selectedFeedId = feedId;

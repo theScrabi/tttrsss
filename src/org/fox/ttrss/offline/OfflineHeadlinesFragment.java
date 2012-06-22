@@ -6,11 +6,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.drawable;
-import org.fox.ttrss.R.id;
-import org.fox.ttrss.R.layout;
-import org.fox.ttrss.R.menu;
-import org.fox.ttrss.R.string;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
@@ -172,11 +167,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		}
 		
 		if (m_searchQuery.equals("")) {
-			return m_offlineServices.getReadableDb().query("articles", 
-					null, feedClause, new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+			return m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
+					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 		} else {
-			return m_offlineServices.getReadableDb().query("articles", 
-					null, feedClause + " AND (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
+			return m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+					new String[] { "articles.*", "feeds.title AS feed_title" },
+					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
 		}
 	}
@@ -318,7 +315,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
 			
-			if (ft != null) {
+			int feedTitleIndex = article.getColumnIndex("feed_title");
+			
+			if (ft != null && feedTitleIndex != -1 && m_feedIsCat) {				
+				String feedTitle = article.getString(feedTitleIndex);
+				
+				if (feedTitle != null) {
+					ft.setText(feedTitle);					
+				} else {
+					ft.setVisibility(View.GONE);
+				}				
+			} else {
 				ft.setVisibility(View.GONE);
 			}
 			

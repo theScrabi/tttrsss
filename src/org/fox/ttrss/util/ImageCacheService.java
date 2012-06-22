@@ -12,19 +12,16 @@ import java.util.Date;
 
 import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.drawable;
-import org.fox.ttrss.R.string;
 import org.fox.ttrss.offline.OfflineDownloadService;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.os.Environment;
-import android.util.Log;
 
 public class ImageCacheService extends IntentService {
 
@@ -141,9 +138,9 @@ public class ImageCacheService extends IntentService {
         m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
 	}
 
-	private void updateNotification(int msgResId) {
+	/* private void updateNotification(int msgResId) {
 		updateNotification(getString(msgResId));
-	}
+	} */
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {

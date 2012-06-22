@@ -1187,6 +1187,10 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public void onFeedSelected(int feedId) {
+		viewFeed(feedId);
+	}
+	
 	public void viewFeed(int feedId) {
 		viewFeed(feedId, false);
 	}
@@ -1290,5 +1294,10 @@ public class OfflineActivity extends FragmentActivity implements
 		initMainMenu();
 		
 		refreshViews();
+	}
+
+	@Override
+	public boolean activeFeedIsCat() {
+		return m_activeFeedIsCat;
 	}
 }

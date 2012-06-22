@@ -5,11 +5,7 @@ import java.util.HashMap;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.R;
-import org.fox.ttrss.R.drawable;
-import org.fox.ttrss.R.string;
 import org.fox.ttrss.util.DatabaseHelper;
-
-import com.google.gson.JsonElement;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -19,6 +15,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.google.gson.JsonElement;
 
 public class OfflineUploadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
