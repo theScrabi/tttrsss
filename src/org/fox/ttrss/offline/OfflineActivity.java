@@ -333,12 +333,19 @@ public class OfflineActivity extends FragmentActivity implements
 				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
 						.findFragmentByTag(FRAG_FEEDS);
 				
+				OfflineFeedCategoriesFragment cf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+						.findFragmentByTag(FRAG_CATS);
+				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 				ft.commit();
 				
 				if (ff != null) {
-					ff.setSelectedFeedId(-1);
+					ff.setSelectedFeedId(0);
+				}
+				
+				if (cf != null) {
+					cf.setSelectedFeedId(-1);
 				}
 
 				refreshViews();
@@ -814,7 +821,7 @@ public class OfflineActivity extends FragmentActivity implements
 				if (!m_smallScreenMode) {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
 				} else {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0);
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
 				}
 			}
 		}
@@ -1288,7 +1295,7 @@ public class OfflineActivity extends FragmentActivity implements
 			ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);
 		}
 		ft.commit();
-
+		
 		initMainMenu();
 		
 		refreshViews();
