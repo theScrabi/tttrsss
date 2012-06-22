@@ -325,7 +325,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				} else {
 					ft.setVisibility(View.GONE);
 				}				
-			} else {
+			} else if (ft != null) {
 				ft.setVisibility(View.GONE);
 			}
 			
