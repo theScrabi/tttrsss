@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item android:drawable="@color/headline_row_selected_light"/>
-    
+    <item android:drawable="@drawable/shadow"/>
     <item><bitmap
     	xmlns:android="http://schemas.android.com/apk/res/android"
     	android:src="@drawable/arrowhead_light"
