@@ -1,19 +1,15 @@
 <resources>
 	<style name="LightTheme" parent="android:Theme.Holo.Light">
-		<item name="feedlistDivider">@android:drawable/divider_horizontal_bright</item>
+		<item name="horizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
-		<item name="articleDivider">#96c5ff</item>
 		<item name="articleHeader">#ffffff</item>
 		<item name="headlineSelectedBackground">#ffffff</item>
 		<item name="headlineUnreadBackground">@android:color/transparent</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">#f0f0f0</item>
-		<item name="headlineSeparatorUnread">#96C5FF</item>
-		<item name="headlineSeparatorNormal">#909090</item>
-		<item name="headlineSeparatorSelected">#DBC981</item>
 		<item name="feedlistTextColor">@android:color/primary_text_light</item>
 		<item name="feedlistSelectedTextColor">@android:color/primary_text_light</item>
     	<item name="headlineTextColor">@android:color/secondary_text_light</item>
@@ -25,20 +21,16 @@
 	</style>
 
 	<style name="DarkTheme" parent="android:Theme.Holo">
-		<item name="feedlistDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
 		<item name="unreadCounterColor">#303030</item>
 		<item name="headlinesBackground">#101010</item>
 		<item name="headlinesBackgroundSolid">#101010</item>
-		<item name="articleDivider">#33b5e5</item>
 		<item name="articleHeader">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">#33b5e5</item>
 		<item name="headlineUnreadBackground">@android:color/transparent</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">#33b5e5</item>
-		<item name="headlineSeparatorUnread">#33b5e5</item>
-		<item name="headlineSeparatorNormal">#303030</item>
-		<item name="headlineSeparatorSelected">#33b5e5</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/black</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>

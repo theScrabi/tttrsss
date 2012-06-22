@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="feedlistDivider" format="reference|color" />
+    <attr name="horizontalDivider" format="reference|color" />
     <attr name="feedlistBackground" format="reference|color" />
     <attr name="unreadCounterColor" format="reference|color" />
     <attr name="headlinesBackground" format="reference|color" />
     <attr name="headlinesBackgroundSolid" format="reference|color" />
     <attr name="articleHeader" format="reference|color" />
-    <attr name="articleDivider" format="reference|color" />
     <attr name="headlineSelectedBackground" format="reference|color" />
     <attr name="headlineUnreadBackground" format="reference|color" />
     <attr name="headlineNormalBackground" format="reference|color" />
     <attr name="feedsSelectedBackground" format="reference|color" />
-    <attr name="headlineSeparatorUnread" format="reference|color" />
-    <attr name="headlineSeparatorSelected" format="reference|color" />
-    <attr name="headlineSeparatorNormal" format="reference|color" />
     <attr name="feedlistTextColor" format="reference|color" />
     <attr name="feedlistSelectedTextColor" format="reference|color" />
     <attr name="headlineTextColor" format="reference|color" />
