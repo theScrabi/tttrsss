@@ -94,13 +94,6 @@
         <group android:id="@+id/menu_group_article" >
 
             <item
-                android:id="@+id/share_article"
-                android:icon="@android:drawable/ic_menu_share"
-                android:showAsAction="ifRoom|collapseActionView"
-                android:actionProviderClass="android.widget.ShareActionProvider"
-                android:title="@string/share_article"/>
-
-            <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
                 android:showAsAction="ifRoom"
@@ -112,6 +105,13 @@
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
 
+            <item
+                android:id="@+id/share_article"
+                android:icon="@android:drawable/ic_menu_share"
+                android:showAsAction="ifRoom"
+                android:actionProviderClass="android.widget.ShareActionProvider"
+                android:title="@string/share_article"/>
+                        
             <item
                 android:id="@+id/set_unread"
                 android:icon="@android:drawable/ic_menu_recent_history"

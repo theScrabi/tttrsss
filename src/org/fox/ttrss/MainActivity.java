@@ -1204,7 +1204,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			return true;
 		case R.id.share_article:
-			shareArticle(m_selectedArticle);
+			if (android.os.Build.VERSION.SDK_INT < 14) {
+				shareArticle(m_selectedArticle);
+			}
 			return true;
 		case R.id.toggle_marked:
 			if (m_selectedArticle != null) {
@@ -2280,6 +2282,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	public void setSelectedArticle(Article article) {
 		m_selectedArticle = article;
 		updateHeadlines();
+		initMainMenu();
 	}
 
 	@Override
