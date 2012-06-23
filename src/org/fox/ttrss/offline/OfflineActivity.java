@@ -1,5 +1,7 @@
 package org.fox.ttrss.offline;
 
+import java.util.ArrayList;
+
 import org.fox.ttrss.DummyFragment;
 import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.OnlineServices;
@@ -9,6 +11,7 @@ import org.fox.ttrss.R;
 import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -36,8 +39,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 public class OfflineActivity extends FragmentActivity implements
@@ -73,6 +78,167 @@ public class OfflineActivity extends FragmentActivity implements
 
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+	private NavigationListener m_navigationListener;
+	private NavigationAdapter m_navigationAdapter;
+	private ArrayList<NavigationEntry> m_navigationEntries = new ArrayList<NavigationEntry>();
+	
+	private class RootNavigationEntry extends NavigationEntry {
+		public RootNavigationEntry(String title) {
+			super(title);
+		}
+
+		@Override	
+		public void onItemSelected() {
+			
+			m_activeFeedId = 0;
+			m_selectedArticleId = 0;
+			m_activeCatId = -1;
+
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			if (m_smallScreenMode) {
+				
+				if (m_enableCats) {
+					ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment(), FRAG_CATS);				
+				} else {
+					ft.replace(R.id.fragment_container, new OfflineFeedsFragment(), FRAG_FEEDS);
+				}
+				
+				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				if (hf != null) ft.remove(hf);
+				
+				Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				if (af != null) ft.remove(af);
+
+			} else {
+				if (m_enableCats) {
+					ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);				
+				} else {
+					ft.replace(R.id.feeds_fragment, new OfflineFeedsFragment(), FRAG_FEEDS);
+				}
+				
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+
+				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
+
+				ft.replace(R.id.article_fragment, new DummyFragment(), "");
+			}
+			
+			ft.commit();
+
+			initMainMenu();
+		}
+	}
+	
+	private class CategoryNavigationEntry extends NavigationEntry {
+		int m_category = -1;
+		
+		public CategoryNavigationEntry(int category, String title) {
+			super(title);
+
+			m_category = category;
+		}
+
+		@Override	
+		public void onItemSelected() {
+			m_selectedArticleId = 0;
+
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			if (m_smallScreenMode) {
+
+				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				if (hf != null) ft.remove(hf);
+				
+				Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				if (af != null) ft.remove(af);
+				
+				if (m_activeFeedIsCat) {
+					ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment());
+				} else {
+					ft.replace(R.id.fragment_container, new OfflineFeedsFragment(m_category));
+				}
+				
+			} else {
+				ft.replace(R.id.article_fragment, new DummyFragment(), "");
+
+				//findViewById(R.id.article_fragment).setVisibility(View.GONE);				
+
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");				
+			}
+			
+			ft.commit();
+
+			m_activeFeedId = 0;
+			refreshViews();
+			initMainMenu();
+		}
+	}
+	
+
+	private class FeedNavigationEntry extends NavigationEntry {
+		int m_feed = 0;
+		
+		public FeedNavigationEntry(int feed, String title) {
+			super(title);
+
+			m_feed = feed;
+		}
+
+		@Override	
+		public void onItemSelected() {
+
+			m_selectedArticleId = 0;
+			
+			if (!m_smallScreenMode)
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);							
+
+			viewFeed(m_feed, false);
+		}
+	}
+	
+	private abstract class NavigationEntry {
+		private String title = null;
+		private int timesCalled = 0;
+		
+		public void _onItemSelected(int position, int size) {
+			Log.d(TAG, "_onItemSelected; TC=" + timesCalled + " P/S=" + position + "/" + size);
+			
+			if (position == size && timesCalled == 0) {
+				++timesCalled;			
+			} else {
+				onItemSelected();
+			}			
+		}
+		
+		public NavigationEntry(String title) {
+			this.title = title;
+		}
+		
+		public String toString() {
+			return title;
+		}		
+		
+		public abstract void onItemSelected();
+	}
+	
+	private class NavigationAdapter extends ArrayAdapter<NavigationEntry> {
+		public NavigationAdapter(Context context, int textViewResourceId, ArrayList<NavigationEntry> items) {
+			super(context, textViewResourceId, items);
+		}
+	}
+	
+	private class NavigationListener implements ActionBar.OnNavigationListener {
+		@Override
+		public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+			Log.d(TAG, "onNavigationItemSelected: " + itemPosition);
+
+			NavigationEntry entry = m_navigationAdapter.getItem(itemPosition);
+			entry._onItemSelected(itemPosition, m_navigationAdapter.getCount()-1);
+			
+			return false;
+		}
+	}
 	
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
@@ -155,6 +321,13 @@ public class OfflineActivity extends FragmentActivity implements
 			
 			LayoutTransition transitioner = new LayoutTransition();
 			((ViewGroup) findViewById(R.id.fragment_container)).setLayoutTransition(transitioner);
+			
+			m_navigationAdapter = new NavigationAdapter(this, android.R.layout.simple_spinner_dropdown_item, m_navigationEntries);
+			
+			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
+			m_navigationListener = new NavigationListener();
+			
+			getActionBar().setListNavigationCallbacks(m_navigationAdapter, m_navigationListener);
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
@@ -574,7 +747,9 @@ public class OfflineActivity extends FragmentActivity implements
 			}
 			return true;
 		case R.id.share_article:
-			shareArticle(m_selectedArticleId);
+			if (android.os.Build.VERSION.SDK_INT < 14) {
+				shareArticle(m_selectedArticleId);
+			}
 			return true;
 		case R.id.toggle_marked:
 			if (m_selectedArticleId != 0) {
@@ -793,7 +968,7 @@ public class OfflineActivity extends FragmentActivity implements
 			
 			if (!m_compatMode) {
 				
-				if (m_activeFeedId != 0) {
+				/* if (m_activeFeedId != 0) {
 					if (!m_activeFeedIsCat) {
 						Cursor feed = getFeedById(m_activeFeedId);
 					
@@ -816,13 +991,61 @@ public class OfflineActivity extends FragmentActivity implements
 					
 				} else {
 					getActionBar().setTitle(R.string.app_name);
+				} */
+				
+				m_navigationAdapter.clear();
+
+				if (m_activeCatId != -1 || (m_activeFeedId != 0 && m_smallScreenMode)) {
+					getActionBar().setDisplayShowTitleEnabled(false);
+					getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+					
+					m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
+					
+					if (m_activeCatId != -1) {
+						Cursor cat = getCatById(m_activeCatId);
+						String title = cat.getString(cat.getColumnIndex("title"));
+						m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCatId, title));
+						cat.close();
+					}
+
+					if (m_activeFeedId != 0) {
+						Cursor feed = null; 
+						if (m_activeFeedIsCat) {
+							feed = getCatById(m_activeFeedId);
+						} else {
+							feed = getFeedById(m_activeFeedId);
+						}
+						String title = feed.getString(feed.getColumnIndex("title"));						
+						m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeedId, title));
+						feed.close();
+					}
+
+					//if (m_selectedArticle != null)
+					//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
+
+					getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
+				
+				} else {
+					getActionBar().setDisplayShowTitleEnabled(true);
+					getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+					getActionBar().setTitle(R.string.app_name);
 				}
 				
-				if (!m_smallScreenMode) {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
-				} else {
+				//if (!m_smallScreenMode) {
+				// getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
+				//} else {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
+				//}
+					
+				if (android.os.Build.VERSION.SDK_INT >= 14) {			
+					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+					
+					if (m_selectedArticleId != 0) {
+						Log.d(TAG, "setting up share provider");
+						shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
+					}
 				}
+
 			}
 		}
 	}
@@ -1282,6 +1505,7 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public void setSelectedArticleId(int articleId) {
 		m_selectedArticleId = articleId;
+		initMainMenu();
 		refreshViews();
 	}
 	
