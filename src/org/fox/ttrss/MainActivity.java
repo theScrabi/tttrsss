@@ -183,7 +183,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		@Override	
 		public void onItemSelected() {
-			m_activeFeed = null;
 			m_selectedArticle = null;
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -196,6 +195,20 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 				if (af != null) ft.remove(af);
 				
+				if (m_activeFeed.is_cat) {
+					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
+					ft.show(cats);
+					
+					cats.setSelectedCategory(null);
+				} else {
+					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+		
+					ft.show(feeds);
+
+					feeds.setSelectedFeed(null);					
+				}
+				
 			} else {
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
 				
@@ -203,7 +216,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			}
 			ft.commit();
 
-			viewCategory(m_category, m_prefs.getBoolean("browse_cats_like_feeds", false));
+			m_activeFeed = null;
+			refresh();
+			initMainMenu();
 		}
 	}
 
