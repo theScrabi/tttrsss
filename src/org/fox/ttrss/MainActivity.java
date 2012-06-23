@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -52,6 +54,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
@@ -97,6 +100,164 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+	private NavigationListener m_navigationListener;
+	private NavigationAdapter m_navigationAdapter;
+	private ArrayList<NavigationEntry> m_navigationEntries = new ArrayList<NavigationEntry>();
+	
+	private class NavigationListener implements ActionBar.OnNavigationListener {
+		@Override
+		public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+			Log.d(TAG, "onNavigationItemSelected: " + itemPosition);
+
+			NavigationEntry entry = m_navigationAdapter.getItem(itemPosition);
+			entry._onItemSelected(itemPosition, m_navigationAdapter.getCount()-1);
+			
+			return false;
+		}
+	}
+	
+	private class ArticleNavigationEntry extends NavigationEntry {
+		public ArticleNavigationEntry(Article article) {
+			super(article.title);
+		}		
+
+		@Override	
+		public void onItemSelected() {
+
+		}
+	}
+	
+	private class RootNavigationEntry extends NavigationEntry {
+		public RootNavigationEntry(String title) {
+			super(title);
+		}
+
+		@Override	
+		public void onItemSelected() {
+			
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			m_activeFeed = null;
+			m_selectedArticle = null;
+			m_activeCategory = null;
+
+			if (m_smallScreenMode) {
+				
+				if (m_enableCats) {
+					ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);				
+				} else {
+					ft.replace(R.id.fragment_container, new FeedsFragment(), FRAG_FEEDS);
+				}
+				
+				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				if (hf != null) ft.remove(hf);
+				
+				Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				if (af != null) ft.remove(af);
+
+			} else {
+				if (m_enableCats) {
+					ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
+				} else {
+					ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
+				}
+				
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+			}
+			
+			ft.commit();
+			initMainMenu();
+		}
+	}
+
+	private class CategoryNavigationEntry extends NavigationEntry {
+		FeedCategory m_category = null;
+		
+		public CategoryNavigationEntry(FeedCategory category) {
+			super(category.title);
+
+			m_category = category;
+		}
+
+		@Override	
+		public void onItemSelected() {
+			m_activeFeed = null;
+			m_selectedArticle = null;
+
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			if (m_smallScreenMode) {
+
+				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				if (hf != null) ft.remove(hf);
+				
+				Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				if (af != null) ft.remove(af);
+				
+			} else {
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+			}
+			ft.commit();
+
+			viewCategory(m_category, m_prefs.getBoolean("browse_cats_like_feeds", false));
+		}
+	}
+
+	private class FeedNavigationEntry extends NavigationEntry {
+		Feed m_feed = null;
+		
+		public FeedNavigationEntry(Feed feed) {
+			super(feed.title);
+
+			m_feed = feed;
+		}
+
+		@Override	
+		public void onItemSelected() {
+
+			m_selectedArticle = null;
+			
+			if (!m_smallScreenMode)
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);							
+
+			viewFeed(m_feed, false);
+		}
+	}
+
+	private abstract class NavigationEntry {
+		private String title = null;
+		private int timesCalled = 0;
+		
+		public void _onItemSelected(int position, int size) {
+			Log.d(TAG, "_onItemSelected; TC=" + timesCalled + " P/S=" + position + "/" + size);
+			
+			if (position == size && timesCalled == 0) {
+				++timesCalled;			
+			} else {
+				onItemSelected();
+			}			
+		}
+		
+		public NavigationEntry(String title) {
+			this.title = title;
+		}
+		
+		public String toString() {
+			return title;
+		}		
+		
+		public abstract void onItemSelected();
+	}
+	
+	private class NavigationAdapter extends ArrayAdapter<NavigationEntry> {
+		public NavigationAdapter(Context context, int textViewResourceId, ArrayList<NavigationEntry> items) {
+			super(context, textViewResourceId, items);
+		}
+	}
 	
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
@@ -522,7 +683,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			LayoutTransition transitioner = new LayoutTransition();
 			((ViewGroup) findViewById(R.id.fragment_container)).setLayoutTransition(transitioner);
 			
+			m_navigationAdapter = new NavigationAdapter(this, android.R.layout.simple_spinner_dropdown_item, m_navigationEntries);
+			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
+			m_navigationListener = new NavigationListener();
+			
+			getActionBar().setListNavigationCallbacks(m_navigationAdapter, m_navigationListener);
 		}
 		
 		if (m_smallScreenMode) {
@@ -669,11 +835,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							stopService(intent);
 							
 							dialog.dismiss();
-							
-							Intent refresh = new Intent(MainActivity.this, MainActivity.class);
-							refresh.putExtra("sessionId", m_sessionId);
-							startActivity(refresh);
-							finish();							
+
+							restart();
 						}
 					}
 				})
@@ -683,11 +846,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							int which) {
 					
 						dialog.dismiss();
-						
-						Intent refresh = new Intent(MainActivity.this, MainActivity.class);
-						refresh.putExtra("sessionId", m_sessionId);
-						startActivity(refresh);
-						finish();
+
+						restart();
 					}
 				});
 
@@ -742,9 +902,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				|| m_prefs.getBoolean("enable_cats", false) != m_enableCats;
 
 		if (needRefresh) {
-			Intent refresh = new Intent(MainActivity.this, MainActivity.class);
-			startActivity(refresh);
-			finish();
+			restart();
 		} else if (m_sessionId != null) {
 			m_refreshTask = new RefreshTask();
 			m_refreshTimer = new Timer("Refresh");
@@ -832,39 +990,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_selectedArticle != null) {
 				closeArticle();
 			} else if (m_activeFeed != null) {
-				if (m_activeFeed.is_cat) {
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					
-					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-
-					ft.show(cats);
-					ft.remove(headlines);
-					
-					cats.setSelectedCategory(null);
-					
-					//ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
-					ft.commit();
-				} else {
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					
-					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
-
-					ft.show(feeds);
-					ft.remove(headlines);
-					
-					feeds.setSelectedFeed(null);
-					
-					ft.commit();
-				}
-
-				m_activeFeed = null;
-
-				refresh();					
-
-				initMainMenu();
-
+				closeFeed();
 			} else if (m_activeCategory != null) {
 				closeCategory();
 			} else if (allowQuit) {
@@ -1393,14 +1519,39 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 				if (!m_compatMode) {
 					
-					if (m_activeFeed != null) {
+/*					if (m_activeFeed != null) {
 						getActionBar().setTitle(m_activeFeed.title);
 					} else if (m_activeCategory != null) {
 						getActionBar().setTitle(m_activeCategory.title);
 					} else {
 						getActionBar().setTitle(R.string.app_name);
-					}
+					} */
+
+					m_navigationAdapter.clear();
+
+					if (m_activeCategory != null || (m_activeFeed != null && m_smallScreenMode)) {
+						getActionBar().setDisplayShowTitleEnabled(false);
+						getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+						
+						m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
+						
+						if (m_activeCategory != null)
+							m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCategory));
+	
+						if (m_activeFeed != null)
+							m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeed));
+
+						//if (m_selectedArticle != null)
+						//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
+
+						getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
 					
+					} else {
+						getActionBar().setDisplayShowTitleEnabled(true);
+						getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+						getActionBar().setTitle(R.string.app_name);
+					}
+
 					if (m_smallScreenMode) {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
 					} else {
@@ -1628,9 +1779,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		
 		m_activeFeed = feed;
 
-		initMainMenu();
-
 		if (!append) {
+			m_selectedArticle = null;
 			
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
@@ -1655,10 +1805,12 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 				ft.add(R.id.fragment_container, hf, FRAG_HEADLINES);
 			} else {
+				findViewById(R.id.article_fragment).setVisibility(View.GONE);
 				findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 			}
 			ft.commit();
+			
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
 					.findFragmentByTag(FRAG_HEADLINES);
@@ -1666,6 +1818,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				hf.refresh(true);
 			}
 		}
+		
+		initMainMenu();
 	}
 
 	public void viewCategory(FeedCategory cat, boolean openAsFeed) {
@@ -1686,7 +1840,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
 			}
 			ft.commit();
-			
 			
 		} else {
 			Feed feed = new Feed(cat.id, cat.title, true);
@@ -1776,7 +1929,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		initMainMenu();
 	}
 
-	@Override
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void login() {
 
@@ -2128,5 +2280,50 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		Toast toast = Toast.makeText(MainActivity.this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
 		toast.show();
+	}
+	
+	private void closeFeed() {
+		if (m_smallScreenMode && m_activeFeed != null) {
+			if (m_activeFeed.is_cat) {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				
+				Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+	
+				ft.show(cats);
+				ft.remove(headlines);
+				
+				cats.setSelectedCategory(null);
+				
+				//ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
+				ft.commit();
+			} else {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				
+				Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+	
+				ft.show(feeds);
+				ft.remove(headlines);
+				
+				feeds.setSelectedFeed(null);
+				
+				ft.commit();
+			}
+		}
+			
+		m_activeFeed = null;
+
+		refresh();					
+
+		initMainMenu();
+	}
+	
+	@Override
+	public void restart() {
+		Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+		refresh.putExtra("sessionId", m_sessionId);
+		startActivity(refresh);
+		finish();
 	}
 }

@@ -18,7 +18,8 @@ public interface OnlineServices {
 	public void onFeedSelected(Feed feed);
 	
 	public void initMainMenu();
-	public void login();
+	//public void login();
+	public void restart();
 	public String getSessionId();
 	public boolean getUnreadArticlesOnly();
 	public boolean isSmallScreen();
