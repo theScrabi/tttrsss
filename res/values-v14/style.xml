@@ -14,10 +14,10 @@
 		<item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_light</item>
 		<item name="feedlistTextColor">@android:color/primary_text_light</item>
 		<item name="feedlistSelectedTextColor">#ffffff</item>
-    	<item name="headlineTextColor">@android:color/secondary_text_light</item>
+    	<item name="headlineTextColor">#909090</item>
     	<item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
     	<item name="headlineSelectedTextColor">#ffffff</item>
-    	<item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
+    	<item name="headlineExcerptTextColor">#909090</item>
     	<item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
     	<item name="linkColor">#30B0E0</item>
     	<item name="loadingBackground">@android:color/white</item>
