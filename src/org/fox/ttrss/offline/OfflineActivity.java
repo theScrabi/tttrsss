@@ -2,13 +2,13 @@ package org.fox.ttrss.offline;
 
 import java.util.ArrayList;
 
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.DummyFragment;
 import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.OnlineServices;
 import org.fox.ttrss.OnlineServices.RelativeArticle;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
-import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
@@ -20,15 +20,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ActionMode;
@@ -45,7 +42,7 @@ import android.widget.SearchView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
-public class OfflineActivity extends FragmentActivity implements
+public class OfflineActivity extends CommonActivity implements
 		OfflineServices {
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -57,24 +54,14 @@ public class OfflineActivity extends FragmentActivity implements
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private Menu m_menu;
-	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 
 	private int m_activeFeedId = 0;
 	private boolean m_activeFeedIsCat = false;
 	private int m_activeCatId = -1;
 	private int m_selectedArticleId = 0;
-
-	private SQLiteDatabase m_readableDb;
-	private SQLiteDatabase m_writableDb;
-
-	@Override
-	public boolean isSmallScreen() {
-		return m_smallScreenMode;
-	}
 
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
@@ -96,7 +83,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 				
 				if (m_enableCats) {
 					ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment(), FRAG_CATS);				
@@ -146,7 +133,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 
 				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				if (hf != null) ft.remove(hf);
@@ -192,7 +179,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 			m_selectedArticleId = 0;
 			
-			if (!m_smallScreenMode)
+			if (!isSmallScreen())
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);							
 
 			viewFeed(m_feed, false);
@@ -273,12 +260,8 @@ public class OfflineActivity extends FragmentActivity implements
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		initDatabase();
-
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
@@ -307,16 +290,10 @@ public class OfflineActivity extends FragmentActivity implements
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 		
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
-				Configuration.SCREENLAYOUT_SIZE_XLARGE;
-
 		setContentView(R.layout.main);
 
-		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
-
-		if (!m_compatMode) {
-			if (!m_smallScreenMode) {
+		if (!isCompatMode()) {
+			if (!isSmallScreen()) {
 				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
@@ -353,7 +330,7 @@ public class OfflineActivity extends FragmentActivity implements
 				tag = FRAG_FEEDS;
 			}
 			
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 				ft.replace(R.id.fragment_container, frag, tag);
 			} else {
 				ft.replace(R.id.feeds_fragment, frag, tag);
@@ -361,22 +338,6 @@ public class OfflineActivity extends FragmentActivity implements
 				
 			ft.commit();
 		}
-	}
-
-	private void initDatabase() {
-		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-		m_writableDb = dh.getWritableDatabase();
-		m_readableDb = dh.getReadableDatabase();
-	}
-
-	@Override
-	public synchronized SQLiteDatabase getReadableDb() {
-		return m_readableDb;
-	}
-
-	@Override
-	public synchronized SQLiteDatabase getWritableDb() {
-		return m_writableDb;
 	}
 
 	private void switchOnline() {
@@ -477,7 +438,7 @@ public class OfflineActivity extends FragmentActivity implements
 	}
 
 	private void goBack(boolean allowQuit) {
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			if (m_selectedArticleId != 0) {
 				closeArticle();			
 			} else if (m_activeFeedId != 0) {
@@ -542,8 +503,8 @@ public class OfflineActivity extends FragmentActivity implements
 	 * @Override public boolean onKeyDown(int keyCode, KeyEvent event) { if
 	 * (keyCode == KeyEvent.KEYCODE_BACK) {
 	 * 
-	 * if (m_smallScreenMode) { if (m_selectedArticleId != 0) { closeArticle();
-	 * } else if (m_activeFeedId != 0) { if (m_compatMode) {
+	 * if (isSmallScreen()) { if (m_selectedArticleId != 0) { closeArticle();
+	 * } else if (m_activeFeedId != 0) { if (isCompatMode()) {
 	 * findViewById(R.id.main).setAnimation(AnimationUtils.loadAnimation(this,
 	 * R.anim.slide_right)); }
 	 */
@@ -646,7 +607,7 @@ public class OfflineActivity extends FragmentActivity implements
 			goBack(false);
 			return true;
 		case R.id.search:
-			if (ohf != null && m_compatMode) {
+			if (ohf != null && isCompatMode()) {
 				Dialog dialog = new Dialog(this);
 
 				final EditText edit = new EditText(this);
@@ -875,7 +836,7 @@ public class OfflineActivity extends FragmentActivity implements
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
 			ft.show(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 		} else {
@@ -912,7 +873,7 @@ public class OfflineActivity extends FragmentActivity implements
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			
 			if (numSelected != 0) {
-				if (m_compatMode) {
+				if (isCompatMode()) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
 				} else {
 					if (m_headlinesActionMode == null)
@@ -925,7 +886,7 @@ public class OfflineActivity extends FragmentActivity implements
 				
 				MenuItem search = m_menu.findItem(R.id.search);
 				
-				if (!m_compatMode) {
+				if (!isCompatMode()) {
 					SearchView searchView = (SearchView) search.getActionView();
 					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 						private String query = "";
@@ -968,7 +929,7 @@ public class OfflineActivity extends FragmentActivity implements
 				m_headlinesActionMode.finish();
 			}
 			
-			if (!m_compatMode) {
+			if (!isCompatMode()) {
 				
 				/* if (m_activeFeedId != 0) {
 					if (!m_activeFeedIsCat) {
@@ -997,7 +958,7 @@ public class OfflineActivity extends FragmentActivity implements
 				
 				m_navigationAdapter.clear();
 
-				if (m_activeCatId != -1 || (m_activeFeedId != 0 && m_smallScreenMode)) {
+				if (m_activeCatId != -1 || (m_activeFeedId != 0 && isSmallScreen())) {
 					getActionBar().setDisplayShowTitleEnabled(false);
 					getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 					
@@ -1033,7 +994,7 @@ public class OfflineActivity extends FragmentActivity implements
 					getActionBar().setTitle(R.string.app_name);
 				}
 				
-				if (m_smallScreenMode) {
+				if (isSmallScreen()) {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
 				} else {					
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeCatId != -1);
@@ -1061,10 +1022,6 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-
-		m_readableDb.close();
-		m_writableDb.close();
-
 	}
 
 	private void refreshViews() {
@@ -1392,7 +1349,7 @@ public class OfflineActivity extends FragmentActivity implements
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			
-			if (m_smallScreenMode) {			
+			if (isSmallScreen()) {			
 				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
 			} else {				
 				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
@@ -1405,7 +1362,7 @@ public class OfflineActivity extends FragmentActivity implements
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null && !isCompatMode()) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1436,7 +1393,7 @@ public class OfflineActivity extends FragmentActivity implements
 		if (m_menu != null) {
 			MenuItem search = m_menu.findItem(R.id.search);
 		
-			if (search != null && !m_compatMode) {
+			if (search != null && !isCompatMode()) {
 				SearchView sv = (SearchView) search.getActionView();
 				sv.setQuery("", false);				
 			}
@@ -1445,7 +1402,7 @@ public class OfflineActivity extends FragmentActivity implements
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		OfflineHeadlinesFragment frag = new OfflineHeadlinesFragment(feedId, isCat);
 		
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.replace(R.id.fragment_container, frag, FRAG_HEADLINES);
 		} else {
 			findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
@@ -1478,7 +1435,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		Fragment frag;
 		
-		if (m_smallScreenMode || m_prefs.getBoolean("tablet_article_swipe", false)) {
+		if (isSmallScreen() || m_prefs.getBoolean("tablet_article_swipe", false)) {
 			frag = new OfflineArticlePager(articleId);
 		} else {
 			frag = new OfflineArticleFragment(articleId);
@@ -1486,7 +1443,7 @@ public class OfflineActivity extends FragmentActivity implements
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
@@ -1516,7 +1473,7 @@ public class OfflineActivity extends FragmentActivity implements
 		m_activeCatId = -1;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.replace(R.id.fragment_container, new OfflineFeedCategoriesFragment(), FRAG_CATS);
 		} else {
 			ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);
@@ -1531,10 +1488,5 @@ public class OfflineActivity extends FragmentActivity implements
 	@Override
 	public boolean activeFeedIsCat() {
 		return m_activeFeedIsCat;
-	}
-	
-	@Override
-	public int getOrientation() {
-		return getWindowManager().getDefaultDisplay().getOrientation();
 	}
 }

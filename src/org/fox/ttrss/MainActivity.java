@@ -19,7 +19,6 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.Label;
 import org.fox.ttrss.util.AppRater;
-import org.fox.ttrss.util.DatabaseHelper;
 
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
@@ -34,15 +33,12 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ActionMode;
@@ -66,7 +62,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends FragmentActivity implements OnlineServices {
+public class MainActivity extends CommonActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected final static String FRAG_HEADLINES = "headlines";
@@ -83,10 +79,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private Timer m_refreshTimer;
 	private RefreshTask m_refreshTask;
 	private Menu m_menu;
-	private boolean m_smallScreenMode;
 	private boolean m_unreadOnly = true;
 	private boolean m_unreadArticlesOnly = true;
-	private boolean m_compatMode = false;
 	private boolean m_enableCats = false;
 	private int m_apiLevel = 0;
 	private boolean m_isLoggingIn = false;
@@ -94,9 +88,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	private int m_offlineModeStatus = 0;
 	private int m_selectedProduct = -1;
 	private long m_lastRefresh = 0;
-
-	private SQLiteDatabase m_readableDb;
-	private SQLiteDatabase m_writableDb;
 
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
@@ -141,7 +132,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			m_selectedArticle = null;
 			m_activeCategory = null;
 
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 				
 				if (m_enableCats) {
 					ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);				
@@ -188,7 +179,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 
 				Fragment hf = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				if (hf != null) ft.remove(hf);
@@ -238,7 +229,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			m_selectedArticle = null;
 			
-			if (!m_smallScreenMode)
+			if (!isSmallScreen())
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);							
 
 			viewFeed(m_feed, false);
@@ -618,23 +609,9 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	@Override
-	public boolean isSmallScreen() {
-		return m_smallScreenMode;
-	}
-
-	@Override
-	public int getOrientation() {
-		return getWindowManager().getDefaultDisplay().getOrientation();
-	}
-	
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		initDatabase();
-
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
@@ -670,9 +647,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
-				Configuration.SCREENLAYOUT_SIZE_XLARGE;
-		
 		setContentView(R.layout.main);
 
 		IntentFilter filter = new IntentFilter();
@@ -687,12 +661,10 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_isOffline = localPrefs.getBoolean("offline_mode_active", false);
 
 		Log.d(TAG, "m_isOffline=" + m_isOffline);
-		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
 
-		if (!m_compatMode) {
+		if (!isCompatMode()) {
 			
-			if (!m_smallScreenMode) {				
+			if (!isSmallScreen()) {				
 				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticle != null ? View.VISIBLE : View.GONE);
 			}
@@ -708,7 +680,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			getActionBar().setListNavigationCallbacks(m_navigationAdapter, m_navigationListener);
 		}
 		
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 			if (m_selectedArticle != null) {
@@ -740,20 +712,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				login();
 			}
 		}
-	}
-
-	private void initDatabase() {
-		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-		m_writableDb = dh.getWritableDatabase();
-		m_readableDb = dh.getReadableDatabase();
-	}
-
-	public synchronized SQLiteDatabase getReadableDb() {
-		return m_readableDb;
-	}
-
-	public synchronized SQLiteDatabase getWritableDb() {
-		return m_writableDb;
 	}
 
 	private void switchOffline() {
@@ -977,7 +935,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		m_activeCategory = null;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
 		} else {
 			ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);
@@ -1003,7 +961,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 	
 	private void goBack(boolean allowQuit) {
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			if (m_selectedArticle != null) {
 				closeArticle();
 			} else if (m_activeFeed != null) {
@@ -1100,7 +1058,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			goBack(false);
 			return true;
 		case R.id.search:
-			if (hf != null && m_compatMode) {
+			if (hf != null && isCompatMode()) {
 				Dialog dialog = new Dialog(this);
 
 				final EditText edit = new EditText(this);
@@ -1455,7 +1413,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
 			ft.show(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 		} else {
@@ -1493,7 +1451,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					numSelected = hf.getSelectedArticles().size();
 
 				if (numSelected != 0) {
-					if (m_compatMode) {
+					if (isCompatMode()) {
 						m_menu.setGroupVisible(R.id.menu_group_headlines_selection, true);
 					} else {
 						if (m_headlinesActionMode == null)
@@ -1509,7 +1467,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					
 					search.setEnabled(m_apiLevel >= 2);
 					
-					if (!m_compatMode) {
+					if (!isCompatMode()) {
 						SearchView searchView = (SearchView) search.getActionView();
 						searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 							private String query = "";
@@ -1552,7 +1510,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					m_headlinesActionMode.finish();
 				}
 
-				if (!m_compatMode) {
+				if (!isCompatMode()) {
 					
 /*					if (m_activeFeed != null) {
 						getActionBar().setTitle(m_activeFeed.title);
@@ -1564,7 +1522,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 					m_navigationAdapter.clear();
 
-					if (m_activeCategory != null || (m_activeFeed != null && m_smallScreenMode)) {
+					if (m_activeCategory != null || (m_activeFeed != null && isSmallScreen())) {
 						getActionBar().setDisplayShowTitleEnabled(false);
 						getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 						
@@ -1587,7 +1545,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						getActionBar().setTitle(R.string.app_name);
 					}
 
-					if (m_smallScreenMode) {
+					if (isSmallScreen()) {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null || m_activeFeed != null);
 					} else {
 						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
@@ -1637,10 +1595,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		super.onDestroy();
 
 		unregisterReceiver(m_broadcastReceiver);
-
-		m_readableDb.close();
-		m_writableDb.close();
-
 	}
 
 	private void syncOfflineData() {
@@ -1721,7 +1675,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 								if (m_enableCats) {
 									FeedCategoriesFragment frag = new FeedCategoriesFragment();
-									if (m_smallScreenMode) {
+									if (isSmallScreen()) {
 										ft.replace(R.id.fragment_container, frag, FRAG_CATS);
 									} else {
 										ft.replace(R.id.feeds_fragment, frag, FRAG_CATS);
@@ -1729,7 +1683,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 								} else {
 									FeedsFragment frag = new FeedsFragment();
-									if (m_smallScreenMode) {
+									if (isSmallScreen()) {
 										ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
 									} else {
 										ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
@@ -1820,7 +1774,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null && !isCompatMode()) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1831,7 +1785,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			
-			if (m_smallScreenMode) {
+			if (isSmallScreen()) {
 				Fragment cats = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 				if (cats != null) ft.hide(cats);
 
@@ -1869,7 +1823,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			
-			if (m_smallScreenMode) {			
+			if (isSmallScreen()) {			
 				ft.replace(R.id.fragment_container, frag, FRAG_FEEDS);
 			} else {				
 				ft.replace(R.id.feeds_fragment, frag, FRAG_FEEDS);
@@ -1882,7 +1836,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
 			
-				if (search != null && !m_compatMode) {
+				if (search != null && !isCompatMode()) {
 					SearchView sv = (SearchView) search.getActionView();
 					sv.setQuery("", false);				
 				}
@@ -1910,14 +1864,14 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		Fragment frag;
 		
-		if (m_smallScreenMode || m_prefs.getBoolean("tablet_article_swipe", false)) {
+		if (isSmallScreen() || m_prefs.getBoolean("tablet_article_swipe", false)) {
 			frag = new ArticlePager(article);
 		} else {
 			frag = new ArticleFragment(article);
 		}
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		if (m_smallScreenMode) {
+		if (isSmallScreen()) {
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
