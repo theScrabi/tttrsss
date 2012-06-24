@@ -584,7 +584,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	}	
 	
 	public void setSelectedFeed(Feed feed) {
-		m_selectedFeed = feed;		
+		m_selectedFeed = feed;
+		m_adapter.notifyDataSetChanged();
 	}
 
 }

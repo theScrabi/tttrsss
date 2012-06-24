@@ -1490,7 +1490,8 @@ public class OfflineActivity extends FragmentActivity implements
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
+			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);			
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			
 			refreshViews();

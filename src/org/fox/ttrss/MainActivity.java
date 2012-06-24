@@ -560,15 +560,18 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 	private synchronized void refresh() {
 		Date date = new Date();
+		
+		boolean canRefresh = date.getTime() - m_lastRefresh > 5000;
 
-		if (m_sessionId != null && date.getTime() - m_lastRefresh > 5000) {
+		if (m_sessionId != null) {
 			 
 			FeedsFragment ff = (FeedsFragment) getSupportFragmentManager()
 					.findFragmentByTag(FRAG_FEEDS);
 
 			if (ff != null) {
 				Log.d(TAG, "Refreshing feeds...");
-				ff.refresh(true);
+				if (canRefresh) ff.refresh(true);
+				ff.setSelectedFeed(m_activeFeed);				
 			}
 			
 			FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager()
@@ -576,10 +579,11 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 			if (cf != null) {
 				Log.d(TAG, "Refreshing categories...");
-				cf.refresh(true);
+				if (canRefresh)  cf.refresh(true);
+				cf.setSelectedCategory(m_activeCategory);
 			}
 
-			m_lastRefresh = date.getTime();
+			if (canRefresh) m_lastRefresh = date.getTime();
 		}
 	}
 
@@ -1023,6 +1027,8 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 				ft.commit();
+				
+				refresh();
 				
 				initMainMenu();
 			} else if (m_activeCategory != null) {
@@ -2303,40 +2309,44 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 	
 	private void closeFeed() {
-		if (m_smallScreenMode && m_activeFeed != null) {
-			if (m_activeFeed.is_cat) {
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				
-				Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-				FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-	
-				ft.show(cats);
-				ft.remove(headlines);
-				
-				cats.setSelectedCategory(null);
-				
-				//ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
-				ft.commit();
+		if (m_activeFeed != null) {
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			if (m_smallScreenMode) {
+				if (m_activeFeed.is_cat) {
+					
+					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
+					ft.show(cats);
+					ft.remove(headlines);
+					
+					//cats.setSelectedCategory(null);
+					
+					//ft.replace(R.id.fragment_container, new FeedCategoriesFragment(), FRAG_CATS);
+				} else {
+					Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+		
+					ft.show(feeds);
+					ft.remove(headlines);
+					
+					//feeds.setSelectedFeed(null);
+					
+				}
 			} else {
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				
 				Fragment headlines = getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-				FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
-	
-				ft.show(feeds);
 				ft.remove(headlines);
-				
-				feeds.setSelectedFeed(null);
-				
-				ft.commit();
-			}
+			}			
+			ft.commit();
 		}
-			
+		
 		m_activeFeed = null;
 
 		refresh();					
 
 		initMainMenu();
+
 	}
 	
 	@Override
