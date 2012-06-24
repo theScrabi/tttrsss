@@ -502,7 +502,7 @@ public class OfflineActivity extends FragmentActivity implements
 		} else {
 			if (m_selectedArticleId != 0) {
 				closeArticle();
-			} else if (m_activeFeedId != 0) {
+			/* } else if (m_activeFeedId != 0) {
 				m_activeFeedId = 0;
 				
 				OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
@@ -524,7 +524,7 @@ public class OfflineActivity extends FragmentActivity implements
 				}
 
 				refreshViews();
-				initMainMenu();
+				initMainMenu(); */
 			} else if (m_activeCatId != -1) {
 				closeCategory();	
 			} else if (allowQuit) {
@@ -1033,11 +1033,11 @@ public class OfflineActivity extends FragmentActivity implements
 					getActionBar().setTitle(R.string.app_name);
 				}
 				
-				//if (!m_smallScreenMode) {
-				// getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0);
-				//} else {
+				if (m_smallScreenMode) {
 					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
-				//}
+				} else {					
+					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeCatId != -1);
+				}
 					
 				if (android.os.Build.VERSION.SDK_INT >= 14) {			
 					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();

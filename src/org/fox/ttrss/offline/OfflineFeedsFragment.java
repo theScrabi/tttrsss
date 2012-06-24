@@ -199,7 +199,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (cursor.getLong(0) == m_selectedFeedId) {
+			if (!m_offlineServices.isSmallScreen() && cursor.getLong(0) == m_selectedFeedId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
