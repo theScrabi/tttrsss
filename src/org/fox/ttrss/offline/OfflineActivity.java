@@ -1041,19 +1041,8 @@ public class OfflineActivity extends CommonActivity implements
 				}
 				
 				if (article != null) {				
-					if (android.os.Build.VERSION.SDK_INT < 11) {				
-						@SuppressWarnings("deprecation")
-						android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-						clipboard.setText(article.getString(article.getColumnIndex("link")));
-					} else {
-						android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-						clipboard.setText(article.getString(article.getColumnIndex("link")));
-					}
-					
+					copyToClipboard(article.getString(article.getColumnIndex("link")));
 					article.close();
-				
-					Toast toast = Toast.makeText(OfflineActivity.this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
-					toast.show();
 				}
 			}
 			return true;
