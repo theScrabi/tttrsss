@@ -163,6 +163,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				}
 				
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 			}
@@ -211,6 +212,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				
 			} else {
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 			}

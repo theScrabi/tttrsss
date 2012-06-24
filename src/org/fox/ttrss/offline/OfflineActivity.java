@@ -119,6 +119,7 @@ public class OfflineActivity extends FragmentActivity implements
 				
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
 
 				ft.replace(R.id.article_fragment, new DummyFragment(), "");
@@ -162,6 +163,7 @@ public class OfflineActivity extends FragmentActivity implements
 			} else {
 				ft.replace(R.id.article_fragment, new DummyFragment(), "");
 
+				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				//findViewById(R.id.article_fragment).setVisibility(View.GONE);				
 
 				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");				
