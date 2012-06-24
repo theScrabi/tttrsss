@@ -144,7 +144,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		out.putParcelable("cats", m_cats);
 	}
 
-	public void setLoadingStatus(int status, boolean showProgress) {
+	private void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			

@@ -332,7 +332,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_HEADLINES);
 		if (frag != null) {
-			frag.notifyUpdated();
+			frag.setActiveArticle(m_selectedArticle);
 		}
 	}
 
@@ -997,7 +997,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (selected.size() > 0) {
 				selected.clear();
 				initMainMenu();
-				hf.notifyUpdated();
+				updateHeadlines();
 			}
 		}
 	}
@@ -1201,7 +1201,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 				for (Article a : articles)
 					a.unread = false;
 
-				hf.notifyUpdated();
+				updateHeadlines();
 
 				ApiRequest req = new ApiRequest(getApplicationContext());
 
@@ -1231,7 +1231,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 			if (m_selectedArticle != null) {
 				m_selectedArticle.marked = !m_selectedArticle.marked;
 				saveArticleMarked(m_selectedArticle);				
-				//updateHeadlines();
+				updateHeadlines();
 			}
 			return true;
 		case R.id.selection_select_none:
@@ -1246,7 +1246,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.unread = !a.unread;
 
 					toggleArticlesUnread(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				}
 				refresh();
 			}
@@ -1260,7 +1260,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.marked = !a.marked;
 
 					toggleArticlesMarked(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				}
 			}
 			return true;
@@ -1273,7 +1273,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.published = !a.published;
 
 					toggleArticlesPublished(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				}
 			}
 			return true;
@@ -1297,7 +1297,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					}
 					if (tmp.size() > 0) {
 						toggleArticlesUnread(tmp);
-						hf.notifyUpdated();
+						updateHeadlines();
 					}
 				}
 			}
@@ -1471,7 +1471,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 	}
 
 	@SuppressLint({ "NewApi", "NewApi", "NewApi" })
-	@Override
 	public void initMainMenu() {
 		if (m_menu != null) {
 
@@ -1893,8 +1892,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 
 		initMainMenu();
 	}
+	
+	@Override
+	public void onArticleSelected(Article article) {
+		openArticle(article);		
+	}
 
-	public void openArticle(Article article, int compatAnimation) {
+	public void openArticle(Article article) {
 		m_selectedArticle = article;
 
 		if (article.unread) {
@@ -1903,13 +1907,6 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 
 		initMainMenu();
-
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_HEADLINES);
-
-		if (hf != null) {
-			hf.setActiveArticle(article);
-		}
 
 		Fragment frag;
 		
@@ -2105,13 +2102,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.marked = !a.marked;
 
 					toggleArticlesMarked(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				} else {
 					Article article = hf.getArticleAtPosition(info.position);
 					if (article != null) {
 						article.marked = !article.marked;
 						saveArticleMarked(article);
-						hf.notifyUpdated();
+						updateHeadlines();
 					}
 				}
 			}
@@ -2125,13 +2122,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.published = !a.published;
 
 					toggleArticlesPublished(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				} else {
 					Article article = hf.getArticleAtPosition(info.position);
 					if (article != null) {
 						article.published = !article.published;
 						saveArticlePublished(article);
-						hf.notifyUpdated();
+						updateHeadlines();
 					}
 				}
 			}
@@ -2145,13 +2142,13 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 						a.unread = !a.unread;
 
 					toggleArticlesUnread(selected);
-					hf.notifyUpdated();
+					updateHeadlines();
 				} else {
 					Article article = hf.getArticleAtPosition(info.position);
 					if (article != null) {
 						article.unread = !article.unread;
 						saveArticleUnread(article);
-						hf.notifyUpdated();
+						updateHeadlines();
 					}
 				}
 			}
@@ -2177,7 +2174,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 					}
 					if (tmp.size() > 0) {
 						toggleArticlesUnread(tmp);
-						hf.notifyUpdated();
+						updateHeadlines();
 					}
 				}
 			}
@@ -2194,8 +2191,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		}
 	}
 
-	@Override
-	public Article getRelativeArticle(Article article, RelativeArticle ra) {
+	private Article getRelativeArticle(Article article, RelativeArticle ra) {
 		HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_HEADLINES);
 		if (frag != null) {
@@ -2249,7 +2245,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							next.unread = false;
 							saveArticleUnread(next);
 						} else {
-							openArticle(next, 0);
+							openArticle(next);
 						}
 					}
 				}
@@ -2277,7 +2273,7 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 							prev.unread = false;
 							saveArticleUnread(prev);
 						} else {
-							openArticle(prev, 0);
+							openArticle(prev);
 						}
 					}
 				}
@@ -2319,16 +2315,16 @@ public class MainActivity extends FragmentActivity implements OnlineServices {
 		toast.show();
 	}
 	
-	private void _closeFeed() {
-		if (m_activeFeed != null) {
-		}
-	}
-	
 	@Override
 	public void restart() {
 		Intent refresh = new Intent(MainActivity.this, MainActivity.class);
 		refresh.putExtra("sessionId", m_sessionId);
 		startActivity(refresh);
 		finish();
+	}
+
+	@Override
+	public void onArticleListSelectionChange(ArticleList selection) {
+		initMainMenu();
 	}
 }

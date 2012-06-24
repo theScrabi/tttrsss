@@ -180,7 +180,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					article.unread = false;
 					m_onlineServices.saveArticleUnread(article);
 				} else {
-					m_onlineServices.openArticle(article, 0);
+					m_onlineServices.onArticleSelected(article);
 				}
 				
 				m_activeArticle = article;
@@ -252,7 +252,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
-	public void setLoadingStatus(int status, boolean showProgress) {
+	private void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			
@@ -589,7 +589,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							m_selectedArticles.remove(article);
 						}
 						
-						m_onlineServices.initMainMenu();
+						m_onlineServices.onArticleListSelectionChange(m_selectedArticles);
 						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
@@ -602,13 +602,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 
 
-	public void notifyUpdated() {
+	/* public void notifyUpdated() {
 		m_adapter.notifyDataSetChanged();
 		
 		Article article = m_onlineServices.getSelectedArticle();
 
 		setActiveArticle(article);
-	}
+	} */
 
 	public ArticleList getAllArticles() {
 		return m_articles;

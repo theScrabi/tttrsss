@@ -1461,12 +1461,12 @@ public class OfflineActivity extends FragmentActivity implements
 
 		initMainMenu();
 
-		OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager()
+		/* OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_HEADLINES);
 
 		if (hf != null) {
 			hf.setActiveArticleId(articleId);
-		}
+		} */
 
 		SQLiteStatement stmt = getWritableDb().compileStatement(
 				"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
