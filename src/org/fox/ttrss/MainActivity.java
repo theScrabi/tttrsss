@@ -64,11 +64,6 @@ import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends CommonActivity implements OnlineServices {
 	private final String TAG = this.getClass().getSimpleName();
-
-	protected final static String FRAG_HEADLINES = "headlines";
-	protected final static String FRAG_ARTICLE = "article";
-	protected final static String FRAG_FEEDS = "feeds";
-	protected final static String FRAG_CATS = "cats";
 	
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
@@ -1757,10 +1752,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 	@Override
 	public void onFeedSelected(Feed feed) {
 		viewFeed(feed, false);
-	}
-
-	public Article getSelectedArticle() {
-		return m_selectedArticle;
 	}
 
 	public void viewFeed(Feed feed, boolean append) {

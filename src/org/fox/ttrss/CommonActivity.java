@@ -11,6 +11,11 @@ import android.util.Log;
 public class CommonActivity extends FragmentActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
+	public final static String FRAG_HEADLINES = "headlines";
+	public final static String FRAG_ARTICLE = "article";
+	public final static String FRAG_FEEDS = "feeds";
+	public final static String FRAG_CATS = "cats";
+	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 

@@ -46,11 +46,6 @@ public class OfflineActivity extends CommonActivity implements
 		OfflineServices {
 	private final String TAG = this.getClass().getSimpleName();
 
-	protected final static String FRAG_HEADLINES = "headlines";
-	protected final static String FRAG_ARTICLE = "article";
-	protected final static String FRAG_FEEDS = "feeds";
-	protected final static String FRAG_CATS = "cats";
-	
 	private SharedPreferences m_prefs;
 	private String m_themeName = "";
 	private Menu m_menu;
@@ -427,14 +422,6 @@ public class OfflineActivity extends CommonActivity implements
 		}
 
 		return true;
-	}
-
-	private void setMenuLabel(int id, int labelId) {
-		MenuItem mi = m_menu.findItem(id);
-
-		if (mi != null) {
-			mi.setTitle(labelId);
-		}
 	}
 
 	private void goBack(boolean allowQuit) {
