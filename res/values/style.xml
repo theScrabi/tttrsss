@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="LightTheme" parent="android:Theme.Light.NoTitleBar">
+    <style name="LightTheme" parent="android:Theme.Light">
         <item name="horizontalDivider">@android:drawable/divider_horizontal_bright</item>
         <item name="feedlistBackground">#fafafa</item>
         <item name="unreadCounterColor">#0000ff</item>
@@ -24,7 +24,7 @@
         <item name="loadingBackground">@android:color/white</item>
     </style>
 
-    <style name="DarkTheme" parent="android:Theme.Black.NoTitleBar">
+    <style name="DarkTheme" parent="android:Theme.Black">
         <item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
         <item name="feedlistBackground">#101010</item>
         <item name="unreadCounterColor">#303030</item>

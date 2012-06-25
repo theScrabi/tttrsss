@@ -1422,6 +1422,51 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		
 		initMainMenu();
 	}
+	
+	private void updateTitle() {
+		if (!isCompatMode()) {
+			
+			m_navigationAdapter.clear();
+
+			if (m_activeCategory != null || (m_activeFeed != null && isSmallScreen())) {
+				getActionBar().setDisplayShowTitleEnabled(false);
+				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+				
+				m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
+				
+				if (m_activeCategory != null)
+					m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCategory));
+
+				if (m_activeFeed != null)
+					m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeed));
+
+				//if (m_selectedArticle != null)
+				//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
+
+				getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
+			
+			} else {
+				getActionBar().setDisplayShowTitleEnabled(true);
+				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+				getActionBar().setTitle(R.string.app_name);
+			}
+
+			if (isSmallScreen()) {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null || m_activeFeed != null);
+			} else {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
+			}
+			
+		} else {
+			if (m_activeFeed != null) {
+				setTitle(m_activeFeed.title);
+			} else if (m_activeCategory != null) {
+				setTitle(m_activeCategory.title);
+			} else {
+				setTitle(R.string.app_name);
+			}
+		}
+	}
 
 	@SuppressLint({ "NewApi", "NewApi", "NewApi" })
 	public void initMainMenu() {
@@ -1455,6 +1500,16 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
+					
+					if (android.os.Build.VERSION.SDK_INT >= 14) {			
+						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+						
+						if (m_selectedArticle != null) {
+							Log.d(TAG, "setting up share provider");
+							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+						}
+					}
+
 				} else if (m_activeFeed != null) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, true);
 					
@@ -1505,57 +1560,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 					m_headlinesActionMode.finish();
 				}
 
-				if (!isCompatMode()) {
-					
-/*					if (m_activeFeed != null) {
-						getActionBar().setTitle(m_activeFeed.title);
-					} else if (m_activeCategory != null) {
-						getActionBar().setTitle(m_activeCategory.title);
-					} else {
-						getActionBar().setTitle(R.string.app_name);
-					} */
-
-					m_navigationAdapter.clear();
-
-					if (m_activeCategory != null || (m_activeFeed != null && isSmallScreen())) {
-						getActionBar().setDisplayShowTitleEnabled(false);
-						getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-						
-						m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
-						
-						if (m_activeCategory != null)
-							m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCategory));
-	
-						if (m_activeFeed != null)
-							m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeed));
-
-						//if (m_selectedArticle != null)
-						//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
-
-						getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
-					
-					} else {
-						getActionBar().setDisplayShowTitleEnabled(true);
-						getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-						getActionBar().setTitle(R.string.app_name);
-					}
-
-					if (isSmallScreen()) {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null || m_activeFeed != null);
-					} else {
-						getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticle != null || m_activeCategory != null);
-					}
-					
-					if (android.os.Build.VERSION.SDK_INT >= 14) {			
-						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-						
-						if (m_selectedArticle != null) {
-							Log.d(TAG, "setting up share provider");
-							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
-						}
-					}
-					
-				}
+				//Log.d(TAG, "isCompatMode=" + isCompatMode());
+			
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 				m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
@@ -1567,6 +1573,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
 			}
 		}
+		
+		updateTitle();
 	}
 
 	@Override
