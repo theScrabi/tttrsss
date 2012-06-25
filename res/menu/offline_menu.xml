@@ -81,7 +81,7 @@
             android:id="@+id/share_article"
             android:actionProviderClass="android.widget.ShareActionProvider"
             android:icon="@android:drawable/ic_menu_share"
-            android:showAsAction="ifRoom"
+            android:showAsAction=""
             android:title="@string/share_article"/>
         <item
             android:id="@+id/set_unread"

@@ -15,6 +15,7 @@
         android:allowBackup="true"
         android:backupAgent=".util.PrefsBackupAgent"
         android:hardwareAccelerated="true"
+        android:uiOptions="splitActionBarWhenNarrow"     
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
         <activity
@@ -23,12 +24,10 @@
         </activity>
         <activity
             android:label="@string/app_name"
-            android:uiOptions="splitActionBarWhenNarrow"    
             android:name=".offline.OfflineActivity" >
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:uiOptions="splitActionBarWhenNarrow"            
+            android:label="@string/app_name"                        
             android:name=".MainActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

@@ -923,6 +923,9 @@ public class OfflineActivity extends CommonActivity implements
 				if (m_selectedArticleId != 0) {
 					Log.d(TAG, "setting up share provider");
 					shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
+					
+					// seems to be needed because galaxy nexus craps out if that item is initially visible as action in XML
+					m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 				}
 			}
 		}

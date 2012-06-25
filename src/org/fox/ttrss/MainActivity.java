@@ -1509,6 +1509,9 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 						if (m_selectedArticle != null) {
 							Log.d(TAG, "setting up share provider");
 							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+							
+							// seems to be needed because galaxy nexus craps out if that item is initially visible as action in XML
+							m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 						}
 					}
 
