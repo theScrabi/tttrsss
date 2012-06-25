@@ -200,7 +200,9 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				findViewById(R.id.article_fragment).setVisibility(View.GONE);
 				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				
-				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+				updateHeadlines();
+				
+				//ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
 			}
 			ft.commit();
 
@@ -1768,7 +1770,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		m_activeFeed = feed;
 
 		if (!append) {
-			m_selectedArticle = null;
+			//m_selectedArticle = null;
 			
 			if (m_menu != null) {
 				MenuItem search = m_menu.findItem(R.id.search);
@@ -1793,7 +1795,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 
 				ft.add(R.id.fragment_container, hf, FRAG_HEADLINES);
 			} else {
-				findViewById(R.id.article_fragment).setVisibility(View.GONE);
+				//findViewById(R.id.article_fragment).setVisibility(View.GONE);
 				findViewById(R.id.headlines_fragment).setVisibility(View.VISIBLE);
 				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 			}

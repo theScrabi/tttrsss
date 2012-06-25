@@ -125,6 +125,7 @@ public class OfflineActivity extends CommonActivity implements
 		@Override	
 		public void onItemSelected() {
 			m_selectedArticleId = 0;
+			m_activeFeedId = 0;
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -148,7 +149,7 @@ public class OfflineActivity extends CommonActivity implements
 				findViewById(R.id.feeds_fragment).setVisibility(View.VISIBLE);
 				//findViewById(R.id.article_fragment).setVisibility(View.GONE);				
 
-				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");				
+				//ft.replace(R.id.headlines_fragment, new DummyFragment(), "");				
 			}
 			
 			ft.commit();
