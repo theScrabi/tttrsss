@@ -916,88 +916,17 @@ public class OfflineActivity extends CommonActivity implements
 				m_headlinesActionMode.finish();
 			}
 			
-			if (!isCompatMode()) {
+			if (android.os.Build.VERSION.SDK_INT >= 14) {			
+				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
 				
-				/* if (m_activeFeedId != 0) {
-					if (!m_activeFeedIsCat) {
-						Cursor feed = getFeedById(m_activeFeedId);
-					
-						if (feed != null) {					
-							getActionBar().setTitle(feed.getString(feed.getColumnIndex("title")));
-						}
-					} else {
-						Cursor cat = getCatById(m_activeFeedId);
-						
-						if (cat != null) {					
-							getActionBar().setTitle(cat.getString(cat.getColumnIndex("title")));
-						}
-					}
-				} else if (m_activeCatId != -1) {
-					Cursor cat = getCatById(m_activeCatId);
-					
-					if (cat != null) {					
-						getActionBar().setTitle(cat.getString(cat.getColumnIndex("title")));
-					}
-					
-				} else {
-					getActionBar().setTitle(R.string.app_name);
-				} */
-				
-				m_navigationAdapter.clear();
-
-				if (m_activeCatId != -1 || (m_activeFeedId != 0 && isSmallScreen())) {
-					getActionBar().setDisplayShowTitleEnabled(false);
-					getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-					
-					m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
-					
-					if (m_activeCatId != -1) {
-						Cursor cat = getCatById(m_activeCatId);
-						String title = cat.getString(cat.getColumnIndex("title"));
-						m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCatId, title));
-						cat.close();
-					}
-
-					if (m_activeFeedId != 0) {
-						Cursor feed = null; 
-						if (m_activeFeedIsCat) {
-							feed = getCatById(m_activeFeedId);
-						} else {
-							feed = getFeedById(m_activeFeedId);
-						}
-						String title = feed.getString(feed.getColumnIndex("title"));						
-						m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeedId, title));
-						feed.close();
-					}
-
-					//if (m_selectedArticle != null)
-					//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
-
-					getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
-				
-				} else {
-					getActionBar().setDisplayShowTitleEnabled(true);
-					getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-					getActionBar().setTitle(R.string.app_name);
+				if (m_selectedArticleId != 0) {
+					Log.d(TAG, "setting up share provider");
+					shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
 				}
-				
-				if (isSmallScreen()) {
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
-				} else {					
-					getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeCatId != -1);
-				}
-					
-				if (android.os.Build.VERSION.SDK_INT >= 14) {			
-					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-					
-					if (m_selectedArticleId != 0) {
-						Log.d(TAG, "setting up share provider");
-						shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
-					}
-				}
-
 			}
 		}
+		
+		updateTitle();
 	}
 
 	@Override
@@ -1464,5 +1393,84 @@ public class OfflineActivity extends CommonActivity implements
 	@Override
 	public boolean activeFeedIsCat() {
 		return m_activeFeedIsCat;
+	}
+	
+	private void updateTitle() {
+		if (!isCompatMode()) {
+			
+			m_navigationAdapter.clear();
+
+			if (m_activeCatId != -1 || (m_activeFeedId != 0 && isSmallScreen())) {
+				getActionBar().setDisplayShowTitleEnabled(false);
+				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+				
+				m_navigationAdapter.add(new RootNavigationEntry(getString(R.string.app_name)));
+				
+				if (m_activeCatId != -1) {
+					Cursor cat = getCatById(m_activeCatId);
+					String title = cat.getString(cat.getColumnIndex("title"));
+					m_navigationAdapter.add(new CategoryNavigationEntry(m_activeCatId, title));
+					cat.close();
+				}
+
+				if (m_activeFeedId != 0) {
+					Cursor feed = null; 
+					if (m_activeFeedIsCat) {
+						feed = getCatById(m_activeFeedId);
+					} else {
+						feed = getFeedById(m_activeFeedId);
+					}
+					String title = feed.getString(feed.getColumnIndex("title"));						
+					m_navigationAdapter.add(new FeedNavigationEntry(m_activeFeedId, title));
+					feed.close();
+				}
+
+				//if (m_selectedArticle != null)
+				//	m_navigationAdapter.add(new ArticleNavigationEntry(m_selectedArticle));
+
+				getActionBar().setSelectedNavigationItem(getActionBar().getNavigationItemCount());
+			
+			} else {
+				getActionBar().setDisplayShowTitleEnabled(true);
+				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+				getActionBar().setTitle(R.string.app_name);
+			}
+			
+			if (isSmallScreen()) {
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeFeedId != 0 || m_activeCatId != -1);
+			} else {					
+				getActionBar().setDisplayHomeAsUpEnabled(m_selectedArticleId != 0 || m_activeCatId != -1);
+			}
+			
+		} else {
+			if (m_activeFeedId != 0) {
+				if (!m_activeFeedIsCat) {
+					Cursor feed = getFeedById(m_activeFeedId);
+				
+					if (feed != null) {					
+						setTitle(feed.getString(feed.getColumnIndex("title")));
+						feed.close();
+					}
+				} else {
+					Cursor cat = getCatById(m_activeFeedId);
+					
+					if (cat != null) {					
+						setTitle(cat.getString(cat.getColumnIndex("title")));
+						cat.close();
+					}
+				}
+			} else if (m_activeCatId != -1) {
+				Cursor cat = getCatById(m_activeCatId);
+			
+				if (cat != null) {					
+					setTitle(cat.getString(cat.getColumnIndex("title")));
+					cat.close();
+				}
+			
+			} else {
+				setTitle(R.string.app_name);
+			} 
+					
+		}
 	}
 }
