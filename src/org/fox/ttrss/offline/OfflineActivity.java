@@ -1400,7 +1400,7 @@ public class OfflineActivity extends CommonActivity implements
 			
 			m_navigationAdapter.clear();
 
-			if (m_activeCatId != -1 || (m_activeFeedId != 0 && isSmallScreen())) {
+			if (m_activeCatId != -1 || (m_activeFeedId != 0 && (isSmallScreen() || getOrientation() % 2 != 0))) {
 				getActionBar().setDisplayShowTitleEnabled(false);
 				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 				

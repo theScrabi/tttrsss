@@ -1428,7 +1428,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			
 			m_navigationAdapter.clear();
 
-			if (m_activeCategory != null || (m_activeFeed != null && isSmallScreen())) {
+			if (m_activeCategory != null || (m_activeFeed != null && (isSmallScreen() || getOrientation() % 2 != 0))) {
 				getActionBar().setDisplayShowTitleEnabled(false);
 				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 				
