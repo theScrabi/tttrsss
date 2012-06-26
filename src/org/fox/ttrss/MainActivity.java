@@ -680,8 +680,10 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		if (isSmallScreen()) {
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
+			// temporary workaround against viewpager going a bit crazy when restoring after rotation
 			if (m_selectedArticle != null) {
-				ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
+				ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
+				m_selectedArticle = null;
 			}
 			
 			if (m_activeFeed != null) {

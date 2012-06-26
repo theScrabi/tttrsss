@@ -311,6 +311,17 @@ public class OfflineActivity extends CommonActivity implements
 
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 
+		if (isSmallScreen()) {
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			// temporary workaround against viewpager going a bit crazy when restoring after rotation
+			if (m_selectedArticleId != 0) {
+				ft.remove(getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE));
+				m_selectedArticleId = 0;
+			}
+			ft.commit();
+		}
+		
 		if (m_activeFeedId == 0 && !m_activeFeedIsCat) {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
@@ -334,6 +345,8 @@ public class OfflineActivity extends CommonActivity implements
 				
 			ft.commit();
 		}
+		
+		
 	}
 
 	private void switchOnline() {
