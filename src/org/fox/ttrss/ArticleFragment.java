@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -109,6 +110,8 @@ public class ArticleFragment extends Fragment {
 				ws.setSupportZoom(true);
 				ws.setBuiltInZoomControls(true);
 
+				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+
 				TypedValue tv = new TypedValue();				
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 			    
@@ -124,7 +127,7 @@ public class ArticleFragment extends Fragment {
 				} else {
 					cssOverride = "";
 				}
-
+				
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
 
@@ -160,12 +163,10 @@ public class ArticleFragment extends Fragment {
 					"<html>" +
 					"<head>" +
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-					//"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
-					"div.attachments { font-size : 70%; margin-top : 1em; }" +
-					"img { max-width : 98%; height : auto; }" +
+					/* "img { max-width : 98%; height : auto; }" + */
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;

@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebSettings.LayoutAlgorithm;
 import android.widget.TextView;
 
 public class OfflineArticleFragment extends Fragment {
@@ -101,6 +102,8 @@ public class OfflineArticleFragment extends Fragment {
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(true);
 				ws.setBuiltInZoomControls(true);
+				
+				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 
 				TypedValue tv = new TypedValue();				
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
@@ -167,11 +170,9 @@ public class OfflineArticleFragment extends Fragment {
 					"<html>" +
 					"<head>" +
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-					//"<meta name=\"viewport\" content=\"target-densitydpi=device-dpi\" />" +
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
-					"img { max-width : 98%; height : auto; }" +
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent + "</body></html>";
