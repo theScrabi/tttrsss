@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.DummyFragment;
+import org.fox.ttrss.FeedCategoriesFragment;
+import org.fox.ttrss.FeedsFragment;
 import org.fox.ttrss.MainActivity;
 import org.fox.ttrss.OnlineServices;
 import org.fox.ttrss.OnlineServices.RelativeArticle;
@@ -604,6 +606,28 @@ public class OfflineActivity extends CommonActivity implements
 				.findFragmentByTag(FRAG_HEADLINES);
 
 		switch (item.getItemId()) {
+		case R.id.close_feed:
+			if (m_activeFeedId != 0 || m_activeFeedIsCat) {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+				ft.commit();
+				
+				if (m_activeFeedIsCat) {
+					OfflineFeedCategoriesFragment cats = (OfflineFeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+					cats.setSelectedFeedId(-1);
+				} else {
+					OfflineFeedsFragment feeds = (OfflineFeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+					feeds.setSelectedFeedId(0);					
+				}
+	
+				m_activeFeedId = 0;
+	
+				initMainMenu();
+			}
+			return true;
+		case R.id.close_article:
+			closeArticle();
+			return true;
 		case android.R.id.home:
 			goBack(false);
 			return true;
@@ -882,8 +906,23 @@ public class OfflineActivity extends CommonActivity implements
 				}
 			} else if (m_selectedArticleId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_article, true);
+				m_menu.findItem(R.id.close_article).setVisible(!isSmallScreen());
+				
+				if (android.os.Build.VERSION.SDK_INT >= 14) {			
+					ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+					
+					if (m_selectedArticleId != 0) {
+						Log.d(TAG, "setting up share provider");
+						shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
+						
+						if (!m_prefs.getBoolean("tablet_article_swipe", false) && !isSmallScreen()) {
+							m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+						}
+					}
+				}
 			} else if (m_activeFeedId != 0) {
 				m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+				m_menu.findItem(R.id.close_feed).setVisible(!isSmallScreen());
 				
 				MenuItem search = m_menu.findItem(R.id.search);
 				
@@ -928,15 +967,6 @@ public class OfflineActivity extends CommonActivity implements
 			
 			if (numSelected == 0 && m_headlinesActionMode != null) {
 				m_headlinesActionMode.finish();
-			}
-			
-			if (android.os.Build.VERSION.SDK_INT >= 14) {			
-				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-				
-				if (m_selectedArticleId != 0) {
-					Log.d(TAG, "setting up share provider");
-					shareProvider.setShareIntent(getShareIntent(getArticleById(m_selectedArticleId)));
-				}
 			}
 		}
 		

@@ -119,4 +119,6 @@
     <string name="dialog_offline_sync_stop">Stop syncing</string>
     <string name="dialog_offline_sync_continue">Continue</string>
     <string name="article_set_note">Publish with note</string>
+    <string name="close_feed">Close feed</string>
+    <string name="close_article">Close article</string>
 </resources>

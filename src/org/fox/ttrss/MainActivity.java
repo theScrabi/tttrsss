@@ -1014,6 +1014,28 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				.findFragmentByTag(FRAG_HEADLINES);
 
 		switch (item.getItemId()) {
+		case R.id.close_feed:
+			if (m_activeFeed != null) {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+				ft.commit();
+				
+				if (m_activeFeed.is_cat) {
+					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+					cats.setSelectedCategory(null);
+				} else {
+					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+					feeds.setSelectedFeed(null);					
+				}
+	
+				m_activeFeed = null;
+	
+				initMainMenu();
+			}
+			return true;
+		case R.id.close_article:
+			closeArticle();
+			return true;
 		case R.id.donate:
 			if (true) {
 				CharSequence[] items = { "Silver Donation ($2)", "Gold Donation ($5)", "Platinum Donation ($10)" };
@@ -1504,6 +1526,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 					
 				} else if (m_selectedArticle != null) {
 					m_menu.setGroupVisible(R.id.menu_group_article, true);
+					m_menu.findItem(R.id.close_article).setVisible(!isSmallScreen());
 					
 					if (android.os.Build.VERSION.SDK_INT >= 14) {			
 						ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
@@ -1511,11 +1534,16 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 						if (m_selectedArticle != null) {
 							Log.d(TAG, "setting up share provider");
 							shareProvider.setShareIntent(getShareIntent(m_selectedArticle));
+							
+							if (!m_prefs.getBoolean("tablet_article_swipe", false) && !isSmallScreen()) {
+								m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+							}
 						}
 					}
 
 				} else if (m_activeFeed != null) {
 					m_menu.setGroupVisible(R.id.menu_group_headlines, true);
+					m_menu.findItem(R.id.close_feed).setVisible(!isSmallScreen());
 					
 					MenuItem search = m_menu.findItem(R.id.search);
 					

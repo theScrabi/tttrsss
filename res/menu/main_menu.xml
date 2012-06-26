@@ -62,6 +62,13 @@
                 android:icon="@drawable/ic_menu_database"
                 android:showAsAction="ifRoom"
                 android:title="@string/headlines_select"/>
+            
+            <item
+                android:id="@+id/close_feed"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/close_feed"/>
+            
         </group>
 
         <group android:id="@+id/menu_group_headlines_selection" >
@@ -132,6 +139,13 @@
 	            android:id="@+id/article_set_note"
             	android:showAsAction=""
             	android:title="@string/article_set_note"/>
+            
+            <item
+                android:id="@+id/close_article"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/close_article"/>
+            
         </group>
     </group>
 
