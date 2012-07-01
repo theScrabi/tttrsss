@@ -673,7 +673,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 			m_navigationListener = new NavigationListener();
-			
+
+			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getActionBar().setListNavigationCallbacks(m_navigationAdapter, m_navigationListener);
 		}
 		

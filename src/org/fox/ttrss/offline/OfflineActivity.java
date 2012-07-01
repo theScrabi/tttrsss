@@ -304,6 +304,7 @@ public class OfflineActivity extends CommonActivity implements
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 			m_navigationListener = new NavigationListener();
 			
+			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getActionBar().setListNavigationCallbacks(m_navigationAdapter, m_navigationListener);
 			
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
