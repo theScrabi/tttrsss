@@ -121,4 +121,6 @@
     <string name="article_set_note">Publish with note</string>
     <string name="close_feed">Close feed</string>
     <string name="close_article">Close article</string>
+    <string name="dialog_open_preferences">Open preferences</string>
+    <string name="dialog_need_configure_prompt">Please fill in your tt-rss server information such as URL, login, and password.</string>
 </resources>

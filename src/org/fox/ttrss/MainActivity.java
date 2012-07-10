@@ -709,7 +709,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			if (m_sessionId != null) {
 				loginSuccess();
 			} else {
-				login();
+				//login(); -- handled in onResume()
 			}
 		}
 	}
@@ -1957,11 +1957,26 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 
 			setLoadingStatus(R.string.login_need_configure, false);
 
-			// launch preferences
-			Intent intent = new Intent(MainActivity.this,
-					PreferencesActivity.class);
-			startActivityForResult(intent, 0);
-
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.dialog_need_configure_prompt)
+			       .setCancelable(false)
+			       .setPositiveButton(R.string.dialog_open_preferences, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			   			// launch preferences
+			   			
+			        	   Intent intent = new Intent(MainActivity.this,
+			        			   PreferencesActivity.class);
+			        	   startActivityForResult(intent, 0);
+			           }
+			       })
+			       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
+			
 		} else {
 
 			LoginRequest ar = new LoginRequest(getApplicationContext());
