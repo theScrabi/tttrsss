@@ -45,6 +45,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -594,6 +595,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
 				});
+			}
+			
+			ImageButton ib = (ImageButton) v.findViewById(R.id.article_menu_button);
+			
+			if (ib != null) {
+				ib.setVisibility(android.os.Build.VERSION.SDK_INT >= 10 ? View.VISIBLE : View.GONE);
+				ib.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						getActivity().openContextMenu(v);
+					}
+				});								
 			}
 			
 			return v;

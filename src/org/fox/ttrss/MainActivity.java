@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.fox.ttrss.billing.BillingHelper;
-import org.fox.ttrss.billing.BillingService;
 import org.fox.ttrss.offline.OfflineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
 import org.fox.ttrss.offline.OfflineUploadService;
@@ -1037,45 +1035,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		case R.id.close_article:
 			closeArticle();
 			return true;
-		case R.id.donate:
-			if (true) {
-				CharSequence[] items = { "Silver Donation ($2)", "Gold Donation ($5)", "Platinum Donation ($10)" };
-			
-				Dialog dialog = new Dialog(MainActivity.this);
-				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-						.setTitle(R.string.donate_select)
-						.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								m_selectedProduct = which;
-							}
-						}).setNegativeButton(R.string.dialog_close, new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
-							}					
-						}).setPositiveButton(R.string.donate_do, new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								if (m_selectedProduct != -1 && m_selectedProduct < 3) {
-									CharSequence[] products = { "donation_silver", "donation_gold", "donation_platinum2" };
-									
-									Log.d(TAG, "Selected product: " + products[m_selectedProduct]);
-
-									BillingHelper.requestPurchase(MainActivity.this, (String) products[m_selectedProduct]);
-									
-									dialog.dismiss();									
-								}
-							}
-						});
-	
-				dialog = builder.create();
-				dialog.show();
-			}
-			return true;
 		case android.R.id.home:
 			goBack(false);
 			return true;
@@ -1598,8 +1557,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				
 				m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 				m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
-
-				m_menu.findItem(R.id.donate).setVisible(BillingHelper.isBillingSupported());
 								
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
@@ -1650,8 +1607,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		setProgressBarIndeterminateVisibility(false);
 		
 		m_isOffline = false;
-
-		startService(new Intent(MainActivity.this, BillingService.class));
 		
 		initMainMenu();
 		

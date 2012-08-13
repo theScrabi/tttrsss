@@ -70,7 +70,7 @@
                     android:text="Jan 01, 00:00"
                     android:textColor="?headlineExcerptTextColor"
                     android:textSize="11sp" />
-
+
                 <TextView
                     android:id="@+id/feed_title"
                     android:layout_width="wrap_content"
@@ -135,5 +135,13 @@
             android:layout_weight="0"
             android:text="@string/attachment_copy" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/article_menu_button"
+        android:layout_gravity="right"
+        android:background="@android:color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mailbox_collapsed_holo_light" />
 
 </LinearLayout>
