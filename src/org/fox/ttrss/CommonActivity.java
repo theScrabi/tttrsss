@@ -21,9 +21,14 @@ public class CommonActivity extends FragmentActivity {
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 
-	private boolean m_smallScreenMode;
+	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
 
+	protected void setSmallScreen(boolean smallScreen) {
+		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
+		m_smallScreenMode = smallScreen;
+	}
+	
 	private void initDatabase() {
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		
@@ -54,10 +59,6 @@ public class CommonActivity extends FragmentActivity {
 		
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 
-		m_smallScreenMode = m_compatMode || (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != 
-				Configuration.SCREENLAYOUT_SIZE_XLARGE;
-		
-		Log.d(TAG, "m_smallScreenMode=" + m_smallScreenMode);
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
 		super.onCreate(savedInstanceState);

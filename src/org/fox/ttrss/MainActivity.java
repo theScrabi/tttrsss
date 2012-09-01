@@ -643,6 +643,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 
 		setContentView(R.layout.main);
+		
+		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);

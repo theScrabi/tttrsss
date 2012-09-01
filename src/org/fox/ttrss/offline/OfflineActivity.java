@@ -289,6 +289,8 @@ public class OfflineActivity extends CommonActivity implements
 		m_enableCats = m_prefs.getBoolean("enable_cats", false);
 		
 		setContentView(R.layout.main);
+		
+		setSmallScreen(findViewById(R.id.headlines_fragment) == null);
 
 		if (!isCompatMode()) {
 			if (!isSmallScreen()) {
