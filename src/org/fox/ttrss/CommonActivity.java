@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 public class CommonActivity extends FragmentActivity {
@@ -70,8 +71,13 @@ public class CommonActivity extends FragmentActivity {
 		return m_compatMode;
 	}
 
-	public int getOrientation() {
-		return getWindowManager().getDefaultDisplay().getOrientation();
+	public boolean isPortrait() {
+		Display display = getWindowManager().getDefaultDisplay(); 
+		
+	    int width = display.getWidth();
+	    int height = display.getHeight();
+		
+	    return width < height;
 	}
 
 	public void copyToClipboard(String str) {

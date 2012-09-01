@@ -18,5 +18,5 @@ public interface OfflineServices {
 	public boolean isSmallScreen();
 	public void setSelectedArticleId(int articleId);
 	public boolean activeFeedIsCat();
-	public int getOrientation();
+	public boolean isPortrait();
 }

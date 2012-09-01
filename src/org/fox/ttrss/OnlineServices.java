@@ -25,7 +25,7 @@ public interface OnlineServices {
 	public boolean isSmallScreen();
 	public boolean getUnreadOnly();
 	public int getApiLevel();
-	public int getOrientation();
+	public boolean isPortrait();
 	
 	public void copyToClipboard(String str);
 }

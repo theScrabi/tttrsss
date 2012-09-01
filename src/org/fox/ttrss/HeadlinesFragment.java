@@ -146,7 +146,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_onlineServices.isSmallScreen() || m_onlineServices.getOrientation() % 2 != 0)
+		if (m_onlineServices.isSmallScreen() || m_onlineServices.isPortrait())
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);

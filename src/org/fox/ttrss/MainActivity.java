@@ -660,7 +660,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		if (!isCompatMode()) {
 			
 			if (!isSmallScreen()) {				
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && isPortrait() ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticle != null ? View.VISIBLE : View.GONE);
 			}
 			
@@ -1414,7 +1414,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			
 			m_navigationAdapter.clear();
 
-			if (m_activeCategory != null || (m_activeFeed != null && (isSmallScreen() || getOrientation() % 2 != 0))) {
+			if (m_activeCategory != null || (m_activeFeed != null && (isSmallScreen() || isPortrait()))) {
 				getActionBar().setDisplayShowTitleEnabled(false);
 				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 				
@@ -1862,11 +1862,11 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			
-			if (getOrientation() % 2 == 0) refresh();
+			if (!isPortrait()) refresh();
 		}
 		ft.commit();
 	}

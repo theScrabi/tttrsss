@@ -292,7 +292,7 @@ public class OfflineActivity extends CommonActivity implements
 
 		if (!isCompatMode()) {
 			if (!isSmallScreen()) {
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && isPortrait() ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
 			
@@ -1397,7 +1397,7 @@ public class OfflineActivity extends CommonActivity implements
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(getOrientation() % 2 != 0 ? View.GONE : View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);			
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			
@@ -1445,7 +1445,7 @@ public class OfflineActivity extends CommonActivity implements
 			
 			m_navigationAdapter.clear();
 
-			if (m_activeCatId != -1 || (m_activeFeedId != 0 && (isSmallScreen() || getOrientation() % 2 != 0))) {
+			if (m_activeCatId != -1 || (m_activeFeedId != 0 && (isSmallScreen() || isPortrait()))) {
 				getActionBar().setDisplayShowTitleEnabled(false);
 				getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 				
