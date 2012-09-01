@@ -319,7 +319,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_onlineServices.restart();
+				m_onlineServices.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}

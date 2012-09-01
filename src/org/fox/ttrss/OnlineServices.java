@@ -20,7 +20,7 @@ public interface OnlineServices {
 	public void onArticleListSelectionChange(ArticleList selection);
 	
 	//public void initMainMenu();
-	public void restart();
+	public void login();
 	public String getSessionId();
 	public boolean isSmallScreen();
 	public boolean getUnreadOnly();

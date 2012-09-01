@@ -1903,6 +1903,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		initMainMenu();
 	}
 
+	@Override
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void login() {
 
@@ -2256,7 +2257,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		initMainMenu();
 	}
 
-	@Override
 	public void restart() {
 		Intent refresh = new Intent(MainActivity.this, MainActivity.class);
 		refresh.putExtra("sessionId", m_sessionId);
