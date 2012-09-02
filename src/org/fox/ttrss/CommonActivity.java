@@ -41,7 +41,7 @@ public class CommonActivity extends FragmentActivity {
 		
 		float inDiag = FloatMath.sqrt(inHeight * inHeight + inWidth * inWidth);
 		
-		if (inDiag < 8) {
+		if (inDiag < 9) {
 			m_smallTablet = true;
 		}
 		
