@@ -291,10 +291,12 @@ public class OfflineActivity extends CommonActivity implements
 		setContentView(R.layout.main);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null);
+		
+		setupSmallTabletFlag();
 
 		if (!isCompatMode()) {
 			if (!isSmallScreen()) {
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && isPortrait() ? View.GONE : View.VISIBLE);
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticleId != 0 && (isPortrait() || isSmallTablet()) ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticleId != 0 ? View.VISIBLE : View.GONE);
 			}
 			
@@ -1399,7 +1401,7 @@ public class OfflineActivity extends CommonActivity implements
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() || isSmallTablet() ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);			
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			

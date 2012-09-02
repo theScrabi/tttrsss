@@ -2,10 +2,11 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
@@ -23,10 +24,28 @@ public class CommonActivity extends FragmentActivity {
 
 	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
+	private boolean m_smallTablet = false;
 
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
+	}
+	
+	protected void setupSmallTabletFlag() {
+
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+		float inHeight = displayMetrics.heightPixels / displayMetrics.ydpi;
+		float inWidth = displayMetrics.widthPixels / displayMetrics.xdpi;
+		
+		float inDiag = FloatMath.sqrt(inHeight * inHeight + inWidth * inWidth);
+		
+		if (inDiag < 8) {
+			m_smallTablet = true;
+		}
+		
+		Log.d(TAG, "m_smallTabletMode=" + m_smallTablet);
 	}
 	
 	private void initDatabase() {
@@ -66,6 +85,10 @@ public class CommonActivity extends FragmentActivity {
 	
 	public boolean isSmallScreen() {
 		return m_smallScreenMode;
+	}
+	
+	public boolean isSmallTablet() {
+		return m_smallTablet;
 	}
 
 	public boolean isCompatMode() {

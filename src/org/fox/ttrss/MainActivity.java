@@ -645,6 +645,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		setContentView(R.layout.main);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+		
+		setupSmallTabletFlag();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
@@ -662,7 +664,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		if (!isCompatMode()) {
 			
 			if (!isSmallScreen()) {				
-				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && isPortrait() ? View.GONE : View.VISIBLE);
+				findViewById(R.id.feeds_fragment).setVisibility(m_selectedArticle != null && (isPortrait() || isSmallTablet()) ? View.GONE : View.VISIBLE);
 				findViewById(R.id.article_fragment).setVisibility(m_selectedArticle != null ? View.VISIBLE : View.GONE);
 			}
 			
@@ -998,8 +1000,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			if (m_selectedArticle != null) {
 				closeArticle();
 				refresh();
-			/* } else if (m_activeFeed != null) {
-				closeFeed(); */	
+			} else if (m_activeFeed != null) {
+				closeFeed();
 			} else if (m_activeCategory != null) {
 				closeCategory();
 			} else if (allowQuit) {
@@ -1007,6 +1009,28 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			}
 		}
 	}
+	
+
+	private void closeFeed() {
+		if (m_activeFeed != null) {
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.replace(R.id.headlines_fragment, new DummyFragment(), "");
+			ft.commit();
+			
+			if (m_activeFeed.is_cat) {
+				FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+				cats.setSelectedCategory(null);
+			} else {
+				FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+				feeds.setSelectedFeed(null);					
+			}
+
+			m_activeFeed = null;
+
+			initMainMenu();
+		}
+	}
+
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1864,7 +1888,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
 			ft.add(R.id.fragment_container, frag, FRAG_ARTICLE);
 		} else {
-			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
+			findViewById(R.id.feeds_fragment).setVisibility(isPortrait() || isSmallTablet() ? View.GONE : View.VISIBLE);
 			findViewById(R.id.article_fragment).setVisibility(View.VISIBLE);
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			

@@ -11,9 +11,9 @@
 
         <FrameLayout
             android:id="@+id/feeds_fragment"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0"
+            android:layout_weight="0.6"
             android:background="?feedlistBackground" >
         </FrameLayout>
 
@@ -21,6 +21,7 @@
             android:id="@+id/vertical_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="0.4"
             android:orientation="vertical" >
 
             <FrameLayout
