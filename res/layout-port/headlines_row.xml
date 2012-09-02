@@ -138,10 +138,14 @@
 
     <ImageButton
         android:id="@+id/article_menu_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:background="@android:color/transparent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="fitEnd"
         android:src="@drawable/ic_mailbox_collapsed_holo_light" />
 
 </LinearLayout>

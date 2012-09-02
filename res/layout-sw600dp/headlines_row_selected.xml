@@ -35,8 +35,8 @@
                 android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="?headlineSelectedTextColor"
                 android:text="{Title...}"
+                android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp" >
             </TextView>
 
@@ -100,42 +100,45 @@
         android:layout_weight="1"
         android:padding="3dip" >
     </TextView>
-    
-        <LinearLayout
-            android:id="@+id/attachments_holder"
+
+    <LinearLayout
+        android:id="@+id/attachments_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        <Spinner
+            android:id="@+id/attachments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0" >
+            android:layout_weight="1"
+            android:prompt="@string/attachments_prompt" />
 
-            <Spinner
-                android:id="@+id/attachments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:prompt="@string/attachments_prompt" />
+        <Button
+            android:id="@+id/attachment_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_view" />
 
-            <Button
-                android:id="@+id/attachment_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_view" />
+        <Button
+            android:id="@+id/attachment_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_copy" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/attachment_copy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_copy" />
-        </LinearLayout>
-
-            <ImageButton
+    <ImageButton
         android:id="@+id/article_menu_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:background="@android:color/transparent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="fitEnd"
         android:src="@drawable/ic_mailbox_collapsed_holo_light" />
-        
-        
+
 </LinearLayout>
