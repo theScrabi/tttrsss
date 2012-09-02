@@ -645,8 +645,6 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		setContentView(R.layout.main);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
-		
-		setupSmallTabletFlag();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);

@@ -291,8 +291,6 @@ public class OfflineActivity extends CommonActivity implements
 		setContentView(R.layout.main);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null);
-		
-		setupSmallTabletFlag();
 
 		if (!isCompatMode()) {
 			if (!isSmallScreen()) {

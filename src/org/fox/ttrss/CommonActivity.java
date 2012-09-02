@@ -31,7 +31,7 @@ public class CommonActivity extends FragmentActivity {
 		m_smallScreenMode = smallScreen;
 	}
 	
-	protected void setupSmallTabletFlag() {
+	protected void detectSmallTablet() {
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -45,7 +45,7 @@ public class CommonActivity extends FragmentActivity {
 			m_smallTablet = true;
 		}
 		
-		Log.d(TAG, "m_smallTabletMode=" + m_smallTablet);
+		Log.d(TAG, "m_smallTabletMode=" + m_smallTablet + " " + inDiag);
 	}
 	
 	private void initDatabase() {
@@ -79,6 +79,8 @@ public class CommonActivity extends FragmentActivity {
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
+		
+		detectSmallTablet();
 		
 		super.onCreate(savedInstanceState);
 	}
