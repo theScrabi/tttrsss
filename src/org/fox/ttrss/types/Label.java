@@ -6,4 +6,8 @@ public class Label {
 	public String fg_color;
 	public String bg_color;
 	public boolean checked;
+	
+	public Label() {
+		
+	}
 }

@@ -19,6 +19,10 @@ public class Attachment implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	public Attachment() {
+		
+	}
+	
 	@Override
 	public int describeContents() {
 		return 0;

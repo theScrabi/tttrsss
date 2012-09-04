@@ -20,6 +20,10 @@ public class FeedCategory implements Parcelable {
 		this.order_id = 0;
 	}
 
+	public FeedCategory() {
+		
+	}
+	
 	@Override
 	public int describeContents() {
 		return 0;

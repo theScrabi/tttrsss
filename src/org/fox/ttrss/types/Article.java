@@ -27,6 +27,10 @@ public class Article implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	public Article() {
+		
+	}
+	
 	public Article(int id) {
 		this.id = id;
 		this.title = "";

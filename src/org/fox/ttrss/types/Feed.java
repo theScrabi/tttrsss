@@ -24,6 +24,10 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		readFromParcel(in);
 	}
 	
+	public Feed() {
+		
+	}
+	
 	@Override
 	public int compareTo(Feed feed) {
 		if (feed.unread != this.unread)
