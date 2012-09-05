@@ -31,6 +31,16 @@ public class CommonActivity extends FragmentActivity {
 		m_smallScreenMode = smallScreen;
 	}
 	
+	public void toast(int msgId) {
+		Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
+	public void toast(String msg) {
+		Toast toast = Toast.makeText(CommonActivity.this, msg, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
 	protected void detectSmallTablet() {
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();

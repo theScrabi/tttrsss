@@ -307,8 +307,7 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 
 				refresh();
 
-				Toast toast = Toast.makeText(MainActivity.this, R.string.offline_sync_success, Toast.LENGTH_SHORT);
-				toast.show();
+				toast(R.string.offline_sync_success);
 			}
 
 		}
@@ -381,7 +380,11 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleMarked(final Article article) {
-		ApiRequest req = new ApiRequest(getApplicationContext());
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
+			}
+		};
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
@@ -392,13 +395,18 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				put("field", "0");
 			}
 		};
-
+		
 		req.execute(map);
 	}
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticlePublished(final Article article) {
-		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
+			}
+		};
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
@@ -415,7 +423,11 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleNote(final Article article, final String note) {
-		ApiRequest req = new ApiRequest(getApplicationContext());
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(R.string.notify_article_note_set);
+			}
+		};
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
