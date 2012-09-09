@@ -1031,10 +1031,14 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 			
 			if (m_activeFeed.is_cat) {
 				FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-				cats.setSelectedCategory(null);
+				if (cats != null) {
+					cats.setSelectedCategory(null);
+				}
 			} else {
 				FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
-				feeds.setSelectedFeed(null);					
+				if (feeds != null) {
+					feeds.setSelectedFeed(null);
+				}
 			}
 
 			m_activeFeed = null;
