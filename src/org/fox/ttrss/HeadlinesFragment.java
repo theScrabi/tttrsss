@@ -658,6 +658,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return m_adapter.getItem(position);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
+		} catch (NullPointerException e) {
+			return null;
 		}
 	}
 	
@@ -694,7 +696,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public int getArticlePosition(Article article) {
-		return m_adapter.getPosition(article);
+		try {
+			return m_adapter.getPosition(article);
+		} catch (NullPointerException e) {
+			return -1;
+		}
 	}
 
 	public void setSearchQuery(String query) {
