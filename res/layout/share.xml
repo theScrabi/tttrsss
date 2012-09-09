@@ -19,14 +19,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Title:"
+                android:text="@string/share_title_prompt"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/title"
                 android:singleLine="true"                
                 android:layout_width="0dp"
-                android:hint="Article Title"
+                android:hint="@string/share_title_hint"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7" >
             </EditText>
@@ -42,13 +42,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="URL:"
+                android:text="@string/share_url_prompt"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/url"
                 android:singleLine="true"
-				android:hint="Article URL"                                
+				android:hint="@string/share_url_hint"                                
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7" />
@@ -57,7 +57,7 @@
         <EditText
             android:id="@+id/content"
             android:layout_width="wrap_content"
-            android:hint="Article Content"
+            android:hint="@string/share_content_hint"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:maxLines="3">
@@ -68,7 +68,7 @@
             android:id="@+id/share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share" />
+            android:text="@string/share_share_button" />
 
     </TableLayout>
 

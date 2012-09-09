@@ -129,4 +129,11 @@
     <string name="notify_article_unpublished">Article unpublished</string>
     <string name="notify_article_note_set">Article note saved</string>
     <string name="api_too_low">This action requires newer version of Tiny Tiny RSS</string>
+    <string name="share_url_prompt">URL:</string>
+    <string name="share_url_hint">Article URL</string>
+    <string name="share_content_hint">Article Content</string>
+    <string name="share_title_prompt">Title:</string>
+    <string name="share_title_hint">Article Title</string>
+    <string name="share_share_button">Share</string>
+    <string name="share_article_posted">Article posted.</string>
 </resources>

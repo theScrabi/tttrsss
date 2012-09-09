@@ -90,7 +90,7 @@ public class ShareActivity extends CommonActivity {
 							if (m_lastError != ApiError.NO_ERROR) {
 								toast(getErrorMessage());
 							} else {
-								toast("Article posted.");
+								toast(R.string.share_article_posted);
 								finish();
 							}
 						}
