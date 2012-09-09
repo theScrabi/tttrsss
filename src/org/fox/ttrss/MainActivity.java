@@ -183,15 +183,17 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 				if (m_activeFeed.is_cat) {
 					FeedCategoriesFragment cats = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
-					ft.show(cats);
-					
-					cats.setSelectedCategory(null);
+					if (cats != null) {
+						ft.show(cats);
+						cats.setSelectedCategory(null);
+					}
 				} else {
 					FeedsFragment feeds = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
-		
-					ft.show(feeds);
-
-					feeds.setSelectedFeed(null);					
+					
+					if (feeds != null) {		
+						ft.show(feeds);
+						feeds.setSelectedFeed(null);
+					}
 				}
 				
 			} else {
