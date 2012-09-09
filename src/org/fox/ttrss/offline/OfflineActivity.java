@@ -569,8 +569,8 @@ public class OfflineActivity extends CommonActivity implements
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
 		intent.setType("text/plain");
-		//intent.putExtra(Intent.EXTRA_SUBJECT, title);
-		intent.putExtra(Intent.EXTRA_TEXT, title + " " + link);
+		intent.putExtra(Intent.EXTRA_SUBJECT, title);
+		intent.putExtra(Intent.EXTRA_TEXT, link);
 
 		return intent;
 	}

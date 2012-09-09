@@ -1411,8 +1411,8 @@ public class MainActivity extends CommonActivity implements OnlineServices {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
 		intent.setType("text/plain");
-		//intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
-		intent.putExtra(Intent.EXTRA_TEXT, article.title + " " + article.link);
+		intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
+		intent.putExtra(Intent.EXTRA_TEXT, article.link);
 
 		return intent;
 	}

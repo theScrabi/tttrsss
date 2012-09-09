@@ -128,4 +128,5 @@
     <string name="notify_article_published">Article published</string>
     <string name="notify_article_unpublished">Article unpublished</string>
     <string name="notify_article_note_set">Article note saved</string>
+    <string name="api_too_low">This action requires newer version of Tiny Tiny RSS</string>
 </resources>
