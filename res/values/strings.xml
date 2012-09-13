@@ -128,4 +128,6 @@
     <string name="notify_article_published">Article published</string>
     <string name="notify_article_unpublished">Article unpublished</string>
     <string name="notify_article_note_set">Article note saved</string>
+    <string name="force_small_tablet_ui">Force compact interface</string>
+    <string name="prefs_for_tablets">Tablets</string>
 </resources>

@@ -2,8 +2,10 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -19,6 +21,8 @@ public class CommonActivity extends FragmentActivity {
 	public final static String FRAG_FEEDS = "feeds";
 	public final static String FRAG_CATS = "cats";
 	
+	private SharedPreferences m_prefs;
+
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 
@@ -51,7 +55,7 @@ public class CommonActivity extends FragmentActivity {
 		
 		float inDiag = FloatMath.sqrt(inHeight * inHeight + inWidth * inWidth);
 		
-		if (inDiag < 9) {
+		if (inDiag < 9 || m_prefs.getBoolean("force_small_tablet_ui", false)) {
 			m_smallTablet = true;
 		}
 		
@@ -88,6 +92,9 @@ public class CommonActivity extends FragmentActivity {
 		
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
 
+		m_prefs = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
 		detectSmallTablet();

@@ -19,11 +19,6 @@ public class PreferencesActivity extends PreferenceActivity {
 				.getDefaultSharedPreferences(getApplicationContext());
 		
 		addPreferencesFromResource(R.xml.preferences);
-
-		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) != Configuration.SCREENLAYOUT_SIZE_XLARGE) {
-			PreferenceCategory category = (PreferenceCategory)findPreference("category_look_and_feel");
-			category.removePreference(findPreference("tablet_article_swipe"));
-		}
 		
 		findPreference("justify_article_text").setEnabled(!prefs.getBoolean("combined_mode", false));
 		
