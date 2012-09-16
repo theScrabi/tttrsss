@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,8 +18,8 @@ public class ArticlePager extends Fragment {
 	private final String TAG = "ArticlePager";
 	private PagerAdapter m_adapter;
 	private HeadlinesEventListener m_onlineServices;
-	private HeadlinesFragment m_hf; 
 	private Article m_article;
+	private ArticleList m_articles;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 		
@@ -28,7 +29,7 @@ public class ArticlePager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			Article article = m_hf.getArticleAtPosition(position);
+			Article article = m_articles.get(position);
 			
 			if (article != null) {
 				ArticleFragment af = new ArticleFragment(article);
@@ -39,7 +40,7 @@ public class ArticlePager extends Fragment {
 
 		@Override
 		public int getCount() {
-			return m_hf.getAllArticles().size();
+			return m_articles.size();
 		}
 		
 	}
@@ -48,21 +49,27 @@ public class ArticlePager extends Fragment {
 		super();
 	}
 	
-	public ArticlePager(Article article) {
+	public ArticlePager(Article article, ArticleList articles) {
 		super();
 		
 		m_article = article;
+		m_articles = articles;
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		View view = inflater.inflate(R.layout.article_pager, container, false);
 	
+		if (savedInstanceState != null) {
+			m_articles = savedInstanceState.getParcelable("articles");
+			m_article = savedInstanceState.getParcelable("article");
+		}
+		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
-		int position = m_hf.getArticlePosition(m_article);
+		int position = m_articles.indexOf(m_article);
 		
 		pager.setAdapter(m_adapter);
 		pager.setCurrentItem(position);
@@ -78,7 +85,7 @@ public class ArticlePager extends Fragment {
 
 			@Override
 			public void onPageSelected(int position) {
-				Article article = m_hf.getArticleAtPosition(position);
+				Article article = m_articles.get(position);
 				
 				if (article != null) {
 					if (article.unread) {
@@ -90,7 +97,8 @@ public class ArticlePager extends Fragment {
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
 					if (position == m_adapter.getCount() - 5) {
-						m_hf.refresh(true);
+						// FIXME load more articles somehow
+						//m_hf.refresh(true);
 						m_adapter.notifyDataSetChanged();
 					}
 				}
@@ -101,11 +109,20 @@ public class ArticlePager extends Fragment {
 	}
 	
 	@Override
+	public void onSaveInstanceState(Bundle out) {
+		super.onSaveInstanceState(out);
+		
+		out.putParcelable("articles", m_articles);
+		out.putParcelable("article", m_article);
+	}
+	
+	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_hf = (HeadlinesFragment) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_HEADLINES);
 		m_onlineServices = (HeadlinesEventListener)activity;
+		((OnlineActivity)getActivity()).initMenu();
+		
 	}
 
 }

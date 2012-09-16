@@ -25,9 +25,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	protected SharedPreferences m_prefs;
 	
-	private boolean m_unreadOnly = true;
-	private boolean m_unreadArticlesOnly = true;
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -55,36 +52,46 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 			
 			ft.commit();
-		} else if (isSmallScreen()) {
+		} /* else if (isSmallScreen()) {
 			Fragment frag = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			if (frag != null) {
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.remove(frag);
 				ft.commit();
-			}
-		}
-	}
-	
-	public boolean getUnreadOnly() {
-		return m_unreadOnly;
+			} 
+		} */
 	}
 	
 	@Override
 	protected void initMenu() {
 		super.initMenu();
-		if (m_menu != null) {
+		
+		Log.d(TAG, "initMenu: " + m_menu);
+		
+		if (m_menu != null && m_sessionId != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+
+			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			Log.d(TAG, "ff/cf/af/hf " + ff + " " + cf + " " + af + " " + hf);
 			
 			m_menu.setGroupVisible(R.id.menu_group_feeds, ff != null || cf != null);
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
 
-			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-
 			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.getSelectedArticles().size() == 0);
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.getSelectedArticles().size() != 0);
+			
+			MenuItem item = m_menu.findItem(R.id.show_feeds);
+
+			if (getUnreadOnly()) {
+				item.setTitle(R.string.menu_all_feeds);
+			} else {
+				item.setTitle(R.string.menu_unread_feeds);
+			}
+
 		}		
 	}
 	
@@ -127,9 +134,37 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		onCatSelected(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));		
 	}
 	
+	private void refresh() {
+		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
+		if (cf != null) {
+			cf.refresh(false);
+		}
+
+		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+		
+		if (ff != null) {
+			ff.refresh(false);
+		}
+
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		
+		if (hf != null) {
+			hf.refresh(false);
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.show_feeds:
+			m_unreadOnly = !m_unreadOnly;
+			initMenu();
+			refresh();
+			return true;
+		case R.id.update_feeds:
+			refresh();
+			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -140,7 +175,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected void loginSuccess() {
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
-		
+		initMenu();
 	}
 	
 	@Override
@@ -152,11 +187,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	public void onResume() {
 		super.onResume();
-	}
-
-	@Override
-	public boolean getUnreadArticlesOnly() {
-		return m_unreadArticlesOnly;
 	}
 
 	@Override
@@ -175,10 +205,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 				
-				Fragment frag = new ArticlePager(article);
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				
+				Fragment frag = new ArticlePager(article, hf.getAllArticles());
 
-				ft.hide(getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES));
-				ft.add(R.id.feeds_fragment, frag, FRAG_ARTICLE);
+				ft.replace(R.id.feeds_fragment, frag, FRAG_ARTICLE);
 				ft.addToBackStack(null);
 				
 				ft.commit();
@@ -199,8 +230,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				startActivityForResult(intent, 0);
 			}
 		} else {
-			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			if (hf != null) hf.setActiveArticle(article);
+			/* HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			if (hf != null) hf.setActiveArticle(article); */
 		}
 	}
 

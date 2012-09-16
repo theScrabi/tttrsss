@@ -19,7 +19,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/headlines_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>

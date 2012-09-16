@@ -64,7 +64,7 @@ private final String TAG = this.getClass().getSimpleName();
 
 				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 				
-				ArticlePager af = new ArticlePager(article);
+				ArticlePager af = new ArticlePager(article, hf.getAllArticles());
 				
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 			}
@@ -80,6 +80,7 @@ private final String TAG = this.getClass().getSimpleName();
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
+		initMenu();
 	}
 	
 	@Override
@@ -114,7 +115,7 @@ private final String TAG = this.getClass().getSimpleName();
 	protected void initMenu() {
 		super.initMenu();
 
-		if (m_menu != null) {
+		if (m_menu != null && m_sessionId != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
@@ -145,7 +146,9 @@ private final String TAG = this.getClass().getSimpleName();
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			
-			Fragment frag = new ArticlePager(article);
+			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			Fragment frag = new ArticlePager(article, hf.getAllArticles());
 
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			//ft.addToBackStack(null);

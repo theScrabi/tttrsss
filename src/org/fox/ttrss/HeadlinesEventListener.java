@@ -9,6 +9,6 @@ public interface HeadlinesEventListener {
 	void onArticleListSelectionChange(ArticleList m_selectedArticles);
 	void onArticleSelected(Article article);
 	void saveArticleUnread(Article article);
-	void onArticleSelected(Article article, boolean b);
+	void onArticleSelected(Article article, boolean open);
 
 }

@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.SearchView;
 
 public class OnlineActivity extends CommonActivity {
@@ -33,6 +35,9 @@ public class OnlineActivity extends CommonActivity {
 	protected SharedPreferences m_prefs;
 	protected int m_apiLevel = 0;
 	protected Menu m_menu;
+
+	protected boolean m_unreadOnly = true;
+	protected boolean m_unreadArticlesOnly = true;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,9 @@ public class OnlineActivity extends CommonActivity {
 		if (savedInstanceState != null) {
 			m_sessionId = savedInstanceState.getString("sessionId");
 			m_apiLevel = savedInstanceState.getInt("apiLevel");
+			
+			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
+			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
 		}
 		
 		Log.d(TAG, "m_sessionId=" + m_sessionId);
@@ -130,6 +138,8 @@ public class OnlineActivity extends CommonActivity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		
 		switch (item.getItemId()) {
 		case R.id.logout:
 			logout();
@@ -137,10 +147,112 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.login:
 			login();
 			return true;
+		case R.id.go_offline:
+			// FIXME go offline
+			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(OnlineActivity.this,
 					PreferencesActivity.class);
 			startActivityForResult(intent, 0);
+			return true;
+		case R.id.search:			
+			if (hf != null && isCompatMode()) {
+				Dialog dialog = new Dialog(this);
+
+				final EditText edit = new EditText(this);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.search)
+						.setPositiveButton(getString(R.string.search),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										String query = edit.getText().toString().trim();
+										
+										hf.setSearchQuery(query);
+
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										//
+
+									}
+								}).setView(edit);
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			return true;
+		case R.id.headlines_mark_as_read:
+			if (hf != null) {
+				ArticleList articles = hf.getUnreadArticles();
+
+				for (Article a : articles)
+					a.unread = false;
+
+				ApiRequest req = new ApiRequest(getApplicationContext()) {
+					protected void onPostExecute(JsonElement result) {
+						hf.refresh(false);
+					}
+				};
+
+				final String articleIds = articlesToIdString(articles);
+
+				@SuppressWarnings("serial")
+				HashMap<String, String> map = new HashMap<String, String>() {
+					{
+						put("sid", m_sessionId);
+						put("op", "updateArticle");
+						put("article_ids", articleIds);
+						put("mode", "0");
+						put("field", "2");
+					}
+				};
+				req.execute(map);
+			}
+			return true;
+		case R.id.headlines_select:
+			if (hf != null) {
+				Dialog dialog = new Dialog(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.headlines_select_dialog)
+						.setSingleChoiceItems(
+								new String[] {
+										getString(R.string.headlines_select_all),
+										getString(R.string.headlines_select_unread),
+										getString(R.string.headlines_select_none) },
+								0, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										case 0:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.ALL);
+											break;
+										case 1:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.UNREAD);
+											break;
+										case 2:
+											hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+											break;
+										}
+										dialog.cancel();
+										initMenu();
+									}
+								});
+
+				dialog = builder.create();
+				dialog.show();
+			}
 			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
@@ -161,6 +273,14 @@ public class OnlineActivity extends CommonActivity {
 		m_sessionId = null;
 		initMenu();
 	}
+
+	public boolean getUnreadArticlesOnly() {
+		return m_unreadArticlesOnly;
+	}
+	
+	public boolean getUnreadOnly() {
+		return m_unreadOnly;
+	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
@@ -168,6 +288,8 @@ public class OnlineActivity extends CommonActivity {
 		
 		out.putString("sessionId", m_sessionId);
 		out.putInt("apiLevel", m_apiLevel);
+		out.putBoolean("unreadOnly", m_unreadOnly);
+		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 	}
 	
 	@Override
@@ -415,9 +537,6 @@ public class OnlineActivity extends CommonActivity {
 			
 			m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 			m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
-
-			m_menu.findItem(R.id.close_feed).setVisible(!isSmallScreen());
-			m_menu.findItem(R.id.close_article).setVisible(!isSmallScreen());
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(m_apiLevel >= 2);

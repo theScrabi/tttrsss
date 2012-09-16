@@ -2,6 +2,41 @@
 
     <group android:id="@+id/menu_group_logged_in" >
 
+        <group android:id="@+id/menu_group_feeds" >
+
+            <!--
+                 <item
+                android:id="@+id/back_to_categories"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:showAsAction=""
+                android:title="@string/back_to_categories"/>
+            -->
+
+            <item
+                android:id="@+id/show_feeds"
+                android:icon="@android:drawable/ic_menu_agenda"
+                android:showAsAction=""
+                android:title="@string/menu_all_feeds"/>
+
+            <item
+                android:id="@+id/update_feeds"
+                android:icon="@android:drawable/ic_menu_rotate"
+                android:showAsAction="ifRoom"
+                android:title="@string/update_feeds"/>
+
+            <item
+                android:id="@+id/go_offline"
+                android:icon="@drawable/ic_menu_cloud"
+                android:showAsAction=""
+                android:title="@string/go_offline"/>
+
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_menu_exit"
+                android:showAsAction=""
+                android:title="@string/logout"/>
+        </group>
+
         <group android:id="@+id/menu_group_headlines" >
 
             <item
@@ -28,11 +63,11 @@
                 android:showAsAction="ifRoom"
                 android:title="@string/headlines_select"/>
             
-            <item
+            <!--  <item
                 android:id="@+id/close_feed"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/close_feed"/>
+                android:title="@string/close_feed"/> -->
             
         </group>
 
@@ -105,11 +140,11 @@
             	android:showAsAction=""
             	android:title="@string/article_set_note"/>
             
-            <item
+            <!--  <item
                 android:id="@+id/close_article"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/close_article"/>
+                android:title="@string/close_article"/> -->
             
         </group>
     </group>
