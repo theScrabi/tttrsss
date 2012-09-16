@@ -738,8 +738,6 @@ public class OnlineActivity extends CommonActivity {
 	
 	
 	protected void initMenu() {
-		Log.d(TAG, "initMenu:" + m_menu);
-		
 		if (m_menu != null) {			
 			if (m_sessionId != null) {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);

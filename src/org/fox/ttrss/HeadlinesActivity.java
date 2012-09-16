@@ -61,7 +61,6 @@ private final String TAG = this.getClass().getSimpleName();
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 				
 				ft.commit();
-
 			}
 		} 
 	}

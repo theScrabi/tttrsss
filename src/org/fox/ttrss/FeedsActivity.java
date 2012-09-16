@@ -67,23 +67,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected void initMenu() {
 		super.initMenu();
 		
-		Log.d(TAG, "initMenu: " + m_menu);
-		
 		if (m_menu != null && m_sessionId != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			Log.d(TAG, "ff/cf/af/hf " + ff + " " + cf + " " + af + " " + hf);
+			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
 			
-			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isVisible()) || (cf != null && cf.isVisible()));
-			
-			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isVisible());
+			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isVisible() && hf.getSelectedArticles().size() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isVisible() && hf.getSelectedArticles().size() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && hf.getSelectedArticles().size() == 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && hf.getSelectedArticles().size() != 0);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -92,7 +87,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			} else {
 				item.setTitle(R.string.menu_unread_feeds);
 			}
-
 		}		
 	}
 	
@@ -100,6 +94,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onFeedSelected(Feed feed) {
 		FragmentTransaction ft = getSupportFragmentManager()
 				.beginTransaction();
+		
+		TinyApplication.getInstance().m_loadedArticles.clear();
 		
 		HeadlinesFragment hf = new HeadlinesFragment(feed);
 
@@ -171,7 +167,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
 	@Override
 	protected void loginSuccess() {
 		setLoadingStatus(R.string.blank, false);
@@ -188,6 +184,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	public void onResume() {
 		super.onResume();
+		initMenu();
 	}
 
 	@Override

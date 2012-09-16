@@ -308,6 +308,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			notifyUpdated();
 		}
 		
+		m_activity.setTitle(m_feed.title);
 		m_activity.initMenu();
 	}
 	
