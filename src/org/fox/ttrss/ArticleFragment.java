@@ -44,7 +44,7 @@ public class ArticleFragment extends Fragment {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private OnlineServices m_onlineServices;
+	private ArticleEventListener m_onlineServices;
 	//private Article m_nextArticle;
 	//private Article m_prevArticle;
 
@@ -296,7 +296,7 @@ public class ArticleFragment extends Fragment {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_onlineServices = (OnlineServices)activity;
+		m_onlineServices = (ArticleEventListener)activity;
 		//m_article = m_onlineServices.getSelectedArticle(); 
 	}
 

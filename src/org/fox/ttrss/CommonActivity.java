@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CommonActivity extends FragmentActivity {
@@ -29,6 +30,16 @@ public class CommonActivity extends FragmentActivity {
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
+	}
+	
+	protected void setLoadingStatus(int status, boolean showProgress) {
+		TextView tv = (TextView) findViewById(R.id.loading_message);
+
+		if (tv != null) {
+			tv.setText(status);
+		}
+		
+		setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	public void toast(int msgId) {

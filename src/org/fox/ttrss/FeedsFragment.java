@@ -45,6 +45,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -65,7 +66,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
 	private FeedList m_feeds = new FeedList();
-	private OnlineServices m_onlineServices;
+	private FeedsActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
 	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
@@ -120,6 +121,26 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.catchup_feed:
+			if (true) {
+				Feed feed = getFeedAtPosition(info.position);
+				if (feed != null) {
+					m_activity.catchupFeed(feed);
+				}
+			}
+			return true;
+		
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -159,11 +180,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
-		if (m_feeds == null || m_feeds.size() == 0)
-			refresh(false);
-		else
-			getActivity().setProgressBarIndeterminateVisibility(false);
-		
 		return view;    	
 	}
 
@@ -179,11 +195,18 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 		
-		m_onlineServices = (OnlineServices)activity;
-		
-		//m_selectedFeed = m_onlineServices.getActiveFeed();
+		m_activity = (FeedsActivity)activity;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		refresh(false);
+		
+		m_activity.initMenu();
+	}
+	
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
@@ -200,9 +223,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
-			m_onlineServices.onFeedSelected(feed);
+			m_activity.onFeedSelected(feed);
 			
-			if (!m_onlineServices.isSmallScreen())
+			if (!m_activity.isSmallScreen())
 				m_selectedFeed = feed;
 			
 			m_adapter.notifyDataSetChanged();
@@ -215,8 +238,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
-		final String sessionId = m_onlineServices.getSessionId();
-		final boolean unreadOnly = m_onlineServices.getUnreadOnly();
+		final String sessionId = m_activity.getSessionId();
+		final boolean unreadOnly = m_activity.getUnreadOnly();
 
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
@@ -292,7 +315,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 		};
 		
-		final String sessionId = m_onlineServices.getSessionId();
+		final String sessionId = m_activity.getSessionId();
 		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
@@ -347,7 +370,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_onlineServices.login();
+				m_activity.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
@@ -375,7 +398,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
 			
-			if (!m_onlineServices.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
+			if (!m_activity.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -449,7 +472,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
 			cmp = new FeedUnreadComparator();
 		} else {
-			if (m_onlineServices.getApiLevel() >= 3) {
+			if (m_activity.getApiLevel() >= 3) {
 				cmp = new FeedOrderComparator();				
 			} else {
 				cmp = new FeedTitleComparator();

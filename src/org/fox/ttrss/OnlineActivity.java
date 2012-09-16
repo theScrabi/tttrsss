@@ -1,0 +1,526 @@
+package org.fox.ttrss;
+
+import java.util.HashMap;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.SearchView;
+
+public class OnlineActivity extends CommonActivity {
+	private final String TAG = this.getClass().getSimpleName();
+	
+	protected String m_sessionId;
+	protected SharedPreferences m_prefs;
+	protected int m_apiLevel = 0;
+	protected Menu m_menu;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		m_prefs = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+
+		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+			setTheme(R.style.DarkTheme);
+		} else {
+			setTheme(R.style.LightTheme);
+		}
+
+		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);		
+
+		setProgressBarIndeterminateVisibility(false);
+
+		if (getIntent().getExtras() != null) {
+			Intent i = getIntent();
+			
+			m_sessionId = i.getStringExtra("sessionId");
+			m_apiLevel = i.getIntExtra("apiLevel", -1);
+		}
+		
+		if (savedInstanceState != null) {
+			m_sessionId = savedInstanceState.getString("sessionId");
+			m_apiLevel = savedInstanceState.getInt("apiLevel");
+		}
+		
+		Log.d(TAG, "m_sessionId=" + m_sessionId);
+		Log.d(TAG, "m_apiLevel=" + m_apiLevel);
+		
+		setContentView(R.layout.online);
+	}
+
+	protected void login() {
+		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
+
+			setLoadingStatus(R.string.login_need_configure, false);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.dialog_need_configure_prompt)
+			       .setCancelable(false)
+			       .setPositiveButton(R.string.dialog_open_preferences, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			   			// launch preferences
+			   			
+			        	   Intent intent = new Intent(OnlineActivity.this,
+			        			   PreferencesActivity.class);
+			        	   startActivityForResult(intent, 0);
+			           }
+			       })
+			       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
+			
+		} else {
+
+			LoginRequest ar = new LoginRequest(getApplicationContext());
+
+			HashMap<String, String> map = new HashMap<String, String>() {
+				{
+					put("op", "login");
+					put("user", m_prefs.getString("login", "").trim());
+					put("password", m_prefs.getString("password", "").trim());
+				}
+			};
+
+			ar.execute(map);
+
+			setLoadingStatus(R.string.login_in_progress, true);
+		}
+	}
+	
+	protected void loginSuccess() {
+		setLoadingStatus(R.string.blank, false);
+		findViewById(R.id.loading_container).setVisibility(View.GONE);
+		
+		initMenu();
+	
+		Intent intent = new Intent(OnlineActivity.this, FeedsActivity.class);
+		intent.putExtra("sessionId", m_sessionId);
+		intent.putExtra("apiLevel", m_apiLevel);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+ 	   
+		startActivityForResult(intent, 0);
+		
+		finish();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.logout:
+			logout();
+			return true;
+		case R.id.login:
+			login();
+			return true;
+		case R.id.preferences:
+			Intent intent = new Intent(OnlineActivity.this,
+					PreferencesActivity.class);
+			startActivityForResult(intent, 0);
+			return true;
+		default:
+			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	protected void logout() {
+		m_sessionId = null;
+		
+		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+		setLoadingStatus(R.string.login_ready, false);
+
+		initMenu();
+	}
+	
+	protected void loginFailure() {
+		m_sessionId = null;
+		initMenu();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle out) {
+		super.onSaveInstanceState(out);
+		
+		out.putString("sessionId", m_sessionId);
+		out.putInt("apiLevel", m_apiLevel);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if (m_sessionId == null) {
+			login();
+		} else {
+			loginSuccess();
+		}
+	}
+	
+	public Menu getMenu() {
+		return m_menu;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+
+		m_menu = menu;
+
+		initMenu();
+		
+		return true;
+	}
+	
+	protected String getSessionId() {
+		return m_sessionId;
+	}
+	
+	protected int getApiLevel() {
+		return m_apiLevel;
+	}
+	
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void saveArticleUnread(final Article article) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.unread ? "1" : "0");
+				put("field", "2");
+			}
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void saveArticleMarked(final Article article) {
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
+			}
+		};
+
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.marked ? "1" : "0");
+				put("field", "0");
+			}
+		};
+		
+		req.execute(map);
+	}
+
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void saveArticlePublished(final Article article) {
+
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
+			}
+		};
+
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", article.published ? "1" : "0");
+				put("field", "1");
+			}
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings({ "unchecked", "serial" })
+	public void saveArticleNote(final Article article, final String note) {
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(R.string.notify_article_note_set);
+			}
+		};
+
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", String.valueOf(article.id));
+				put("mode", "1");
+				put("data", note);
+				put("field", "3");
+			}
+		};
+
+		req.execute(map);
+	}
+
+	public static String articlesToIdString(ArticleList articles) {
+		String tmp = "";
+
+		for (Article a : articles)
+			tmp += String.valueOf(a.id) + ",";
+
+		return tmp.replaceAll(",$", "");
+	}
+	
+	public void shareArticle(Article article) {
+		if (article != null) {
+
+			Intent intent = getShareIntent(article);
+			
+			startActivity(Intent.createChooser(intent,
+					getString(R.string.share_article)));
+		}
+	}
+	
+	private Intent getShareIntent(Article article) {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
+		intent.putExtra(Intent.EXTRA_TEXT, article.link);
+
+		return intent;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void catchupFeed(final Feed feed) {
+		Log.d(TAG, "catchupFeed=" + feed);
+
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				// refresh?
+			}
+		};
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "catchupFeed");
+				put("feed_id", String.valueOf(feed.id));
+				if (feed.is_cat)
+					put("is_cat", "1");
+			}
+		};
+
+		req.execute(map);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesMarked(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "0");
+			}
+		};
+
+		req.execute(map);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesUnread(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "2");
+			}
+		};
+
+		req.execute(map);
+		//refresh();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void toggleArticlesPublished(final ArticleList articles) {
+		ApiRequest req = new ApiRequest(getApplicationContext());
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "updateArticle");
+				put("article_ids", articlesToIdString(articles));
+				put("mode", "2");
+				put("field", "1");
+			}
+		};
+
+		req.execute(map);
+	}
+	
+	
+	protected void initMenu() {
+		Log.d(TAG, "initMenu:" + m_menu);
+		
+		if (m_menu != null) {			
+			if (m_sessionId != null) {
+				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
+				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
+			} else {
+				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
+				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);				
+			}
+			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
+			m_menu.setGroupVisible(R.id.menu_group_article, false);
+			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+			
+			m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
+			m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
+
+			m_menu.findItem(R.id.close_feed).setVisible(!isSmallScreen());
+			m_menu.findItem(R.id.close_article).setVisible(!isSmallScreen());
+			
+			MenuItem search = m_menu.findItem(R.id.search);
+			search.setEnabled(m_apiLevel >= 2);
+			
+			if (!isCompatMode()) {
+				SearchView searchView = (SearchView) search.getActionView();
+				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+					private String query = "";
+					
+					@Override
+					public boolean onQueryTextSubmit(String query) {
+						HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+								.findFragmentByTag(FRAG_HEADLINES);
+						
+						if (frag != null) {
+							frag.setSearchQuery(query);
+							this.query = query;
+						}
+						
+						return false;
+					}
+					
+					@Override
+					public boolean onQueryTextChange(String newText) {
+						if (newText.equals("") && !newText.equals(this.query)) {
+							HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+									.findFragmentByTag(FRAG_HEADLINES);
+							
+							if (frag != null) {
+								frag.setSearchQuery(newText);
+								this.query = newText;
+							}
+						}
+						
+						return false;
+					}
+				});
+			}
+		}		
+	}
+	
+	private class LoginRequest extends ApiRequest {
+		public LoginRequest(Context context) {
+			super(context);
+		}
+
+		@SuppressWarnings("unchecked")
+		protected void onPostExecute(JsonElement result) {
+			if (result != null) {
+				try {
+					JsonObject content = result.getAsJsonObject();
+					if (content != null) {
+						m_sessionId = content.get("session_id").getAsString();
+
+						Log.d(TAG, "Authenticated!");
+
+						ApiRequest req = new ApiRequest(m_context) {
+							protected void onPostExecute(JsonElement result) {
+								m_apiLevel = 0;
+
+								if (result != null) {
+									try {
+										m_apiLevel = result.getAsJsonObject()
+													.get("level").getAsInt();
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+
+								Log.d(TAG, "Received API level: " + m_apiLevel);
+
+								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+								loginSuccess();
+								return;
+							}
+						};
+
+						@SuppressWarnings("serial")
+						HashMap<String, String> map = new HashMap<String, String>() {
+							{
+								put("sid", m_sessionId);
+								put("op", "getApiLevel");
+							}
+						};
+
+						req.execute(map);
+
+						setLoadingStatus(R.string.loading_message, true);
+
+						return;
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			m_sessionId = null;
+			setLoadingStatus(getErrorMessage(), false);
+			
+			loginFailure();
+		}
+
+	}
+}
