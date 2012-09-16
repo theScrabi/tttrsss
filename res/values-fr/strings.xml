@@ -22,8 +22,8 @@
     <string name="headline_context_multiple">Articles sélectionnés</string>
     <string name="http_authentication">Authentification HTTP</string>
     <string name="loading_message">Chargement, patientez s\'il-vous-plaît…</string>
-    <string name="menu_unread_feeds">Montrer les flux non-lus</string>
-    <string name="menu_all_feeds">Monter tous les flux</string>
+    <string name="menu_unread_feeds">Afficher les flux non-lus</string>
+    <string name="menu_all_feeds">Afficher tous les flux</string>
     <string name="update_feeds">Rafraichir les flux</string>
     <string name="share_article">Partager l\'article</string>
     <string name="catchup">Marquer comme non lu</string>
