@@ -75,7 +75,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private ArticleList m_articles = TinyApplication.getInstance().m_articles;
+	private ArticleList m_articles = TinyApplication.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	
@@ -295,9 +295,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onResume() {
 		super.onResume();
 
-		if (m_articles.size() == 0 || !m_feed.equals(TinyApplication.getInstance().m_feed)) {
+		/* if (TinyApplication.getInstance().m_activeArticle != null) {
+			m_activeArticle = TinyApplication.getInstance().m_activeArticle;
+			notifyUpdated();
+			TinyApplication.getInstance().m_activeArticle = null;
+		} */
+		
+		if (m_articles.size() == 0 || !m_feed.equals(TinyApplication.getInstance().m_activeFeed)) {
 			refresh(false);
-			TinyApplication.getInstance().m_feed = m_feed;
+			TinyApplication.getInstance().m_activeFeed = m_feed;
+		} else {
+			notifyUpdated();
 		}
 		
 		m_activity.initMenu();
@@ -329,7 +337,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_listener.onArticleSelected(article);
 				}
 				
-				m_activeArticle = article;
+				// only set active article when it makes sense (in HeadlinesActivity)
+				if (getActivity().findViewById(R.id.article_fragment) != null) {
+					m_activeArticle = article;
+				}
+				
 				m_adapter.notifyDataSetChanged();
 			}
 		}

@@ -123,7 +123,7 @@ public class ArticlePager extends Fragment {
 		
 		m_onlineServices = (HeadlinesEventListener)activity;
 		
-		m_articles = TinyApplication.getInstance().m_articles;
+		m_articles = TinyApplication.getInstance().m_loadedArticles;
 	}
 	
 	@Override

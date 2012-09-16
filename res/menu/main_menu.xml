@@ -40,11 +40,6 @@
         <group android:id="@+id/menu_group_headlines" >
 
             <item
-                android:id="@+id/go_offline"
-                android:icon="@drawable/ic_menu_cloud"
-                android:title="@string/go_offline"/>
-
-            <item
                 android:id="@+id/search"
                 android:actionViewClass="android.widget.SearchView"
                 android:icon="@android:drawable/ic_menu_search"

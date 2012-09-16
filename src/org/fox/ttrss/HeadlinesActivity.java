@@ -135,6 +135,13 @@ private final String TAG = this.getClass().getSimpleName();
 	@Override
 	public void onArticleSelected(Article article, boolean open) {
 		
+		if (article.unread) {
+			article.unread = false;
+			saveArticleUnread(article);
+		}
+		
+		//TinyApplication.getInstance().m_activeArticle = article;
+
 		if (open) {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
@@ -145,11 +152,14 @@ private final String TAG = this.getClass().getSimpleName();
 
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			//ft.addToBackStack(null);
+		
+			hf.notifyUpdated();
 			
 			ft.commit();
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			if (hf != null) hf.setActiveArticle(article);
+			hf.setActiveArticle(article);
+			
 			initMenu();
 		}
 		
