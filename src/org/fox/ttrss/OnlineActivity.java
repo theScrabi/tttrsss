@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.ShareActionProvider;
 
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -758,6 +759,21 @@ public class OnlineActivity extends CommonActivity {
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(m_apiLevel >= 2);
+			
+			if (android.os.Build.VERSION.SDK_INT >= 14) {			
+				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+
+				ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				
+				if (af != null && af.getSelectedArticle() != null) {
+					Log.d(TAG, "setting up share provider");
+					shareProvider.setShareIntent(getShareIntent(af.getSelectedArticle()));
+					
+					if (!isSmallScreen()) {
+						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+					}
+				}
+			}
 			
 			if (!isCompatMode()) {
 				SearchView searchView = (SearchView) search.getActionView();

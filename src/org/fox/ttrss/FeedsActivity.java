@@ -93,18 +93,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				item.setTitle(R.string.menu_unread_feeds);
 			}
 
-			if (android.os.Build.VERSION.SDK_INT >= 14) {			
-				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-				
-				if (af != null && af.getSelectedArticle() != null) {
-					Log.d(TAG, "setting up share provider");
-					shareProvider.setShareIntent(getShareIntent(af.getSelectedArticle()));
-					
-					if (!isSmallScreen()) {
-						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-					}
-				}
-			}
 		}		
 	}
 	

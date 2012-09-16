@@ -45,8 +45,6 @@ private final String TAG = this.getClass().getSimpleName();
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 		
 		if (savedInstanceState == null) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
@@ -59,17 +57,18 @@ private final String TAG = this.getClass().getSimpleName();
 				
 				for (Article a : alist)
 					articles.add(a);
-				
+
 				HeadlinesFragment hf = new HeadlinesFragment(feed, activeArticle, articles);
+				ArticlePager af = new ArticlePager(hf.getArticleById(article.id), hf.getAllArticles());
+
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-				
-				ArticlePager af = new ArticlePager(article, hf.getAllArticles());
-				
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+				
+				ft.commit();
+
 			}
-			
-			ft.commit();
 		} 
 	}
 	
