@@ -96,12 +96,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public HeadlinesFragment(Feed feed) {
 		m_feed = feed;
 	}
-	
+
 	public HeadlinesFragment(Feed feed, Article activeArticle) {
 		m_feed = feed;
-		m_activeArticle = activeArticle;
+		m_activeArticle = getArticleById(activeArticle.id);
 	}
-	
+
 	public HeadlinesFragment() {
 		//
 	}
@@ -294,6 +294,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		if (m_activeArticle != null) {
+			setActiveArticle(m_activeArticle);
+		}
 
 		/* if (TinyApplication.getInstance().m_activeArticle != null) {
 			m_activeArticle = TinyApplication.getInstance().m_activeArticle;
