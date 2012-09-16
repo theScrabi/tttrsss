@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ShareActionProvider;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener, ArticleEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -71,18 +72,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (m_menu != null && m_sessionId != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
 			Log.d(TAG, "ff/cf/af/hf " + ff + " " + cf + " " + af + " " + hf);
 			
-			m_menu.setGroupVisible(R.id.menu_group_feeds, ff != null || cf != null);
+			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isVisible()) || (cf != null && cf.isVisible()));
 			
-			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
+			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isVisible());
 
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.getSelectedArticles().size() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.getSelectedArticles().size() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isVisible() && hf.getSelectedArticles().size() == 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isVisible() && hf.getSelectedArticles().size() != 0);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -92,6 +93,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				item.setTitle(R.string.menu_unread_feeds);
 			}
 
+			if (android.os.Build.VERSION.SDK_INT >= 14) {			
+				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+				
+				if (af != null && af.getSelectedArticle() != null) {
+					Log.d(TAG, "setting up share provider");
+					shareProvider.setShareIntent(getShareIntent(af.getSelectedArticle()));
+					
+					if (!isSmallScreen()) {
+						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+					}
+				}
+			}
 		}		
 	}
 	
@@ -230,6 +243,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				startActivityForResult(intent, 0);
 			}
 		} else {
+			initMenu();
 			/* HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			if (hf != null) hf.setActiveArticle(article); */
 		}
@@ -240,4 +254,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		onArticleSelected(article, true);		
 	}
 
+	@SuppressWarnings("unchecked")
+	public void catchupFeed(final Feed feed) {
+		super.catchupFeed(feed);
+		refresh();
+	}
 }

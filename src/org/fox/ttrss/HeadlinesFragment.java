@@ -115,6 +115,34 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				.getMenuInfo();
 		
 		switch (item.getItemId()) {
+		case R.id.set_labels:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.editArticleLabels(article);
+				}
+			}
+			return true;
+		case R.id.article_set_note:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.editArticleNote(article);				
+				}
+			}
+			return true;
+
+		case R.id.article_link_copy:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.copyToClipboard(article.link);
+				}
+			}
+			return true;
 		case R.id.selection_toggle_marked:
 			if (true) {
 				ArticleList selected = getSelectedArticles();
@@ -735,13 +763,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 
 
-	/* public void notifyUpdated() {
+	public void notifyUpdated() {
 		m_adapter.notifyDataSetChanged();
-		
-		Article article = m_onlineServices.getSelectedArticle();
-
-		setActiveArticle(article);
-	} */
+	}
 
 	public ArticleList getAllArticles() {
 		return m_articles;

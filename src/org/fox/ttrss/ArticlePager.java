@@ -121,8 +121,17 @@ public class ArticlePager extends Fragment {
 		super.onAttach(activity);		
 		
 		m_onlineServices = (HeadlinesEventListener)activity;
-		((OnlineActivity)getActivity()).initMenu();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
 		
+		((OnlineActivity)getActivity()).initMenu();
+	}
+
+	public Article getSelectedArticle() {
+		return m_article;
 	}
 
 }

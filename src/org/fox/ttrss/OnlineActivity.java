@@ -1,13 +1,18 @@
 package org.fox.ttrss;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.Label;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -139,7 +145,8 @@ public class OnlineActivity extends CommonActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-		
+		final ArticlePager ap = (ArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+
 		switch (item.getItemId()) {
 		case R.id.logout:
 			logout();
@@ -149,6 +156,11 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.go_offline:
 			// FIXME go offline
+			return true;
+		case R.id.article_set_note:
+			if (ap != null && ap.getSelectedArticle() != null) {
+				editArticleNote(ap.getSelectedArticle());				
+			}
 			return true;
 		case R.id.preferences:
 			Intent intent = new Intent(OnlineActivity.this,
@@ -254,10 +266,216 @@ public class OnlineActivity extends CommonActivity {
 				dialog.show();
 			}
 			return true;
+		case R.id.share_article:
+			if (android.os.Build.VERSION.SDK_INT < 14) {
+				if (ap != null) {
+					shareArticle(ap.getSelectedArticle());
+				}
+			}
+			return true;
+		case R.id.toggle_marked:
+			if (ap != null & ap.getSelectedArticle() != null) {
+				Article a = ap.getSelectedArticle();
+				a.marked = !a.marked;
+				saveArticleMarked(a);
+				if (hf != null) hf.notifyUpdated();
+			}
+			return true;
+		case R.id.selection_select_none:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+				if (selected.size() > 0) {
+					selected.clear();
+					initMenu();
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_unread:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.unread = !a.unread;
+
+					toggleArticlesUnread(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_marked:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.marked = !a.marked;
+
+					toggleArticlesMarked(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.published = !a.published;
+
+					toggleArticlesPublished(selected);
+					hf.notifyUpdated();
+				}
+			}
+			return true;
+		case R.id.toggle_published:
+			if (ap != null && ap.getSelectedArticle() != null) {
+				Article a = ap.getSelectedArticle();
+				a.published = !a.published;
+				saveArticlePublished(a);
+				if (hf != null) hf.notifyUpdated();
+			}
+			return true;
+		case R.id.catchup_above:
+			if (hf != null) {
+				if (ap != null && ap.getSelectedArticle() != null) {
+					Article article = ap.getSelectedArticle();
+					
+					ArticleList articles = hf.getAllArticles();
+					ArticleList tmp = new ArticleList();
+					for (Article a : articles) {
+						a.unread = false;
+						tmp.add(a);
+						if (article.id == a.id)
+							break;
+					}
+					if (tmp.size() > 0) {
+						toggleArticlesUnread(tmp);
+						hf.notifyUpdated();
+					}
+				}
+			}
+			return true;
+		case R.id.set_unread:
+			if (ap != null && ap.getSelectedArticle() != null) {
+				Article a = ap.getSelectedArticle();
+				a.unread = true;
+				saveArticleUnread(a);
+				if (hf != null) hf.notifyUpdated();
+			}
+			return true;
+		case R.id.set_labels:
+			if (ap != null && ap.getSelectedArticle() != null) {
+				editArticleLabels(ap.getSelectedArticle());				
+			}
+			return true;			
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	public void editArticleNote(final Article article) {
+		String note = "";
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);  
+		builder.setTitle(article.title);
+		final EditText topicEdit = new EditText(this);
+		topicEdit.setText(note);
+		builder.setView(topicEdit);
+		
+		builder.setPositiveButton(R.string.article_set_note, new Dialog.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	        	saveArticleNote(article, topicEdit.getText().toString().trim());
+	        	article.published = true;	        	
+	        	saveArticlePublished(article);
+	        	
+	        	HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+	        	if (hf != null) hf.notifyUpdated();
+	        }
+	    });
+		
+		builder.setNegativeButton(R.string.dialog_cancel, new Dialog.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	        	//
+	        }
+	    });
+		
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+	
+	public void editArticleLabels(Article article) {
+		final int articleId = article.id;									
+
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			@Override
+			protected void onPostExecute(JsonElement result) {
+				if (result != null) {
+					Type listType = new TypeToken<List<Label>>() {}.getType();
+					final List<Label> labels = new Gson().fromJson(result, listType);
+
+					CharSequence[] items = new CharSequence[labels.size()];
+					final int[] itemIds = new int[labels.size()];
+					boolean[] checkedItems = new boolean[labels.size()];
+					
+					for (int i = 0; i < labels.size(); i++) {
+						items[i] = labels.get(i).caption;
+						itemIds[i] = labels.get(i).id;
+						checkedItems[i] = labels.get(i).checked;
+					}
+					
+					Dialog dialog = new Dialog(OnlineActivity.this);
+					AlertDialog.Builder builder = new AlertDialog.Builder(OnlineActivity.this)
+							.setTitle(R.string.article_set_labels)
+							.setMultiChoiceItems(items, checkedItems, new OnMultiChoiceClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which, final boolean isChecked) {
+									final int labelId = itemIds[which];
+									
+									@SuppressWarnings("serial")
+									HashMap<String, String> map = new HashMap<String, String>() {
+										{
+											put("sid", m_sessionId);
+											put("op", "setArticleLabel");
+											put("label_id", String.valueOf(labelId));
+											put("article_ids", String.valueOf(articleId));
+											if (isChecked) put("assign", "true");
+										}
+									};
+									
+									ApiRequest req = new ApiRequest(m_context);
+									req.execute(map);
+									
+								}
+							}).setPositiveButton(R.string.dialog_close, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.cancel();
+								}
+							});
+
+					dialog = builder.create();
+					dialog.show();
+
+				}
+			}
+		};
+		
+		@SuppressWarnings("serial")
+		HashMap<String, String> map = new HashMap<String, String>() {
+			{
+				put("sid", m_sessionId);
+				put("op", "getLabels");
+				put("article_id", String.valueOf(articleId));
+			}
+		};
+		
+		req.execute(map);
 	}
 	
 	protected void logout() {
@@ -428,7 +646,7 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 	
-	private Intent getShareIntent(Article article) {
+	protected Intent getShareIntent(Article article) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
 		intent.setType("text/plain");
@@ -607,8 +825,6 @@ public class OnlineActivity extends CommonActivity {
 								}
 
 								Log.d(TAG, "Received API level: " + m_apiLevel);
-
-								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 								loginSuccess();
 								return;

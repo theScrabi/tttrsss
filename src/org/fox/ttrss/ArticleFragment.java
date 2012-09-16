@@ -23,10 +23,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
@@ -59,6 +62,28 @@ public class ArticleFragment extends Fragment {
 	}
 	
 	private View.OnTouchListener m_gestureListener;
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		
+		switch (item.getItemId()) {
+		case R.id.article_link_share:
+			if (true) {
+				((OnlineActivity) getActivity()).shareArticle(m_article);
+			}
+			return true;
+		case R.id.article_link_copy:
+			if (true) {
+				((OnlineActivity) getActivity()).copyToClipboard(m_article.link);
+			}
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
