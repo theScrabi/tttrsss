@@ -98,12 +98,6 @@ private final String TAG = this.getClass().getSimpleName();
 	}
 
 	@Override
-	public boolean getUnreadArticlesOnly() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	@Override
 	protected void initMenu() {
 		super.initMenu();
 
@@ -138,8 +132,6 @@ private final String TAG = this.getClass().getSimpleName();
 			article.unread = false;
 			saveArticleUnread(article);
 		}
-		
-		//TinyApplication.getInstance().m_activeArticle = article;
 
 		if (open) {
 			FragmentTransaction ft = getSupportFragmentManager()

@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,6 +47,48 @@ public class OnlineActivity extends CommonActivity {
 	protected boolean m_unreadOnly = true;
 	protected boolean m_unreadArticlesOnly = true;
 	
+	private ActionMode m_headlinesActionMode;
+	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+
+	private class HeadlinesActionModeCallback implements ActionMode.Callback {
+		
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+		
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			if (hf != null) {
+				ArticleList selected = hf.getSelectedArticles();
+				if (selected.size() > 0) {
+					selected.clear();
+					initMenu();
+					hf.notifyUpdated();
+				}
+			}
+
+			m_headlinesActionMode = null;
+		}
+		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			
+			 MenuInflater inflater = getMenuInflater();
+	            inflater.inflate(R.menu.headlines_action_menu, menu);
+			
+			return true;
+		}
+		
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			onOptionsItemSelected(item);
+			return false;
+		}
+	};
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -76,6 +119,10 @@ public class OnlineActivity extends CommonActivity {
 			
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 			m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
+		}
+		
+		if (!isCompatMode()) {
+			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 		
 		Log.d(TAG, "m_sessionId=" + m_sessionId);
@@ -774,6 +821,16 @@ public class OnlineActivity extends CommonActivity {
 			}
 			
 			if (!isCompatMode()) {
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				
+				if (hf != null) {
+					if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
+						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+					} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
+						m_headlinesActionMode.finish();
+					}
+				}
+				
 				SearchView searchView = (SearchView) search.getActionView();
 				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 					private String query = "";
