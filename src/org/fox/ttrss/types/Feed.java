@@ -32,6 +32,9 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		if (feed == this) 
 			return true;
 		
+		if (feed == null)
+			return false;
+		
 		return feed.id == this.id && (this.title == null || this.title.equals(feed.title)) && this.is_cat == feed.is_cat;
 	}
 	

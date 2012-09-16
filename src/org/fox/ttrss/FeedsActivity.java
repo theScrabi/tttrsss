@@ -225,6 +225,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				//intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		 	   
+				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 				startActivityForResult(intent, 0);
 			}
 		} else {

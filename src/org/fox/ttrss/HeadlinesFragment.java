@@ -359,7 +359,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		
-		if (!m_feed.equals(TinyApplication.getInstance())) {
+		if (!m_feed.equals(TinyApplication.getInstance().m_activeFeed)) {
 			append = false;
 		}
 		
