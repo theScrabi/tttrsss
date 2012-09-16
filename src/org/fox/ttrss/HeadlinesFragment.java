@@ -71,12 +71,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private boolean m_canLoadMore = false;
 	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
-	private boolean m_noRefresh = false;
 	
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private ArticleList m_articles = new ArticleList();
+	private ArticleList m_articles = TinyApplication.getInstance().m_articles;
 	private ArticleList m_selectedArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	
@@ -98,11 +97,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_feed = feed;
 	}
 	
-	public HeadlinesFragment(Feed feed, Article activeArticle, ArticleList articles) {
+	public HeadlinesFragment(Feed feed, Article activeArticle) {
 		m_feed = feed;
 		m_activeArticle = activeArticle;
-		m_articles = articles;			
-		m_noRefresh = true;
 	}
 	
 	public HeadlinesFragment() {
@@ -268,7 +265,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
-			m_articles = savedInstanceState.getParcelable("articles");
+			//m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
@@ -297,10 +294,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		if (!m_noRefresh) {
+
+		if (m_articles.size() == 0 || !m_feed.equals(TinyApplication.getInstance().m_feed)) {
 			refresh(false);
-			m_noRefresh = false;
+			TinyApplication.getInstance().m_feed = m_feed;
 		}
 		
 		m_activity.initMenu();
@@ -349,6 +346,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		
+		if (!m_feed.equals(TinyApplication.getInstance())) {
+			append = false;
+		}
+		
 		if (append) {
 			for (Article a : m_articles) {
 				if (a.unread) ++skip;
@@ -393,7 +394,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		super.onSaveInstanceState(out);
 		
 		out.putParcelable("feed", m_feed);
-		out.putParcelable("articles", m_articles);
+		//out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putBoolean("canLoadMore", m_canLoadMore);

@@ -52,14 +52,8 @@ private final String TAG = this.getClass().getSimpleName();
 				Article activeArticle = i.getParcelableExtra("activeArticle");
 				Article article = i.getParcelableExtra("article");
 				
-				ArrayList<Article> alist = i.getParcelableArrayListExtra("articles");
-				ArticleList articles  = new ArticleList();
-				
-				for (Article a : alist)
-					articles.add(a);
-
-				HeadlinesFragment hf = new HeadlinesFragment(feed, activeArticle, articles);
-				ArticlePager af = new ArticlePager(hf.getArticleById(article.id), hf.getAllArticles());
+				HeadlinesFragment hf = new HeadlinesFragment(feed, activeArticle);
+				ArticlePager af = new ArticlePager(hf.getArticleById(article.id));
 
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -147,7 +141,7 @@ private final String TAG = this.getClass().getSimpleName();
 			
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			Fragment frag = new ArticlePager(article, hf.getAllArticles());
+			Fragment frag = new ArticlePager(article);
 
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 			//ft.addToBackStack(null);
@@ -156,6 +150,7 @@ private final String TAG = this.getClass().getSimpleName();
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			if (hf != null) hf.setActiveArticle(article);
+			initMenu();
 		}
 		
 	}

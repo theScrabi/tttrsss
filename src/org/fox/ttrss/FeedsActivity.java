@@ -208,7 +208,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
-				Fragment frag = new ArticlePager(article, hf.getAllArticles());
+				Fragment frag = new ArticlePager(article);
 
 				ft.replace(R.id.feeds_fragment, frag, FRAG_ARTICLE);
 				ft.addToBackStack(null);

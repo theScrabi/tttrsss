@@ -49,11 +49,10 @@ public class ArticlePager extends Fragment {
 		super();
 	}
 	
-	public ArticlePager(Article article, ArticleList articles) {
+	public ArticlePager(Article article) {
 		super();
 		
 		m_article = article;
-		m_articles = articles;
 	}
 	
 	@Override
@@ -88,6 +87,8 @@ public class ArticlePager extends Fragment {
 				Article article = m_articles.get(position);
 				
 				if (article != null) {
+					m_article = article;
+					
 					if (article.unread) {
 						article.unread = false;
 						m_onlineServices.saveArticleUnread(article);
@@ -121,6 +122,8 @@ public class ArticlePager extends Fragment {
 		super.onAttach(activity);		
 		
 		m_onlineServices = (HeadlinesEventListener)activity;
+		
+		m_articles = TinyApplication.getInstance().m_articles;
 	}
 	
 	@Override
