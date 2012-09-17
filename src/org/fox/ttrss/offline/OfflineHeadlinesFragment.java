@@ -293,7 +293,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			feedClause = "feed_id = ?";
 		}
 		
-		if (m_searchQuery.equals("")) {
+		if (m_searchQuery == null || m_searchQuery.equals("")) {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
@@ -326,12 +326,20 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			int articleId = cursor.getInt(0);
 			
-			if (!m_activity.isSmallScreen()) {
+			if (getActivity().findViewById(R.id.article_fragment) != null) {
 				m_activeArticleId = articleId;
 			}
 
 			if (!m_combinedMode) { 
 				m_listener.onArticleSelected(articleId);
+			} else {
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
+								+ " = ?");
+
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
 			}
 			
 			refresh();
@@ -600,13 +608,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 	public void setActiveArticleId(int articleId) {
 		m_activeArticleId = articleId;
-	//	m_adapter.notifyDataSetChanged();
+		try {
+			m_adapter.notifyDataSetChanged();
+
+			ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
-		ListView list = (ListView)getView().findViewById(R.id.headlines);
-		
-		if (list != null) {
-			list.setSelection(getArticleIdPosition(articleId));
-		} 
+			if (list != null) {
+				list.setSelection(getArticleIdPosition(articleId));
+			}
+		} catch (NullPointerException e) {
+			// invoked before view is created, nvm
+		}
 	}
 
 	public Cursor getArticleAtPosition(int position) {
@@ -644,7 +656,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
-			refresh();
 		}
 	}
 

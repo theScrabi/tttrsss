@@ -126,9 +126,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	
 	public void onFeedSelected(Feed feed) {
-		FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
-		
 		TinyApplication.getInstance().m_loadedArticles.clear();
 
 		if (isSmallScreen()) {
@@ -144,17 +141,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			//ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
 			//ft.addToBackStack(null);
 		} else {
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+
 			HeadlinesFragment hf = new HeadlinesFragment(feed);
 			ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+			
+			ft.commit();		
 		}
-		ft.commit();		
 	}
 	
 	public void onCatSelected(FeedCategory cat, boolean openAsFeed) {
 
-		FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
-		
 		if (!openAsFeed) {
 			
 			if (isSmallScreen()) {
@@ -167,17 +165,19 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				startActivityForResult(intent, 0);
 				
 			} else {
+				FragmentTransaction ft = getSupportFragmentManager()
+						.beginTransaction();
+
 				FeedsFragment ff = new FeedsFragment(cat);
 				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+
+				ft.addToBackStack(null);
+				ft.commit();
 			}
 		} else {
 			Feed feed = new Feed(cat.id, cat.title, true);
 			onFeedSelected(feed);
 		}
-
-		ft.addToBackStack(null);
-
-		ft.commit();
 	}
 	
 	public void onCatSelected(FeedCategory cat) {

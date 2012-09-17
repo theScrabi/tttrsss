@@ -45,7 +45,7 @@ public class OfflineArticlePager extends Fragment {
 			feedClause = "feed_id = ?";
 		}
 		
-		if (m_searchQuery.equals("")) {
+		if (m_searchQuery == null || m_searchQuery.equals("")) {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles."+BaseColumns._ID, "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
@@ -162,6 +162,16 @@ public class OfflineArticlePager extends Fragment {
 		m_cursor = createCursor();
 		
 	}
+	
+	public void refresh() {
+		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
+		
+		m_cursor = createCursor();
+		
+		if (m_cursor != null) {
+			m_adapter.notifyDataSetChanged();
+		}
+	}
 
 	public int getSelectedArticleId() {
 		return m_articleId;
@@ -175,5 +185,9 @@ public class OfflineArticlePager extends Fragment {
 		out.putInt("feedId", m_feedId);
 		out.putBoolean("isCat", m_isCat);
 		
+	}
+
+	public void setSearchQuery(String searchQuery) {
+		m_searchQuery = searchQuery;
 	}
 }

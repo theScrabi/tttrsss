@@ -132,9 +132,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	}
 	
 	public void onCatSelected(int catId, boolean openAsFeed) {
-		FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
-		
 		if (openAsFeed) {
 			onFeedSelected(catId, true, true);
 		} else {
@@ -144,15 +141,17 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 				startActivityForResult(intent, 0);		
 			} else {
+				FragmentTransaction ft = getSupportFragmentManager()
+						.beginTransaction();
+
 				OfflineFeedsFragment ff = new OfflineFeedsFragment(catId);
-				
+
 				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+				ft.addToBackStack(null);
+				
+				ft.commit();
 			}
 		}
-		ft.addToBackStack(null);
-
-		ft.commit();
-
 	}
 	
 	public void onFeedSelected(int feedId) {
@@ -171,9 +170,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				startActivityForResult(intent, 0);		
 				
 			} else {
-
-				// TODO open OfflineHeadlinesFragment on R.id.headlines_fragment
+				FragmentTransaction ft = getSupportFragmentManager()
+						.beginTransaction();
 				
+				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);
+				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+				
+				ft.commit();
 			}
 		}		
 	}
@@ -221,9 +224,15 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			
 			} else {
 
-				// TODO open OfflineHeadlinesActivity
+				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
-				
+				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);		
+				intent.putExtra("feed", hf.getFeedId());
+				intent.putExtra("isCat", hf.getFeedIsCat());
+				intent.putExtra("article", articleId);
+				intent.putExtra("title", "FIXME-TITLE");
+		 	   
+				startActivityForResult(intent, 0);	
 			}			
 		} else {
 			refresh();
