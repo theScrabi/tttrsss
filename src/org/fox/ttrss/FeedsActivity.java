@@ -45,50 +45,55 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		Intent intent = getIntent();
 		
-		if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
+		if (savedInstanceState == null) {
+			
+			if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
 				intent.getParcelableExtra("article") != null) {
 			
-			Feed feed = (Feed) intent.getParcelableExtra("feed");
-			FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
-			Article article = (Article) intent.getParcelableExtra("article");
-
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-			if (feed != null) {
-				HeadlinesFragment hf = new HeadlinesFragment(feed);
-				ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
+				Feed feed = (Feed) intent.getParcelableExtra("feed");
+				FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
+				Article article = (Article) intent.getParcelableExtra("article");
+	
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+	
+				if (feed != null) {
+					HeadlinesFragment hf = new HeadlinesFragment(feed);
+					ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
+					
+					setTitle(feed.title);
+				}
 				
-				setTitle(feed.title);
-			}
-			
-			if (cat != null) {
-				FeedsFragment ff = new FeedsFragment(cat);
-				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+				if (cat != null) {
+					FeedsFragment ff = new FeedsFragment(cat);
+					ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+					
+					setTitle(cat.title);
+				}
 				
-				setTitle(cat.title);
-			}
-			
-			if (article != null) {
-				Article original = TinyApplication.getInstance().m_loadedArticles.findById(article.id);
+				if (article != null) {
+					Article original = TinyApplication.getInstance().m_loadedArticles.findById(article.id);
+					
+					ArticlePager ap = new ArticlePager(original != null ? original : article);
+					ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
+					
+					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
+					
+					setTitle(intent.getStringExtra("feedTitle"));
+				}
+	
+				ft.commit();
+
+			} else  {
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+				if (m_prefs.getBoolean("enable_cats", false)) {
+					ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
+				} else {
+					ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
+				}
 				
-				ArticlePager ap = new ArticlePager(original != null ? original : article);
-				ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
-				
-				setTitle(intent.getStringExtra("feedTitle"));
+				ft.commit();
 			}
-
-			ft.commit();
-
-		} else if (savedInstanceState == null) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-			if (m_prefs.getBoolean("enable_cats", false)) {
-				ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
-			} else {
-				ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
-			}
-			
-			ft.commit();
 		}
 	}
 	
@@ -257,6 +262,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				intent.putExtra("feedTitle", hf.getFeed().title);
 				intent.putExtra("article", article);
+				intent.putExtra("searchQuery", hf.getSearchQuery());
 		 	   
 				startActivityForResult(intent, 0);
 				
@@ -268,6 +274,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
+				intent.putExtra("searchQuery", hf.getSearchQuery());
 		 	   
 				startActivityForResult(intent, 0);
 			}

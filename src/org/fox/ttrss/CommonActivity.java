@@ -32,7 +32,7 @@ public class CommonActivity extends FragmentActivity {
 		m_smallScreenMode = smallScreen;
 	}
 	
-	protected void setLoadingStatus(int status, boolean showProgress) {
+	public void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView) findViewById(R.id.loading_message);
 
 		if (tv != null) {

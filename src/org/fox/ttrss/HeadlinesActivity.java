@@ -50,10 +50,14 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			if (i.getExtras() != null) {
 				Feed feed = i.getParcelableExtra("feed");
 				Article article = i.getParcelableExtra("article");
+				String searchQuery = i.getStringExtra("searchQuery");
 				
 				HeadlinesFragment hf = new HeadlinesFragment(feed, article);
 				ArticlePager af = new ArticlePager(hf.getArticleById(article.id));
 
+				hf.setSearchQuery(searchQuery);
+				af.setSearchQuery(searchQuery);
+				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);

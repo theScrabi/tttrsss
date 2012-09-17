@@ -15,6 +15,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
@@ -67,10 +68,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private Feed m_feed;
 	private Article m_activeArticle;
-	private boolean m_refreshInProgress = false;
-	private boolean m_canLoadMore = false;
 	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
+	private boolean m_refreshInProgress = false;
 	
 	private SharedPreferences m_prefs;
 	
@@ -268,7 +268,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			//m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
-			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
@@ -355,7 +354,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void refresh(boolean append) {
 		m_refreshInProgress = true;
 		
-		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
+		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+			protected void onPostExecute(JsonElement result) {
+				super.onPostExecute(result);
+				m_refreshInProgress = false;
+				m_adapter.notifyDataSetChanged();
+			}
+		};
 		
 		final String sessionId = m_activity.getSessionId();
 		final boolean showUnread = m_listener.getUnreadArticlesOnly();
@@ -394,7 +399,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				
 				if (isCat) put("is_cat", "true");
 				
-				if (m_searchQuery.length() != 0) {
+				if (m_searchQuery != null && m_searchQuery.length() != 0) {
 					put("search", m_searchQuery);
 					put("search_mode", "");
 					put("match_on", "both");
@@ -413,7 +418,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
-		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putBoolean("combinedMode", m_combinedMode);
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
@@ -431,7 +435,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
-	private class HeadlinesRequest extends ApiRequest {
+	/* private class HeadlinesRequest extends ApiRequest {
 		int m_offset = 0;
 		
 		public HeadlinesRequest(Context context) {
@@ -494,7 +498,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public void setOffset(int skip) {
 			m_offset = skip;			
 		}
-	}
+	} */
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
@@ -842,7 +846,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (!m_refreshInProgress && m_canLoadMore && firstVisibleItem + visibleItemCount == m_articles.size()) {
+		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
 	}
@@ -864,6 +868,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	}
 
+	public String getSearchQuery() {
+		return m_searchQuery;
+	}
+	
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
