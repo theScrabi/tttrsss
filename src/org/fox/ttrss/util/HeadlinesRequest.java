@@ -6,7 +6,7 @@ import java.util.List;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
-import org.fox.ttrss.TinyApplication;
+import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.ApiRequest.ApiError;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -26,7 +26,7 @@ public class HeadlinesRequest extends ApiRequest {
 
 	private int m_offset = 0;
 	private OnlineActivity m_activity;
-	private ArticleList m_articles = TinyApplication.getInstance().m_loadedArticles;
+	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	
 	public HeadlinesRequest(Context context, OnlineActivity activity) {
 		super(context);

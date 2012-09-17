@@ -132,7 +132,7 @@ public class ArticlePager extends Fragment {
 			}
 		};
 		
-		final Feed feed = TinyApplication.getInstance().m_activeFeed;
+		final Feed feed = GlobalState.getInstance().m_activeFeed;
 		
 		final String sessionId = m_activity.getSessionId();
 		final boolean showUnread = m_activity.getUnreadArticlesOnly();
@@ -188,7 +188,7 @@ public class ArticlePager extends Fragment {
 		m_onlineServices = (HeadlinesEventListener)activity;
 		m_activity = (OnlineActivity)activity;
 		
-		m_articles = TinyApplication.getInstance().m_loadedArticles;
+		m_articles = GlobalState.getInstance().m_loadedArticles;
 	}
 	
 	@Override
@@ -200,6 +200,16 @@ public class ArticlePager extends Fragment {
 
 	public Article getSelectedArticle() {
 		return m_article;
+	}
+
+	public void setActiveArticle(Article article) {
+		m_article = article;
+
+		int position = m_articles.indexOf(m_article);
+
+		ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
+		
+		pager.setCurrentItem(position);
 	}
 
 }

@@ -144,9 +144,11 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			Fragment frag = new ArticlePager(article);
+			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			af.setActiveArticle(article);
 
-			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
+//			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
 //			ft.addToBackStack(null);
 		
 			hf.notifyUpdated();
@@ -155,9 +157,11 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			hf.setActiveArticle(article);
-			
-			initMenu();
 		}
+
+		GlobalState.getInstance().m_activeArticle = article;
+		
+		initMenu();
 		
 	}
 }

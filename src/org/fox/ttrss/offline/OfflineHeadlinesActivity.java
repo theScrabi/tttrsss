@@ -1,11 +1,17 @@
 package org.fox.ttrss.offline;
 
+import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
@@ -43,7 +49,6 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 				boolean isCat = i.getBooleanExtra("isCat", false);
 				int articleId = i.getIntExtra("article", 0);
 				String searchQuery = i.getStringExtra("searchQuery");
-				String title = i.getStringExtra("title");
 				
 				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);				
 				OfflineArticlePager af = new OfflineArticlePager(articleId, feedId, isCat);
@@ -59,8 +64,20 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 				
 				ft.commit();
+
+				Cursor c;
 				
-				setTitle(title);
+				if (isCat) {
+					c = getCatById(feedId);					
+				} else {
+					c = getFeedById(feedId);
+				}
+				
+				if (c != null) {
+					setTitle(c.getString(c.getColumnIndex("title")));
+					c.close();
+				}
+
 			}
 		} 
 		
@@ -72,8 +89,58 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 	@Override
 	public void onArticleSelected(int articleId, boolean open) {
+		SQLiteStatement stmt = getWritableDb().compileStatement(
+				"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
+						+ " = ?");
 
+		stmt.bindLong(1, articleId);
+		stmt.execute();
+		stmt.close();
 		
+		if (open) {
+			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			/* OfflineArticlePager af = new OfflineArticlePager(articleId, hf.getFeedId(), hf.getFeedIsCat());
+			af.setSearchQuery(hf.getSearchQuery());
+			
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+			ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+
+			ft.commit(); */
+			
+			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			af.setArticleId(articleId);
+			
+		} else {
+			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			hf.setActiveArticleId(articleId);
+		}
+		
+		GlobalState.getInstance().m_selectedArticleId = articleId;
+		
+		initMenu();
+		refresh();
+	}
+	
+	@Override
+	protected void initMenu() {
+		super.initMenu();
+
+		if (m_menu != null) {
+			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+
+			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.getSelectedArticleCount() == 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.getSelectedArticleCount() != 0);
+			
+			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
+		}		
 	}
 
 	@Override

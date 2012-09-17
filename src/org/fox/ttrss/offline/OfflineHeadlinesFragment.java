@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -235,6 +236,16 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		if (GlobalState.getInstance().m_selectedArticleId != 0) {			
+			m_activeArticleId = GlobalState.getInstance().m_selectedArticleId;
+			GlobalState.getInstance().m_selectedArticleId = 0;
+		}
+
+		if (m_activeArticleId != 0) {
+			setActiveArticleId(m_activeArticleId);
+		}
+
 		refresh();
 	}
 	
@@ -451,7 +462,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			int feedTitleIndex = article.getColumnIndex("feed_title");
 			
 			if (ft != null && feedTitleIndex != -1 && m_feedIsCat) {				
-				String feedTitle = article.getString(feedTitleIndex);
+				String feedTitle = article.getString(feedTitleIndex).substring(0, 30);
 				
 				if (feedTitle != null) {
 					ft.setText(feedTitle);					
@@ -613,6 +624,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
+			Log.d(TAG, articleId + " position " + getArticleIdPosition(articleId));
+			
 			if (list != null) {
 				list.setSelection(getArticleIdPosition(articleId));
 			}
@@ -665,6 +678,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	public boolean getFeedIsCat() {
 		return m_feedIsCat;
+	}
+
+	public String getSearchQuery() {
+		return m_searchQuery;
 	}
 	
 }

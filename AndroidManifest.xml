@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="TinyApplication"
+        android:name=".GlobalState"
         android:allowBackup="true"
         android:backupAgent=".util.PrefsBackupAgent"
         android:hardwareAccelerated="true"

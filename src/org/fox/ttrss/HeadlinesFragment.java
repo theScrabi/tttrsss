@@ -75,7 +75,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private ArticleList m_articles = TinyApplication.getInstance().m_loadedArticles;
+	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
@@ -293,19 +293,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onResume() {
 		super.onResume();
 
+		if (GlobalState.getInstance().m_activeArticle != null) {
+			m_activeArticle = GlobalState.getInstance().m_activeArticle;
+			GlobalState.getInstance().m_activeArticle = null;
+		}
+
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
 		}
 
-		/* if (TinyApplication.getInstance().m_activeArticle != null) {
-			m_activeArticle = TinyApplication.getInstance().m_activeArticle;
-			notifyUpdated();
-			TinyApplication.getInstance().m_activeArticle = null;
-		} */
-		
-		if (m_articles.size() == 0 || !m_feed.equals(TinyApplication.getInstance().m_activeFeed)) {
+		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			refresh(false);
-			TinyApplication.getInstance().m_activeFeed = m_feed;
+			GlobalState.getInstance().m_activeFeed = m_feed;
 		} else {
 			notifyUpdated();
 		}
@@ -366,7 +365,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		
-		if (!m_feed.equals(TinyApplication.getInstance().m_activeFeed)) {
+		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
 		}
 		
@@ -577,7 +576,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (ft != null) {
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
-					ft.setText(article.feed_title);					
+					ft.setText(article.feed_title.substring(0, 30));					
 				} else {
 					ft.setVisibility(View.GONE);
 				}

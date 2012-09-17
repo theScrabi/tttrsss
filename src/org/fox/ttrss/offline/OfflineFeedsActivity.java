@@ -42,6 +42,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			if (intent.getIntExtra("feed", -10000) != -10000 || intent.getIntExtra("category", -10000) != -10000 ||
 					intent.getIntExtra("article", -10000) != -10000) {
 				
+				if (!isCompatMode()) {
+					getActionBar().setDisplayHomeAsUpEnabled(true);
+				}
+				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 				int feedId = intent.getIntExtra("feed", -10000);
@@ -230,7 +234,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				intent.putExtra("feed", hf.getFeedId());
 				intent.putExtra("isCat", hf.getFeedIsCat());
 				intent.putExtra("article", articleId);
-				intent.putExtra("title", "FIXME-TITLE");
 		 	   
 				startActivityForResult(intent, 0);	
 			}			

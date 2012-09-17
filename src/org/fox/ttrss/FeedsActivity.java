@@ -50,6 +50,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
 				intent.getParcelableExtra("article") != null) {
 			
+				if (!isCompatMode()) {
+					getActionBar().setDisplayHomeAsUpEnabled(true);
+				}
+				
 				Feed feed = (Feed) intent.getParcelableExtra("feed");
 				FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
 				Article article = (Article) intent.getParcelableExtra("article");
@@ -71,7 +75,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				}
 				
 				if (article != null) {
-					Article original = TinyApplication.getInstance().m_loadedArticles.findById(article.id);
+					Article original = GlobalState.getInstance().m_loadedArticles.findById(article.id);
 					
 					ArticlePager ap = new ArticlePager(original != null ? original : article);
 					ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
@@ -126,7 +130,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	
 	public void onFeedSelected(Feed feed) {
-		TinyApplication.getInstance().m_loadedArticles.clear();
+		GlobalState.getInstance().m_loadedArticles.clear();
 
 		if (isSmallScreen()) {
 				

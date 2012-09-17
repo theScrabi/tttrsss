@@ -6,13 +6,16 @@ import org.fox.ttrss.types.Feed;
 
 import android.app.Application;
 
-public class TinyApplication extends Application {
-	private static TinyApplication m_singleton;
+public class GlobalState extends Application {
+	private static GlobalState m_singleton;
 	
+	public Article m_activeArticle;
 	public ArticleList m_loadedArticles = new ArticleList();
 	public Feed m_activeFeed;
+	public Article m_selectedArticle;
+	public int m_selectedArticleId;
 	
-	public static TinyApplication getInstance(){
+	public static GlobalState getInstance(){
 		return m_singleton;
 	}
 	

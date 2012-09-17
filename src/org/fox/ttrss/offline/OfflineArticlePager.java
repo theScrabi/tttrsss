@@ -190,4 +190,25 @@ public class OfflineArticlePager extends Fragment {
 	public void setSearchQuery(String searchQuery) {
 		m_searchQuery = searchQuery;
 	}
+
+	public void setArticleId(int articleId) {
+		m_articleId = articleId;		
+		
+		m_cursor.moveToFirst();
+		
+		int position = 0;
+		
+		while (!m_cursor.isLast()) {
+			if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == m_articleId) {
+				position = m_cursor.getPosition();
+				break;
+			}				
+			m_cursor.moveToNext();
+		}
+		
+		ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
+		
+		pager.setCurrentItem(position);
+		
+	}
 }
