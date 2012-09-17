@@ -28,6 +28,14 @@ public class OfflineArticlePager extends Fragment {
 	private String m_searchQuery = "";
 	private Cursor m_cursor;
 	
+	public int getFeedId() {
+		return m_feedId;
+	}
+	
+	public boolean getFeedIsCat() {
+		return m_isCat;
+	}
+	
 	public Cursor createCursor() {
 		String feedClause = null;
 		

@@ -47,6 +47,7 @@ public class OfflineActivity extends CommonActivity {
 		public void onDestroyActionMode(ActionMode mode) {
 			deselectAllArticles();
 			m_headlinesActionMode = null;
+			initMenu();
 		}
 		
 		@Override
@@ -112,6 +113,47 @@ public class OfflineActivity extends CommonActivity {
 		super.onSaveInstanceState(out);
 		
 		out.putBoolean("unreadOnly", m_unreadOnly);
+	}
+	
+	protected void selectArticles(int feedId, boolean isCat, int mode) {
+		switch (mode) {
+		case 0:
+			SQLiteStatement stmtSelectAll = null;
+			
+			if (isCat) {
+				stmtSelectAll = getWritableDb().compileStatement(
+						"UPDATE articles SET selected = 1 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+			} else {
+				stmtSelectAll = getWritableDb().compileStatement(
+								"UPDATE articles SET selected = 1 WHERE feed_id = ?");
+			}
+			
+			stmtSelectAll.bindLong(1, feedId);
+			stmtSelectAll.execute();
+			stmtSelectAll.close();
+
+			break;
+		case 1:
+
+			SQLiteStatement stmtSelectUnread = null;
+			
+			if (isCat) {
+				stmtSelectUnread = getWritableDb().compileStatement(
+						"UPDATE articles SET selected = 1 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?) AND unread = 1");
+			} else {
+				stmtSelectUnread = getWritableDb().compileStatement(
+								"UPDATE articles SET selected = 1 WHERE feed_id = ? AND unread = 1");
+			}
+			
+			stmtSelectUnread.bindLong(1, feedId);
+			stmtSelectUnread.execute();
+			stmtSelectUnread.close();
+
+			break;
+		case 2:
+			deselectAllArticles();
+			break;
+		}
 	}
 	
 	@Override
@@ -188,29 +230,8 @@ public class OfflineActivity extends CommonActivity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								switch (which) {
-								case 0:
-									SQLiteStatement stmtSelectAll = getWritableDb()
-											.compileStatement(
-													"UPDATE articles SET selected = 1 WHERE feed_id = ?");
-									stmtSelectAll.bindLong(1, ohf.getFeedId());
-									stmtSelectAll.execute();
-									stmtSelectAll.close();
-									break;
-								case 1:
-									SQLiteStatement stmtSelectUnread = getWritableDb()
-											.compileStatement(
-													"UPDATE articles SET selected = 1 WHERE feed_id = ? AND unread = 1");
-									stmtSelectUnread
-											.bindLong(1, ohf.getFeedId());
-									stmtSelectUnread.execute();
-									stmtSelectUnread.close();
-									break;
-								case 2:
-									deselectAllArticles();
-									break;
-								}
 
+								selectArticles(ohf.getFeedId(), ohf.getFeedIsCat(), which);
 								initMenu();
 								refresh();
 
@@ -225,9 +246,17 @@ public class OfflineActivity extends CommonActivity {
 		case R.id.headlines_mark_as_read:
 			if (ohf != null) {
 				int feedId = ohf.getFeedId();
+				boolean isCat = ohf.getFeedIsCat();
 				
-				SQLiteStatement stmt = getWritableDb().compileStatement(
+				SQLiteStatement stmt = null;
+				
+				if (isCat) {
+					stmt = getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+				} else {
+					stmt = getWritableDb().compileStatement(
 						"UPDATE articles SET unread = 0 WHERE feed_id = ?");
+				}
 				stmt.bindLong(1, feedId);
 				stmt.execute();
 				stmt.close();
@@ -309,12 +338,25 @@ public class OfflineActivity extends CommonActivity {
 		case R.id.catchup_above:
 			if (oap != null) {
 				int articleId = oap.getSelectedArticleId();
+				int feedId = oap.getFeedId();
+				boolean isCat = oap.getFeedIsCat();
+
+				SQLiteStatement stmt = null;
 				
-				SQLiteStatement stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET unread = 0 WHERE updated >= "
-								+ "(SELECT updated FROM articles WHERE "
-								+ BaseColumns._ID + " = ?)");
+				if (isCat) {
+					stmt = getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+				} else {
+					stmt = getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id = ?");						
+				}
+				
 				stmt.bindLong(1, articleId);
+				stmt.bindLong(2, feedId);
 				stmt.execute();
 				stmt.close();
 				

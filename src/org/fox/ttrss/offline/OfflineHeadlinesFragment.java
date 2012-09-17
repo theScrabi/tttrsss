@@ -177,7 +177,30 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				m_activity.shareArticle(articleId);
 			}
 			return true;
-		case R.id.catchup_above:			
+		case R.id.catchup_above:
+			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = null;
+				
+				if (m_feedIsCat) {
+					stmt = m_activity.getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+				} else {
+					stmt = m_activity.getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id = ?");						
+				}
+				
+				stmt.bindLong(1, articleId);
+				stmt.bindLong(2, m_feedId);
+				stmt.execute();
+				stmt.close();
+			}			
+			refresh();
 			return true;
 		default:
 			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
