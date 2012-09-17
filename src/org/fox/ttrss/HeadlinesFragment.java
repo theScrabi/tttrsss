@@ -78,7 +78,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleList m_articles = TinyApplication.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
-	
 	private OnlineActivity m_activity;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
@@ -363,7 +362,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		};
 		
 		final String sessionId = m_activity.getSessionId();
-		final boolean showUnread = m_listener.getUnreadArticlesOnly();
+		final boolean showUnread = m_activity.getUnreadArticlesOnly();
 		final boolean isCat = m_feed.is_cat;
 		int skip = 0;
 		

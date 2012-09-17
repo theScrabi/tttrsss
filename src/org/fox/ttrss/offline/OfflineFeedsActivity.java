@@ -228,6 +228,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		} else {
 			refresh();
 		}
+		
+		initMenu();
 
 	}
 

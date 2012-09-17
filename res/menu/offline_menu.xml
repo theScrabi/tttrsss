@@ -23,11 +23,11 @@
             android:title="@string/menu_all_feeds"/>
     </group>
     <group android:id="@+id/menu_group_headlines" >
-        <item
+        <!--  <item
             android:id="@+id/go_online"
             android:icon="@drawable/ic_menu_cloud"
             android:title="@string/go_online"
-            android:visible="false"/>
+            android:visible="false"/> -->
         <item
             android:id="@+id/search"
             android:actionViewClass="android.widget.SearchView"

@@ -59,6 +59,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private ArticleListAdapter m_adapter;
 	
 	private OfflineHeadlinesEventListener m_listener;
+	private OfflineActivity m_activity;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
@@ -86,7 +87,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public int getSelectedArticleCount() {
-		Cursor c = m_listener.getReadableDb().query("articles", 
+		Cursor c = m_activity.getReadableDb().query("articles", 
 				new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -101,38 +102,82 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				.getMenuInfo();
 		
 		switch (item.getItemId()) {
-		case R.id.set_labels:
-			if (true) {
-			}
-			return true;
-		case R.id.article_set_note:
-			if (true) {
-			}
-			return true;
-
 		case R.id.article_link_copy:
 			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				Cursor article = m_activity.getArticleById(articleId);
+				
+				if (article != null) {				
+					m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
+					article.close();
+				}
 			}
 			return true;
 		case R.id.selection_toggle_marked:
-			if (true) {
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET marked = NOT marked WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET marked = NOT marked WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
 			}
+			refresh();
 			return true;
 		case R.id.selection_toggle_published:
-			if (true) {				
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET published = NOT published WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET published = NOT published WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
 			}
+			refresh();
 			return true;
 		case R.id.selection_toggle_unread:
-			if (true) {
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET unread = NOT unread WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET unread = NOT unread WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
 			}
+			refresh();			
 			return true;
 		case R.id.share_article:
 			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				m_activity.shareArticle(articleId);
 			}
 			return true;
-		case R.id.catchup_above:
-			if (true) {
-			}
+		case R.id.catchup_above:			
 			return true;
 		default:
 			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
@@ -155,6 +200,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			menu.setHeaderTitle(c.getString(c.getColumnIndex("title")));
 			//c.close();
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
+			
+			menu.findItem(R.id.set_labels).setVisible(false);
+			menu.findItem(R.id.article_set_note).setVisible(false);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
@@ -189,7 +237,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
 		} else {
-			m_listener.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+			m_activity.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -205,7 +253,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_listener.isSmallScreen() || m_listener.isPortrait())
+		if (m_activity.isSmallScreen() || m_activity.isPortrait())
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 		
 		getActivity().setProgressBarIndeterminateVisibility(false);
@@ -223,11 +271,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		}
 		
 		if (m_searchQuery.equals("")) {
-			return m_listener.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 		} else {
-			return m_listener.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
@@ -237,7 +285,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_listener = (OfflineHeadlinesEventListener)activity;
+		m_listener = (OfflineHeadlinesEventListener) activity;
+		m_activity = (OfflineActivity) activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
@@ -254,7 +303,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			int articleId = cursor.getInt(0);
 			
-			if (!m_listener.isSmallScreen()) {
+			if (!m_activity.isSmallScreen()) {
 				m_activeArticleId = articleId;
 			}
 
@@ -391,7 +440,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_listener.getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -412,7 +461,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_listener.getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -490,7 +539,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
 
-						SQLiteStatement stmtUpdate = m_listener.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
@@ -500,7 +549,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						
 						refresh();
 						
-						m_listener.initMenu();
+						m_activity.initMenu();
 						
 					}
 				});

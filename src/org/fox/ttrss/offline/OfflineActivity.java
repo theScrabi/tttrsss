@@ -1,7 +1,5 @@
 package org.fox.ttrss.offline;
 
-import javax.crypto.spec.OAEPParameterSpec;
-
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
@@ -10,20 +8,23 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.ShareActionProvider;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -31,6 +32,38 @@ public class OfflineActivity extends CommonActivity {
 	protected SharedPreferences m_prefs;
 	protected Menu m_menu;
 	protected boolean m_unreadOnly;
+	
+	private ActionMode m_headlinesActionMode;
+	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+
+	private class HeadlinesActionModeCallback implements ActionMode.Callback {
+		
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+		
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			deselectAllArticles();
+			m_headlinesActionMode = null;
+		}
+		
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			
+			 MenuInflater inflater = getMenuInflater();
+	            inflater.inflate(R.menu.headlines_action_menu, menu);
+			
+			return true;
+		}
+		
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			onOptionsItemSelected(item);
+			return false;
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +78,7 @@ public class OfflineActivity extends CommonActivity {
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.online);
+		setContentView(R.layout.login);
 		
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
@@ -67,6 +100,11 @@ public class OfflineActivity extends CommonActivity {
 		if (savedInstanceState != null) {
 			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
 		}
+
+		if (!isCompatMode()) {
+			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
+		}
+
 	}
 	
 	@Override
@@ -198,7 +236,7 @@ public class OfflineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.share_article:
-			if (oap != null && android.os.Build.VERSION.SDK_INT < 14) {
+			if (android.os.Build.VERSION.SDK_INT < 14 && oap != null && android.os.Build.VERSION.SDK_INT < 14) {
 				int articleId = oap.getSelectedArticleId();
 				
 				shareArticle(articleId);
@@ -326,6 +364,68 @@ public class OfflineActivity extends CommonActivity {
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+			
+			if (android.os.Build.VERSION.SDK_INT >= 14) {			
+				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
+
+				OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				
+				if (af != null) {
+					Log.d(TAG, "setting up share provider");
+					shareProvider.setShareIntent(getShareIntent(getArticleById(af.getSelectedArticleId())));
+					
+					if (!isSmallScreen()) {
+						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+					}
+				}
+			}
+			
+			if (!isCompatMode()) {
+				MenuItem search = m_menu.findItem(R.id.search);
+				
+				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+				
+				if (hf != null) {
+					if (hf.getSelectedArticleCount() > 0 && m_headlinesActionMode == null) {
+						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+					} else if (hf.getSelectedArticleCount() == 0 && m_headlinesActionMode != null) { 
+						m_headlinesActionMode.finish();
+					}
+				}
+				
+				SearchView searchView = (SearchView) search.getActionView();
+				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+					private String query = "";
+					
+					@Override
+					public boolean onQueryTextSubmit(String query) {
+						OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
+								.findFragmentByTag(FRAG_HEADLINES);
+						
+						if (frag != null) {
+							frag.setSearchQuery(query);
+							this.query = query;
+						}
+						
+						return false;
+					}
+					
+					@Override
+					public boolean onQueryTextChange(String newText) {
+						if (newText.equals("") && !newText.equals(this.query)) {
+							OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
+									.findFragmentByTag(FRAG_HEADLINES);
+							
+							if (frag != null) {
+								frag.setSearchQuery(newText);
+								this.query = newText;
+							}
+						}
+						
+						return false;
+					}
+				});
+			}
 		}		
 	}
 	
@@ -398,7 +498,7 @@ public class OfflineActivity extends CommonActivity {
 			Intent intent = getShareIntent(article);
 			
 			startActivity(Intent.createChooser(intent,
-					getString(R.id.share_article)));
+					getString(R.string.share_article)));
 		}
 	}
 

@@ -139,7 +139,7 @@ public class OnlineActivity extends CommonActivity {
 
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
-		setContentView(R.layout.online);
+		setContentView(R.layout.login);
 
 		if (isOffline) {
 			switchOfflineSuccess();			

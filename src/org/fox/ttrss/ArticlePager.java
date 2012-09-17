@@ -104,7 +104,7 @@ public class ArticlePager extends Fragment {
 					
 					if (article.unread) {
 						article.unread = false;
-						m_onlineServices.saveArticleUnread(article);
+						m_activity.saveArticleUnread(article);
 					}
 					m_onlineServices.onArticleSelected(article, false);
 					
