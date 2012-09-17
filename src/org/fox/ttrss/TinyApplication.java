@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 

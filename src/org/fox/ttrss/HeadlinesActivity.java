@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener, ArticleEventListener {
-private final String TAG = this.getClass().getSimpleName();
+	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
 	
@@ -49,10 +49,9 @@ private final String TAG = this.getClass().getSimpleName();
 			
 			if (i.getExtras() != null) {
 				Feed feed = i.getParcelableExtra("feed");
-				Article activeArticle = i.getParcelableExtra("activeArticle");
 				Article article = i.getParcelableExtra("article");
 				
-				HeadlinesFragment hf = new HeadlinesFragment(feed, activeArticle);
+				HeadlinesFragment hf = new HeadlinesFragment(feed, article);
 				ArticlePager af = new ArticlePager(hf.getArticleById(article.id));
 
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -61,6 +60,8 @@ private final String TAG = this.getClass().getSimpleName();
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 				
 				ft.commit();
+				
+				setTitle(feed.title);
 			}
 		} 
 	}
@@ -142,7 +143,7 @@ private final String TAG = this.getClass().getSimpleName();
 			Fragment frag = new ArticlePager(article);
 
 			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
-			//ft.addToBackStack(null);
+//			ft.addToBackStack(null);
 		
 			hf.notifyUpdated();
 			
