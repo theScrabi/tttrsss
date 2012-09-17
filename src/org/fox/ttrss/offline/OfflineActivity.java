@@ -1,12 +1,20 @@
 package org.fox.ttrss.offline;
 
+import javax.crypto.spec.OAEPParameterSpec;
+
 import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -15,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -68,11 +77,226 @@ public class OfflineActivity extends CommonActivity {
 	}
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {		
+		final OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_HEADLINES);
+
+		final OfflineFeedsFragment off = (OfflineFeedsFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_FEEDS);
+		
+		final OfflineFeedCategoriesFragment ocf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_CATS);
+
+		final OfflineArticlePager oap = (OfflineArticlePager) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_ARTICLE);
+
 		switch (item.getItemId()) {
 		case R.id.go_online:
 			switchOnline();
-			return true;		
+			return true;	
+		case R.id.search:
+			if (ohf != null && isCompatMode()) {
+				Dialog dialog = new Dialog(this);
+
+				final EditText edit = new EditText(this);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.search)
+						.setPositiveButton(getString(R.string.search),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										String query = edit.getText().toString().trim();
+										
+										ohf.setSearchQuery(query);
+
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										
+										//
+
+									}
+								}).setView(edit);
+				
+				dialog = builder.create();
+				dialog.show();
+			}
+			
+			return true;
+		case R.id.preferences:
+			Intent intent = new Intent(this, PreferencesActivity.class);
+			startActivityForResult(intent, 0);
+			return true;
+		case R.id.headlines_select:
+			if (ohf != null) {
+				Dialog dialog = new Dialog(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.headlines_select_dialog);
+
+				builder.setSingleChoiceItems(new String[] {
+						getString(R.string.headlines_select_all),
+						getString(R.string.headlines_select_unread),
+						getString(R.string.headlines_select_none) }, 0,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								switch (which) {
+								case 0:
+									SQLiteStatement stmtSelectAll = getWritableDb()
+											.compileStatement(
+													"UPDATE articles SET selected = 1 WHERE feed_id = ?");
+									stmtSelectAll.bindLong(1, ohf.getFeedId());
+									stmtSelectAll.execute();
+									stmtSelectAll.close();
+									break;
+								case 1:
+									SQLiteStatement stmtSelectUnread = getWritableDb()
+											.compileStatement(
+													"UPDATE articles SET selected = 1 WHERE feed_id = ? AND unread = 1");
+									stmtSelectUnread
+											.bindLong(1, ohf.getFeedId());
+									stmtSelectUnread.execute();
+									stmtSelectUnread.close();
+									break;
+								case 2:
+									deselectAllArticles();
+									break;
+								}
+
+								initMenu();
+								refresh();
+
+								dialog.cancel();
+							}
+						});
+
+				dialog = builder.create();
+				dialog.show();
+			}
+			return true;
+		case R.id.headlines_mark_as_read:
+			if (ohf != null) {
+				int feedId = ohf.getFeedId();
+				
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 0 WHERE feed_id = ?");
+				stmt.bindLong(1, feedId);
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.share_article:
+			if (oap != null && android.os.Build.VERSION.SDK_INT < 14) {
+				int articleId = oap.getSelectedArticleId();
+				
+				shareArticle(articleId);
+			}
+			return true;
+		case R.id.toggle_marked:
+			if (oap != null) {
+				int articleId = oap.getSelectedArticleId();
+				
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET marked = NOT marked WHERE "
+								+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.selection_select_none:
+			deselectAllArticles();			
+			return true;
+		case R.id.selection_toggle_unread:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = getWritableDb()
+						.compileStatement(
+								"UPDATE articles SET unread = NOT unread WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.selection_toggle_marked:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = getWritableDb()
+						.compileStatement(
+								"UPDATE articles SET marked = NOT marked WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = getWritableDb()
+						.compileStatement(
+								"UPDATE articles SET published = NOT published WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.toggle_published:
+			if (oap != null) {
+				int articleId = oap.getSelectedArticleId();
+				
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET published = NOT published WHERE "
+								+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.catchup_above:
+			if (oap != null) {
+				int articleId = oap.getSelectedArticleId();
+				
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 0 WHERE updated >= "
+								+ "(SELECT updated FROM articles WHERE "
+								+ BaseColumns._ID + " = ?)");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
+		case R.id.set_unread:
+			if (oap != null) {
+				int articleId = oap.getSelectedArticleId();
+				
+				SQLiteStatement stmt = getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 1 WHERE "
+								+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+				
+				refresh();
+			}
+			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -187,6 +411,34 @@ public class OfflineActivity extends CommonActivity {
 		c.close();
 
 		return selected;
+	}
+
+	protected void deselectAllArticles() {
+		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+		refresh();
+	}
+
+	protected void refresh() {
+		OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_FEEDS);
+
+		if (ff != null) {
+			ff.refresh();
+		}
+
+		OfflineFeedCategoriesFragment cf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_CATS);
+
+		if (cf != null) {
+			cf.refresh();
+		}
+
+		OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_HEADLINES);
+
+		if (ohf != null) {
+			ohf.refresh();
+		} 
 	}
 
 }

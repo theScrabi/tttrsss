@@ -81,29 +81,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		initMenu();
 	}
 
-	protected void refresh() {
-		OfflineFeedsFragment ff = (OfflineFeedsFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_FEEDS);
-
-		if (ff != null) {
-			ff.refresh();
-		}
-
-		OfflineFeedCategoriesFragment cf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_CATS);
-
-		if (cf != null) {
-			cf.refresh();
-		}
-
-		/* OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_HEADLINES);
-
-		if (ohf != null) {
-			ohf.refresh();
-		} */
-	}
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

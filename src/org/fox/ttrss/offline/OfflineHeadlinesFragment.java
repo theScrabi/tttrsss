@@ -188,6 +188,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
+		} else {
+			m_listener.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);

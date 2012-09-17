@@ -95,6 +95,12 @@ public class OfflineArticlePager extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		View view = inflater.inflate(R.layout.article_pager, container, false);
 	
+		if (savedInstanceState != null) {
+			m_articleId = savedInstanceState.getInt("articleId", 0);
+			m_feedId = savedInstanceState.getInt("feedId", 0);
+			m_isCat = savedInstanceState.getBoolean("isCat", false);
+		}
+		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
 		m_cursor.moveToFirst();
@@ -130,6 +136,8 @@ public class OfflineArticlePager extends Fragment {
 
 					m_listener.onArticleSelected(articleId, false);
 					
+					m_articleId = articleId;
+					
 				}
 			}
 		});
@@ -147,4 +155,17 @@ public class OfflineArticlePager extends Fragment {
 		
 	}
 
+	public int getSelectedArticleId() {
+		return m_articleId;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle out) {
+		super.onSaveInstanceState(out);
+		
+		out.putInt("articleId", m_articleId);
+		out.putInt("feedId", m_feedId);
+		out.putBoolean("isCat", m_isCat);
+		
+	}
 }
