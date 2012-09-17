@@ -87,10 +87,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
+		switch (item.getItemId()) {		
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);

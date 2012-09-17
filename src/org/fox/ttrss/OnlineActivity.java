@@ -439,6 +439,9 @@ public class OnlineActivity extends CommonActivity {
 		final ArticlePager ap = (ArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
 		case R.id.logout:
 			logout();
 			return true;
