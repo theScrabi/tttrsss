@@ -576,7 +576,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (ft != null) {
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
-					ft.setText(article.feed_title.substring(0, 30));					
+					
+					if (article.feed_title.length() > 20)
+						ft.setText(article.feed_title.substring(0, 20) + "...");
+					else
+						ft.setText(article.feed_title);
+					
 				} else {
 					ft.setVisibility(View.GONE);
 				}

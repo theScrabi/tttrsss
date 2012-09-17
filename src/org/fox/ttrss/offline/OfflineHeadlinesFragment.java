@@ -462,7 +462,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			int feedTitleIndex = article.getColumnIndex("feed_title");
 			
 			if (ft != null && feedTitleIndex != -1 && m_feedIsCat) {				
-				String feedTitle = article.getString(feedTitleIndex).substring(0, 30);
+				String feedTitle = article.getString(feedTitleIndex);
+				
+				if (feedTitle.length() > 20)
+					feedTitle = feedTitle.substring(0, 20) + "...";
 				
 				if (feedTitle != null) {
 					ft.setText(feedTitle);					
