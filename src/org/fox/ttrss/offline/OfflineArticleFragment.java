@@ -1,25 +1,22 @@
-package org.fox.ttrss;
+package org.fox.ttrss.offline;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.Attachment;
+import org.fox.ttrss.OnlineActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -30,39 +27,33 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.webkit.WebSettings.LayoutAlgorithm;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class ArticleFragment extends Fragment {
+public class OfflineArticleFragment extends Fragment {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
-	private Article m_article;
-	private OnlineActivity m_activity;
-	//private Article m_nextArticle;
-	//private Article m_prevArticle;
+	private int m_articleId;
+	private boolean m_isCat = false; // FIXME use
+	private Cursor m_cursor;
+	private OfflineActivity m_activity;
+	
+	public OfflineArticleFragment() {
+		super();
+	}
+	
+	public OfflineArticleFragment(int articleId) {
+		super();
+		m_articleId = articleId;
+	}
 
-	public ArticleFragment() {
-		super();
-	}
-	
-	public ArticleFragment(Article article) {
-		super();
-		
-		m_article = article;
-	}
-	
-	private View.OnTouchListener m_gestureListener;
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
@@ -70,13 +61,16 @@ public class ArticleFragment extends Fragment {
 		
 		switch (item.getItemId()) {
 		case R.id.article_link_share:
-			if (true) {
-				((OnlineActivity) getActivity()).shareArticle(m_article);
-			}
+			m_activity.shareArticle(m_articleId);
 			return true;
 		case R.id.article_link_copy:
 			if (true) {
-				((OnlineActivity) getActivity()).copyToClipboard(m_article.link);
+				Cursor article = m_activity.getArticleById(m_articleId);
+				
+				if (article != null) {				
+					m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
+					article.close();
+				}
 			}
 			return true;
 		default:
@@ -90,23 +84,28 @@ public class ArticleFragment extends Fragment {
 	    ContextMenuInfo menuInfo) {
 		
 		getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
-		menu.setHeaderTitle(m_article.title);
+		menu.setHeaderTitle(m_cursor.getString(m_cursor.getColumnIndex("title")));
 		
-		super.onCreateContextMenu(menu, v, menuInfo);		
+		super.onCreateContextMenu(menu, v, menuInfo);	
 		
 	}
 	
-	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
 		if (savedInstanceState != null) {
-			m_article = savedInstanceState.getParcelable("article");
+			m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
+
+		m_cursor = m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 
+				new String[] { String.valueOf(m_articleId) }, null, null, null);
+
+		m_cursor.moveToFirst();
 		
-		if (m_article != null) {
+		if (m_cursor.isFirst()) {
 			
 			TextView title = (TextView)view.findViewById(R.id.title);
 			
@@ -114,13 +113,13 @@ public class ArticleFragment extends Fragment {
 				
 				String titleStr;
 				
-				if (m_article.title.length() > 200)
-					titleStr = m_article.title.substring(0, 200) + "...";
+				if (m_cursor.getString(m_cursor.getColumnIndex("title")).length() > 200)
+					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title")).substring(0, 200) + "...";
 				else
-					titleStr = m_article.title;
+					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
 				
 				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_article.link.trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				title.setText(Html.fromHtml("<a href=\""+m_cursor.getString(m_cursor.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
 				registerForContextMenu(title);
 			}
 			
@@ -134,7 +133,7 @@ public class ArticleFragment extends Fragment {
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(true);
 				ws.setBuiltInZoomControls(true);
-
+				
 				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 
 				TypedValue tv = new TypedValue();				
@@ -152,15 +151,27 @@ public class ArticleFragment extends Fragment {
 				} else {
 					cssOverride = "";
 				}
-				
+
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
-
-				String articleContent = m_article.content != null ? m_article.content : "";
 				
+				String articleContent = m_cursor.getString(m_cursor.getColumnIndex("content"));
 				Document doc = Jsoup.parse(articleContent);
-				
+					
 				if (doc != null) {
+					if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
+						
+						Elements images = doc.select("img");
+						
+						for (Element img : images) {
+							String url = img.attr("src");
+							
+							if (ImageCacheService.isUrlCached(url)) {						
+								img.attr("src", "file://" + ImageCacheService.getCacheFileName(url));
+							}						
+						}
+					}
+					
 					// thanks webview for crashing on <video> tag
 					Elements videos = doc.select("video");
 					
@@ -170,17 +181,19 @@ public class ArticleFragment extends Fragment {
 					articleContent = doc.toString();
 				}
 				
-				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justify;" : "";
+				view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
+				
+				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justified" : "";
 				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
-					cssOverride += "body { "+align+" font-size : 14px; } ";
+					cssOverride += "body { "+align+"; font-size : 14px; } ";
 					break;
 				case 1:
-					cssOverride += "body { "+align+" font-size : 18px; } ";
+					cssOverride += "body { "+align+"; font-size : 18px; } ";
 					break;
 				case 2:
-					cssOverride += "body { "+align+" font-size : 21px; } ";
+					cssOverride += "body { "+align+"; font-size : 21px; } ";
 					break;		
 				}
 				
@@ -191,76 +204,9 @@ public class ArticleFragment extends Fragment {
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
-					/* "img { max-width : 98%; height : auto; }" + */
 					"</style>" +
 					"</head>" +
-					"<body>" + articleContent;
-				
-				final Spinner spinner = (Spinner) view.findViewById(R.id.attachments);
-				
-				if (m_article.attachments != null && m_article.attachments.size() != 0) {
-					ArrayList<Attachment> spinnerArray = new ArrayList<Attachment>();
-					
-					ArrayAdapter<Attachment> spinnerArrayAdapter = new ArrayAdapter<Attachment>(
-				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
-					
-					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					
-					for (Attachment a : m_article.attachments) {
-						if (a.content_type != null && a.content_url != null) {
-							
-							try {
-								URL url = new URL(a.content_url.trim());
-								
-								if (a.content_type.indexOf("image") != -1) {
-									content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
-								}
-								
-								spinnerArray.add(a);
-
-							} catch (MalformedURLException e) {
-								//
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							
-						}					
-					}
-					
-					spinner.setAdapter(spinnerArrayAdapter);
-					
-					Button attachmentsView = (Button) view.findViewById(R.id.attachment_view);
-					
-					attachmentsView.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Attachment attachment = (Attachment) spinner.getSelectedItem();
-							
-							Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(attachment.content_url));
-							startActivity(browserIntent);
-						}
-					});
-					
-					Button attachmentsCopy = (Button) view.findViewById(R.id.attachment_copy);
-					
-					attachmentsCopy.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Attachment attachment = (Attachment) spinner.getSelectedItem();
-
-							if (attachment != null) {
-								m_activity.copyToClipboard(attachment.content_url);
-							}
-						}
-					});
-					
-				} else {
-					view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
-				}
-				
-				content += "</body></html>";
+					"<body>" + articleContent + "</body></html>";
 					
 				try {
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
@@ -268,14 +214,13 @@ public class ArticleFragment extends Fragment {
 					e.printStackTrace();
 				}
 				
-				if (m_activity.isSmallScreen())
-					web.setOnTouchListener(m_gestureListener);
+			
 			}
 			
 			TextView dv = (TextView)view.findViewById(R.id.date);
 			
 			if (dv != null) {
-				Date d = new Date(m_article.updated * 1000L);
+				Date d = new Date(m_cursor.getInt(m_cursor.getColumnIndex("updated")) * 1000L);
 				SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
 				dv.setText(df.format(d));
 			}
@@ -283,19 +228,13 @@ public class ArticleFragment extends Fragment {
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
-				if (m_article.feed_title != null) {
-					tagv.setText(m_article.feed_title);
-				} else if (m_article.tags != null) {
-					String tagsStr = "";
-				
-					for (String tag : m_article.tags)
-						tagsStr += tag + ", ";
-					
-					tagsStr = tagsStr.replaceAll(", $", "");
-				
+				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
+
+				if (feedTitleIndex != -1 && m_isCat) {
+					tagv.setText(m_cursor.getString(feedTitleIndex));
+				} else {				
+					String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
 					tagv.setText(tagsStr);
-				} else {
-					tagv.setVisibility(View.GONE);
 				}
 			}			
 		} 
@@ -305,24 +244,26 @@ public class ArticleFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();		
+		super.onDestroy();	
+		
+		m_cursor.close();
 	}
 	
 	@Override
 	public void onSaveInstanceState (Bundle out) {		
 		super.onSaveInstanceState(out);
-
-		out.putParcelable("article", m_article);
+		
+		out.putInt("articleId", m_articleId);
 	}
-
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_activity = (OnlineActivity)activity;
-		//m_article = m_onlineServices.getSelectedArticle(); 
+
+		m_activity = (OfflineActivity) activity;
 	}
+
 
 }

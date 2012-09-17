@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ShareActionProvider;
 
-public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener, ArticleEventListener {
+public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;

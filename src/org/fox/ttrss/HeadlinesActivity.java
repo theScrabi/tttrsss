@@ -18,7 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener, ArticleEventListener {
+public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
