@@ -121,7 +121,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && hf.getSelectedArticles().size() == 0);
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && hf.getSelectedArticles().size() != 0);
 			
-			m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
+			if (isSmallScreen()) {
+				m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
+			} else {
+				m_menu.findItem(R.id.update_headlines).setVisible(false);
+			}
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -204,9 +208,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		case R.id.update_feeds:
 			refresh();
 			return true;
-		case R.id.update_headlines:
-			refresh();
-			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -284,5 +285,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void catchupFeed(final Feed feed) {
 		super.catchupFeed(feed);
 		refresh();
+	}
+
+	@Override
+	public void onHeadlinesLoaded() {
+		// TODO Auto-generated method stub
+		
 	}
 }

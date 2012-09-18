@@ -71,6 +71,13 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	}
 	
 	@Override
+	protected void refresh() {
+		super.refresh();
+		
+		
+	}
+	
+	@Override
 	protected void loginSuccess() {
 		Log.d(TAG, "loginSuccess");
 		
@@ -144,9 +151,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			af.setActiveArticle(article);
-
-//			ft.replace(R.id.article_fragment, frag, FRAG_ARTICLE);
-//			ft.addToBackStack(null);
 		
 			hf.notifyUpdated();
 			
@@ -160,5 +164,25 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		initMenu();
 		
+	}
+
+	@Override
+	public void onHeadlinesLoaded() {
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		
+		if (hf != null) {
+			Article article = hf.getAllArticles().get(0);
+
+			hf.setActiveArticle(article);
+
+			ArticlePager af = new ArticlePager(article);
+			
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+
+			ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+			
+			ft.commit();
+		}
 	}
 }

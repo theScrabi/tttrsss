@@ -26,7 +26,7 @@ public class ArticlePager extends Fragment {
 	private PagerAdapter m_adapter;
 	private HeadlinesEventListener m_onlineServices;
 	private Article m_article;
-	private ArticleList m_articles;
+	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private OnlineActivity m_activity;
 	private String m_searchQuery = "";
 	
@@ -73,7 +73,6 @@ public class ArticlePager extends Fragment {
 		View view = inflater.inflate(R.layout.article_pager, container, false);
 	
 		if (savedInstanceState != null) {
-			m_articles = savedInstanceState.getParcelable("articles");
 			m_article = savedInstanceState.getParcelable("article");
 		}
 		
@@ -178,7 +177,6 @@ public class ArticlePager extends Fragment {
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 		
-		out.putParcelable("articles", m_articles);
 		out.putParcelable("article", m_article);
 	}
 	
@@ -188,8 +186,6 @@ public class ArticlePager extends Fragment {
 		
 		m_onlineServices = (HeadlinesEventListener)activity;
 		m_activity = (OnlineActivity)activity;
-		
-		m_articles = GlobalState.getInstance().m_loadedArticles;
 	}
 	
 	@Override
@@ -212,5 +208,4 @@ public class ArticlePager extends Fragment {
 		
 		pager.setCurrentItem(position);
 	}
-
 }

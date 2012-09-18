@@ -357,6 +357,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				super.onPostExecute(result);
 				m_refreshInProgress = false;
 				m_adapter.notifyDataSetChanged();
+				m_listener.onHeadlinesLoaded();
 			}
 		};
 		

@@ -664,7 +664,10 @@ public class OnlineActivity extends CommonActivity {
 			if (ap != null && ap.getSelectedArticle() != null) {
 				editArticleLabels(ap.getSelectedArticle());				
 			}
-			return true;			
+			return true;
+		case R.id.update_headlines:
+			refresh();
+			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -1079,7 +1082,6 @@ public class OnlineActivity extends CommonActivity {
 			
 			m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 			m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
-			m_menu.findItem(R.id.update_headlines).setVisible(false);
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(m_apiLevel >= 2);
