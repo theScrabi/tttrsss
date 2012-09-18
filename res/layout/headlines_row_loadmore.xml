@@ -4,18 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="?headlineNormalBackground"
-    android:gravity="center_vertical"
+    android:gravity="center"
+    android:padding="5dp"
     android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/loadmore_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:padding="10dp" >
-
         <ProgressBar
             android:id="@+id/loadmore_progress"
             style="?android:attr/progressBarStyleSmall"
@@ -29,6 +21,5 @@
             android:layout_height="wrap_content"
             android:textColor="?headlineTextColor"
             android:text="@string/loading_message" />
-    </LinearLayout>
 
 </LinearLayout>

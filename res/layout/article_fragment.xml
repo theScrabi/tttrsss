@@ -1,18 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
+    android:padding="5sp"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
-
-    <LinearLayout
-        xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/article_holder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="5sp" >
+    android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/article_header"
@@ -98,6 +89,5 @@
                 android:layout_weight="0"
                 android:text="@string/attachment_copy" />
         </LinearLayout>
-    </LinearLayout>
-
+    
 </LinearLayout>
