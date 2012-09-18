@@ -121,6 +121,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && hf.getSelectedArticles().size() == 0);
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && hf.getSelectedArticles().size() != 0);
 			
+			m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
+			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {
@@ -191,26 +193,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		onCatSelected(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));		
 	}
 	
-	private void refresh() {
-		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-		
-		if (cf != null) {
-			cf.refresh(false);
-		}
-
-		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
-		
-		if (ff != null) {
-			ff.refresh(false);
-		}
-
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-		
-		if (hf != null) {
-			hf.refresh(false);
-		}
-	}
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -220,6 +202,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			refresh();
 			return true;
 		case R.id.update_feeds:
+			refresh();
+			return true;
+		case R.id.update_headlines:
 			refresh();
 			return true;
 		default:

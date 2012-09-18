@@ -40,6 +40,12 @@
         <group android:id="@+id/menu_group_headlines" >
 
             <item
+                android:id="@+id/update_headlines"
+                android:icon="@android:drawable/ic_menu_rotate"
+                android:showAsAction="ifRoom"
+                android:title="@string/update_headlines"/>            
+            
+            <item
                 android:id="@+id/search"
                 android:actionViewClass="android.widget.SearchView"
                 android:icon="@android:drawable/ic_menu_search"

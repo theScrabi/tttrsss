@@ -1079,6 +1079,7 @@ public class OnlineActivity extends CommonActivity {
 			
 			m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
 			m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
+			m_menu.findItem(R.id.update_headlines).setVisible(false);
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(m_apiLevel >= 2);
@@ -1143,6 +1144,26 @@ public class OnlineActivity extends CommonActivity {
 				});
 			}
 		}		
+	}
+	
+	protected void refresh() {
+		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
+		if (cf != null) {
+			cf.refresh(false);
+		}
+
+		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+		
+		if (ff != null) {
+			ff.refresh(false);
+		}
+
+		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		
+		if (hf != null) {
+			hf.refresh(false);
+		}
 	}
 	
 	private class LoginRequest extends ApiRequest {
