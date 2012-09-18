@@ -523,7 +523,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			
 				if (iconPath.exists()) {
 					for (Feed feed : params[0])	 {
-						if (feed.id > 0 && feed.has_icon) {
+						if (feed.id > 0 && feed.has_icon && !feed.is_cat) {
 							File outputFile = new File(iconPath.getAbsolutePath() + "/" + feed.id + ".ico");
 							String fetchUrl = m_baseUrl + "/" + feed.id + ".ico";
 							
