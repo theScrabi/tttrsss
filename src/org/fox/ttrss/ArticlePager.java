@@ -109,7 +109,7 @@ public class ArticlePager extends Fragment {
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
-					if (position == m_adapter.getCount() - 5) {
+					if (m_activity.isSmallScreen() && position == m_adapter.getCount() - 5) {
 						Log.d(TAG, "loading more articles...");
 						loadMoreArticles();
 					}
