@@ -31,7 +31,7 @@ public class OfflineActivity extends CommonActivity {
 
 	protected SharedPreferences m_prefs;
 	protected Menu m_menu;
-	protected boolean m_unreadOnly;
+	protected boolean m_unreadOnly = true;
 	
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
