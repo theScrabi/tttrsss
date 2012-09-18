@@ -46,7 +46,7 @@ public class OfflineDownloadService extends Service {
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
 
-	private static final int OFFLINE_SYNC_SEQ = 40;
+	private static final int OFFLINE_SYNC_SEQ = 100;
 	private static final int OFFLINE_SYNC_MAX = 500;
 	
 	private SQLiteDatabase m_writableDb;
