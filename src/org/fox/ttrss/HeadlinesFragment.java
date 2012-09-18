@@ -352,24 +352,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void refresh(boolean append) {
 		if (m_activity != null) {
 			m_refreshInProgress = true;
+
+			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+				append = false;
+			}
+
+			final boolean fappend = append;
+			final String sessionId = m_activity.getSessionId();
+			final boolean showUnread = m_activity.getUnreadArticlesOnly();
+			final boolean isCat = m_feed.is_cat;
 			
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
 				protected void onPostExecute(JsonElement result) {
 					super.onPostExecute(result);
 					m_refreshInProgress = false;
 					m_adapter.notifyDataSetChanged();
-					m_listener.onHeadlinesLoaded();
+					m_listener.onHeadlinesLoaded(fappend);
 				}
 			};
 			
-			final String sessionId = m_activity.getSessionId();
-			final boolean showUnread = m_activity.getUnreadArticlesOnly();
-			final boolean isCat = m_feed.is_cat;
 			int skip = 0;
-			
-			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
-				append = false;
-			}
 			
 			if (append) {
 				for (Article a : m_articles) {

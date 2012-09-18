@@ -7,5 +7,5 @@ public interface HeadlinesEventListener {
 	void onArticleListSelectionChange(ArticleList m_selectedArticles);
 	void onArticleSelected(Article article);
 	void onArticleSelected(Article article, boolean open);
-	void onHeadlinesLoaded();
+	void onHeadlinesLoaded(boolean appended);	
 }

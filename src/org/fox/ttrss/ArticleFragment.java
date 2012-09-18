@@ -211,9 +211,10 @@ public class ArticleFragment extends Fragment {
 							
 							try {
 								URL url = new URL(a.content_url.trim());
+								String strUrl = url.toString().trim();
 								
-								if (a.content_type.indexOf("image") != -1) {
-									content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
+								if (a.content_type.indexOf("image") != -1 && !articleContent.contains(strUrl)) {
+									content += "<br/><img src=\"" + strUrl.replace("\"", "\\\"") + "\">";
 								}
 								
 								spinnerArray.add(a);

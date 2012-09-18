@@ -288,7 +288,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	@Override
-	public void onHeadlinesLoaded() {
+	public void onHeadlinesLoaded(boolean appended) {
 		// TODO Auto-generated method stub
 		
 	}

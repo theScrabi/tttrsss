@@ -148,13 +148,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 			
-			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-			
 			af.setActiveArticle(article);
-		
-			hf.notifyUpdated();
 			
 			ft.commit();
 		} else {
@@ -169,22 +164,26 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	}
 
 	@Override
-	public void onHeadlinesLoaded() {
+	public void onHeadlinesLoaded(boolean appended) {
 		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 		
-		if (hf != null) {
-			Article article = hf.getAllArticles().get(0);
+		if (hf != null && !appended) {
+			Article article = hf.getActiveArticle();
+						
+			if (article == null) {
+				article = hf.getAllArticles().get(0);
 
-			hf.setActiveArticle(article);
+				hf.setActiveArticle(article);
 
-			ArticlePager af = new ArticlePager(article);
-			
-			FragmentTransaction ft = getSupportFragmentManager()
-					.beginTransaction();
+				ArticlePager af = new ArticlePager(article);
+				
+				FragmentTransaction ft = getSupportFragmentManager()
+						.beginTransaction();
 
-			ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
-			
-			ft.commit();
+				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+				
+				ft.commit();
+			}
 		}
 	}
 }
