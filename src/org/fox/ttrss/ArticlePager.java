@@ -159,6 +159,7 @@ public class ArticlePager extends Fragment {
 				put("offset", String.valueOf(0));
 				put("view_mode", showUnread ? "adaptive" : "all_articles");
 				put("skip", String.valueOf(fskip));
+				put("include_nested", "true");
 				
 				if (feed.is_cat) put("is_cat", "true");
 				
