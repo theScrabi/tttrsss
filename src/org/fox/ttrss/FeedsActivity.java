@@ -6,6 +6,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.util.AppRater;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -97,6 +98,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				}
 				
 				ft.commit();
+				
+				AppRater.appLaunched(this);
 			}
 		}
 	}

@@ -5,29 +5,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedList;
-import org.fox.ttrss.util.EasySSLSocketFactory;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,10 +32,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -541,46 +538,72 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			return null;
 		}
 		
+		private void trustAllHosts() {
+		    X509TrustManager easyTrustManager = new X509TrustManager() {
+
+		        public void checkClientTrusted(
+		        		X509Certificate[] chain,
+		                String authType) throws CertificateException {
+		            // Oh, I am easy!
+		        }
+
+		        public void checkServerTrusted(
+		        		X509Certificate[] chain,
+		                String authType) throws CertificateException {
+		            // Oh, I am easy!
+		        }
+
+		        public X509Certificate[] getAcceptedIssuers() {
+		            return null;
+		        }
+
+		    };
+
+		    // Create a trust manager that does not validate certificate chains
+		    TrustManager[] trustAllCerts = new TrustManager[] {easyTrustManager};
+
+		    // Install the all-trusting trust manager
+		    try {
+		        SSLContext sc = SSLContext.getInstance("TLS");
+
+		        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+		        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+		    } catch (Exception e) {
+		            e.printStackTrace();
+		    }
+		}
+		
+		private void disableConnectionReuseIfNecessary() {
+		    // HTTP connection reuse which was buggy pre-froyo
+		    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+		        System.setProperty("http.keepAlive", "false");
+		    }
+		}
+		
 		protected void downloadFile(String fetchUrl, String outputFile) {
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
 			
+			disableConnectionReuseIfNecessary();
+			
 			if (m_prefs.getBoolean("ssl_trust_any", false)) {
-				client.getConnectionManager().getSchemeRegistry().register(new Scheme("https", new EasySSLSocketFactory(), 443));
+				trustAllHosts();				
 			}
-
-			HttpGet httpGet = new HttpGet(fetchUrl);
-			HttpContext context = null;
-
-			String httpLogin = m_prefs.getString("http_login", "");
-			String httpPassword = m_prefs.getString("http_password", "");
-			
-			if (httpLogin.length() > 0) {
-
-				URL targetUrl;
-				try {
-					targetUrl = new URL(fetchUrl);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-					client.close();
-					return;
-				}
-				
-				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
-				CredentialsProvider cp = new BasicCredentialsProvider();
-				context = new BasicHttpContext();
-				
-				cp.setCredentials(
-		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-		                new UsernamePasswordCredentials(httpLogin, httpPassword));
-
-				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
-			}
-			
 
 			try {
-				HttpResponse execute = client.execute(httpGet, context);
+				URL url = new URL(fetchUrl);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+				String httpLogin = m_prefs.getString("http_login", "");
+				String httpPassword = m_prefs.getString("http_password", "");
 				
-				InputStream content = execute.getEntity().getContent();
+				if (httpLogin.length() > 0) {
+					conn.setRequestProperty("Authorization", "Basic " + 
+						Base64.encode((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
+				}
+
+				InputStream content = conn.getInputStream();
 
 				BufferedInputStream is = new BufferedInputStream(content, 1024);
 				FileOutputStream fos = new FileOutputStream(outputFile);

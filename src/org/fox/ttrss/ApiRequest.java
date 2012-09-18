@@ -2,31 +2,27 @@ package org.fox.ttrss;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.fox.ttrss.util.EasySSLSocketFactory;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import java.security.cert.X509Certificate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -109,73 +105,61 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		Gson gson = new Gson();
 		
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
+		byte[] postData = null;
+		
+		try {
+			postData = requestStr.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			m_lastError = ApiError.OTHER_ERROR;
+			e.printStackTrace();
+			return null;
+		}
+		
+		disableConnectionReuseIfNecessary();
 		
 		if (m_transportDebugging) Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
 		
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
+		if (m_trustAny) trustAllHosts();
 		
-		if (m_trustAny) {
-			client.getConnectionManager().getSchemeRegistry().register(new Scheme("https", new EasySSLSocketFactory(), 443));
-		}
-
+		URL url;
+		
 		try {
-
-			HttpPost httpPost;
-			
-			try {
-				httpPost = new HttpPost(m_api + "/api/");
-			} catch (IllegalArgumentException e) {
-				m_lastError = ApiError.INVALID_URL;
-				e.printStackTrace();
-				client.close();
-				return null;
-			} catch (Exception e) {
-				m_lastError = ApiError.OTHER_ERROR;
-				e.printStackTrace();
-				client.close();
-				return null;
-			}
-	
-			HttpContext context = null;
-
+			url = new URL(m_api + "/api/");			
+		} catch (Exception e) {
+			m_lastError = ApiError.INVALID_URL;
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {		
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		
 			String httpLogin = m_prefs.getString("http_login", "").trim();
 			String httpPassword = m_prefs.getString("http_password", "").trim();
 			
 			if (httpLogin.length() > 0) {
 				if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
-	
-				URL targetUrl;
-				try {
-					targetUrl = new URL(m_api);
-				} catch (MalformedURLException e) {
-					m_lastError = ApiError.INVALID_URL;
-					e.printStackTrace();
-					client.close();
-					return null;
-				}
 				
-				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
-				CredentialsProvider cp = new BasicCredentialsProvider();
-				context = new BasicHttpContext();
-				
-				cp.setCredentials(
-		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-		                new UsernamePasswordCredentials(httpLogin, httpPassword));
-
-				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
+				conn.setRequestProperty("Authorization", "Basic " + 
+						Base64.encode((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
 			}
 			
-			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
-			HttpResponse execute = client.execute(httpPost, context);
-			
-			m_httpStatusCode = execute.getStatusLine().getStatusCode();
+			conn.setDoInput(true); 
+            conn.setDoOutput(true); 
+            conn.setUseCaches(false); 
+            conn.setRequestMethod("POST"); 
+		    conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
 
-			switch (m_httpStatusCode) {
+		    OutputStream out = conn.getOutputStream();
+		    out.write(postData);
+		    out.close();
+
+		    m_httpStatusCode = conn.getResponseCode();
+
+		    switch (m_httpStatusCode) {
 			case 200:
-				InputStream content = execute.getEntity().getContent();
-	
 				BufferedReader buffer = new BufferedReader(
-						new InputStreamReader(content), 8192);
+						new InputStreamReader(conn.getInputStream()), 8192);
 	
 				String s = "";				
 				String response = "";
@@ -193,7 +177,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				
 				m_apiStatusCode = resultObj.get("status").getAsInt();
 				
-				client.close();
+				conn.disconnect();
 				
 				switch (m_apiStatusCode) {
 				case API_STATUS_OK:
@@ -233,9 +217,9 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				m_lastError = ApiError.HTTP_OTHER_ERROR;
 				break;
 			}
-			
-			client.close();
-			return null;
+		    
+		    conn.disconnect();
+		    return null;
 		} catch (javax.net.ssl.SSLPeerUnverifiedException e) {
 			m_lastError = ApiError.SSL_REJECTED;
 			e.printStackTrace();
@@ -250,7 +234,50 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			e.printStackTrace();
 		}
 		
-		client.close();
 		return null;
+	}
+	
+	private static void trustAllHosts() {
+	    X509TrustManager easyTrustManager = new X509TrustManager() {
+
+	        public void checkClientTrusted(
+	        		X509Certificate[] chain,
+	                String authType) throws CertificateException {
+	            // Oh, I am easy!
+	        }
+
+	        public void checkServerTrusted(
+	        		X509Certificate[] chain,
+	                String authType) throws CertificateException {
+	            // Oh, I am easy!
+	        }
+
+	        public X509Certificate[] getAcceptedIssuers() {
+	            return null;
+	        }
+
+	    };
+
+	    // Create a trust manager that does not validate certificate chains
+	    TrustManager[] trustAllCerts = new TrustManager[] {easyTrustManager};
+
+	    // Install the all-trusting trust manager
+	    try {
+	        SSLContext sc = SSLContext.getInstance("TLS");
+
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+	    } catch (Exception e) {
+	            e.printStackTrace();
+	    }
+	}
+	
+	private static void disableConnectionReuseIfNecessary() {
+	    // HTTP connection reuse which was buggy pre-froyo
+	    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+	        System.setProperty("http.keepAlive", "false");
+	    }
 	}
 }

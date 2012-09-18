@@ -467,7 +467,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				if (feedTitle.length() > 20)
 					feedTitle = feedTitle.substring(0, 20) + "...";
 				
-				if (feedTitle != null) {
+				if (feedTitle.length() > 0) {
 					ft.setText(feedTitle);					
 				} else {
 					ft.setVisibility(View.GONE);
