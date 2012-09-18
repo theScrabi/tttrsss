@@ -350,65 +350,67 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean append) {
-		m_refreshInProgress = true;
-		
-		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
-			protected void onPostExecute(JsonElement result) {
-				super.onPostExecute(result);
-				m_refreshInProgress = false;
-				m_adapter.notifyDataSetChanged();
-				m_listener.onHeadlinesLoaded();
-			}
-		};
-		
-		final String sessionId = m_activity.getSessionId();
-		final boolean showUnread = m_activity.getUnreadArticlesOnly();
-		final boolean isCat = m_feed.is_cat;
-		int skip = 0;
-		
-		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
-			append = false;
-		}
-		
-		if (append) {
-			for (Article a : m_articles) {
-				if (a.unread) ++skip;
+		if (m_activity != null) {
+			m_refreshInProgress = true;
+			
+			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+				protected void onPostExecute(JsonElement result) {
+					super.onPostExecute(result);
+					m_refreshInProgress = false;
+					m_adapter.notifyDataSetChanged();
+					m_listener.onHeadlinesLoaded();
+				}
+			};
+			
+			final String sessionId = m_activity.getSessionId();
+			final boolean showUnread = m_activity.getUnreadArticlesOnly();
+			final boolean isCat = m_feed.is_cat;
+			int skip = 0;
+			
+			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+				append = false;
 			}
 			
-			if (skip == 0) skip = m_articles.size();
-		} else {
-			setLoadingStatus(R.string.blank, true);
-		}
-		
-		final int fskip = skip;
-		
-		req.setOffset(skip);
-		
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "getHeadlines");
-				put("sid", sessionId);
-				put("feed_id", String.valueOf(m_feed.id));
-				put("show_content", "true");
-				put("include_attachments", "true");
-				put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
-				put("offset", String.valueOf(0));
-				put("view_mode", showUnread ? "adaptive" : "all_articles");
-				put("skip", String.valueOf(fskip));
-				put("include_nested", "true");
-				
-				if (isCat) put("is_cat", "true");
-				
-				if (m_searchQuery != null && m_searchQuery.length() != 0) {
-					put("search", m_searchQuery);
-					put("search_mode", "");
-					put("match_on", "both");
+			if (append) {
+				for (Article a : m_articles) {
+					if (a.unread) ++skip;
 				}
-			}			 
-		};
-
-		req.execute(map);
-	}
+				
+				if (skip == 0) skip = m_articles.size();
+			} else {
+				setLoadingStatus(R.string.blank, true);
+			}
+			
+			final int fskip = skip;
+			
+			req.setOffset(skip);
+			
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("op", "getHeadlines");
+					put("sid", sessionId);
+					put("feed_id", String.valueOf(m_feed.id));
+					put("show_content", "true");
+					put("include_attachments", "true");
+					put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
+					put("offset", String.valueOf(0));
+					put("view_mode", showUnread ? "adaptive" : "all_articles");
+					put("skip", String.valueOf(fskip));
+					put("include_nested", "true");
+					
+					if (isCat) put("is_cat", "true");
+					
+					if (m_searchQuery != null && m_searchQuery.length() != 0) {
+						put("search", m_searchQuery);
+						put("search_mode", "");
+						put("match_on", "both");
+					}
+				}			 
+			};
+	
+			req.execute(map);
+		}
+	}		
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {

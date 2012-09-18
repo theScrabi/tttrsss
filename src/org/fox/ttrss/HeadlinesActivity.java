@@ -121,6 +121,12 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
+			
+			m_menu.findItem(R.id.search).setVisible(false);
+			
+			if (!isCompatMode()) {
+				m_menu.findItem(R.id.headlines_select).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			}
 		}		
 	}
 	
