@@ -99,10 +99,16 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		@Override
 		public int compare(Feed a, Feed b) {
-			if (a.id >= 0 && b.id >= 0)
+			if (a.is_cat && b.is_cat)
+				return a.title.compareTo(b.title);
+			else if (a.is_cat && !b.is_cat)
+				return -1;
+			else if (!a.is_cat && b.is_cat)
+				return 1;
+			else if (a.id >= 0 && b.id >= 0)
 				return a.title.compareTo(b.title);
 			else
-				return a.id - b.id;
+				return a.id - b.id;			
 		}
 		
 	}
@@ -110,9 +116,15 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	class FeedOrderComparator implements Comparator<Feed> {
 
 		@Override
-		public int compare(Feed a, Feed b) {
+		public int compare(Feed a, Feed b) {			
 			if (a.id >= 0 && b.id >= 0)
-				if (a.order_id != 0 && b.order_id != 0)
+				if (a.is_cat && b.is_cat)
+					return a.title.compareTo(b.title);
+				else if (a.is_cat && !b.is_cat)
+					return -1;
+				else if (!a.is_cat && b.is_cat) 
+					return 1;
+				else if (a.order_id != 0 && b.order_id != 0)
 					return a.order_id - b.order_id;
 				else
 					return a.title.compareTo(b.title);
@@ -223,7 +235,16 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		if (list != null) {
 			Feed feed = (Feed)list.getItemAtPosition(position);
-			m_activity.onFeedSelected(feed);
+			
+			if (feed.is_cat) {
+				FeedCategory cat = new FeedCategory();
+				cat.id = feed.id;
+				cat.title = feed.title;
+				
+				m_activity.onCatSelected(cat);				
+			} else {				
+				m_activity.onFeedSelected(feed);
+			}
 			
 			if (!m_activity.isSmallScreen())
 				m_selectedFeed = feed;
@@ -256,6 +277,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				{
 					put("op", "getFeeds");
 					put("sid", sessionId);
+					put("include_nested", "true");
 					put("cat_id", String.valueOf(catId));
 					if (unreadOnly) {
 						put("unread_only", String.valueOf(unreadOnly));

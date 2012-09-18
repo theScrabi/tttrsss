@@ -224,6 +224,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				{
 					put("op", "getCategories");
 					put("sid", sessionId);
+					put("enable_nested", "true");
 					if (unreadOnly) {
 						put("unread_only", String.valueOf(unreadOnly));
 					}
