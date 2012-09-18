@@ -24,7 +24,7 @@ public class ArticlePager extends Fragment {
 
 	private final String TAG = "ArticlePager";
 	private PagerAdapter m_adapter;
-	private HeadlinesEventListener m_onlineServices;
+	private HeadlinesEventListener m_listener;
 	private Article m_article;
 	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private OnlineActivity m_activity;
@@ -105,7 +105,7 @@ public class ArticlePager extends Fragment {
 						article.unread = false;
 						m_activity.saveArticleUnread(article);
 					}
-					m_onlineServices.onArticleSelected(article, false);
+					m_listener.onArticleSelected(article, false);
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
@@ -184,7 +184,7 @@ public class ArticlePager extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 		
-		m_onlineServices = (HeadlinesEventListener)activity;
+		m_listener = (HeadlinesEventListener)activity;
 		m_activity = (OnlineActivity)activity;
 	}
 	
