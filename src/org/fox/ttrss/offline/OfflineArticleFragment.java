@@ -3,7 +3,6 @@ package org.fox.ttrss.offline;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
@@ -29,10 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebSettings.LayoutAlgorithm;
-import android.widget.TextView;
+import android.webkit.WebView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.TextView;
 
 public class OfflineArticleFragment extends Fragment {
 	@SuppressWarnings("unused")

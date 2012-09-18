@@ -7,8 +7,6 @@ import java.util.TimeZone;
 
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;

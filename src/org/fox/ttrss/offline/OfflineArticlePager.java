@@ -4,7 +4,6 @@ import org.fox.ttrss.R;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;

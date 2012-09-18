@@ -100,15 +100,6 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		if (open) {
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			/* OfflineArticlePager af = new OfflineArticlePager(articleId, hf.getFeedId(), hf.getFeedIsCat());
-			af.setSearchQuery(hf.getSearchQuery());
-			
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-			ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
-
-			ft.commit(); */
-			
 			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			af.setArticleId(articleId);
@@ -140,6 +131,8 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
+			
+			m_menu.findItem(R.id.search).setVisible(false);
 		}		
 	}
 
