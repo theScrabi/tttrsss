@@ -41,7 +41,7 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_menu_database"
-            android:showAsAction="ifRoom"
+            android:showAsAction=""
             android:title="@string/headlines_select"/>
         <!-- <item
                 android:id="@+id/close_feed"
