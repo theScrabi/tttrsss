@@ -1,6 +1,6 @@
 package org.fox.ttrss;
 
-import java.util.HashMap;
+import java.util.Date;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -8,6 +8,7 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.AppRater;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,18 +16,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.ShareActionProvider;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
+	protected long m_lastRefresh = 0; 
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -160,7 +159,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			HeadlinesFragment hf = new HeadlinesFragment(feed);
 			ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 			
-			ft.commit();		
+			ft.commit();
+
+			Date date = new Date();
+
+			if (date.getTime() - m_lastRefresh > 10000) {
+				m_lastRefresh = date.getTime();
+				refresh(false);
+			}
 		}
 	}
 	
@@ -282,7 +288,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		onArticleSelected(article, true);		
 	}
 
-	@SuppressWarnings("unchecked")
 	public void catchupFeed(final Feed feed) {
 		super.catchupFeed(feed);
 		refresh();

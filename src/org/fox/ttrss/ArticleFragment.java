@@ -39,10 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ArticleFragment extends Fragment {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -65,8 +63,8 @@ public class ArticleFragment extends Fragment {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo(); */
 		
 		switch (item.getItemId()) {
 		case R.id.article_link_share:

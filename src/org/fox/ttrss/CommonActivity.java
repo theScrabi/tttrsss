@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
+import android.annotation.SuppressLint;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -118,6 +119,7 @@ public class CommonActivity extends FragmentActivity {
 		return m_compatMode;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean isPortrait() {
 		Display display = getWindowManager().getDefaultDisplay(); 
 		
@@ -127,9 +129,10 @@ public class CommonActivity extends FragmentActivity {
 	    return width < height;
 	}
 
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
 	public void copyToClipboard(String str) {
 		if (android.os.Build.VERSION.SDK_INT < 11) {				
-			@SuppressWarnings("deprecation")
 			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(str);
 		} else {

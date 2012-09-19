@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -30,11 +31,9 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 
 public class OfflineArticleFragment extends Fragment {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -55,8 +54,8 @@ public class OfflineArticleFragment extends Fragment {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo(); */
 		
 		switch (item.getItemId()) {
 		case R.id.article_link_share:
@@ -89,6 +88,7 @@ public class OfflineArticleFragment extends Fragment {
 		
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 

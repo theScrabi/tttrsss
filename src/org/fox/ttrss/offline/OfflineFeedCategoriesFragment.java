@@ -1,8 +1,6 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.types.FeedCategory;
 
 import android.app.Activity;
 import android.content.Context;

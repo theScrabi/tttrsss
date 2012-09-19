@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -8,10 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TimeZone;
 
-import org.fox.ttrss.ApiRequest.ApiError;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Attachment;
@@ -54,10 +51,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
@@ -83,6 +77,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public Drawable getDrawable(String source) {
 			return new BitmapDrawable();

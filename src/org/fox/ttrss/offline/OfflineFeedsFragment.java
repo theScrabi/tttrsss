@@ -3,7 +3,6 @@ package org.fox.ttrss.offline;
 import java.io.File;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.types.Feed;
 
 import android.app.Activity;
 import android.content.Context;

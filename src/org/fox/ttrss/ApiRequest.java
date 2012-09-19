@@ -286,6 +286,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	    }
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static void disableConnectionReuseIfNecessary() {
 	    // HTTP connection reuse which was buggy pre-froyo
 	    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {

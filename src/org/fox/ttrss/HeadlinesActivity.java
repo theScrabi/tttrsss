@@ -4,6 +4,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	protected SharedPreferences m_prefs;
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager

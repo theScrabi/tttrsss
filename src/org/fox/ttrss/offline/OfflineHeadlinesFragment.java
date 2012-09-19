@@ -62,6 +62,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public Drawable getDrawable(String source) {
 			return new BitmapDrawable();

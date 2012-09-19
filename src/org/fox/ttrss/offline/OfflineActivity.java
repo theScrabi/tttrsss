@@ -4,6 +4,7 @@ import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -36,6 +37,7 @@ public class OfflineActivity extends CommonActivity {
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
 
+	@SuppressLint("NewApi")
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
 		@Override
@@ -161,11 +163,11 @@ public class OfflineActivity extends CommonActivity {
 		final OfflineHeadlinesFragment ohf = (OfflineHeadlinesFragment) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_HEADLINES);
 
-		final OfflineFeedsFragment off = (OfflineFeedsFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_FEEDS);
+		/* final OfflineFeedsFragment off = (OfflineFeedsFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_FEEDS); */
 		
-		final OfflineFeedCategoriesFragment ocf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAG_CATS);
+		/* final OfflineFeedCategoriesFragment ocf = (OfflineFeedCategoriesFragment) getSupportFragmentManager()
+				.findFragmentByTag(FRAG_CATS); */
 
 		final OfflineArticlePager oap = (OfflineArticlePager) getSupportFragmentManager()
 				.findFragmentByTag(FRAG_ARTICLE);
@@ -403,6 +405,7 @@ public class OfflineActivity extends CommonActivity {
 		return m_unreadOnly;
 	}
 	
+	@SuppressLint("NewApi")
 	protected void initMenu() {
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_headlines, false);

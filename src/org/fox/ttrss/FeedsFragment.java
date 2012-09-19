@@ -575,6 +575,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		    }
 		}
 		
+		@SuppressWarnings("deprecation")
 		private void disableConnectionReuseIfNecessary() {
 		    // HTTP connection reuse which was buggy pre-froyo
 		    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {

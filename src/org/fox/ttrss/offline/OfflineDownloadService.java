@@ -87,6 +87,7 @@ public class OfflineDownloadService extends Service {
 		initDatabase();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_downloading_title), System.currentTimeMillis());
@@ -158,9 +159,9 @@ public class OfflineDownloadService extends Service {
 		m_readableDb = dh.getReadableDatabase();
 	}
 	
-	private synchronized SQLiteDatabase getReadableDb() {
+	/* private synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
-	}
+	} */
 	
 	private synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;

@@ -48,6 +48,7 @@ public class OfflineUploadService extends IntentService {
 		m_nmgr.cancel(NOTIFY_UPLOADING);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_uploading_title), System.currentTimeMillis());

@@ -1,9 +1,9 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.GlobalState;
-import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.R;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,10 +16,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
+	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -98,12 +100,9 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		stmt.close();
 		
 		if (open) {
-			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			
 			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			af.setArticleId(articleId);
-			
 		} else {
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			

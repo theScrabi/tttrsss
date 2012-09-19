@@ -25,6 +25,7 @@ import android.os.Environment;
 
 public class ImageCacheService extends IntentService {
 
+	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final int NOTIFY_DOWNLOADING = 1;
@@ -123,6 +124,7 @@ public class ImageCacheService extends IntentService {
 	    }
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_downloading_title), System.currentTimeMillis());

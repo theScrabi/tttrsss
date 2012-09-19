@@ -39,7 +39,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;

@@ -2,7 +2,6 @@ package org.fox.ttrss;
 
 import java.util.HashMap;
 
-import org.fox.ttrss.ApiRequest.ApiError;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;

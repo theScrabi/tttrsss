@@ -12,6 +12,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -74,6 +75,7 @@ public class OnlineActivity extends CommonActivity {
 	};
 	
 	
+	@TargetApi(11)
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
 		@Override
@@ -1157,7 +1159,7 @@ public class OnlineActivity extends CommonActivity {
 		}		
 	}
 	
-	protected void refresh() {
+	protected void refresh(boolean includeHeadlines) {
 		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
 		if (cf != null) {
@@ -1170,11 +1172,17 @@ public class OnlineActivity extends CommonActivity {
 			ff.refresh(false);
 		}
 
-		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		if (includeHeadlines) {
+			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 		
-		if (hf != null) {
-			hf.refresh(false);
+			if (hf != null) {
+				hf.refresh(false);
+			}
 		}
+	}
+	
+	protected void refresh() {
+		refresh(true);
 	}
 	
 	private class LoginRequest extends ApiRequest {

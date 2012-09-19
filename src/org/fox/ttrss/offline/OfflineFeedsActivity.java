@@ -1,8 +1,8 @@
 package org.fox.ttrss.offline;
 
-import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.R;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.view.View;
 public class OfflineFeedsActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
