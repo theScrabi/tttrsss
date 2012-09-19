@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.fox.ttrss.ApiRequest.ApiError;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Attachment;
@@ -364,10 +365,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
 				protected void onPostExecute(JsonElement result) {
-					super.onPostExecute(result);
-					m_refreshInProgress = false;
-					m_adapter.notifyDataSetChanged();
-					m_listener.onHeadlinesLoaded(fappend);
+					super.onPostExecute(result);	
+					
+					if (result != null) {
+						m_refreshInProgress = false;
+						m_adapter.notifyDataSetChanged();
+						m_listener.onHeadlinesLoaded(fappend);
+					} else {
+						if (m_lastError == ApiError.LOGIN_FAILED) {
+							m_activity.login();
+						} else {
+							setLoadingStatus(getErrorMessage(), false);
+						}
+					}
 				}
 			};
 			

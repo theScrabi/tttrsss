@@ -61,29 +61,29 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 	
-				if (feed != null) {
-					HeadlinesFragment hf = new HeadlinesFragment(feed);
-					ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
-					
-					setTitle(feed.title);
-				}
-				
-				if (cat != null) {
-					FeedsFragment ff = new FeedsFragment(cat);
-					ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-					
-					setTitle(cat.title);
-				}
-				
 				if (article != null) {
 					Article original = GlobalState.getInstance().m_loadedArticles.findById(article.id);
 					
-					ArticlePager ap = new ArticlePager(original != null ? original : article);
+					ArticlePager ap = new ArticlePager(original != null ? original : article, feed);
 					ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
 					
 					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
 					
 					setTitle(intent.getStringExtra("feedTitle"));
+				} else {
+					if (feed != null) {
+						HeadlinesFragment hf = new HeadlinesFragment(feed);
+						ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
+						
+						setTitle(feed.title);
+					}
+					
+					if (cat != null) {
+						FeedsFragment ff = new FeedsFragment(cat);
+						ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+						
+						setTitle(cat.title);
+					}
 				}
 	
 				ft.commit();
@@ -254,6 +254,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				intent.putExtra("apiLevel", m_apiLevel);
 				
 				intent.putExtra("feedTitle", hf.getFeed().title);
+				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
 				intent.putExtra("searchQuery", hf.getSearchQuery());
 		 	   

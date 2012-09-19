@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import java.util.HashMap;
 
+import org.fox.ttrss.ApiRequest.ApiError;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
@@ -29,6 +30,7 @@ public class ArticlePager extends Fragment {
 	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private OnlineActivity m_activity;
 	private String m_searchQuery = "";
+	private Feed m_feed;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 		
@@ -58,10 +60,11 @@ public class ArticlePager extends Fragment {
 		super();
 	}
 	
-	public ArticlePager(Article article) {
+	public ArticlePager(Article article, Feed feed) {
 		super();
-		
+				
 		m_article = article;
+		m_feed = feed;
 	}
 
 	public void setSearchQuery(String searchQuery) {
@@ -74,6 +77,7 @@ public class ArticlePager extends Fragment {
 	
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
+			m_feed = savedInstanceState.getParcelable("feed");
 		}
 		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
@@ -111,7 +115,7 @@ public class ArticlePager extends Fragment {
 					
 					if (m_activity.isSmallScreen() && position == m_adapter.getCount() - 5) {
 						Log.d(TAG, "loading more articles...");
-						loadMoreArticles();
+						refresh(true);
 					}
 				}
 			}
@@ -121,27 +125,43 @@ public class ArticlePager extends Fragment {
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })
-	private void loadMoreArticles() {
+	private void refresh(boolean append) {
 		m_activity.setLoadingStatus(R.string.blank, true);
+		
+		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+			append = false;
+		}
 		
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
 			protected void onPostExecute(JsonElement result) {
 				super.onPostExecute(result);
-				m_adapter.notifyDataSetChanged();
+				
+				if (result != null) {				
+					m_adapter.notifyDataSetChanged();
+				} else {
+					if (m_lastError == ApiError.LOGIN_FAILED) {
+						m_activity.login();
+					} else {
+						m_activity.toast(getErrorMessage());
+						//setLoadingStatus(getErrorMessage(), false);
+					}	
+				}
 			}
 		};
 		
-		final Feed feed = GlobalState.getInstance().m_activeFeed;
+		final Feed feed = m_feed;
 		
 		final String sessionId = m_activity.getSessionId();
 		final boolean showUnread = m_activity.getUnreadArticlesOnly();
 		int skip = 0;
 		
-		for (Article a : m_articles) {
-			if (a.unread) ++skip;
-		}
+		if (append) {
+			for (Article a : m_articles) {
+				if (a.unread) ++skip;
+			}
 			
-		if (skip == 0) skip = m_articles.size();
+			if (skip == 0) skip = m_articles.size();
+		}
 		
 		final int fskip = skip;
 		
@@ -178,6 +198,7 @@ public class ArticlePager extends Fragment {
 		super.onSaveInstanceState(out);
 		
 		out.putParcelable("article", m_article);
+		out.putParcelable("feed", m_feed);
 	}
 	
 	@Override
@@ -191,6 +212,13 @@ public class ArticlePager extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+			refresh(false);
+			GlobalState.getInstance().m_activeFeed = m_feed;
+		} else {
+			m_adapter.notifyDataSetChanged();
+		}
 		
 		m_activity.initMenu();
 	}

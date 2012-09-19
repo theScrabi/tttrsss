@@ -1203,6 +1203,10 @@ public class OnlineActivity extends CommonActivity {
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
+								} else {
+									setLoadingStatus(getErrorMessage(), false);
+									loginFailure();
+									return;
 								}
 
 								Log.d(TAG, "Received API level: " + m_apiLevel);

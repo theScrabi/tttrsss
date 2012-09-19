@@ -49,7 +49,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				String searchQuery = i.getStringExtra("searchQuery");
 				
 				HeadlinesFragment hf = new HeadlinesFragment(feed, article);
-				ArticlePager af = new ArticlePager(hf.getArticleById(article.id));
+				ArticlePager af = new ArticlePager(hf.getArticleById(article.id), feed);
 
 				hf.setSearchQuery(searchQuery);
 				af.setSearchQuery(searchQuery);
@@ -171,7 +171,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 				hf.setActiveArticle(article);
 
-				ArticlePager af = new ArticlePager(article);
+				ArticlePager af = new ArticlePager(article, hf.getFeed());
 				
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
