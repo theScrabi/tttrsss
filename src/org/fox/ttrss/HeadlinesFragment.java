@@ -250,7 +250,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
 		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
-		
+
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}

@@ -181,8 +181,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			menu.setHeaderTitle(feed.title);
 
 		if (!m_activity.isSmallScreen()) {
-			menu.findItem(R.id.browse_headlines).setVisible(false);
-			menu.findItem(R.id.browse_feeds).setVisible(false);
+			menu.findItem(R.id.browse_articles).setVisible(false);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		

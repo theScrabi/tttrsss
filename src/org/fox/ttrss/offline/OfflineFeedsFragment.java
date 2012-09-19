@@ -85,6 +85,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		if (cursor != null) 
 			menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex("title")));
 
+		if (!m_activity.isSmallScreen()) {
+			menu.findItem(R.id.browse_articles).setVisible(false);
+		}
+		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}

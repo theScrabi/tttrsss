@@ -145,6 +145,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (cat != null) 
 			menu.setHeaderTitle(cat.title);
 		
+		if (!m_activity.isSmallScreen()) {
+			menu.findItem(R.id.browse_articles).setVisible(false);
+		}
+
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
