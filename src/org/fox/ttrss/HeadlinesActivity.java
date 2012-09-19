@@ -108,7 +108,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	protected void initMenu() {
 		super.initMenu();
 
-		if (m_menu != null && m_sessionId != null) {
+		if (m_menu != null && getSessionId() != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);

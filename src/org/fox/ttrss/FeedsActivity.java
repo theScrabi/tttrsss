@@ -107,7 +107,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected void initMenu() {
 		super.initMenu();
 		
-		if (m_menu != null && m_sessionId != null) {
+		if (m_menu != null && getSessionId() != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
@@ -143,8 +143,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (isSmallScreen()) {
 				
 			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-			intent.putExtra("sessionId", m_sessionId);
-			intent.putExtra("apiLevel", m_apiLevel);
 			intent.putExtra("feed", feed);
 	 	   
 			startActivityForResult(intent, 0);
@@ -177,8 +175,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (isSmallScreen()) {
 			
 				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-				intent.putExtra("sessionId", m_sessionId);
-				intent.putExtra("apiLevel", m_apiLevel);				
 				intent.putExtra("category", cat);
 		 	   
 				startActivityForResult(intent, 0);
@@ -256,9 +252,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (isSmallScreen()) {
 
 				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-				intent.putExtra("sessionId", m_sessionId);
-				intent.putExtra("apiLevel", m_apiLevel);
-				
 				intent.putExtra("feedTitle", hf.getFeed().title);
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
@@ -269,9 +262,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 			} else {
 				Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
-				intent.putExtra("sessionId", m_sessionId);
-				intent.putExtra("apiLevel", m_apiLevel);
-				
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
 				intent.putExtra("searchQuery", hf.getSearchQuery());

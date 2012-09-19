@@ -15,6 +15,8 @@ public class GlobalState extends Application {
 	public int m_selectedArticleId;
 	public boolean m_unreadOnly = true;
 	public boolean m_unreadArticlesOnly = true;
+	public String m_sessionId;
+	public int m_apiLevel;
 	
 	public static GlobalState getInstance(){
 		return m_singleton;

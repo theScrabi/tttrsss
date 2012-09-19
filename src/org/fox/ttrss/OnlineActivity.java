@@ -45,9 +45,7 @@ import com.google.gson.reflect.TypeToken;
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	protected String m_sessionId;
 	protected SharedPreferences m_prefs;
-	protected int m_apiLevel = 0;
 	protected Menu m_menu;
 
 	protected int m_offlineModeStatus = 0;
@@ -112,7 +110,15 @@ public class OnlineActivity extends CommonActivity {
 			return false;
 		}
 	};
-		
+	
+	protected String getSessionId() {
+		return GlobalState.getInstance().m_sessionId;
+	}
+
+	protected void setSessionId(String sessionId) {
+		GlobalState.getInstance().m_sessionId = sessionId;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -144,25 +150,17 @@ public class OnlineActivity extends CommonActivity {
 			switchOfflineSuccess();			
 		} else {
 			
-			if (getIntent().getExtras() != null) {
+			/* if (getIntent().getExtras() != null) {
 				Intent i = getIntent();
-				
-				m_sessionId = i.getStringExtra("sessionId");
-				m_apiLevel = i.getIntExtra("apiLevel", -1);
-			}
+			} */
 			
 			if (savedInstanceState != null) {
-				m_sessionId = savedInstanceState.getString("sessionId");
-				m_apiLevel = savedInstanceState.getInt("apiLevel");
 				m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
 			}
 			
 			if (!isCompatMode()) {
 				m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 			}
-			
-			Log.d(TAG, "m_sessionId=" + m_sessionId);
-			Log.d(TAG, "m_apiLevel=" + m_apiLevel);
 		}
 	}
 
@@ -214,7 +212,7 @@ public class OnlineActivity extends CommonActivity {
 								public void onClick(DialogInterface dialog,
 										int which) {
 	
-									if (m_sessionId != null) {
+									if (getSessionId() != null) {
 										Log.d(TAG, "offline: starting");
 										
 										m_offlineModeStatus = 1;
@@ -222,7 +220,7 @@ public class OnlineActivity extends CommonActivity {
 										Intent intent = new Intent(
 												OnlineActivity.this,
 												OfflineDownloadService.class);
-										intent.putExtra("sessionId", m_sessionId);
+										intent.putExtra("sessionId", getSessionId());
 	
 										startService(intent);
 									}
@@ -297,7 +295,7 @@ public class OnlineActivity extends CommonActivity {
 				OnlineActivity.this,
 				OfflineUploadService.class);
 		
-		intent.putExtra("sessionId", m_sessionId);
+		intent.putExtra("sessionId", getSessionId());
 
 		startService(intent);
 	}
@@ -310,7 +308,7 @@ public class OnlineActivity extends CommonActivity {
 					public void onClick(DialogInterface dialog,
 							int which) {
 
-						if (m_sessionId != null) {
+						if (getSessionId() != null) {
 							Log.d(TAG, "offline: stopping");
 							
 							m_offlineModeStatus = 0;
@@ -344,8 +342,6 @@ public class OnlineActivity extends CommonActivity {
 	
 	public void restart() {
 		Intent refresh = new Intent(OnlineActivity.this, OnlineActivity.class);
-		refresh.putExtra("sessionId", m_sessionId);
-		refresh.putExtra("apiLevel", m_apiLevel);
 		startActivity(refresh);
 		finish();
 	}
@@ -418,8 +414,6 @@ public class OnlineActivity extends CommonActivity {
 		initMenu();
 	
 		Intent intent = new Intent(OnlineActivity.this, FeedsActivity.class);
-		intent.putExtra("sessionId", m_sessionId);
-		intent.putExtra("apiLevel", m_apiLevel);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
  	   
 		startActivityForResult(intent, 0);
@@ -513,7 +507,7 @@ public class OnlineActivity extends CommonActivity {
 				@SuppressWarnings("serial")
 				HashMap<String, String> map = new HashMap<String, String>() {
 					{
-						put("sid", m_sessionId);
+						put("sid", getSessionId());
 						put("op", "updateArticle");
 						put("article_ids", articleIds);
 						put("mode", "0");
@@ -733,7 +727,7 @@ public class OnlineActivity extends CommonActivity {
 									@SuppressWarnings("serial")
 									HashMap<String, String> map = new HashMap<String, String>() {
 										{
-											put("sid", m_sessionId);
+											put("sid", getSessionId());
 											put("op", "setArticleLabel");
 											put("label_id", String.valueOf(labelId));
 											put("article_ids", String.valueOf(articleId));
@@ -763,7 +757,7 @@ public class OnlineActivity extends CommonActivity {
 		@SuppressWarnings("serial")
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "getLabels");
 				put("article_id", String.valueOf(articleId));
 			}
@@ -773,7 +767,7 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected void logout() {
-		m_sessionId = null;
+		setSessionId(null);
 		
 		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
 		setLoadingStatus(R.string.login_ready, false);
@@ -782,7 +776,7 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected void loginFailure() {
-		m_sessionId = null;
+		setSessionId(null);
 		initMenu();
 		
 		if (hasOfflineData()) {
@@ -814,8 +808,6 @@ public class OnlineActivity extends CommonActivity {
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 		
-		out.putString("sessionId", m_sessionId);
-		out.putInt("apiLevel", m_apiLevel);
 		out.putInt("offlineModeStatus", m_offlineModeStatus);
 	}
 	
@@ -830,7 +822,7 @@ public class OnlineActivity extends CommonActivity {
 
 		registerReceiver(m_broadcastReceiver, filter);
 		
-		if (m_sessionId == null) {
+		if (getSessionId() == null) {
 			login();
 		} else {
 			loginSuccess();
@@ -853,12 +845,12 @@ public class OnlineActivity extends CommonActivity {
 		return true;
 	}
 	
-	protected String getSessionId() {
-		return m_sessionId;
+	protected int getApiLevel() {
+		return GlobalState.getInstance().m_apiLevel;
 	}
 	
-	protected int getApiLevel() {
-		return m_apiLevel;
+	protected void setApiLevel(int apiLevel) {
+		GlobalState.getInstance().m_apiLevel = apiLevel;
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })
@@ -867,7 +859,7 @@ public class OnlineActivity extends CommonActivity {
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.unread ? "1" : "0");
@@ -888,7 +880,7 @@ public class OnlineActivity extends CommonActivity {
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.marked ? "1" : "0");
@@ -910,7 +902,7 @@ public class OnlineActivity extends CommonActivity {
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", article.published ? "1" : "0");
@@ -931,7 +923,7 @@ public class OnlineActivity extends CommonActivity {
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", String.valueOf(article.id));
 				put("mode", "1");
@@ -995,7 +987,7 @@ public class OnlineActivity extends CommonActivity {
 		@SuppressWarnings("serial")
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "catchupFeed");
 				put("feed_id", String.valueOf(feed.id));
 				if (feed.is_cat)
@@ -1013,7 +1005,7 @@ public class OnlineActivity extends CommonActivity {
 		@SuppressWarnings("serial")
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
@@ -1031,7 +1023,7 @@ public class OnlineActivity extends CommonActivity {
 		@SuppressWarnings("serial")
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
@@ -1050,7 +1042,7 @@ public class OnlineActivity extends CommonActivity {
 		@SuppressWarnings("serial")
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
-				put("sid", m_sessionId);
+				put("sid", getSessionId());
 				put("op", "updateArticle");
 				put("article_ids", articlesToIdString(articles));
 				put("mode", "2");
@@ -1064,7 +1056,7 @@ public class OnlineActivity extends CommonActivity {
 	
 	protected void initMenu() {
 		if (m_menu != null) {			
-			if (m_sessionId != null) {
+			if (getSessionId() != null) {
 				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
 				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
 			} else {
@@ -1077,11 +1069,11 @@ public class OnlineActivity extends CommonActivity {
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 			
-			m_menu.findItem(R.id.set_labels).setEnabled(m_apiLevel >= 1);
-			m_menu.findItem(R.id.article_set_note).setEnabled(m_apiLevel >= 1);
+			m_menu.findItem(R.id.set_labels).setEnabled(getApiLevel() >= 1);
+			m_menu.findItem(R.id.article_set_note).setEnabled(getApiLevel() >= 1);
 			
 			MenuItem search = m_menu.findItem(R.id.search);
-			search.setEnabled(m_apiLevel >= 2);
+			search.setEnabled(getApiLevel() >= 2);
 			
 			if (android.os.Build.VERSION.SDK_INT >= 14) {			
 				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
@@ -1182,18 +1174,17 @@ public class OnlineActivity extends CommonActivity {
 				try {
 					JsonObject content = result.getAsJsonObject();
 					if (content != null) {
-						m_sessionId = content.get("session_id").getAsString();
+						setSessionId(content.get("session_id").getAsString());
 
 						Log.d(TAG, "Authenticated!");
 
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {
-								m_apiLevel = 0;
+								setApiLevel(0);
 
 								if (result != null) {
 									try {
-										m_apiLevel = result.getAsJsonObject()
-													.get("level").getAsInt();
+										setApiLevel(result.getAsJsonObject().get("level").getAsInt());
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
@@ -1203,7 +1194,7 @@ public class OnlineActivity extends CommonActivity {
 									return;
 								}
 
-								Log.d(TAG, "Received API level: " + m_apiLevel);
+								Log.d(TAG, "Received API level: " + getApiLevel());
 
 								loginSuccess();
 								return;
@@ -1213,7 +1204,7 @@ public class OnlineActivity extends CommonActivity {
 						@SuppressWarnings("serial")
 						HashMap<String, String> map = new HashMap<String, String>() {
 							{
-								put("sid", m_sessionId);
+								put("sid", getSessionId());
 								put("op", "getApiLevel");
 							}
 						};
@@ -1230,7 +1221,7 @@ public class OnlineActivity extends CommonActivity {
 				}
 			}
 
-			m_sessionId = null;
+			setSessionId(null);
 			setLoadingStatus(getErrorMessage(), false);
 			
 			loginFailure();
