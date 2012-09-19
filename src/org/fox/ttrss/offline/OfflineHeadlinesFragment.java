@@ -322,7 +322,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		m_activity = (OfflineActivity) activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
+		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override

@@ -433,6 +433,16 @@ public class OnlineActivity extends CommonActivity {
 		if (hasPendingOfflineData())
 			syncOfflineData();
 		
+		List<PackageInfo> pkgs = getPackageManager()
+				.getInstalledPackages(0);
+
+		for (PackageInfo p : pkgs) {
+			if ("org.fox.ttrss.key".equals(p.packageName)) {
+				toast(R.string.donate_thanks);
+				break;
+			}
+		}
+		
 		finish();
 	}
 	
@@ -879,11 +889,9 @@ public class OnlineActivity extends CommonActivity {
 			if ("org.fox.ttrss.key".equals(p.packageName)) {
 				Log.d(TAG, "license apk found");
 				menu.findItem(R.id.donate).setVisible(false);
-				toast(R.string.donate_thanks);
 				break;
 			}
 		}
-
 		
 		return true;
 	}

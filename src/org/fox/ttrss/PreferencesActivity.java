@@ -20,12 +20,12 @@ public class PreferencesActivity extends PreferenceActivity {
 
 		findPreference("justify_article_text").setEnabled(!prefs.getBoolean("combined_mode", false));
 		
-		findPreference("combined_mode").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {			
+		/* findPreference("combined_mode").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {				
 				findPreference("justify_article_text").setEnabled(!newValue.toString().equals("true"));				
 				return true;
 			}
-		});
+		}); */
 	}
 }

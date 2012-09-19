@@ -315,7 +315,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_activity = (OnlineActivity) activity;
 		m_listener = (HeadlinesEventListener) activity;
 
-		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
+		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override
