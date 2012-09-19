@@ -19,6 +19,8 @@ import java.security.cert.X509Certificate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -34,7 +36,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private final String TAG = this.getClass().getSimpleName();
 
 	public enum ApiError { NO_ERROR, HTTP_UNAUTHORIZED, HTTP_FORBIDDEN, HTTP_NOT_FOUND, 
-		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED, INVALID_URL, INCORRECT_USAGE };
+		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, 
+		API_UNKNOWN, LOGIN_FAILED, INVALID_URL, INCORRECT_USAGE, NETWORK_UNAVAILABLE };
 	
 	public static final int API_STATUS_OK = 0;
 	public static final int API_STATUS_ERR = 1;
@@ -94,6 +97,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			return R.string.error_invalid_api_url;
 		case INCORRECT_USAGE:
 			return R.string.error_api_incorrect_usage;
+		case NETWORK_UNAVAILABLE:
+			return R.string.error_network_unavailable;
 		default:
 			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
 			return R.string.error_unknown;
@@ -103,6 +108,11 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	@Override
 	protected JsonElement doInBackground(HashMap<String, String>... params) {
 
+		if (!isNetworkAvailable()) {
+			m_lastError = ApiError.NETWORK_UNAVAILABLE;
+			return null;
+		}
+		
 		Gson gson = new Gson();
 		
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
@@ -282,4 +292,17 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	        System.setProperty("http.keepAlive", "false");
 	    }
 	}
+	
+	protected boolean isNetworkAvailable() {
+	    ConnectivityManager cm = (ConnectivityManager) 
+	      m_context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    
+	    // if no network is available networkInfo will be null
+	    // otherwise check if we are connected
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
+	} 
 }
