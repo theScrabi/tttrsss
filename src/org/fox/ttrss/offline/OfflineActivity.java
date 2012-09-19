@@ -417,7 +417,6 @@ public class OfflineActivity extends CommonActivity {
 				OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 				
 				if (af != null) {
-					Log.d(TAG, "setting up share provider");
 					shareProvider.setShareIntent(getShareIntent(getArticleById(af.getSelectedArticleId())));
 					
 					if (!isSmallScreen()) {

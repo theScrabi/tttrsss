@@ -1132,7 +1132,6 @@ public class OnlineActivity extends CommonActivity {
 				ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 				
 				if (af != null && af.getSelectedArticle() != null) {
-					Log.d(TAG, "setting up share provider");
 					shareProvider.setShareIntent(getShareIntent(af.getSelectedArticle()));
 					
 					if (!isSmallScreen()) {
