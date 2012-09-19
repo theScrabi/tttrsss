@@ -132,7 +132,7 @@ public class ArticleFragment extends Fragment {
 				web.setWebChromeClient(new WebChromeClient() {					
 					@Override
 	                public void onProgressChanged(WebView view, int progress) {
-	                	m_activity.setProgress(progress * 10000);
+	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
 	                	if (progress == 100) {
 	                		m_activity.setProgressBarVisibility(false);
 	                	}

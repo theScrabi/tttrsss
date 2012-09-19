@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
@@ -125,6 +126,16 @@ public class OfflineArticleFragment extends Fragment {
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				
+				web.setWebChromeClient(new WebChromeClient() {					
+					@Override
+	                public void onProgressChanged(WebView view, int progress) {
+	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
+	                	if (progress == 100) {
+	                		m_activity.setProgressBarVisibility(false);
+	                	}
+	                }
+				});
 				
 				String content;
 				String cssOverride = "";

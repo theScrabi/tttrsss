@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
@@ -79,6 +80,10 @@ public class OfflineActivity extends CommonActivity {
 		}
 		
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_PROGRESS);
+
+		setProgressBarVisibility(false);
 		
 		setContentView(R.layout.login);
 		
