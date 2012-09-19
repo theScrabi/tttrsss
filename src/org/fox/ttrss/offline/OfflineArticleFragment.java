@@ -12,8 +12,11 @@ import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -24,6 +27,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,8 +122,24 @@ public class OfflineArticleFragment extends Fragment {
 				else
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
 				
-				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_cursor.getString(m_cursor.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
+				
+				title.setText(titleStr);
+				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				title.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, 
+									Uri.parse(link.trim()));
+								startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							m_activity.toast(R.string.error_other_error);
+						}
+					}
+				});
+				
 				registerForContextMenu(title);
 			}
 			

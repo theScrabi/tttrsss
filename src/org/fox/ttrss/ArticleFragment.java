@@ -17,6 +17,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -121,9 +122,23 @@ public class ArticleFragment extends Fragment {
 				else
 					titleStr = m_article.title;
 				
-				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_article.link.trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
-				registerForContextMenu(title);
+				title.setText(titleStr);
+				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				title.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, 
+									Uri.parse(m_article.link.trim()));
+								startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							m_activity.toast(R.string.error_other_error);
+						}
+					}
+				});
+				
+				registerForContextMenu(title); 
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
