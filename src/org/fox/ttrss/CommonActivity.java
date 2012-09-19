@@ -26,11 +26,26 @@ public class CommonActivity extends FragmentActivity {
 
 	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
-	private boolean m_smallTablet = false;
 
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
+	}
+	
+	public boolean getUnreadArticlesOnly() {
+		return GlobalState.getInstance().m_unreadArticlesOnly;
+	}
+	
+	public boolean getUnreadOnly() {
+		return GlobalState.getInstance().m_unreadOnly;
+	}
+	
+	public void setUnreadOnly(boolean unread) {
+		GlobalState.getInstance().m_unreadOnly = unread;
+	}
+
+	public void setUnreadArticlesOnly(boolean unread) {
+		GlobalState.getInstance().m_unreadArticlesOnly = unread;
 	}
 	
 	public void setLoadingStatus(int status, boolean showProgress) {
@@ -53,23 +68,6 @@ public class CommonActivity extends FragmentActivity {
 		toast.show();
 	}
 
-	protected void detectSmallTablet() {
-
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-		float inHeight = displayMetrics.heightPixels / displayMetrics.ydpi;
-		float inWidth = displayMetrics.widthPixels / displayMetrics.xdpi;
-		
-		float inDiag = FloatMath.sqrt(inHeight * inHeight + inWidth * inWidth);
-		
-		if (inDiag < 9) {
-			m_smallTablet = true;
-		}
-		
-		Log.d(TAG, "m_smallTabletMode=" + m_smallTablet + " " + inDiag);
-	}
-	
 	private void initDatabase() {
 		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
 		
@@ -91,7 +89,6 @@ public class CommonActivity extends FragmentActivity {
 
 		m_readableDb.close();
 		m_writableDb.close();
-
 	}
 
 	@Override
@@ -102,8 +99,6 @@ public class CommonActivity extends FragmentActivity {
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
-		detectSmallTablet();
-		
 		super.onCreate(savedInstanceState);
 	}
 	
@@ -111,10 +106,6 @@ public class CommonActivity extends FragmentActivity {
 		return m_smallScreenMode;
 	}
 	
-	public boolean isSmallTablet() {
-		return m_smallTablet;
-	}
-
 	public boolean isCompatMode() {
 		return m_compatMode;
 	}

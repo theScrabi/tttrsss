@@ -90,7 +90,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.show_feeds:
-			m_unreadOnly = !m_unreadOnly;
+			setUnreadOnly(!getUnreadOnly());
 			initMenu();
 			refresh();
 			return true;

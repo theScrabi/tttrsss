@@ -32,7 +32,6 @@ public class OfflineActivity extends CommonActivity {
 
 	protected SharedPreferences m_prefs;
 	protected Menu m_menu;
-	protected boolean m_unreadOnly = true;
 	
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
@@ -100,9 +99,9 @@ public class OfflineActivity extends CommonActivity {
 			}
 		}
 		
-		if (savedInstanceState != null) {
-			m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
-		}
+		/* if (savedInstanceState != null) {
+
+		} */
 
 		if (!isCompatMode()) {
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
@@ -113,8 +112,6 @@ public class OfflineActivity extends CommonActivity {
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
-		out.putBoolean("unreadOnly", m_unreadOnly);
 	}
 	
 	protected void selectArticles(int feedId, boolean isCat, int mode) {
@@ -399,10 +396,6 @@ public class OfflineActivity extends CommonActivity {
 		initMenu();
 		
 		return true;
-	}
-	
-	public boolean getUnreadOnly() {
-		return m_unreadOnly;
 	}
 	
 	@SuppressLint("NewApi")

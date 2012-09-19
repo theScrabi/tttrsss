@@ -50,8 +50,6 @@ public class OnlineActivity extends CommonActivity {
 	protected int m_apiLevel = 0;
 	protected Menu m_menu;
 
-	protected boolean m_unreadOnly = true;
-	protected boolean m_unreadArticlesOnly = true;
 	protected int m_offlineModeStatus = 0;
 	
 	private ActionMode m_headlinesActionMode;
@@ -156,8 +154,6 @@ public class OnlineActivity extends CommonActivity {
 			if (savedInstanceState != null) {
 				m_sessionId = savedInstanceState.getString("sessionId");
 				m_apiLevel = savedInstanceState.getInt("apiLevel");
-				m_unreadOnly = savedInstanceState.getBoolean("unreadOnly");
-				m_unreadArticlesOnly = savedInstanceState.getBoolean("unreadArticlesOnly");
 				m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
 			}
 			
@@ -814,22 +810,12 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 
-	public boolean getUnreadArticlesOnly() {
-		return m_unreadArticlesOnly;
-	}
-	
-	public boolean getUnreadOnly() {
-		return m_unreadOnly;
-	}
-	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 		
 		out.putString("sessionId", m_sessionId);
 		out.putInt("apiLevel", m_apiLevel);
-		out.putBoolean("unreadOnly", m_unreadOnly);
-		out.putBoolean("unreadArticlesOnly", m_unreadArticlesOnly);
 		out.putInt("offlineModeStatus", m_offlineModeStatus);
 	}
 	
