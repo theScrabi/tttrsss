@@ -17,34 +17,38 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 public class ArticleFragment extends Fragment {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private OnlineServices m_onlineServices;
+	private OnlineActivity m_activity;
 	//private Article m_nextArticle;
 	//private Article m_prevArticle;
 
@@ -61,6 +65,28 @@ public class ArticleFragment extends Fragment {
 	private View.OnTouchListener m_gestureListener;
 	
 	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo(); */
+		
+		switch (item.getItemId()) {
+		case R.id.article_link_share:
+			if (true) {
+				((OnlineActivity) getActivity()).shareArticle(m_article);
+			}
+			return true;
+		case R.id.article_link_copy:
+			if (true) {
+				((OnlineActivity) getActivity()).copyToClipboard(m_article.link);
+			}
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
@@ -75,6 +101,8 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
+		m_activity.setProgressBarVisibility(true);
+		
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
 		}
@@ -94,14 +122,37 @@ public class ArticleFragment extends Fragment {
 				else
 					titleStr = m_article.title;
 				
-				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_article.link.trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
-				registerForContextMenu(title);
+				title.setText(titleStr);
+				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				title.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, 
+									Uri.parse(m_article.link.trim()));
+								startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							m_activity.toast(R.string.error_other_error);
+						}
+					}
+				});
+				
+				registerForContextMenu(title); 
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				web.setWebChromeClient(new WebChromeClient() {					
+					@Override
+	                public void onProgressChanged(WebView view, int progress) {
+	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
+	                	if (progress == 100) {
+	                		m_activity.setProgressBarVisibility(false);
+	                	}
+	                }
+				});
 				
 				String content;
 				String cssOverride = "";
@@ -186,9 +237,10 @@ public class ArticleFragment extends Fragment {
 							
 							try {
 								URL url = new URL(a.content_url.trim());
+								String strUrl = url.toString().trim();
 								
-								if (a.content_type.indexOf("image") != -1) {
-									content += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
+								if (a.content_type.indexOf("image") != -1 && !articleContent.contains(strUrl)) {
+									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
 								}
 								
 								spinnerArray.add(a);
@@ -226,11 +278,29 @@ public class ArticleFragment extends Fragment {
 							Attachment attachment = (Attachment) spinner.getSelectedItem();
 
 							if (attachment != null) {
-								m_onlineServices.copyToClipboard(attachment.content_url);
+								m_activity.copyToClipboard(attachment.content_url);
 							}
 						}
 					});
+
+					Button attachmentsShare = (Button) view.findViewById(R.id.attachment_share);
 					
+					if (!m_activity.isPortrait()) {
+						attachmentsShare.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Attachment attachment = (Attachment) spinner.getSelectedItem();
+	
+								if (attachment != null) {
+									m_activity.shareText(attachment.content_url);
+								}
+							}
+						});
+					} else {
+						attachmentsShare.setVisibility(View.GONE);
+					}
+
 				} else {
 					view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				}
@@ -243,7 +313,7 @@ public class ArticleFragment extends Fragment {
 					e.printStackTrace();
 				}
 				
-				if (m_onlineServices.isSmallScreen())
+				if (m_activity.isSmallScreen())
 					web.setOnTouchListener(m_gestureListener);
 			}
 			
@@ -296,7 +366,7 @@ public class ArticleFragment extends Fragment {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_onlineServices = (OnlineServices)activity;
+		m_activity = (OnlineActivity)activity;
 		//m_article = m_onlineServices.getSelectedArticle(); 
 	}
 

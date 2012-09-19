@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
@@ -17,11 +18,14 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,13 +40,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
 	private FeedCategory m_selectedCat;
-	private OnlineServices m_onlineServices;
+	private FeedsActivity m_activity;
 
 	class CatUnreadComparator implements Comparator<FeedCategory> {
 		@Override
@@ -83,10 +86,58 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	}
 
 	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		
+		switch (item.getItemId()) {
+		case R.id.browse_articles:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
+					m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));
+					//setSelectedCategory(cat);
+				}
+			}
+			return true;		
+		case R.id.browse_headlines:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
+					m_activity.onCatSelected(cat, true);
+					//setSelectedCategory(cat);
+				}
+			}
+			return true;
+		case R.id.browse_feeds:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
+					m_activity.onCatSelected(cat, false);
+					//cf.setSelectedCategory(cat);
+				}
+			}
+			return true;
+		case R.id.catchup_category:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
+					m_activity.catchupFeed(new Feed(cat.id, cat.title, true));
+				}
+			}
+			return true;
+		
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
+		m_activity.getMenuInflater().inflate(R.menu.category_menu, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		FeedCategory cat = m_adapter.getItem(info.position);
@@ -117,11 +168,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
 		
-		if (m_cats == null || m_cats.size() == 0)
-			refresh(false);
-		else
-			getActivity().setProgressBarIndeterminateVisibility(false);
-		
 		return view; 
 	}
 	
@@ -129,11 +175,20 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 
-		m_onlineServices = (OnlineServices)activity;
+		m_activity = (FeedsActivity)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
+
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
 		
+		refresh(false);
+		
+		m_activity.initMenu();
 	}
 	
 	@Override
@@ -153,31 +208,26 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 		}
 	
-		if (getActivity() != null)
-			getActivity().setProgressBarIndeterminateVisibility(showProgress);
+		m_activity.setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void refresh(boolean background) {
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
 		
-		final String sessionId = m_onlineServices.getSessionId();
-		final boolean unreadOnly = m_onlineServices.getUnreadOnly();
+		final String sessionId = m_activity.getSessionId();
+		final boolean unreadOnly = m_activity.getUnreadOnly();
 		
 		if (sessionId != null) {
-			
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					setLoadingStatus(R.string.blank, true);
-				}
-			});
+			setLoadingStatus(R.string.blank, true);
+			m_activity.setProgressBarVisibility(true);
 			
 			@SuppressWarnings("serial")
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
 					put("op", "getCategories");
 					put("sid", sessionId);
+					put("enable_nested", "true");
 					if (unreadOnly) {
 						put("unread_only", String.valueOf(unreadOnly));
 					}
@@ -185,7 +235,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			};
 
 			req.execute(map);
-		
 		}
 	}
 	
@@ -195,7 +244,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			super(context);
 		}
 		
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+		}
+		
+		@Override
 		protected void onPostExecute(JsonElement result) {
+			m_activity.setProgressBarVisibility(false);
+
 			if (result != null) {
 				try {			
 					JsonArray content = result.getAsJsonArray();
@@ -205,7 +262,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						m_cats.clear();
 						
-						int apiLevel = m_onlineServices.getApiLevel();
+						int apiLevel = m_activity.getApiLevel();
 						
 						// virtual cats implemented in getCategories since api level 1
 						if (apiLevel == 0) {
@@ -233,7 +290,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_onlineServices.login();
+				m_activity.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
@@ -247,7 +304,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
 			cmp = new CatUnreadComparator();
 		} else {
-			if (m_onlineServices.getApiLevel() >= 3) {
+			if (m_activity.getApiLevel() >= 3) {
 				cmp = new CatOrderComparator();
 			} else {
 				cmp = new CatTitleComparator();
@@ -280,7 +337,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		public int getItemViewType(int position) {
 			FeedCategory cat = items.get(position);
 			
-			if (!m_onlineServices.isSmallScreen() && m_selectedCat != null && cat.id == m_selectedCat.id) {
+			if (!m_activity.isSmallScreen() && m_selectedCat != null && cat.id == m_selectedCat.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -344,9 +401,17 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
-			m_onlineServices.onCatSelected(cat);
 			
-			if (!m_onlineServices.isSmallScreen())
+			if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
+					m_prefs.getBoolean("browse_cats_like_feeds", false)) {
+				
+				m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));
+				
+			} else {			
+				m_activity.onCatSelected(cat);
+			}
+			
+			if (!m_activity.isSmallScreen())
 				m_selectedCat = cat;
 			
 			m_adapter.notifyDataSetChanged();

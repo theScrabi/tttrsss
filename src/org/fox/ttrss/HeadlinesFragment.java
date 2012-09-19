@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -8,13 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
@@ -34,6 +33,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -51,10 +51,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
@@ -66,28 +63,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private Feed m_feed;
 	private Article m_activeArticle;
-	private boolean m_refreshInProgress = false;
-	private boolean m_canLoadMore = false;
 	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
+	private boolean m_refreshInProgress = false;
 	
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private ArticleList m_articles = new ArticleList();
+	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
-	
-	private OnlineServices m_onlineServices;
+	private HeadlinesEventListener m_listener;
+	private OnlineActivity m_activity;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public Drawable getDrawable(String source) {
 			return new BitmapDrawable();
 		}
 		
 	};
-	
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
 	}
@@ -95,16 +91,152 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public HeadlinesFragment(Feed feed) {
 		m_feed = feed;
 	}
-	
+
+	public HeadlinesFragment(Feed feed, Article activeArticle) {
+		m_feed = feed;
+		m_activeArticle = getArticleById(activeArticle.id);
+	}
+
 	public HeadlinesFragment() {
 		//
 	}
 	
 	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		
+		switch (item.getItemId()) {
+		case R.id.set_labels:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.editArticleLabels(article);
+				}
+			}
+			return true;
+		case R.id.article_set_note:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.editArticleNote(article);				
+				}
+			}
+			return true;
+
+		case R.id.article_link_copy:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					m_activity.copyToClipboard(article.link);
+				}
+			}
+			return true;
+		case R.id.selection_toggle_marked:
+			if (true) {
+				ArticleList selected = getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.marked = !a.marked;
+
+					m_activity.toggleArticlesMarked(selected);
+					//updateHeadlines();
+				} else {
+					Article article = getArticleAtPosition(info.position);
+					if (article != null) {
+						article.marked = !article.marked;
+						m_activity.saveArticleMarked(article);
+						//updateHeadlines();
+					}
+				}
+				m_adapter.notifyDataSetChanged();
+			}
+			return true;
+		case R.id.selection_toggle_published:
+			if (true) {
+				ArticleList selected = getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.published = !a.published;
+
+					m_activity.toggleArticlesPublished(selected);
+					//updateHeadlines();
+				} else {
+					Article article = getArticleAtPosition(info.position);
+					if (article != null) {
+						article.published = !article.published;
+						m_activity.saveArticlePublished(article);
+						//updateHeadlines();
+					}
+				}
+				m_adapter.notifyDataSetChanged();
+			}
+			return true;
+		case R.id.selection_toggle_unread:
+			if (true) {
+				ArticleList selected = getSelectedArticles();
+
+				if (selected.size() > 0) {
+					for (Article a : selected)
+						a.unread = !a.unread;
+
+					m_activity.toggleArticlesUnread(selected);
+					//updateHeadlines();
+				} else {
+					Article article = getArticleAtPosition(info.position);
+					if (article != null) {
+						article.unread = !article.unread;
+						m_activity.saveArticleUnread(article);
+						//updateHeadlines();
+					}
+				}
+				m_adapter.notifyDataSetChanged();
+			}
+			return true;
+		case R.id.share_article:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+				if (article != null)
+					m_activity.shareArticle(article);
+			}
+			return true;
+		case R.id.catchup_above:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+				if (article != null) {
+					ArticleList articles = getAllArticles();
+					ArticleList tmp = new ArticleList();
+					for (Article a : articles) {
+						a.unread = false;
+						tmp.add(a);
+						if (article.id == a.id)
+							break;
+					}
+					if (tmp.size() > 0) {
+						m_activity.toggleArticlesUnread(tmp);
+						//updateHeadlines();
+					}
+				}
+				m_adapter.notifyDataSetChanged();
+			}
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.headlines_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.headlines_context_menu, menu);
 		
 		if (m_selectedArticles.size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
@@ -116,8 +248,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
 		
-		menu.findItem(R.id.set_labels).setEnabled(m_onlineServices.getApiLevel() >= 1);
-		menu.findItem(R.id.article_set_note).setEnabled(m_onlineServices.getApiLevel() >= 1);
+		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
+		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
@@ -128,10 +260,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
-			m_articles = savedInstanceState.getParcelable("articles");
+			//m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
-			m_canLoadMore = savedInstanceState.getBoolean("canLoadMore");			
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
@@ -146,26 +277,45 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_onlineServices.isSmallScreen() || m_onlineServices.isPortrait())
+		if (m_activity.isSmallScreen() || m_activity.isPortrait())
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
-		if (m_feed != null && (m_articles == null || m_articles.size() == 0)) 
-			refresh(false);
-		else
-			getActivity().setProgressBarIndeterminateVisibility(false);
-
 		return view;    	
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		if (GlobalState.getInstance().m_activeArticle != null) {
+			m_activeArticle = GlobalState.getInstance().m_activeArticle;
+			GlobalState.getInstance().m_activeArticle = null;
+		}
+
+		if (m_activeArticle != null) {
+			setActiveArticle(m_activeArticle);
+		}
+
+		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+			refresh(false);
+			GlobalState.getInstance().m_activeFeed = m_feed;
+		} else {
+			notifyUpdated();
+		}
+		
+		m_activity.initMenu();
+	}
+	
+	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_onlineServices = (OnlineServices) activity;
+		m_activity = (OnlineActivity) activity;
+		m_listener = (HeadlinesEventListener) activity;
 
-		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
+		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override
@@ -179,12 +329,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (article.id >= 0) {
 				if (m_combinedMode) {
 					article.unread = false;
-					m_onlineServices.saveArticleUnread(article);
+					m_activity.saveArticleUnread(article);
 				} else {
-					m_onlineServices.onArticleSelected(article);
+					m_listener.onArticleSelected(article);
 				}
 				
-				m_activeArticle = article;
+				// only set active article when it makes sense (in HeadlinesActivity)
+				if (getActivity().findViewById(R.id.article_fragment) != null) {
+					m_activeArticle = article;
+				}
+				
 				m_adapter.notifyDataSetChanged();
 			}
 		}
@@ -192,63 +346,101 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean append) {
-		m_refreshInProgress = true;
-		
-		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext());
-		
-		final String sessionId = m_onlineServices.getSessionId();
-		final boolean showUnread = m_onlineServices.getUnreadArticlesOnly();
-		final boolean isCat = m_feed.is_cat;
-		int skip = 0;
-		
-		if (append) {
-			for (Article a : m_articles) {
-				if (a.unread) ++skip;
+		if (m_activity != null) {
+			m_refreshInProgress = true;
+
+			m_activity.setProgressBarVisibility(true);
+			
+			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+				append = false;
+			}
+
+			final boolean fappend = append;
+			final String sessionId = m_activity.getSessionId();
+			final boolean showUnread = m_activity.getUnreadArticlesOnly();
+			final boolean isCat = m_feed.is_cat;
+			
+			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+				@Override
+				protected void onProgressUpdate(Integer... progress) {
+					m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+				}
+
+				@Override
+				protected void onPostExecute(JsonElement result) {
+					m_activity.setProgressBarVisibility(false);
+					
+					super.onPostExecute(result);	
+					
+					if (result != null) {
+						m_refreshInProgress = false;
+						
+						if (m_articles.indexOf(m_activeArticle) == -1)
+							m_activeArticle = null;
+						
+						m_adapter.notifyDataSetChanged();
+						m_listener.onHeadlinesLoaded(fappend);
+					} else {
+						if (m_lastError == ApiError.LOGIN_FAILED) {
+							m_activity.login();
+						} else {
+							setLoadingStatus(getErrorMessage(), false);
+						}
+					}
+				}
+			};
+			
+			int skip = 0;
+			
+			if (append) {
+				for (Article a : m_articles) {
+					if (a.unread) ++skip;
+				}
+				
+				if (skip == 0) skip = m_articles.size();
+			} else {
+				setLoadingStatus(R.string.blank, true);
 			}
 			
-			if (skip == 0) skip = m_articles.size();
-		} else {
-			setLoadingStatus(R.string.blank, true);
+			final int fskip = skip;
+			
+			req.setOffset(skip);
+			
+			HashMap<String,String> map = new HashMap<String,String>() {
+				{
+					put("op", "getHeadlines");
+					put("sid", sessionId);
+					put("feed_id", String.valueOf(m_feed.id));
+					put("show_content", "true");
+					put("include_attachments", "true");
+					put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
+					put("offset", String.valueOf(0));
+					put("view_mode", showUnread ? "adaptive" : "all_articles");
+					put("skip", String.valueOf(fskip));
+					put("include_nested", "true");
+					
+					if (isCat) put("is_cat", "true");
+					
+					if (m_searchQuery != null && m_searchQuery.length() != 0) {
+						put("search", m_searchQuery);
+						put("search_mode", "");
+						put("match_on", "both");
+					}
+				}			 
+			};
+	
+			req.execute(map);
 		}
-		
-		final int fskip = skip;
-		
-		req.setOffset(skip);
-		
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("op", "getHeadlines");
-				put("sid", sessionId);
-				put("feed_id", String.valueOf(m_feed.id));
-				put("show_content", "true");
-				put("include_attachments", "true");
-				put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
-				put("offset", String.valueOf(0));
-				put("view_mode", showUnread ? "adaptive" : "all_articles");
-				put("skip", String.valueOf(fskip));
-				
-				if (isCat) put("is_cat", "true");
-				
-				if (m_searchQuery.length() != 0) {
-					put("search", m_searchQuery);
-					put("search_mode", "");
-					put("match_on", "both");
-				}
-			}			 
-		};
-
-		req.execute(map);
-	}
+	}		
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 		
 		out.putParcelable("feed", m_feed);
-		out.putParcelable("articles", m_articles);
+		//out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
-		out.putBoolean("canLoadMore", m_canLoadMore);
 		out.putBoolean("combinedMode", m_combinedMode);
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
@@ -266,7 +458,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
-	private class HeadlinesRequest extends ApiRequest {
+	/* private class HeadlinesRequest extends ApiRequest {
 		int m_offset = 0;
 		
 		public HeadlinesRequest(Context context) {
@@ -319,7 +511,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_onlineServices.login();
+				m_activity.login();
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
@@ -329,7 +521,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public void setOffset(int skip) {
 			m_offset = skip;			
 		}
-	}
+	} */
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
@@ -409,7 +601,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (ft != null) {
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
-					ft.setText(article.feed_title);					
+					
+					if (article.feed_title.length() > 20)
+						ft.setText(article.feed_title.substring(0, 20) + "...");
+					else
+						ft.setText(article.feed_title);
+					
 				} else {
 					ft.setVisibility(View.GONE);
 				}
@@ -428,7 +625,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						article.marked = !article.marked;
 						m_adapter.notifyDataSetChanged();
 						
-						m_onlineServices.saveArticleMarked(article);
+						m_activity.saveArticleMarked(article);
 					}
 				});
 			}
@@ -445,7 +642,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						article.published = !article.published;
 						m_adapter.notifyDataSetChanged();
 						
-						m_onlineServices.saveArticlePublished(article);
+						m_activity.saveArticlePublished(article);
 					}
 				});
 			}
@@ -533,7 +730,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								Attachment attachment = (Attachment) spinner.getSelectedItem();
 
 								if (attachment != null) {
-									m_onlineServices.copyToClipboard(attachment.content_url);
+									m_activity.copyToClipboard(attachment.content_url);
 								}
 							}
 						});
@@ -590,7 +787,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							m_selectedArticles.remove(article);
 						}
 						
-						m_onlineServices.onArticleListSelectionChange(m_selectedArticles);
+						m_listener.onArticleListSelectionChange(m_selectedArticles);
 						
 						Log.d(TAG, "num selected: " + m_selectedArticles.size());
 					}
@@ -615,27 +812,25 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 
 
-	/* public void notifyUpdated() {
+	public void notifyUpdated() {
 		m_adapter.notifyDataSetChanged();
-		
-		Article article = m_onlineServices.getSelectedArticle();
-
-		setActiveArticle(article);
-	} */
+	}
 
 	public ArticleList getAllArticles() {
 		return m_articles;
 	}
 
 	public void setActiveArticle(Article article) {
-		m_activeArticle = article;
-		m_adapter.notifyDataSetChanged();
+		if (article != m_activeArticle) {
+			m_activeArticle = article;
+			m_adapter.notifyDataSetChanged();
 		
-		ListView list = (ListView)getView().findViewById(R.id.headlines);
+			ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
-		if (list != null && article != null) {
-			int position = m_adapter.getPosition(article);
-			list.setSelection(position);
+			if (list != null && article != null) {
+				int position = m_adapter.getPosition(article);
+				list.setSelection(position);
+			}
 		}
 	}
 
@@ -681,7 +876,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (!m_refreshInProgress && m_canLoadMore && firstVisibleItem + visibleItemCount == m_articles.size()) {
+		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
 	}
@@ -703,11 +898,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	}
 
+	public String getSearchQuery() {
+		return m_searchQuery;
+	}
+	
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
 			refresh(false);
 		}
+	}
+
+	public Feed getFeed() {
+		return m_feed;
 	}
 
 	

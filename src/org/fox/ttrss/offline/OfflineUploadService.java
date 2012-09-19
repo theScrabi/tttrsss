@@ -3,7 +3,7 @@ package org.fox.ttrss.offline;
 import java.util.HashMap;
 
 import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.DatabaseHelper;
 
@@ -48,12 +48,13 @@ public class OfflineUploadService extends IntentService {
 		m_nmgr.cancel(NOTIFY_UPLOADING);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_uploading_title), System.currentTimeMillis());
 		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                new Intent(this, OnlineActivity.class), 0);
 		
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;

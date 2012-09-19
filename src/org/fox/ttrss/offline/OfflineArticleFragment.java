@@ -10,34 +10,42 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebSettings.LayoutAlgorithm;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 public class OfflineArticleFragment extends Fragment {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private int m_articleId;
+	private boolean m_isCat = false; // FIXME use
 	private Cursor m_cursor;
-	private OfflineServices m_offlineServices;
+	private OfflineActivity m_activity;
 	
 	public OfflineArticleFragment() {
 		super();
@@ -48,6 +56,32 @@ public class OfflineArticleFragment extends Fragment {
 		m_articleId = articleId;
 	}
 
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo(); */
+		
+		switch (item.getItemId()) {
+		case R.id.article_link_share:
+			m_activity.shareArticle(m_articleId);
+			return true;
+		case R.id.article_link_copy:
+			if (true) {
+				Cursor article = m_activity.getArticleById(m_articleId);
+				
+				if (article != null) {				
+					m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
+					article.close();
+				}
+			}
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -59,6 +93,7 @@ public class OfflineArticleFragment extends Fragment {
 		
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
@@ -68,7 +103,7 @@ public class OfflineArticleFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
-		m_cursor = m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+		m_cursor = m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 
 				new String[] { String.valueOf(m_articleId) }, null, null, null);
 
@@ -87,14 +122,40 @@ public class OfflineArticleFragment extends Fragment {
 				else
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
 				
-				title.setMovementMethod(LinkMovementMethod.getInstance());
-				title.setText(Html.fromHtml("<a href=\""+m_cursor.getString(m_cursor.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + titleStr + "</a>"));
+				final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
+				
+				title.setText(titleStr);
+				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				title.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, 
+									Uri.parse(link.trim()));
+								startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							m_activity.toast(R.string.error_other_error);
+						}
+					}
+				});
+				
 				registerForContextMenu(title);
 			}
 			
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				
+				web.setWebChromeClient(new WebChromeClient() {					
+					@Override
+	                public void onProgressChanged(WebView view, int progress) {
+	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
+	                	if (progress == 100) {
+	                		m_activity.setProgressBarVisibility(false);
+	                	}
+	                }
+				});
 				
 				String content;
 				String cssOverride = "";
@@ -199,7 +260,7 @@ public class OfflineArticleFragment extends Fragment {
 			if (tagv != null) {
 				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
 
-				if (feedTitleIndex != -1 && m_offlineServices.activeFeedIsCat()) {
+				if (feedTitleIndex != -1 && m_isCat) {
 					tagv.setText(m_cursor.getString(feedTitleIndex));
 				} else {				
 					String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
@@ -230,8 +291,8 @@ public class OfflineArticleFragment extends Fragment {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		
-		m_offlineServices = (OfflineServices)activity;
+
+		m_activity = (OfflineActivity) activity;
 	}
 
 

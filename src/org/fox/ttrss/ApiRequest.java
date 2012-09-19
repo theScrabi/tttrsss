@@ -4,29 +4,31 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.CharBuffer;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.fox.ttrss.util.EasySSLSocketFactory;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.http.util.CharArrayBuffer;
+
+import java.security.cert.X509Certificate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.http.AndroidHttpClient;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -38,7 +40,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private final String TAG = this.getClass().getSimpleName();
 
 	public enum ApiError { NO_ERROR, HTTP_UNAUTHORIZED, HTTP_FORBIDDEN, HTTP_NOT_FOUND, 
-		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, API_UNKNOWN, LOGIN_FAILED, INVALID_URL, INCORRECT_USAGE };
+		HTTP_SERVER_ERROR, HTTP_OTHER_ERROR, SSL_REJECTED, PARSE_ERROR, IO_ERROR, OTHER_ERROR, API_DISABLED, 
+		API_UNKNOWN, LOGIN_FAILED, INVALID_URL, INCORRECT_USAGE, NETWORK_UNAVAILABLE };
 	
 	public static final int API_STATUS_OK = 0;
 	public static final int API_STATUS_ERR = 1;
@@ -46,8 +49,10 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private String m_api;
 	private boolean m_trustAny = false;
 	private boolean m_transportDebugging = false;
-	protected int m_httpStatusCode = 0;
+	protected int m_responseCode = 0;
+	protected String m_responseMessage;
 	protected int m_apiStatusCode = 0;
+	protected boolean m_canUseProgress = false;
 	protected Context m_context;
 	private SharedPreferences m_prefs;
 	
@@ -97,6 +102,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			return R.string.error_invalid_api_url;
 		case INCORRECT_USAGE:
 			return R.string.error_api_incorrect_usage;
+		case NETWORK_UNAVAILABLE:
+			return R.string.error_network_unavailable;
 		default:
 			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
 			return R.string.error_unknown;
@@ -106,94 +113,94 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	@Override
 	protected JsonElement doInBackground(HashMap<String, String>... params) {
 
+		if (!isNetworkAvailable()) {
+			m_lastError = ApiError.NETWORK_UNAVAILABLE;
+			return null;
+		}
+		
 		Gson gson = new Gson();
 		
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
+		byte[] postData = null;
+		
+		try {
+			postData = requestStr.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			m_lastError = ApiError.OTHER_ERROR;
+			e.printStackTrace();
+			return null;
+		}
+		
+		disableConnectionReuseIfNecessary();
 		
 		if (m_transportDebugging) Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
 		
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
+		if (m_trustAny) trustAllHosts();
 		
-		if (m_trustAny) {
-			client.getConnectionManager().getSchemeRegistry().register(new Scheme("https", new EasySSLSocketFactory(), 443));
-		}
-
+		URL url;
+		
 		try {
-
-			HttpPost httpPost;
-			
-			try {
-				httpPost = new HttpPost(m_api + "/api/");
-			} catch (IllegalArgumentException e) {
-				m_lastError = ApiError.INVALID_URL;
-				e.printStackTrace();
-				client.close();
-				return null;
-			} catch (Exception e) {
-				m_lastError = ApiError.OTHER_ERROR;
-				e.printStackTrace();
-				client.close();
-				return null;
-			}
-	
-			HttpContext context = null;
-
+			url = new URL(m_api + "/api/");			
+		} catch (Exception e) {
+			m_lastError = ApiError.INVALID_URL;
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {		
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		
 			String httpLogin = m_prefs.getString("http_login", "").trim();
 			String httpPassword = m_prefs.getString("http_password", "").trim();
 			
 			if (httpLogin.length() > 0) {
 				if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
-	
-				URL targetUrl;
-				try {
-					targetUrl = new URL(m_api);
-				} catch (MalformedURLException e) {
-					m_lastError = ApiError.INVALID_URL;
-					e.printStackTrace();
-					client.close();
-					return null;
-				}
 				
-				HttpHost targetHost = new HttpHost(targetUrl.getHost(), targetUrl.getPort(), targetUrl.getProtocol());
-				CredentialsProvider cp = new BasicCredentialsProvider();
-				context = new BasicHttpContext();
-				
-				cp.setCredentials(
-		                new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-		                new UsernamePasswordCredentials(httpLogin, httpPassword));
-
-				context.setAttribute(ClientContext.CREDS_PROVIDER, cp);
+				conn.setRequestProperty("Authorization", "Basic " + 
+						Base64.encode((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
 			}
 			
-			httpPost.setEntity(new StringEntity(requestStr, "utf-8"));
-			HttpResponse execute = client.execute(httpPost, context);
-			
-			m_httpStatusCode = execute.getStatusLine().getStatusCode();
+			conn.setDoInput(true); 
+            conn.setDoOutput(true); 
+            conn.setUseCaches(false); 
+            conn.setRequestMethod("POST"); 
+		    conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
 
-			switch (m_httpStatusCode) {
-			case 200:
-				InputStream content = execute.getEntity().getContent();
-	
-				BufferedReader buffer = new BufferedReader(
-						new InputStreamReader(content), 8192);
-	
-				String s = "";				
-				String response = "";
-	
-				while ((s = buffer.readLine()) != null) {
-					response += s;
+		    OutputStream out = conn.getOutputStream();
+		    out.write(postData);
+		    out.close();
+		    
+		    m_responseCode = conn.getResponseCode();
+		    m_responseMessage = conn.getResponseMessage();
+		    
+		    switch (m_responseCode) {
+			case HttpURLConnection.HTTP_OK:
+				StringBuffer response = new StringBuffer();
+				InputStreamReader in = new InputStreamReader(conn.getInputStream(), "UTF-8");
+				char[] buf = new char[256];
+				int read = 0;
+				int total = 0;
+
+				int contentLength = conn.getHeaderFieldInt("Api-Content-Length", -1);
+
+				m_canUseProgress = (contentLength != -1);
+				
+				while ((read = in.read(buf)) >= 0) {
+					response.append(buf, 0, read);
+					total += read;
+					publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
 				}
-	
+				
 				if (m_transportDebugging) Log.d(TAG, "<<< " + response);
 	
 				JsonParser parser = new JsonParser();
 				
-				JsonElement result = parser.parse(response);
+				JsonElement result = parser.parse(response.toString());
 				JsonObject resultObj = result.getAsJsonObject();
 				
 				m_apiStatusCode = resultObj.get("status").getAsInt();
 				
-				client.close();
+				conn.disconnect();
 				
 				switch (m_apiStatusCode) {
 				case API_STATUS_OK:
@@ -217,25 +224,25 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				}
 
 				return null;
-			case 401:
+			case HttpURLConnection.HTTP_UNAUTHORIZED:
 				m_lastError = ApiError.HTTP_UNAUTHORIZED;
 				break;
-			case 403:
+			case HttpURLConnection.HTTP_FORBIDDEN:
 				m_lastError = ApiError.HTTP_FORBIDDEN;
 				break;
-			case 404:
+			case HttpURLConnection.HTTP_NOT_FOUND:
 				m_lastError = ApiError.HTTP_NOT_FOUND;
 				break;
-			case 500:
+			case HttpURLConnection.HTTP_INTERNAL_ERROR:
 				m_lastError = ApiError.HTTP_SERVER_ERROR;
 				break;
 			default:
 				m_lastError = ApiError.HTTP_OTHER_ERROR;
 				break;
 			}
-			
-			client.close();
-			return null;
+		    
+		    conn.disconnect();
+		    return null;
 		} catch (javax.net.ssl.SSLPeerUnverifiedException e) {
 			m_lastError = ApiError.SSL_REJECTED;
 			e.printStackTrace();
@@ -250,7 +257,64 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			e.printStackTrace();
 		}
 		
-		client.close();
 		return null;
 	}
+	
+	private static void trustAllHosts() {
+	    X509TrustManager easyTrustManager = new X509TrustManager() {
+
+	        public void checkClientTrusted(
+	        		X509Certificate[] chain,
+	                String authType) throws CertificateException {
+	            // Oh, I am easy!
+	        }
+
+	        public void checkServerTrusted(
+	        		X509Certificate[] chain,
+	                String authType) throws CertificateException {
+	            // Oh, I am easy!
+	        }
+
+	        public X509Certificate[] getAcceptedIssuers() {
+	            return null;
+	        }
+
+	    };
+
+	    // Create a trust manager that does not validate certificate chains
+	    TrustManager[] trustAllCerts = new TrustManager[] {easyTrustManager};
+
+	    // Install the all-trusting trust manager
+	    try {
+	        SSLContext sc = SSLContext.getInstance("TLS");
+
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+	    } catch (Exception e) {
+	            e.printStackTrace();
+	    }
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static void disableConnectionReuseIfNecessary() {
+	    // HTTP connection reuse which was buggy pre-froyo
+	    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+	        System.setProperty("http.keepAlive", "false");
+	    }
+	}
+	
+	protected boolean isNetworkAvailable() {
+	    ConnectivityManager cm = (ConnectivityManager) 
+	      m_context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    
+	    // if no network is available networkInfo will be null
+	    // otherwise check if we are connected
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
+	} 
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.jsoup.Jsoup;
 
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -55,10 +57,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
 	
-	private OfflineServices m_offlineServices;
+	private OfflineHeadlinesEventListener m_listener;
+	private OfflineActivity m_activity;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public Drawable getDrawable(String source) {
 			return new BitmapDrawable();
@@ -83,7 +87,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public int getSelectedArticleCount() {
-		Cursor c = m_offlineServices.getReadableDb().query("articles", 
+		Cursor c = m_activity.getReadableDb().query("articles", 
 				new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -93,10 +97,122 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		
+		switch (item.getItemId()) {
+		case R.id.article_link_copy:
+			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				Cursor article = m_activity.getArticleById(articleId);
+				
+				if (article != null) {				
+					m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
+					article.close();
+				}
+			}
+			return true;
+		case R.id.selection_toggle_marked:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET marked = NOT marked WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET marked = NOT marked WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+			}
+			refresh();
+			return true;
+		case R.id.selection_toggle_published:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET published = NOT published WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET published = NOT published WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+			}
+			refresh();
+			return true;
+		case R.id.selection_toggle_unread:
+			if (getSelectedArticleCount() > 0) {
+				SQLiteStatement stmt = m_activity.getWritableDb()
+				.compileStatement(
+						"UPDATE articles SET unread = NOT unread WHERE selected = 1");
+				stmt.execute();
+				stmt.close();
+			} else {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+					"UPDATE articles SET unread = NOT unread WHERE "
+							+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+			}
+			refresh();			
+			return true;
+		case R.id.share_article:
+			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				m_activity.shareArticle(articleId);
+			}
+			return true;
+		case R.id.catchup_above:
+			if (true) {
+				int articleId = getArticleIdAtPosition(info.position);
+				
+				SQLiteStatement stmt = null;
+				
+				if (m_feedIsCat) {
+					stmt = m_activity.getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+				} else {
+					stmt = m_activity.getWritableDb().compileStatement(
+							"UPDATE articles SET unread = 0 WHERE " +
+							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"AND feed_id = ?");						
+				}
+				
+				stmt.bindLong(1, articleId);
+				stmt.bindLong(2, m_feedId);
+				stmt.execute();
+				stmt.close();
+			}			
+			refresh();
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.headlines_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.headlines_context_menu, menu);
 		
 		if (getSelectedArticleCount() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
@@ -107,10 +223,29 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			menu.setHeaderTitle(c.getString(c.getColumnIndex("title")));
 			//c.close();
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
+			
+			menu.findItem(R.id.set_labels).setVisible(false);
+			menu.findItem(R.id.article_set_note).setVisible(false);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if (GlobalState.getInstance().m_selectedArticleId != 0) {			
+			m_activeArticleId = GlobalState.getInstance().m_selectedArticleId;
+			GlobalState.getInstance().m_selectedArticleId = 0;
+		}
+
+		if (m_activeArticleId != 0) {
+			setActiveArticleId(m_activeArticleId);
+		}
+
+		refresh();
 	}
 	
 	public void refresh() {
@@ -120,7 +255,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		if (m_cursor != null) {
 			m_adapter.changeCursor(m_cursor);
-			setActiveArticleId(m_offlineServices.getSelectedArticleId());
 			m_adapter.notifyDataSetChanged();
 		}
 	}
@@ -135,6 +269,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
+		} else {
+			m_activity.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		}
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
@@ -150,7 +286,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_offlineServices.isSmallScreen() || m_offlineServices.isPortrait())
+		if (m_activity.isSmallScreen() || m_activity.isPortrait())
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 		
 		getActivity().setProgressBarIndeterminateVisibility(false);
@@ -167,12 +303,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			feedClause = "feed_id = ?";
 		}
 		
-		if (m_searchQuery.equals("")) {
-			return m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+		if (m_searchQuery == null || m_searchQuery.equals("")) {
+			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
 		} else {
-			return m_offlineServices.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
@@ -182,10 +318,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		m_offlineServices = (OfflineServices)activity;
+		m_listener = (OfflineHeadlinesEventListener) activity;
+		m_activity = (OfflineActivity) activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_combinedMode = m_prefs.getBoolean("combined_mode", false);
+		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override
@@ -197,17 +334,22 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		if (list != null) {
 			Cursor cursor = (Cursor)list.getItemAtPosition(position);
 			
-			m_activeArticleId = cursor.getInt(0);
-
-			SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET unread = 0 " +
-					"WHERE " + BaseColumns._ID + " = ?");
+			int articleId = cursor.getInt(0);
 			
-			stmtUpdate.bindLong(1, m_activeArticleId);
-			stmtUpdate.execute();
-			stmtUpdate.close();
+			if (getActivity().findViewById(R.id.article_fragment) != null) {
+				m_activeArticleId = articleId;
+			}
 
 			if (!m_combinedMode) { 
-				m_offlineServices.openArticle(m_activeArticleId, 0);
+				m_listener.onArticleSelected(articleId);
+			} else {
+				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+						"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
+								+ " = ?");
+
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
 			}
 			
 			refresh();
@@ -321,7 +463,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			if (ft != null && feedTitleIndex != -1 && m_feedIsCat) {				
 				String feedTitle = article.getString(feedTitleIndex);
 				
-				if (feedTitle != null) {
+				if (feedTitle.length() > 20)
+					feedTitle = feedTitle.substring(0, 20) + "...";
+				
+				if (feedTitle.length() > 0) {
 					ft.setText(feedTitle);					
 				} else {
 					ft.setVisibility(View.GONE);
@@ -339,7 +484,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET marked = NOT marked " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -360,7 +505,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET published = NOT published " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, articleId);
@@ -438,7 +583,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
 
-						SQLiteStatement stmtUpdate = m_offlineServices.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
 								"WHERE " + BaseColumns._ID + " = ?");
 						
 						stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
@@ -448,7 +593,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						
 						refresh();
 						
-						m_offlineServices.initMainMenu();
+						m_activity.initMenu();
 						
 					}
 				});
@@ -476,13 +621,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 	public void setActiveArticleId(int articleId) {
 		m_activeArticleId = articleId;
-	//	m_adapter.notifyDataSetChanged();
+		try {
+			m_adapter.notifyDataSetChanged();
+
+			ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
-		ListView list = (ListView)getView().findViewById(R.id.headlines);
-		
-		if (list != null) {
-			list.setSelection(getArticleIdPosition(articleId));
-		} 
+			Log.d(TAG, articleId + " position " + getArticleIdPosition(articleId));
+			
+			if (list != null) {
+				list.setSelection(getArticleIdPosition(articleId));
+			}
+		} catch (NullPointerException e) {
+			// invoked before view is created, nvm
+		}
 	}
 
 	public Cursor getArticleAtPosition(int position) {
@@ -520,8 +671,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
-			refresh();
 		}
+	}
+
+	public int getFeedId() {
+		return m_feedId;
+	}
+	
+	public boolean getFeedIsCat() {
+		return m_feedIsCat;
+	}
+
+	public String getSearchQuery() {
+		return m_searchQuery;
 	}
 	
 }

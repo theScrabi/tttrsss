@@ -24,7 +24,7 @@
     <string name="loading_message">Loading, please wait…</string>
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
-    <string name="update_feeds">Refresh feeds</string>
+    <string name="update_feeds">Refresh</string>
     <string name="share_article">Share article</string>
     <string name="catchup">Mark read</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
@@ -128,6 +128,11 @@
     <string name="notify_article_published">Article published</string>
     <string name="notify_article_unpublished">Article unpublished</string>
     <string name="notify_article_note_set">Article note saved</string>
-    <string name="force_small_tablet_ui">Force compact interface</string>
-    <string name="prefs_for_tablets">Tablets</string>
+    <string name="update_headlines">Refresh</string>
+    <string name="attachment_share">Share</string>
+    <string name="error_network_unavailable">Error: network unavailable</string>
+    <string name="category_browse_headlines">Browse headlines</string>
+    <string name="pref_default_view_mode">Default feed view</string>
+    <string name="pref_default_view_mode_long">Which feed view to open by default on smartphones</string>
+    <string name="donate_thanks">Donation found, thank you for support!</string>
 </resources>

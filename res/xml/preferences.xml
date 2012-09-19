@@ -2,18 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/connection" >
+
         <EditTextPreference
             android:key="login"
             android:singleLine="true"
             android:summary="@string/login_summary"
             android:title="@string/login" >
         </EditTextPreference>
+
         <EditTextPreference
             android:key="password"
             android:password="true"
             android:singleLine="true"
             android:title="@string/password" >
         </EditTextPreference>
+
         <EditTextPreference
             android:hint="@string/default_url"
             android:inputType="textUri"
@@ -28,13 +31,16 @@
             android:key="ssl_trust_any"
             android:title="@string/ssl_trust_any" />
     </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/http_authentication" >
+
         <EditTextPreference
             android:key="http_login"
             android:singleLine="true"
             android:summary="@string/http_login_summary"
             android:title="@string/login" >
         </EditTextPreference>
+
         <EditTextPreference
             android:key="http_password"
             android:password="true"
@@ -42,9 +48,9 @@
             android:title="@string/password" >
         </EditTextPreference>
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="category_look_and_feel"
-        android:title="@string/look_and_feel" >
+
+    <PreferenceCategory android:key="category_look_and_feel" android:title="@string/look_and_feel" >
+
         <ListPreference
             android:defaultValue="THEME_DARK"
             android:entries="@array/pref_theme_names"
@@ -52,6 +58,7 @@
             android:key="theme"
             android:summary="@string/pref_theme_long"
             android:title="@string/pref_theme" />
+
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/pref_font_size_names"
@@ -63,50 +70,56 @@
             android:defaultValue="false"
             android:key="sort_feeds_by_unread"
             android:title="@string/sort_feeds_by_unread" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="download_feed_icons"
             android:title="@string/download_feed_icons" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enable_cats"
             android:title="@string/enable_cats" />
+
         <CheckBoxPreference
             android:defaultValue="false"
-            android:dependency="enable_cats"
             android:key="browse_cats_like_feeds"
+            android:dependency="enable_cats"
             android:summary="@string/browse_cats_like_feeds_summary"
             android:title="@string/browse_cats_like_feeds" />
-        <CheckBoxPreference
+
+        <!--  <CheckBoxPreference
             android:defaultValue="false"
             android:key="combined_mode"
             android:summary="@string/combined_mode_summary"
-            android:title="@string/combined_mode" />
+            android:title="@string/combined_mode" /> -->
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="justify_article_text"
             android:title="@string/justify_article_text" />
+        
+        <ListPreference
+            android:defaultValue="HEADLINES"
+            android:entries="@array/pref_view_mode_names"
+            android:entryValues="@array/pref_view_mode_values"
+            android:key="default_view_mode"
+            android:summary="@string/pref_default_view_mode_long"
+            android:title="@string/pref_default_view_mode" />
+        
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="category_tablets"
-        android:title="@string/prefs_for_tablets" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="tablet_article_swipe"
-            android:title="@string/tablet_article_swipe" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="force_small_tablet_ui"
-            android:title="@string/force_small_tablet_ui" />
-    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/offline_mode" >
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="offline_image_cache_enabled"
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
     </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/debugging" >
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="transport_debugging"

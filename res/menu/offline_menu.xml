@@ -23,11 +23,11 @@
             android:title="@string/menu_all_feeds"/>
     </group>
     <group android:id="@+id/menu_group_headlines" >
-        <item
+        <!--  <item
             android:id="@+id/go_online"
             android:icon="@drawable/ic_menu_cloud"
             android:title="@string/go_online"
-            android:visible="false"/>
+            android:visible="false"/> -->
         <item
             android:id="@+id/search"
             android:actionViewClass="android.widget.SearchView"
@@ -41,13 +41,13 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_menu_database"
-            android:showAsAction="ifRoom"
+            android:showAsAction=""
             android:title="@string/headlines_select"/>
-        <item
+        <!-- <item
                 android:id="@+id/close_feed"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/close_feed"/>
+                android:title="@string/close_feed"/> -->
     </group>
     <group android:id="@+id/menu_group_headlines_selection" >
         <item
@@ -97,11 +97,11 @@
             android:id="@+id/catchup_above"
             android:icon="@drawable/ic_menu_tick"
             android:title="@string/article_mark_read_above"/>
-        <item
+        <!-- <item
                 android:id="@+id/close_article"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
-                android:title="@string/close_article"/>        
+                android:title="@string/close_article"/>      -->
     </group>
 
     <item

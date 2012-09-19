@@ -21,6 +21,14 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 		}
 	}
 	
+	public Article findById(int id) {
+		for (Article a : this) {
+			if (a.id == id)
+				return a;			
+		}			
+		return null;
+	}
+	
 	public void readFromParcel(Parcel in) {
 		int length = in.readInt();
 		

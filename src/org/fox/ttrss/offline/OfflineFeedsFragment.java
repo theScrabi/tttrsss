@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,7 +40,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private int m_catId = -1;
 	private boolean m_enableFeedIcons;
 	private Cursor m_cursor;
-	private OfflineServices m_offlineServices;
+	private OfflineFeedsActivity m_activity;
 	
 	public OfflineFeedsFragment() {
 		//
@@ -48,7 +49,30 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public OfflineFeedsFragment(int catId) {
 		m_catId = catId;
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		refresh();
+	}
 
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.catchup_feed:
+			int feedId = getFeedIdAtPosition(info.position);
+			if (feedId != -10000) {
+				m_activity.catchupFeed(feedId, false);
+			}
+			return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -66,14 +90,14 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	}
 	
 	public Cursor createCursor() {
-		String unreadOnly = m_offlineServices.getUnreadOnly() ? "unread > 0" : "1";
+		String unreadOnly = m_activity.getUnreadOnly() ? "unread > 0" : "1";
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
 		if (m_catId != -1) {
-			return m_offlineServices.getReadableDb().query("feeds_unread", 
+			return m_activity.getReadableDb().query("feeds_unread", 
 					null, unreadOnly + " AND cat_id = ?",  new String[] { String.valueOf(m_catId) }, null, null, order);
 		} else {		
-			return m_offlineServices.getReadableDb().query("feeds_unread", 
+			return m_activity.getReadableDb().query("feeds_unread", 
 				null, unreadOnly, null, null, null, order);
 		}
 	}
@@ -129,7 +153,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		m_offlineServices = (OfflineServices)activity;
+		m_activity = (OfflineFeedsActivity)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
@@ -155,9 +179,9 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				m_offlineServices.onFeedSelected(feedId);
+				m_activity.onFeedSelected(feedId);
 				
-				if (!m_offlineServices.isSmallScreen())
+				if (!m_activity.isSmallScreen())
 					m_selectedFeedId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
@@ -199,7 +223,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (!m_offlineServices.isSmallScreen() && cursor.getLong(0) == m_selectedFeedId) {
+			if (!m_activity.isSmallScreen() && cursor.getLong(0) == m_selectedFeedId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -295,7 +319,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 			return feedId;
 		}
 		
-		return 0;
+		return -10000;
 	}
 	
 	public void setSelectedFeedId(int feedId) {

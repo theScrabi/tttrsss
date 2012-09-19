@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.MainActivity;
+import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Feed;
@@ -46,8 +46,8 @@ public class OfflineDownloadService extends Service {
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
 
-	private static final int OFFLINE_SYNC_SEQ = 40;
-	private static final int OFFLINE_SYNC_MAX = 500;
+	private static final int OFFLINE_SYNC_SEQ = 50;
+	private static final int OFFLINE_SYNC_MAX = OFFLINE_SYNC_SEQ * 10;
 	
 	private SQLiteDatabase m_writableDb;
 	private SQLiteDatabase m_readableDb;
@@ -87,11 +87,12 @@ public class OfflineDownloadService extends Service {
 		initDatabase();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
 		Notification notification = new Notification(R.drawable.icon, 
 				getString(R.string.notify_downloading_title), System.currentTimeMillis());
 		
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, OnlineActivity.class);
 		intent.setAction(INTENT_ACTION_CANCEL);
 		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -158,9 +159,9 @@ public class OfflineDownloadService extends Service {
 		m_readableDb = dh.getReadableDatabase();
 	}
 	
-	private synchronized SQLiteDatabase getReadableDb() {
+	/* private synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
-	}
+	} */
 	
 	private synchronized SQLiteDatabase getWritableDb() {
 		return m_writableDb;
@@ -198,9 +199,11 @@ public class OfflineDownloadService extends Service {
 		
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			@Override
-			protected void onPostExecute(JsonElement content) {
+			protected JsonElement doInBackground(HashMap<String, String>... params) {
+				JsonElement content = super.doInBackground(params);
+
 				if (content != null) {
-					
+
 					try {
 						Type listType = new TypeToken<List<Feed>>() {}.getType();
 						List<Feed> feeds = new Gson().fromJson(content, listType);
@@ -215,29 +218,35 @@ public class OfflineDownloadService extends Service {
 							stmtInsert.bindString(3, feed.feed_url);
 							stmtInsert.bindLong(4, feed.has_icon ? 1 : 0);
 							stmtInsert.bindLong(5, feed.cat_id);
-
+	
 							stmtInsert.execute();
 						}
-
+	
 						stmtInsert.close();
-
+	
 						Log.d(TAG, "offline: done downloading feeds");
 						
 						m_articleOffset = 0;
 						
 						getWritableDb().execSQL("DELETE FROM articles;");
-						
-						if (m_canProceed) { 
-							downloadArticles();
-						} else {
-							downloadFailed();
-						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						updateNotification(R.string.offline_switch_error);
 						downloadFailed();
 					}
+				}
 				
+				return content;
+			}
+			
+			@Override
+			protected void onPostExecute(JsonElement content) {
+				if (content != null) {
+					if (m_canProceed) { 
+						downloadArticles();
+					} else {
+						downloadFailed();
+					}
 				} else {
 					updateNotification(getErrorMessage());
 					downloadFailed();
@@ -266,10 +275,10 @@ public class OfflineDownloadService extends Service {
 		getWritableDb().execSQL("DELETE FROM categories;");
 		
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
-			@Override
-			protected void onPostExecute(JsonElement content) {
+			protected JsonElement doInBackground(HashMap<String, String>... params) {
+				JsonElement content = super.doInBackground(params);
+				
 				if (content != null) {
-					
 					try {
 						Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
 						List<FeedCategory> cats = new Gson().fromJson(content, listType);
@@ -289,17 +298,23 @@ public class OfflineDownloadService extends Service {
 
 						Log.d(TAG, "offline: done downloading categories");
 						
-						if (m_canProceed) { 
-							downloadFeeds();
-						} else {
-							downloadFailed();
-						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						updateNotification(R.string.offline_switch_error);
 						downloadFailed();
 					}
-				
+				}
+			
+				return content;
+			}
+			@Override
+			protected void onPostExecute(JsonElement content) {
+				if (content != null) {
+					if (m_canProceed) { 
+						downloadFeeds();
+					} else {
+						downloadFailed();
+					}
 				} else {
 					updateNotification(getErrorMessage());
 					downloadFailed();
@@ -335,22 +350,27 @@ public class OfflineDownloadService extends Service {
 	}
 
 	public class OfflineArticlesRequest extends ApiRequest {
+		List<Article> m_articles;
+		
 		public OfflineArticlesRequest(Context context) {
 			super(context);
 		}
 
 		@Override
-		protected void onPostExecute(JsonElement content) {
+		protected JsonElement doInBackground(HashMap<String, String>... params) {
+			JsonElement content = super.doInBackground(params);
+			
 			if (content != null) {
+
 				try {
 					Type listType = new TypeToken<List<Article>>() {}.getType();
-					List<Article> articles = new Gson().fromJson(content, listType);
+					m_articles = new Gson().fromJson(content, listType);
 	
 					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
 							"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content) " +
 					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 	
-					for (Article article : articles) {
+					for (Article article : m_articles) {
 	
 						String tagsString = "";
 						
@@ -402,25 +422,12 @@ public class OfflineDownloadService extends Service {
 	
 					}
 
+					m_articleOffset += m_articles.size();
+
+					Log.d(TAG, "offline: received " + m_articles.size() + " articles; canProc=" + m_canProceed);
+
 					stmtInsert.close();
 
-					//m_canGetMoreArticles = articles.size() == 30;
-					m_articleOffset += articles.size();
-	
-					Log.d(TAG, "offline: received " + articles.size() + " articles; canProc=" + m_canProceed);
-					
-					if (m_canProceed) {
-						if (articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < m_syncMax) {
-							downloadArticles();
-						} else {
-							downloadComplete();
-						}
-					} else {
-						downloadFailed();
-					}
-					
-					return;
-					
 				} catch (Exception e) {
 					updateNotification(R.string.offline_switch_error);
 					Log.d(TAG, "offline: failed: exception when loading articles");
@@ -428,6 +435,25 @@ public class OfflineDownloadService extends Service {
 					downloadFailed();
 				}
 				
+			}
+			
+			return content;
+		}
+		
+		@Override
+		protected void onPostExecute(JsonElement content) {
+			if (content != null) {
+				
+				if (m_canProceed && m_articles != null) {
+					if (m_articles.size() == OFFLINE_SYNC_SEQ && m_articleOffset < m_syncMax) {
+						downloadArticles();
+					} else {
+						downloadComplete();
+					}
+				} else {
+					downloadFailed();
+				}
+
 			} else {
 				Log.d(TAG, "offline: failed: " + getErrorMessage());
 				updateNotification(getErrorMessage());

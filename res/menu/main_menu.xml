@@ -1,7 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <group android:id="@+id/menu_group_logged_in" >
-
         <group android:id="@+id/menu_group_feeds" >
 
             <!--
@@ -17,136 +16,125 @@
                 android:icon="@android:drawable/ic_menu_agenda"
                 android:showAsAction=""
                 android:title="@string/menu_all_feeds"/>
-
             <item
                 android:id="@+id/update_feeds"
                 android:icon="@android:drawable/ic_menu_rotate"
                 android:showAsAction="ifRoom"
                 android:title="@string/update_feeds"/>
-
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_menu_cloud"
                 android:showAsAction=""
                 android:title="@string/go_offline"/>
-
             <item
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_menu_exit"
                 android:showAsAction=""
                 android:title="@string/logout"/>
         </group>
-
         <group android:id="@+id/menu_group_headlines" >
-
             <item
-                android:id="@+id/go_offline"
-                android:icon="@drawable/ic_menu_cloud"
-                android:title="@string/go_offline"/>
-
+                android:id="@+id/update_headlines"
+                android:icon="@android:drawable/ic_menu_rotate"
+                android:showAsAction="ifRoom"
+                android:title="@string/update_headlines"/>
             <item
                 android:id="@+id/search"
                 android:actionViewClass="android.widget.SearchView"
                 android:icon="@android:drawable/ic_menu_search"
                 android:showAsAction="ifRoom|collapseActionView"
                 android:title="@string/search"/>
-
             <item
                 android:id="@+id/headlines_mark_as_read"
                 android:icon="@drawable/ic_menu_tick"
                 android:showAsAction=""
                 android:title="@string/headlines_mark_as_read"/>
-
             <item
                 android:id="@+id/headlines_select"
                 android:icon="@drawable/ic_menu_database"
-                android:showAsAction="ifRoom"
+                android:showAsAction=""
                 android:title="@string/headlines_select"/>
-            
-            <item
+
+            <!--
+                  <item
                 android:id="@+id/close_feed"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
                 android:title="@string/close_feed"/>
-            
+            -->
+
         </group>
-
         <group android:id="@+id/menu_group_headlines_selection" >
-
             <item
                 android:id="@+id/selection_toggle_unread"
                 android:icon="@drawable/ic_menu_tick"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_unread"/>
-
             <item
                 android:id="@+id/selection_toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_marked"/>
-
             <item
                 android:id="@+id/selection_toggle_published"
                 android:icon="@drawable/ic_menu_rss"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_published"/>
-
             <item
                 android:id="@+id/selection_select_none"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
                 android:title="@string/selection_select_none"/>
         </group>
-
         <group android:id="@+id/menu_group_article" >
-
             <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_marked"/>
-
             <item
                 android:id="@+id/toggle_published"
                 android:icon="@drawable/ic_menu_rss"
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
-
             <item
                 android:id="@+id/share_article"
+                android:actionProviderClass="android.widget.ShareActionProvider"
                 android:icon="@android:drawable/ic_menu_share"
                 android:showAsAction=""
-                android:actionProviderClass="android.widget.ShareActionProvider"
                 android:title="@string/share_article"/>
-                        
             <item
                 android:id="@+id/set_unread"
                 android:icon="@android:drawable/ic_menu_recent_history"
                 android:showAsAction=""
                 android:title="@string/article_set_unread"/>
-
             <item
                 android:id="@+id/catchup_above"
                 android:icon="@drawable/ic_menu_tick"
                 android:title="@string/article_mark_read_above"/>
-
             <item
                 android:id="@+id/set_labels"
                 android:icon="@drawable/ic_menu_marked"
                 android:title="@string/article_set_labels"/>
-            
             <item
-	            android:id="@+id/article_set_note"
-            	android:showAsAction=""
-            	android:title="@string/article_set_note"/>
-            
-            <item
+                android:id="@+id/article_set_note"
+                android:showAsAction=""
+                android:title="@string/article_set_note"/>
+
+            <!--
+                  <item
                 android:id="@+id/close_article"
                 android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
                 android:title="@string/close_article"/>
-            
+            -->
+
         </group>
+
+        <item
+            android:id="@+id/donate"
+            android:showAsAction=""
+            android:title="@string/donate"/>
     </group>
 
     <item
@@ -154,9 +142,8 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:showAsAction=""
         android:title="@string/preferences"/>
-    
-    <group android:id="@+id/menu_group_logged_out" >
 
+    <group android:id="@+id/menu_group_logged_out" >
         <item
             android:id="@+id/login"
             android:icon="@android:drawable/ic_menu_rotate"
