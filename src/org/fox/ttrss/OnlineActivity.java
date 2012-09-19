@@ -132,8 +132,11 @@ public class OnlineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);	
-		requestWindowFeature(Window.FEATURE_PROGRESS);
+		if (canUseProgress()) {
+			requestWindowFeature(Window.FEATURE_PROGRESS);
+		} else {
+			requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		}
 		
 		setProgressBarVisibility(false);
 		setProgressBarIndeterminateVisibility(false);
@@ -164,6 +167,10 @@ public class OnlineActivity extends CommonActivity {
 				m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 			}
 		}
+	}
+	
+	protected boolean canUseProgress() {
+		return GlobalState.getInstance().m_canUseProgress;
 	}
 
 	private void switchOffline() {
@@ -1178,7 +1185,9 @@ public class OnlineActivity extends CommonActivity {
 					if (content != null) {
 						setSessionId(content.get("session_id").getAsString());
 
-						Log.d(TAG, "Authenticated!");
+						GlobalState.getInstance().m_canUseProgress = m_canUseProgress;
+						
+						Log.d(TAG, "Authenticated! canUseProgress=" + m_canUseProgress);
 
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {

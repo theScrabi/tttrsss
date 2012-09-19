@@ -52,6 +52,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	protected int m_responseCode = 0;
 	protected String m_responseMessage;
 	protected int m_apiStatusCode = 0;
+	protected boolean m_canUseProgress = false;
 	protected Context m_context;
 	private SharedPreferences m_prefs;
 	
@@ -182,6 +183,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 
 				int contentLength = conn.getHeaderFieldInt("Api-Content-Length", -1);
 
+				m_canUseProgress = (contentLength != -1);
+				
 				while ((read = in.read(buf)) >= 0) {
 					response.append(buf, 0, read);
 					total += read;
