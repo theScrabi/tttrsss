@@ -374,6 +374,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					
 					if (result != null) {
 						m_refreshInProgress = false;
+						
+						if (m_articles.indexOf(m_activeArticle) == -1)
+							m_activeArticle = null;
+						
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
 					} else {
@@ -817,14 +821,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public void setActiveArticle(Article article) {
-		m_activeArticle = article;
-		m_adapter.notifyDataSetChanged();
+		if (article != m_activeArticle) {
+			m_activeArticle = article;
+			m_adapter.notifyDataSetChanged();
 		
-		ListView list = (ListView)getView().findViewById(R.id.headlines);
+			ListView list = (ListView)getView().findViewById(R.id.headlines);
 		
-		if (list != null && article != null) {
-			int position = m_adapter.getPosition(article);
-			list.setSelection(position);
+			if (list != null && article != null) {
+				int position = m_adapter.getPosition(article);
+				list.setSelection(position);
+			}
 		}
 	}
 

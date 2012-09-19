@@ -85,6 +85,8 @@ public class ArticlePager extends Fragment {
 		
 		int position = m_articles.indexOf(m_article);
 		
+		m_listener.onArticleSelected(m_article, false);
+		
 		pager.setAdapter(m_adapter);
 		pager.setCurrentItem(position);
 		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -149,9 +151,8 @@ public class ArticlePager extends Fragment {
 				if (result != null) {				
 					m_adapter.notifyDataSetChanged();
 					
-					if (m_article.id == 0) {
+					if (m_article.id == 0 || m_articles.indexOf(m_article) == -1) {
 						if (m_articles.size() > 0) {
-							Log.d(TAG, "blank id on refresh");
 							m_article = m_articles.get(0);
 							m_listener.onArticleSelected(m_article, false);
 						}
@@ -235,8 +236,6 @@ public class ArticlePager extends Fragment {
 		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			refresh(false);
 			GlobalState.getInstance().m_activeFeed = m_feed;
-		} else {
-			m_adapter.notifyDataSetChanged();
 		}
 		
 		m_activity.initMenu();
@@ -247,12 +246,14 @@ public class ArticlePager extends Fragment {
 	}
 
 	public void setActiveArticle(Article article) {
-		m_article = article;
+		if (m_article != article) {
+			m_article = article;
 
-		int position = m_articles.indexOf(m_article);
+			int position = m_articles.indexOf(m_article);
 
-		ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
+			ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
 		
-		pager.setCurrentItem(position);
+			pager.setCurrentItem(position);
+		}
 	}
 }
