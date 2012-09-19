@@ -4,15 +4,16 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
 
 public class GlobalState extends Application {
 	private static GlobalState m_singleton;
 	
-	public Article m_activeArticle;
 	public ArticleList m_loadedArticles = new ArticleList();
 	public Feed m_activeFeed;
-	public Article m_selectedArticle;
+	public Article m_activeArticle;
 	public int m_selectedArticleId;
 	
 	public static GlobalState getInstance(){
@@ -23,5 +24,5 @@ public class GlobalState extends Application {
 	public final void onCreate() {
 		super.onCreate();
 		m_singleton = this;
-	}	
+	}
 }
