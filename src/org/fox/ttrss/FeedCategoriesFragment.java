@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -127,7 +128,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
+		m_activity.getMenuInflater().inflate(R.menu.category_menu, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		FeedCategory cat = m_adapter.getItem(info.position);
@@ -198,8 +199,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 		}
 	
-		if (getActivity() != null)
-			getActivity().setProgressBarIndeterminateVisibility(showProgress);
+		m_activity.setProgressBarIndeterminateVisibility(showProgress);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -210,13 +210,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		final boolean unreadOnly = m_activity.getUnreadOnly();
 		
 		if (sessionId != null) {
-			
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					setLoadingStatus(R.string.blank, true);
-				}
-			});
+			setLoadingStatus(R.string.blank, true);
+			m_activity.setProgressBarVisibility(true);
 			
 			@SuppressWarnings("serial")
 			HashMap<String,String> map = new HashMap<String,String>() {
@@ -231,7 +226,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			};
 
 			req.execute(map);
-		
 		}
 	}
 	
@@ -241,7 +235,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			super(context);
 		}
 		
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+		}
+		
+		@Override
 		protected void onPostExecute(JsonElement result) {
+			m_activity.setProgressBarVisibility(false);
+
 			if (result != null) {
 				try {			
 					JsonArray content = result.getAsJsonArray();

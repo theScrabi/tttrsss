@@ -32,9 +32,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -98,6 +100,8 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 
+		m_activity.setProgressBarVisibility(true);
+		
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
 		}
@@ -125,6 +129,15 @@ public class ArticleFragment extends Fragment {
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				web.setWebChromeClient(new WebChromeClient() {					
+					@Override
+	                public void onProgressChanged(WebView view, int progress) {
+	                	m_activity.setProgress(progress * 10000);
+	                	if (progress == 100) {
+	                		m_activity.setProgressBarVisibility(false);
+	                	}
+	                }
+				});
 				
 				String content;
 				String cssOverride = "";

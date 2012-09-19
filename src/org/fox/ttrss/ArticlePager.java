@@ -126,13 +126,23 @@ public class ArticlePager extends Fragment {
 	@SuppressWarnings({ "unchecked", "serial" })
 	private void refresh(boolean append) {
 		m_activity.setLoadingStatus(R.string.blank, true);
+
+		m_activity.setProgressBarVisibility(true);
 		
 		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
 		}
 		
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+			@Override
+			protected void onProgressUpdate(Integer... progress) {
+				m_activity.setProgress(progress[0] / progress[1] * 10000);
+			}
+
+			@Override
 			protected void onPostExecute(JsonElement result) {
+				m_activity.setProgressBarVisibility(false);
+
 				super.onPostExecute(result);
 				
 				if (result != null) {				

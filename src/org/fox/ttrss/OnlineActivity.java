@@ -132,8 +132,10 @@ public class OnlineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);		
-
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);	
+		requestWindowFeature(Window.FEATURE_PROGRESS);
+		
+		setProgressBarVisibility(false);
 		setProgressBarIndeterminateVisibility(false);
 
 //		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);

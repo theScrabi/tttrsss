@@ -254,6 +254,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
 
+		m_activity.setProgressBarVisibility(true);
+		
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
 		final String sessionId = m_activity.getSessionId();
@@ -262,13 +264,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
 		if (sessionId != null) {
-			
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					setLoadingStatus(R.string.blank, true);
-				}
-			});
+			setLoadingStatus(R.string.blank, true);
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
@@ -354,7 +350,15 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			m_catId = catId;
 		}
 		
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+		}
+
+		@Override
 		protected void onPostExecute(JsonElement result) {
+			m_activity.setProgressBarVisibility(false);
+
 			if (result != null) {
 				try {			
 					JsonArray content = result.getAsJsonArray();

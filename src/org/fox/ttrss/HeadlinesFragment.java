@@ -349,6 +349,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_activity != null) {
 			m_refreshInProgress = true;
 
+			m_activity.setProgressBarVisibility(true);
+			
 			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 				append = false;
 			}
@@ -359,7 +361,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			final boolean isCat = m_feed.is_cat;
 			
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+				@Override
+				protected void onProgressUpdate(Integer... progress) {
+					m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+				}
+
+				@Override
 				protected void onPostExecute(JsonElement result) {
+					m_activity.setProgressBarVisibility(false);
+					
 					super.onPostExecute(result);	
 					
 					if (result != null) {

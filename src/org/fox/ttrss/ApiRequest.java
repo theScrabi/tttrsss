@@ -2,11 +2,13 @@ package org.fox.ttrss;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.CharBuffer;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
 
@@ -14,6 +16,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import org.apache.http.util.CharArrayBuffer;
 
 import java.security.cert.X509Certificate;
 
@@ -164,27 +168,31 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		    OutputStream out = conn.getOutputStream();
 		    out.write(postData);
 		    out.close();
-
+		    
 		    m_responseCode = conn.getResponseCode();
 		    m_responseMessage = conn.getResponseMessage();
-
+		    
 		    switch (m_responseCode) {
 			case HttpURLConnection.HTTP_OK:
-				BufferedReader buffer = new BufferedReader(
-						new InputStreamReader(conn.getInputStream()), 8192);
-	
-				String s = "";				
-				String response = "";
-	
-				while ((s = buffer.readLine()) != null) {
-					response += s;
+				StringBuffer response = new StringBuffer();
+				InputStreamReader in = new InputStreamReader(conn.getInputStream(), "UTF-8");
+				char[] buf = new char[256];
+				int read = 0;
+				int total = 0;
+
+				int contentLength = conn.getHeaderFieldInt("Api-Content-Length", -1);
+
+				while ((read = in.read(buf)) >= 0) {
+					response.append(buf, 0, read);
+					total += read;
+					publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
 				}
-	
+				
 				if (m_transportDebugging) Log.d(TAG, "<<< " + response);
 	
 				JsonParser parser = new JsonParser();
 				
-				JsonElement result = parser.parse(response);
+				JsonElement result = parser.parse(response.toString());
 				JsonObject resultObj = result.getAsJsonObject();
 				
 				m_apiStatusCode = resultObj.get("status").getAsInt();
