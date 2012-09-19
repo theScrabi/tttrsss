@@ -131,4 +131,7 @@
     <string name="update_headlines">Refresh</string>
     <string name="attachment_share">Share</string>
     <string name="error_network_unavailable">Error: network unavailable</string>
+    <string name="category_browse_headlines">Browse headlines</string>
+    <string name="pref_default_view_mode">Default feed view</string>
+    <string name="pref_default_view_mode_long">Which feed view to open by default on smartphones</string>
 </resources>

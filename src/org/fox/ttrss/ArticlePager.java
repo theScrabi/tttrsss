@@ -104,10 +104,11 @@ public class ArticlePager extends Fragment {
 				if (article != null) {
 					m_article = article;
 					
-					if (article.unread) {
+					/* if (article.unread) {
 						article.unread = false;
 						m_activity.saveArticleUnread(article);
-					}
+					} */
+					
 					m_listener.onArticleSelected(article, false);
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
@@ -147,6 +148,15 @@ public class ArticlePager extends Fragment {
 				
 				if (result != null) {				
 					m_adapter.notifyDataSetChanged();
+					
+					if (m_article.id == 0) {
+						if (m_articles.size() > 0) {
+							Log.d(TAG, "blank id on refresh");
+							m_article = m_articles.get(0);
+							m_listener.onArticleSelected(m_article, false);
+						}
+					}
+					
 				} else {
 					if (m_lastError == ApiError.LOGIN_FAILED) {
 						m_activity.login();

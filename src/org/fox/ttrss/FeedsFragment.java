@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedList;
@@ -136,6 +137,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		switch (item.getItemId()) {
+		case R.id.browse_articles:
+			if (true) {
+				Feed feed = getFeedAtPosition(info.position);
+				if (feed != null) {
+					m_activity.openFeedArticles(feed);
+				}
+			}
+			return true;		
+		case R.id.browse_headlines:
+			if (true) {
+				Feed feed = getFeedAtPosition(info.position);
+				if (feed != null) {
+					m_activity.onFeedSelected(feed);
+				}
+			}
+			return true;
 		case R.id.catchup_feed:
 			if (true) {
 				Feed feed = getFeedAtPosition(info.position);
@@ -163,6 +180,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (feed != null) 
 			menu.setHeaderTitle(feed.title);
 
+		if (!m_activity.isSmallScreen()) {
+			menu.findItem(R.id.browse_headlines).setVisible(false);
+			menu.findItem(R.id.browse_feeds).setVisible(false);
+		}
+		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
@@ -239,8 +261,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				cat.title = feed.title;
 				
 				m_activity.onCatSelected(cat);				
-			} else {				
-				m_activity.onFeedSelected(feed);
+			} else {
+				if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES"))) {
+					m_activity.openFeedArticles(feed);
+				} else {
+					m_activity.onFeedSelected(feed);
+				}
 			}
 			
 			if (!m_activity.isSmallScreen())

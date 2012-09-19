@@ -98,6 +98,15 @@
             android:defaultValue="true"
             android:key="justify_article_text"
             android:title="@string/justify_article_text" />
+        
+        <ListPreference
+            android:defaultValue="HEADLINES"
+            android:entries="@array/pref_view_mode_names"
+            android:entryValues="@array/pref_view_mode_values"
+            android:key="default_view_mode"
+            android:summary="@string/pref_default_view_mode_long"
+            android:title="@string/pref_default_view_mode" />
+        
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/offline_mode" >

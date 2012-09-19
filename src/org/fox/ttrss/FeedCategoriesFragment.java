@@ -95,6 +95,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (true) {
 				FeedCategory cat = getCategoryAtPosition(info.position);
 				if (cat != null) {
+					m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));
+					//setSelectedCategory(cat);
+				}
+			}
+			return true;		
+		case R.id.browse_headlines:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
 					m_activity.onCatSelected(cat, true);
 					//setSelectedCategory(cat);
 				}
@@ -392,7 +401,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
-			m_activity.onCatSelected(cat);
+			
+			if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
+					m_prefs.getBoolean("browse_cats_like_feeds", false)) {
+				
+				m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));
+				
+			} else {			
+				m_activity.onCatSelected(cat);
+			}
 			
 			if (!m_activity.isSmallScreen())
 				m_selectedCat = cat;

@@ -17,5 +17,13 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-
+    <string-array name="pref_view_mode_names">
+        <item>@string/category_browse_headlines</item>
+        <item>@string/category_browse_articles</item>
+    </string-array>
+    <string-array name="pref_view_mode_values">
+        <item>HEADLINES</item>
+        <item>ARTICLES</item>
+    </string-array>
+    
 </resources>

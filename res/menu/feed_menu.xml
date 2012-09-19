@@ -1,6 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/browse_headlines"
+        android:title="@string/category_browse_headlines"/>
+    
+    <item
+        android:id="@+id/browse_articles"
+        android:title="@string/category_browse_articles"/>
+    
+    <item
         android:id="@+id/catchup_feed"
         android:title="@string/catchup"/>
     

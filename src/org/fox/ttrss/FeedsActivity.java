@@ -68,7 +68,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					
 					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
 					
-					setTitle(intent.getStringExtra("feedTitle"));
+					setTitle(feed.title);
 				} else {
 					if (feed != null) {
 						HeadlinesFragment hf = new HeadlinesFragment(feed);
@@ -136,20 +136,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		}		
 	}
 	
-	
 	public void onFeedSelected(Feed feed) {
 		GlobalState.getInstance().m_loadedArticles.clear();
 
 		if (isSmallScreen()) {
-				
 			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
 			intent.putExtra("feed", feed);
-	 	   
+
 			startActivityForResult(intent, 0);
-			
-			//HeadlinesFragment hf = new HeadlinesFragment(feed);
-			//ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
-			//ft.addToBackStack(null);
 		} else {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
@@ -240,6 +234,22 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		initMenu();		
 	}
 
+	public void openFeedArticles(Feed feed) {
+		if (isSmallScreen()) {
+			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
+			
+			GlobalState.getInstance().m_activeFeed = feed;
+			GlobalState.getInstance().m_loadedArticles.clear();
+
+			intent.putExtra("feed", feed);
+			intent.putExtra("article", new Article());
+			startActivityForResult(intent, 0);
+			
+		} else {
+			
+		}
+	}
+	
 	public void onArticleSelected(Article article, boolean open) {
 		if (article.unread) {
 			article.unread = false;
@@ -252,7 +262,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (isSmallScreen()) {
 
 				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-				intent.putExtra("feedTitle", hf.getFeed().title);
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
 				intent.putExtra("searchQuery", hf.getSearchQuery());
