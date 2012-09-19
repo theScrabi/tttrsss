@@ -129,4 +129,5 @@
     <string name="notify_article_unpublished">Article unpublished</string>
     <string name="notify_article_note_set">Article note saved</string>
     <string name="update_headlines">Refresh</string>
+    <string name="attachment_share">Share</string>
 </resources>

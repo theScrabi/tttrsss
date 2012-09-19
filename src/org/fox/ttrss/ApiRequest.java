@@ -42,7 +42,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	private String m_api;
 	private boolean m_trustAny = false;
 	private boolean m_transportDebugging = false;
-	protected int m_httpStatusCode = 0;
+	protected int m_responseCode = 0;
+	protected String m_responseMessage;
 	protected int m_apiStatusCode = 0;
 	protected Context m_context;
 	private SharedPreferences m_prefs;
@@ -154,10 +155,11 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		    out.write(postData);
 		    out.close();
 
-		    m_httpStatusCode = conn.getResponseCode();
+		    m_responseCode = conn.getResponseCode();
+		    m_responseMessage = conn.getResponseMessage();
 
-		    switch (m_httpStatusCode) {
-			case 200:
+		    switch (m_responseCode) {
+			case HttpURLConnection.HTTP_OK:
 				BufferedReader buffer = new BufferedReader(
 						new InputStreamReader(conn.getInputStream()), 8192);
 	
@@ -201,16 +203,16 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				}
 
 				return null;
-			case 401:
+			case HttpURLConnection.HTTP_UNAUTHORIZED:
 				m_lastError = ApiError.HTTP_UNAUTHORIZED;
 				break;
-			case 403:
+			case HttpURLConnection.HTTP_FORBIDDEN:
 				m_lastError = ApiError.HTTP_FORBIDDEN;
 				break;
-			case 404:
+			case HttpURLConnection.HTTP_NOT_FOUND:
 				m_lastError = ApiError.HTTP_NOT_FOUND;
 				break;
-			case 500:
+			case HttpURLConnection.HTTP_INTERNAL_ERROR:
 				m_lastError = ApiError.HTTP_SERVER_ERROR;
 				break;
 			default:

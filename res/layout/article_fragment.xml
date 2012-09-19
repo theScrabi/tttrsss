@@ -83,6 +83,13 @@
                 android:text="@string/attachment_view" />
 
             <Button
+                android:id="@+id/attachment_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="@string/attachment_share" />
+            
+            <Button
                 android:id="@+id/attachment_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

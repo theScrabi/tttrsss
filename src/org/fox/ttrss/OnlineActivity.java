@@ -964,6 +964,16 @@ public class OnlineActivity extends CommonActivity {
 		return tmp.replaceAll(",$", "");
 	}
 	
+	public void shareText(String text) {
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+
+		startActivity(Intent.createChooser(intent, text));
+	}
+	
 	public void shareArticle(Article article) {
 		if (article != null) {
 

@@ -214,7 +214,7 @@ public class ArticleFragment extends Fragment {
 								String strUrl = url.toString().trim();
 								
 								if (a.content_type.indexOf("image") != -1 && !articleContent.contains(strUrl)) {
-									content += "<br/><img src=\"" + strUrl.replace("\"", "\\\"") + "\">";
+									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
 								}
 								
 								spinnerArray.add(a);
@@ -256,7 +256,25 @@ public class ArticleFragment extends Fragment {
 							}
 						}
 					});
+
+					Button attachmentsShare = (Button) view.findViewById(R.id.attachment_share);
 					
+					if (!m_activity.isPortrait()) {
+						attachmentsShare.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Attachment attachment = (Attachment) spinner.getSelectedItem();
+	
+								if (attachment != null) {
+									m_activity.shareText(attachment.content_url);
+								}
+							}
+						});
+					} else {
+						attachmentsShare.setVisibility(View.GONE);
+					}
+
 				} else {
 					view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				}
