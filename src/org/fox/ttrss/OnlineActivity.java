@@ -15,6 +15,7 @@ import org.fox.ttrss.types.Label;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +24,9 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -442,6 +445,24 @@ public class OnlineActivity extends CommonActivity {
 		case android.R.id.home:
 			finish();
 			return true;
+		case R.id.donate:
+			if (true) {
+				try {
+					Intent intent = new Intent(Intent.ACTION_VIEW, 
+						Uri.parse("market://details?id=org.fox.ttrss.key"));
+					startActivity(intent);
+				} catch (ActivityNotFoundException ae) {
+					try {
+						Intent intent = new Intent(Intent.ACTION_VIEW, 
+							Uri.parse("https://play.google.com/store/apps/details?id=org.fox.ttrss.key"));
+						startActivity(intent);
+					} catch (Exception e) {
+						e.printStackTrace();
+						toast(R.string.error_other_error);
+					}
+				}
+			}
+			return true;
 		case R.id.logout:
 			logout();
 			return true;
@@ -850,6 +871,19 @@ public class OnlineActivity extends CommonActivity {
 		m_menu = menu;
 
 		initMenu();
+		
+		List<PackageInfo> pkgs = getPackageManager()
+				.getInstalledPackages(0);
+
+		for (PackageInfo p : pkgs) {
+			if ("org.fox.ttrss.key".equals(p.packageName)) {
+				Log.d(TAG, "license apk found");
+				menu.findItem(R.id.donate).setVisible(false);
+				toast(R.string.donate_thanks);
+				break;
+			}
+		}
+
 		
 		return true;
 	}

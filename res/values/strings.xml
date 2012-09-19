@@ -134,4 +134,5 @@
     <string name="category_browse_headlines">Browse headlines</string>
     <string name="pref_default_view_mode">Default feed view</string>
     <string name="pref_default_view_mode_long">Which feed view to open by default on smartphones</string>
+    <string name="donate_thanks">Donation found, thank you for support!</string>
 </resources>
