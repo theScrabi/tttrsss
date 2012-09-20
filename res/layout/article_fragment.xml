@@ -1,101 +1,98 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
-    android:padding="5sp"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="5sp" >
 
-        <LinearLayout
-            android:id="@+id/article_header"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="There are many variations of passages of Lorem Ipsum available"
+        android:textColor="?linkColor"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_weight="0.7"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="{TAGS}"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tags"
+        android:layout_alignBottom="@+id/tags"
+        android:layout_alignRight="@+id/title"
+        android:layout_weight="0.2"
+        android:gravity="right"
+        android:text="{DATE}"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tags"
+        android:layout_alignParentLeft="true"
+        android:layout_weight="0"
+        android:background="?horizontalDivider"
+        android:paddingTop="2dip" />
+
+    <WebView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/attachments_holder"
+        android:layout_alignLeft="@+id/tags"
+        android:layout_below="@+id/separator"
+        android:layout_weight="1"
+        android:padding="5sp" />
+
+    <LinearLayout
+        android:id="@+id/attachments_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_weight="0" >
+
+        <Spinner
+            android:id="@+id/attachments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:orientation="vertical"
-            android:paddingBottom="5sp" >
-
-            <TextView
-                android:id="@+id/title"
-                android:textColor="?linkColor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="There are many variations of passages of Lorem Ipsum available"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-
-                <TextView
-                    android:id="@+id/tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="{TAGS}"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:gravity="right"
-                    android:text="{DATE}"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="13sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="?horizontalDivider"
-            android:paddingTop="2dip" />
-
-        <WebView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5sp" />
+            android:prompt="@string/attachments_prompt" />
 
-        <LinearLayout
-            android:id="@+id/attachments_holder"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/attachment_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0" >
+            android:layout_weight="0"
+            android:text="@string/attachment_view" />
 
-            <Spinner
-                android:id="@+id/attachments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:prompt="@string/attachments_prompt" />
+        <Button
+            android:id="@+id/attachment_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_share" />
 
-            <Button
-                android:id="@+id/attachment_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_view" />
+        <Button
+            android:id="@+id/attachment_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_copy" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/attachment_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_share" />
-            
-            <Button
-                android:id="@+id/attachment_copy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_copy" />
-        </LinearLayout>
-    
-</LinearLayout>
+</RelativeLayout>
