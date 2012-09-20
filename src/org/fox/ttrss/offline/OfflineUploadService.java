@@ -251,14 +251,22 @@ public class OfflineUploadService extends IntentService {
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		m_sessionId = intent.getStringExtra("sessionId");
-
-		if (!m_uploadInProgress) {
-			m_uploadInProgress = true;
-
-			updateNotification(R.string.notify_uploading_sending_data);
-			
-			uploadRead();			
+		try {
+			if (getWritableDb().isDbLockedByCurrentThread() || getWritableDb().isDbLockedByOtherThreads()) {
+				return;
+			}
+	
+			m_sessionId = intent.getStringExtra("sessionId");
+	
+			if (!m_uploadInProgress) {
+				m_uploadInProgress = true;
+	
+				updateNotification(R.string.notify_uploading_sending_data);
+				
+				uploadRead();			
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

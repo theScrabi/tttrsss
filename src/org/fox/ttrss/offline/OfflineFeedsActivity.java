@@ -200,14 +200,14 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void catchupFeed(int feedId, boolean isCat) {
 		if (isCat) {
 			SQLiteStatement stmt = getWritableDb().compileStatement(
-					"UPDATE articles SET unread = 0 WHERE feed_id IN (SELECT "+
+					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+
 						BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
 			stmt.bindLong(1, feedId);
 			stmt.execute();
 			stmt.close();
 		} else {
 			SQLiteStatement stmt = getWritableDb().compileStatement(
-					"UPDATE articles SET unread = 0 WHERE feed_id = ?");
+					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
 			stmt.bindLong(1, feedId);
 			stmt.execute();
 			stmt.close();			
@@ -219,7 +219,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	@Override
 	public void onArticleSelected(int articleId, boolean open) {
 		SQLiteStatement stmt = getWritableDb().compileStatement(
-				"UPDATE articles SET unread = 0 " + "WHERE " + BaseColumns._ID
+				"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
 						+ " = ?");
 
 		stmt.bindLong(1, articleId);

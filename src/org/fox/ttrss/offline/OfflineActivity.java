@@ -259,10 +259,10 @@ public class OfflineActivity extends CommonActivity {
 				
 				if (isCat) {
 					stmt = getWritableDb().compileStatement(
-							"UPDATE articles SET unread = 0 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+							"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
 					stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET unread = 0 WHERE feed_id = ?");
+						"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
 				}
 				stmt.bindLong(1, feedId);
 				stmt.execute();
@@ -283,7 +283,7 @@ public class OfflineActivity extends CommonActivity {
 				int articleId = oap.getSelectedArticleId();
 				
 				SQLiteStatement stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET marked = NOT marked WHERE "
+						"UPDATE articles SET modified = 1, marked = NOT marked WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
 				stmt.execute();
@@ -299,7 +299,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getWritableDb()
 						.compileStatement(
-								"UPDATE articles SET unread = NOT unread WHERE selected = 1");
+								"UPDATE articles SET modified = 1, unread = NOT unread WHERE selected = 1");
 				stmt.execute();
 				stmt.close();
 				
@@ -310,7 +310,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getWritableDb()
 						.compileStatement(
-								"UPDATE articles SET marked = NOT marked WHERE selected = 1");
+								"UPDATE articles SET modified = 1, marked = NOT marked WHERE selected = 1");
 				stmt.execute();
 				stmt.close();
 				
@@ -321,7 +321,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getWritableDb()
 						.compileStatement(
-								"UPDATE articles SET published = NOT published WHERE selected = 1");
+								"UPDATE articles SET modified = 1, published = NOT published WHERE selected = 1");
 				stmt.execute();
 				stmt.close();
 				
@@ -333,7 +333,7 @@ public class OfflineActivity extends CommonActivity {
 				int articleId = oap.getSelectedArticleId();
 				
 				SQLiteStatement stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET published = NOT published WHERE "
+						"UPDATE articles SET modified = 1, published = NOT published WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
 				stmt.execute();
@@ -352,12 +352,12 @@ public class OfflineActivity extends CommonActivity {
 				
 				if (isCat) {
 					stmt = getWritableDb().compileStatement(
-							"UPDATE articles SET unread = 0 WHERE " +
+							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
 					stmt = getWritableDb().compileStatement(
-							"UPDATE articles SET unread = 0 WHERE " +
+							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id = ?");						
 				}
@@ -375,7 +375,7 @@ public class OfflineActivity extends CommonActivity {
 				int articleId = oap.getSelectedArticleId();
 				
 				SQLiteStatement stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET unread = 1 WHERE "
+						"UPDATE articles SET modified = 1, unread = 1 WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
 				stmt.execute();
