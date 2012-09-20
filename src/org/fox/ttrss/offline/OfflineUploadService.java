@@ -177,7 +177,7 @@ public class OfflineUploadService extends IntentService {
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
 					put("article_ids", ids);
-					put("mode", "0");
+					put("mode", "1");
 					put("field", "0");
 				}
 			};
@@ -237,7 +237,7 @@ public class OfflineUploadService extends IntentService {
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
 					put("article_ids", ids);
-					put("mode", "0");
+					put("mode", "1");
 					put("field", "1");
 				}
 			};
