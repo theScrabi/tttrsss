@@ -464,15 +464,23 @@ public class OfflineDownloadService extends Service {
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		m_sessionId = intent.getStringExtra("sessionId");
-		
-		if (!m_downloadInProgress) {
-			if (m_downloadImages) ImageCacheService.cleanupCache(false);
+		try {
+			if (getWritableDb().isDbLockedByCurrentThread() || getWritableDb().isDbLockedByOtherThreads()) {
+				return;
+			}
 			
-			updateNotification(R.string.notify_downloading_init);
-			m_downloadInProgress = true;
+			m_sessionId = intent.getStringExtra("sessionId");
 		
-			downloadCategories();
+			if (!m_downloadInProgress) {
+				if (m_downloadImages) ImageCacheService.cleanupCache(false);
+			
+				updateNotification(R.string.notify_downloading_init);
+				m_downloadInProgress = true;
+		
+				downloadCategories();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
