@@ -157,7 +157,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
 				
 				conn.setRequestProperty("Authorization", "Basic " + 
-						Base64.encode((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
+						Base64.encodeToString((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
 			}
 			
 			conn.setDoInput(true); 

@@ -637,7 +637,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				
 				if (httpLogin.length() > 0) {
 					conn.setRequestProperty("Authorization", "Basic " + 
-						Base64.encode((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
+						Base64.encodeToString((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
 				}
 
 				InputStream content = conn.getInputStream();
