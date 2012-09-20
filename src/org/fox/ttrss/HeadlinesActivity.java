@@ -78,7 +78,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						
 						ft.commit();
 					}
-				}, 25);
+				}, 10);
 				
 			}
 		} 

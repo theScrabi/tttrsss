@@ -167,7 +167,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					
 					ft.commit();
 				}
-			}, 25);
+			}, 10);
 			
 
 			Date date = new Date();
