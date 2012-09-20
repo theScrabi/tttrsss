@@ -60,9 +60,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				
 				setTitle(feed.title);
 
-				Handler handler = new Handler();
-				
-				handler.postDelayed(new Runnable() {
+				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -191,14 +189,28 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 				hf.setActiveArticle(article);
 
-				ArticlePager af = new ArticlePager(article, hf.getFeed());
-				
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
-				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+				ft.replace(R.id.article_fragment, new LoadingFragment(), null);
 				
 				ft.commit();
+				
+				final Article fArticle = article;
+				final Feed fFeed = hf.getFeed();
+				
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						FragmentTransaction ft = getSupportFragmentManager()
+								.beginTransaction();
+
+						ArticlePager af = new ArticlePager(fArticle, fFeed);
+
+						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+						ft.commit();
+					}
+				}, 10);				
 			}
 		}
 	}

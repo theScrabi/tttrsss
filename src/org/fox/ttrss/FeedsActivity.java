@@ -152,11 +152,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
 			ft.commit();
 			
-			Handler handler = new Handler();
-			
 			final Feed fFeed = feed;
 			
-			handler.postDelayed(new Runnable() {
+			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					FragmentTransaction ft = getSupportFragmentManager()
