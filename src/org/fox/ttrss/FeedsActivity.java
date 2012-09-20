@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -148,10 +149,26 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 
-			HeadlinesFragment hf = new HeadlinesFragment(feed);
-			ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-			
+			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
 			ft.commit();
+			
+			Handler handler = new Handler();
+			
+			final Feed fFeed = feed;
+			
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					FragmentTransaction ft = getSupportFragmentManager()
+							.beginTransaction();
+
+					HeadlinesFragment hf = new HeadlinesFragment(fFeed);
+					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+					
+					ft.commit();
+				}
+			}, 25);
+			
 
 			Date date = new Date();
 

@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,24 +47,39 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
-				Feed feed = i.getParcelableExtra("feed");
-				Article article = i.getParcelableExtra("article");
-				String searchQuery = i.getStringExtra("searchQuery");
-				
-				HeadlinesFragment hf = new HeadlinesFragment(feed, article);
-				ArticlePager af = new ArticlePager(hf.getArticleById(article.id), feed);
-
-				hf.setSearchQuery(searchQuery);
-				af.setSearchQuery(searchQuery);
+				final Feed feed = i.getParcelableExtra("feed");
+				final Article article = i.getParcelableExtra("article");
+				final String searchQuery = i.getStringExtra("searchQuery");
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+				ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
+				ft.replace(R.id.article_fragment, new LoadingFragment(), null);
 				
 				ft.commit();
 				
 				setTitle(feed.title);
+
+				Handler handler = new Handler();
+				
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+						HeadlinesFragment hf = new HeadlinesFragment(feed, article);
+						hf.setSearchQuery(searchQuery);
+
+						ArticlePager af = new ArticlePager(hf.getArticleById(article.id), feed);
+						af.setSearchQuery(searchQuery);
+
+						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+						
+						ft.commit();
+					}
+				}, 25);
+				
 			}
 		} 
 	}
@@ -152,7 +168,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			ft.commit();
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			hf.setActiveArticle(article);
+			if (hf != null) {
+				hf.setActiveArticle(article);
+			}
 		}
 
 		GlobalState.getInstance().m_activeArticle = article;
