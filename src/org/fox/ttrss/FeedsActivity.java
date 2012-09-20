@@ -244,9 +244,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("feed", feed);
 			intent.putExtra("article", new Article());
 			startActivityForResult(intent, 0);
-			
-		} else {
-			
 		}
 	}
 	

@@ -416,7 +416,7 @@ public class OfflineActivity extends CommonActivity {
 
 				OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 				
-				if (af != null) {
+				if (af != null && af.getSelectedArticleId() > 0) {
 					shareProvider.setShareIntent(getShareIntent(getArticleById(af.getSelectedArticleId())));
 					
 					if (!isSmallScreen()) {
@@ -516,16 +516,20 @@ public class OfflineActivity extends CommonActivity {
 	}
 
 	protected Intent getShareIntent(Cursor article) {
-		String title = article.getString(article.getColumnIndex("title"));
-		String link = article.getString(article.getColumnIndex("link"));
-
-		Intent intent = new Intent(Intent.ACTION_SEND);
-
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_SUBJECT, title);
-		intent.putExtra(Intent.EXTRA_TEXT, link);
-
-		return intent;
+		if (article != null) {
+			String title = article.getString(article.getColumnIndex("title"));
+			String link = article.getString(article.getColumnIndex("link"));
+	
+			Intent intent = new Intent(Intent.ACTION_SEND);
+	
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, title);
+			intent.putExtra(Intent.EXTRA_TEXT, link);
+	
+			return intent;
+		} else {
+			return null;
+		}
 	}
 	
 	protected void shareArticle(int articleId) {

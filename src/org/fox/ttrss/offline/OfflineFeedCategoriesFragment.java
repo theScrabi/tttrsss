@@ -90,6 +90,14 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 			if (true) {
 				int catId = getCatIdAtPosition(info.position);
 				if (catId != -10000) {
+					m_activity.openFeedArticles(catId, true);
+				}
+			}
+			return true;
+		case R.id.browse_headlines:
+			if (true) {
+				int catId = getCatIdAtPosition(info.position);
+				if (catId != -10000) {
 					m_activity.onCatSelected(catId, true);
 				}
 			}
@@ -178,7 +186,14 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				m_activity.onCatSelected(feedId);
+				if (m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
+						m_prefs.getBoolean("browse_cats_like_feeds", false)) {
+				
+					m_activity.openFeedArticles(feedId, true);
+					
+				} else {
+					m_activity.onCatSelected(feedId);
+				}
 				
 				if (!m_activity.isSmallScreen())
 					m_selectedCatId = feedId;

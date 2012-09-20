@@ -406,7 +406,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
 			
-			if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
+			if (m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
 					m_prefs.getBoolean("browse_cats_like_feeds", false)) {
 				
 				m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));

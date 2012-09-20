@@ -86,6 +86,17 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		initMenu();
 	}
 
+	public void openFeedArticles(int feedId, boolean isCat) {
+		if (isSmallScreen()) {
+			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);
+			
+			intent.putExtra("feed", feedId);
+			intent.putExtra("isCat", isCat);
+			intent.putExtra("article", 0);
+			startActivityForResult(intent, 0);
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

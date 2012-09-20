@@ -61,6 +61,22 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		switch (item.getItemId()) {
+		case R.id.browse_articles:
+			if (true) {
+				int feedId = getFeedIdAtPosition(info.position);
+				if (feedId != -10000) {
+					m_activity.openFeedArticles(feedId, false);
+				}
+			}
+			return true;
+		case R.id.browse_headlines:
+			if (true) {
+				int feedId = getFeedIdAtPosition(info.position);
+				if (feedId != -10000) {
+					m_activity.onFeedSelected(feedId);
+				}
+			}
+			return true;
 		case R.id.catchup_feed:
 			int feedId = getFeedIdAtPosition(info.position);
 			if (feedId != -10000) {
@@ -183,7 +199,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				m_activity.onFeedSelected(feedId);
+				if (!m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES"))) {
+					m_activity.openFeedArticles(feedId, false);
+				} else {
+					m_activity.onFeedSelected(feedId);
+				}
 				
 				if (!m_activity.isSmallScreen())
 					m_selectedFeedId = feedId;

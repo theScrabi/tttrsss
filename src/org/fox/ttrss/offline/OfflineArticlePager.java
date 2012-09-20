@@ -110,17 +110,30 @@ public class OfflineArticlePager extends Fragment {
 		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
-		m_cursor.moveToFirst();
-		
 		int position = 0;
 		
-		while (!m_cursor.isLast()) {
-			if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == m_articleId) {
-				position = m_cursor.getPosition();
-				break;
-			}				
-			m_cursor.moveToNext();
+		Log.d(TAG, "maId=" + m_articleId);
+		
+		if (m_articleId != 0) {
+			if (m_cursor.moveToFirst()) {
+				
+				while (!m_cursor.isLast()) {
+					if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == m_articleId) {
+						position = m_cursor.getPosition();
+						break;
+					}				
+					m_cursor.moveToNext();
+				}
+			}
+		} else {
+			if (m_cursor.moveToFirst()) {
+				m_articleId = m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID));
+				m_listener.onArticleSelected(m_articleId, false);
+				
+				Log.d(TAG, "maId=" + m_articleId);
+			}
 		}
+		
 		
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
