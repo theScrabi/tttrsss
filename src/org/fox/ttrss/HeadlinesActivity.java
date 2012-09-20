@@ -157,13 +157,20 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		}
 
 		if (open) {
-			FragmentTransaction ft = getSupportFragmentManager()
-					.beginTransaction();
 			
-			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-			af.setActiveArticle(article);
+			final Article fArticle = article;
 			
-			ft.commit();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+					
+					if (af != null) {
+						af.setActiveArticle(fArticle);
+					}
+				}
+			}, 10);			
+
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			if (hf != null) {
