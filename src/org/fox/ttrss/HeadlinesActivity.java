@@ -4,6 +4,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -79,7 +81,12 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				}, 10);
 				
 			}
-		} 
+		}
+		
+		if (!isCompatMode()) {
+			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
+			((ViewGroup)findViewById(R.id.article_fragment)).setLayoutTransition(new LayoutTransition());
+		}
 	}
 	
 	@Override

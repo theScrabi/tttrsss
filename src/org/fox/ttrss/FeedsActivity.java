@@ -8,6 +8,8 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.AppRater;
 
+import android.view.ViewGroup;
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -102,6 +104,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				AppRater.appLaunched(this);
 			}
 		}
+		
+		if (!isCompatMode() && !isSmallScreen()) {
+			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
+			((ViewGroup)findViewById(R.id.feeds_fragment)).setLayoutTransition(new LayoutTransition());
+		}
+
 	}
 	
 	@Override
