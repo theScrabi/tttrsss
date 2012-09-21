@@ -377,6 +377,10 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	public void login() {
+		login(false);
+	}
+	
+	public void login(boolean refresh) {
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
 
 			setLoadingStatus(R.string.login_need_configure, false);
@@ -403,7 +407,7 @@ public class OnlineActivity extends CommonActivity {
 			
 		} else {
 
-			LoginRequest ar = new LoginRequest(getApplicationContext());
+			LoginRequest ar = new LoginRequest(getApplicationContext(), refresh);
 
 			HashMap<String, String> map = new HashMap<String, String>() {
 				{
@@ -419,7 +423,7 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 	
-	protected void loginSuccess() {
+	protected void loginSuccess(boolean refresh) {
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
@@ -697,7 +701,9 @@ public class OnlineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.update_headlines:
-			refresh();
+			if (hf != null) {
+				hf.refresh(false);
+			}
 			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
@@ -865,7 +871,7 @@ public class OnlineActivity extends CommonActivity {
 		if (getSessionId() == null) {
 			login();
 		} else {
-			loginSuccess();
+			loginSuccess(false);
 		}
 	}
 	
@@ -1206,6 +1212,12 @@ public class OnlineActivity extends CommonActivity {
 			if (hf != null) {
 				hf.refresh(false);
 			}
+			
+			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			if (af != null) {
+				af.refresh(false);
+			}
 		}
 	}
 	
@@ -1214,8 +1226,11 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	private class LoginRequest extends ApiRequest {
-		public LoginRequest(Context context) {
+		boolean m_refreshAfterLogin = false;
+		
+		public LoginRequest(Context context, boolean refresh) {
 			super(context);
+			m_refreshAfterLogin = refresh;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -1248,7 +1263,8 @@ public class OnlineActivity extends CommonActivity {
 
 								Log.d(TAG, "Received API level: " + getApiLevel());
 
-								loginSuccess();
+								loginSuccess(m_refreshAfterLogin);
+
 								return;
 							}
 						};

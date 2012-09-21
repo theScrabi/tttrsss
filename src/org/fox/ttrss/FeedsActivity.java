@@ -26,7 +26,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
-	protected long m_lastRefresh = 0; 
+	protected long m_lastRefresh = 0;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -234,16 +234,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 	
 	@Override
-	protected void loginSuccess() {
+	protected void loginSuccess(boolean refresh) {
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		initMenu();
+		
+		if (refresh) refresh();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
 	}
 	
 	@Override
@@ -281,6 +282,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			if (isSmallScreen()) {
 
+				//GlobalState.getInstance().m_loadedArticles.clear();
+				
 				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);

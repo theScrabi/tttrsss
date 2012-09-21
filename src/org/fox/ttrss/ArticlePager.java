@@ -126,8 +126,8 @@ public class ArticlePager extends Fragment {
 		return view;
 	}
 	
-	@SuppressWarnings({ "unchecked", "serial" })
-	private void refresh(boolean append) {
+	@SuppressWarnings({ "unchecked", "serial" }) 
+	protected void refresh(boolean append) {
 		m_activity.setLoadingStatus(R.string.blank, true);
 
 		m_activity.setProgressBarVisibility(true);
@@ -160,7 +160,7 @@ public class ArticlePager extends Fragment {
 					
 				} else {
 					if (m_lastError == ApiError.LOGIN_FAILED) {
-						m_activity.login();
+						m_activity.login(true);
 					} else {
 						m_activity.toast(getErrorMessage());
 						//setLoadingStatus(getErrorMessage(), false);

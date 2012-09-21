@@ -97,13 +97,15 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	}
 	
 	@Override
-	protected void loginSuccess() {
+	protected void loginSuccess(boolean refresh) {
 		Log.d(TAG, "loginSuccess");
 		
 		setLoadingStatus(R.string.blank, false);
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
+		
+		if (refresh) refresh();
 	}
 	
 	@Override

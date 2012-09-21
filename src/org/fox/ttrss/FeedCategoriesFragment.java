@@ -294,7 +294,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 
 			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_activity.login();
+				m_activity.login(true);
 			} else {
 				setLoadingStatus(getErrorMessage(), false);
 			}
