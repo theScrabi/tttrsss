@@ -406,7 +406,8 @@ public class OnlineActivity extends CommonActivity {
 			alert.show();
 			
 		} else {
-
+			setLoadingStatus(R.string.login_in_progress, true);
+			
 			LoginRequest ar = new LoginRequest(getApplicationContext(), refresh);
 
 			HashMap<String, String> map = new HashMap<String, String>() {
@@ -425,7 +426,6 @@ public class OnlineActivity extends CommonActivity {
 	
 	protected void loginSuccess(boolean refresh) {
 		setLoadingStatus(R.string.blank, false);
-		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
 	

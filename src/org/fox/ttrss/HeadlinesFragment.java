@@ -384,7 +384,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_lastError == ApiError.LOGIN_FAILED) {
 							m_activity.login();
 						} else {
-							setLoadingStatus(getErrorMessage(), false);
+							m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
 					}
 				}
@@ -399,7 +399,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				
 				if (skip == 0) skip = m_articles.size();
 			} else {
-				setLoadingStatus(R.string.blank, true);
+				m_activity.setLoadingStatus(R.string.blank, true);
 			}
 			
 			final int fskip = skip;
@@ -445,7 +445,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
-	private void setLoadingStatus(int status, boolean showProgress) {
+	/* private void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			
@@ -456,7 +456,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (getActivity() != null)
 			getActivity().setProgressBarIndeterminateVisibility(showProgress);
-	}
+	} */
 	
 	/* private class HeadlinesRequest extends ApiRequest {
 		int m_offset = 0;

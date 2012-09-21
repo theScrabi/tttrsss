@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ public class CommonActivity extends FragmentActivity {
 		if (tv != null) {
 			tv.setText(status);
 		}
+		
+		findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
 		
 		setProgressBarIndeterminateVisibility(showProgress);
 	}

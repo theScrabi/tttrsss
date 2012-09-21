@@ -203,7 +203,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		out.putParcelable("cats", m_cats);
 	}
 
-	private void setLoadingStatus(int status, boolean showProgress) {
+	/* private void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
 			
@@ -213,7 +213,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		}
 	
 		m_activity.setProgressBarIndeterminateVisibility(showProgress);
-	}
+	} */
 	
 	@SuppressWarnings("unchecked")
 	public void refresh(boolean background) {
@@ -223,7 +223,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		final boolean unreadOnly = m_activity.getUnreadOnly();
 		
 		if (sessionId != null) {
-			setLoadingStatus(R.string.blank, true);
+			m_activity.setLoadingStatus(R.string.blank, true);
 			m_activity.setProgressBarVisibility(true);
 			
 			@SuppressWarnings("serial")
@@ -280,10 +280,11 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						sortCats();
 						
-						if (m_cats.size() == 0)
+						/* if (m_cats.size() == 0)
 							setLoadingStatus(R.string.no_feeds_to_display, false);
-						else
-							setLoadingStatus(R.string.blank, false);
+						else */
+						
+						m_activity.setLoadingStatus(R.string.blank, false);
 						
 						return;
 					}
@@ -296,7 +297,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (m_lastError == ApiError.LOGIN_FAILED) {
 				m_activity.login(true);
 			} else {
-				setLoadingStatus(getErrorMessage(), false);
+				m_activity.setLoadingStatus(getErrorMessage(), false);
 			}
 		}
 
