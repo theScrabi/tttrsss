@@ -78,15 +78,15 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						
 						ft.commit();
 					}
-				}, 10);
+				}, 25);
 				
 			}
 		}
 		
-		if (!isCompatMode()) {
+		/* if (!isCompatMode()) {
 			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
 			((ViewGroup)findViewById(R.id.article_fragment)).setLayoutTransition(new LayoutTransition());
-		}
+		} */
 	}
 	
 	@Override
