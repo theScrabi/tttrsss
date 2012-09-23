@@ -256,4 +256,26 @@ public class ArticlePager extends Fragment {
 			pager.setCurrentItem(position);
 		}
 	}
+
+	public void selectArticle(boolean next) {
+		if (m_article != null) {
+			int position = m_articles.indexOf(m_article);
+			
+			if (next) 
+				position++;
+			else
+				position--;
+			
+			try {
+				Article tmp = m_articles.get(position);
+				
+				if (tmp != null) {
+					setActiveArticle(tmp);
+				}
+				
+			} catch (IndexOutOfBoundsException e) {
+				// do nothing
+			}
+		}		
+	}
 }

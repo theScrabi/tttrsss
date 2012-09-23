@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -495,6 +496,26 @@ public class OfflineActivity extends CommonActivity {
 		return c;
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {		
+		if (m_prefs.getBoolean("use_volume_keys", false)) {
+			OfflineArticlePager ap = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			if (ap != null && ap.isAdded()) {			
+				switch (keyCode) {
+				case KeyEvent.KEYCODE_VOLUME_UP:
+					ap.selectArticle(false);					
+					return true;
+				case KeyEvent.KEYCODE_VOLUME_DOWN:
+					ap.selectArticle(true);
+					return true;
+				}
+			}
+		}
+		
+		return super.onKeyDown(keyCode, event);			
+	}
+	
 	protected Cursor getFeedById(int feedId) {
 		Cursor c = getReadableDb().query("feeds", null,
 				BaseColumns._ID + "=?",

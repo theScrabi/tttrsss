@@ -135,4 +135,6 @@
     <string name="pref_default_view_mode">Default feed view</string>
     <string name="pref_default_view_mode_long">Which feed view to open by default on smartphones</string>
     <string name="donate_thanks">Donation found, thank you for support!</string>
+    <string name="use_volume_keys">Use volume buttons</string>
+    <string name="use_volume_keys_long">Switch between articles with hardware volume buttons</string>
 </resources>

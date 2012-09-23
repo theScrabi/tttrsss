@@ -661,7 +661,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				return i;
 		}
 		
-		return 0;
+		return -1;
 	}
 	
 	public int getArticleCount() {

@@ -1,6 +1,7 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.R;
+import org.fox.ttrss.types.Article;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -206,21 +207,41 @@ public class OfflineArticlePager extends Fragment {
 	public void setArticleId(int articleId) {
 		m_articleId = articleId;		
 		
-		m_cursor.moveToFirst();
-		
-		int position = 0;
-		
-		while (!m_cursor.isLast()) {
-			if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == m_articleId) {
-				position = m_cursor.getPosition();
-				break;
-			}				
-			m_cursor.moveToNext();
-		}
+		int position = getArticleIdPosition(articleId);
 		
 		ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
 		
 		pager.setCurrentItem(position);
 		
+	}
+	
+	public int getArticleIdPosition(int articleId) {
+		m_cursor.moveToFirst();
+		
+		while (!m_cursor.isLast()) {
+			if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == articleId) {
+				return m_cursor.getPosition();
+			}				
+			m_cursor.moveToNext();
+		}
+		
+		return -1;
+	}
+
+	public void selectArticle(boolean next) {
+		int position = getArticleIdPosition(m_articleId);
+		
+		if (position != -1) {
+			if (next) 
+				position++;
+			else
+				position--;
+	
+			Log.d(TAG, "pos=" + position);
+			
+			if (m_cursor.moveToPosition(position)) {
+				setArticleId(m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)));			
+			}
+		}
 	}
 }

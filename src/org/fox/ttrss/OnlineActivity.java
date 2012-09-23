@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -1031,6 +1032,26 @@ public class OnlineActivity extends CommonActivity {
 		return intent;
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {		
+		if (m_prefs.getBoolean("use_volume_keys", false)) {
+			ArticlePager ap = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			if (ap != null && ap.isAdded()) {			
+				switch (keyCode) {
+				case KeyEvent.KEYCODE_VOLUME_UP:
+					ap.selectArticle(false);					
+					return true;
+				case KeyEvent.KEYCODE_VOLUME_DOWN:
+					ap.selectArticle(true);
+					return true;
+				}
+			}
+		}
+		
+		return super.onKeyDown(keyCode, event);			
+	}
+		
 	@SuppressWarnings("unchecked")
 	public void catchupFeed(final Feed feed) {
 		Log.d(TAG, "catchupFeed=" + feed);
