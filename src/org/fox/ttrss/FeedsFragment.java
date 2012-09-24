@@ -155,6 +155,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				}
 			}
 			return true;
+		case R.id.browse_feeds:
+			if (true) {
+				Feed feed = getFeedAtPosition(info.position);
+				if (feed != null) {
+					m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread), false);
+				}
+			}
+			return true;
 		case R.id.catchup_feed:
 			if (true) {
 				Feed feed = getFeedAtPosition(info.position);
@@ -184,6 +192,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		if (!m_activity.isSmallScreen()) {
 			menu.findItem(R.id.browse_articles).setVisible(false);
+		}
+		
+		if (!feed.is_cat) {
+			menu.findItem(R.id.browse_feeds).setVisible(false);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
@@ -263,11 +275,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 					m_activity.openFeedArticles(feed);
 					
 				} else {
-					FeedCategory cat = new FeedCategory();
-					cat.id = feed.id;
-					cat.title = feed.title;
-
-					m_activity.onCatSelected(cat);
+					m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
 				}
 			} else {
 				if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES"))) {

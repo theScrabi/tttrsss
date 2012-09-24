@@ -8,6 +8,10 @@
         android:id="@+id/browse_articles"
         android:title="@string/category_browse_articles"/>
     
+     <item
+        android:id="@+id/browse_feeds"
+        android:title="@string/category_browse_feeds"/>
+    
     <item
         android:id="@+id/catchup_feed"
         android:title="@string/catchup"/>
