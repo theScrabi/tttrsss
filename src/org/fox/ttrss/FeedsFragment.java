@@ -585,65 +585,13 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			return null;
 		}
 		
-		private void trustAllHosts() {
-		    X509TrustManager easyTrustManager = new X509TrustManager() {
-
-		        public void checkClientTrusted(
-		        		X509Certificate[] chain,
-		                String authType) throws CertificateException {
-		            // Oh, I am easy!
-		        }
-
-		        public void checkServerTrusted(
-		        		X509Certificate[] chain,
-		                String authType) throws CertificateException {
-		            // Oh, I am easy!
-		        }
-
-		        public X509Certificate[] getAcceptedIssuers() {
-		            return null;
-		        }
-
-		    };
-
-		    // Create a trust manager that does not validate certificate chains
-		    TrustManager[] trustAllCerts = new TrustManager[] {easyTrustManager};
-
-		    // Install the all-trusting trust manager
-		    try {
-		        SSLContext sc = SSLContext.getInstance("TLS");
-
-		        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-
-		        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {				
-					@Override
-					public boolean verify(String hostname, SSLSession session) {
-						return true;
-					}
-				});
-
-		    } catch (Exception e) {
-		            e.printStackTrace();
-		    }
-		}
-		
-		@SuppressWarnings("deprecation")
-		private void disableConnectionReuseIfNecessary() {
-		    // HTTP connection reuse which was buggy pre-froyo
-		    if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
-		        System.setProperty("http.keepAlive", "false");
-		    }
-		}
-		
 		protected void downloadFile(String fetchUrl, String outputFile) {
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
 			
-			disableConnectionReuseIfNecessary();
+			/* ApiRequest.disableConnectionReuseIfNecessary(); */
 			
-			if (m_prefs.getBoolean("ssl_trust_any", false)) {
-				trustAllHosts();				
-			}
+			/* ApiRequest.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
+					m_prefs.getBoolean("ssl_trust_any_host", false)); */				
 
 			try {
 				URL url = new URL(fetchUrl);

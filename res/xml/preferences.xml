@@ -22,11 +22,20 @@
             android:summary="@string/ttrss_url_summary"
             android:title="@string/ttrss_url" >
         </EditTextPreference>
-
+	</PreferenceCategory>
+    <PreferenceCategory android:title="@string/ssl" android:summary="blah blah blah" >  
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="ssl_trust_any"
+            android:summary="@string/ssl_trust_any_long"
             android:title="@string/ssl_trust_any" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="ssl_trust_any_host"
+            android:summary="@string/ssl_trust_any_host_long"
+            android:title="@string/ssl_trust_any_host" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/http_authentication" >
         <EditTextPreference

@@ -28,7 +28,7 @@
     <string name="share_article">Share article</string>
     <string name="catchup">Mark read</string>
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
-    <string name="ssl_trust_any">Accept any SSL certificate</string>
+    <string name="ssl_trust_any">Accept any certificate</string>
     <string name="category_browse_feeds">Browse feeds</string>
     <string name="category_browse_articles">Browse articles</string>
     <string name="blank"></string>
@@ -137,4 +137,10 @@
     <string name="donate_thanks">Donation found, thank you for support!</string>
     <string name="use_volume_keys">Use volume buttons</string>
     <string name="use_volume_keys_long">Switch between articles with hardware volume buttons</string>
+    <string name="ssl_trust_any_host">No hostname verification</string>
+    <string name="error_api_unknown_method">Error: unknown API method</string>
+    <string name="ssl_trust_any_long">Accepts any SSL certificate without validation</string>
+    <string name="ssl_trust_any_host_long">Do not verify hostnames over SSL</string>
+    <string name="ssl">SSL</string>
+    <string name="error_ssl_hostname_rejected">Error: SSL hostname not verified</string>
 </resources>

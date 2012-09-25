@@ -128,6 +128,8 @@ public class OnlineActivity extends CommonActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
+		ApiRequest.disableConnectionReuseIfNecessary();
+		
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
 		} else {
@@ -862,6 +864,9 @@ public class OnlineActivity extends CommonActivity {
 	public void onResume() {
 		super.onResume();
 		
+		ApiRequest.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
+				m_prefs.getBoolean("ssl_trust_any_host", false));				
+		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
 		filter.addAction(OfflineUploadService.INTENT_ACTION_SUCCESS);
@@ -1276,7 +1281,9 @@ public class OnlineActivity extends CommonActivity {
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
-								} else {
+								} else if (m_lastError != ApiError.API_UNKNOWN_METHOD) {
+									// Unknown method means old tt-rss, in that case we assume API 0 and continue
+									
 									setLoadingStatus(getErrorMessage(), false);
 									loginFailure();
 									return;
