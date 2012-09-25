@@ -140,7 +140,7 @@
     <string name="ssl_trust_any_host">No hostname verification</string>
     <string name="error_api_unknown_method">Error: unknown API method</string>
     <string name="ssl_trust_any_long">Accepts any SSL certificate without validation</string>
-    <string name="ssl_trust_any_host_long">Do not verify hostnames over SSL</string>
+    <string name="ssl_trust_any_host_long">Do not verify server hostname</string>
     <string name="ssl">SSL</string>
     <string name="error_ssl_hostname_rejected">Error: SSL hostname not verified</string>
 </resources>
