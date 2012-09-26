@@ -317,7 +317,11 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		}
 		
 		Collections.sort(m_cats, cmp);
-		m_adapter.notifyDataSetInvalidated();
+		try {
+			m_adapter.notifyDataSetInvalidated();
+		} catch (NullPointerException e) {
+			// adapter missing
+		}
 		
 	}
 	

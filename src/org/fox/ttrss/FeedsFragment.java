@@ -546,7 +546,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 		Collections.sort(m_feeds, cmp);
-		m_adapter.notifyDataSetInvalidated();
+		
+		try {
+			m_adapter.notifyDataSetInvalidated();
+		} catch (NullPointerException e) {
+			// adapter missing
+		}
 	}
 	
 	public class GetIconsTask extends AsyncTask<FeedList, Integer, Integer> {
