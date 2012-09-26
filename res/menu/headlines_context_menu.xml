@@ -15,11 +15,11 @@
 
     <group android:id="@+id/menu_group_single_article" >
         <item
-            android:id="@+id/share_article"
+            android:id="@+id/headlines_share_article"
             android:showAsAction=""
             android:title="@string/share_article"/>
         <item
-            android:id="@+id/article_link_copy"
+            android:id="@+id/headlines_article_link_copy"
             android:showAsAction=""
             android:title="@string/article_link_copy"/>
         <item

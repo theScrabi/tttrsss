@@ -126,7 +126,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 			return true;
 
-		case R.id.article_link_copy:
+		case R.id.headlines_article_link_copy:
 			if (true) {
 				Article article = getArticleAtPosition(info.position);
 			
@@ -198,7 +198,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				m_adapter.notifyDataSetChanged();
 			}
 			return true;
-		case R.id.share_article:
+		case R.id.headlines_share_article:
 			if (true) {
 				Article article = getArticleAtPosition(info.position);
 				if (article != null)
