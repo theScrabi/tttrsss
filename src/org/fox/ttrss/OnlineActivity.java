@@ -1264,50 +1264,62 @@ public class OnlineActivity extends CommonActivity {
 			if (result != null) {
 				try {
 					JsonObject content = result.getAsJsonObject();
+					
 					if (content != null) {
 						setSessionId(content.get("session_id").getAsString());
+						
+						JsonElement apiLevel = content.get("api_level");
 
 						GlobalState.getInstance().m_canUseProgress = m_canUseProgress;
-						
+
 						Log.d(TAG, "Authenticated! canUseProgress=" + m_canUseProgress);
 
-						ApiRequest req = new ApiRequest(m_context) {
-							protected void onPostExecute(JsonElement result) {
-								setApiLevel(0);
+						if (apiLevel != null) {
+							setApiLevel(apiLevel.getAsInt());
+							Log.d(TAG, "Received API level: " + getApiLevel());
+							
+							loginSuccess(m_refreshAfterLogin);
+							
+						} else {
 
-								if (result != null) {
-									try {
-										setApiLevel(result.getAsJsonObject().get("level").getAsInt());
-									} catch (Exception e) {
-										e.printStackTrace();
+							ApiRequest req = new ApiRequest(m_context) {
+								protected void onPostExecute(JsonElement result) {
+									setApiLevel(0);
+	
+									if (result != null) {
+										try {
+											setApiLevel(result.getAsJsonObject().get("level").getAsInt());
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+									} else if (m_lastError != ApiError.API_UNKNOWN_METHOD) {
+										// Unknown method means old tt-rss, in that case we assume API 0 and continue
+										
+										setLoadingStatus(getErrorMessage(), false);
+										loginFailure();
+										return;
 									}
-								} else if (m_lastError != ApiError.API_UNKNOWN_METHOD) {
-									// Unknown method means old tt-rss, in that case we assume API 0 and continue
-									
-									setLoadingStatus(getErrorMessage(), false);
-									loginFailure();
+	
+									Log.d(TAG, "Received API level: " + getApiLevel());
+	
+									loginSuccess(m_refreshAfterLogin);
+	
 									return;
 								}
-
-								Log.d(TAG, "Received API level: " + getApiLevel());
-
-								loginSuccess(m_refreshAfterLogin);
-
-								return;
-							}
-						};
-
-						@SuppressWarnings("serial")
-						HashMap<String, String> map = new HashMap<String, String>() {
-							{
-								put("sid", getSessionId());
-								put("op", "getApiLevel");
-							}
-						};
-
-						req.execute(map);
-
-						setLoadingStatus(R.string.loading_message, true);
+							};
+	
+							@SuppressWarnings("serial")
+							HashMap<String, String> map = new HashMap<String, String>() {
+								{
+									put("sid", getSessionId());
+									put("op", "getApiLevel");
+								}
+							};
+	
+							req.execute(map);
+	
+							setLoadingStatus(R.string.loading_message, true);
+						}
 
 						return;
 					}
