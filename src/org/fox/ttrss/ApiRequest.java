@@ -244,6 +244,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				m_lastError = ApiError.HTTP_SERVER_ERROR;
 				break;
 			default:
+				Log.d(TAG, "HTTP response code: " + m_responseCode + "(" + m_responseMessage + ")");
 				m_lastError = ApiError.HTTP_OTHER_ERROR;
 				break;
 			}
