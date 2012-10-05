@@ -332,9 +332,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		Log.d(TAG, "onItemClick=" + position);
 		
 		if (list != null) {
-			Cursor cursor = (Cursor)list.getItemAtPosition(position);
+			/* Cursor cursor = (Cursor)list.getItemAtPosition(position);
 			
-			int articleId = cursor.getInt(0);
+			int articleId = cursor.getInt(0); */
+			
+			int articleId = getArticleIdAtPosition(position);
 			
 			if (getActivity().findViewById(R.id.article_fragment) != null) {
 				m_activeArticleId = articleId;

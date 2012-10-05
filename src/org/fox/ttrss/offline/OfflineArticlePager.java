@@ -118,7 +118,7 @@ public class OfflineArticlePager extends Fragment {
 		if (m_articleId != 0) {
 			if (m_cursor.moveToFirst()) {
 				
-				while (!m_cursor.isLast()) {
+				while (!m_cursor.isAfterLast()) {
 					if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == m_articleId) {
 						position = m_cursor.getPosition();
 						break;
@@ -218,7 +218,7 @@ public class OfflineArticlePager extends Fragment {
 	public int getArticleIdPosition(int articleId) {
 		m_cursor.moveToFirst();
 		
-		while (!m_cursor.isLast()) {
+		while (!m_cursor.isAfterLast()) {
 			if (m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)) == articleId) {
 				return m_cursor.getPosition();
 			}				
