@@ -4,8 +4,10 @@ import org.fox.ttrss.R;
 import org.fox.ttrss.types.Article;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +29,7 @@ public class OfflineArticlePager extends Fragment {
 	private int m_articleId;
 	private String m_searchQuery = "";
 	private Cursor m_cursor;
+	private SharedPreferences m_prefs;
 	
 	public int getFeedId() {
 		return m_feedId;
@@ -45,15 +48,17 @@ public class OfflineArticlePager extends Fragment {
 			feedClause = "feed_id = ?";
 		}
 		
+		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
+		
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles."+BaseColumns._ID, "feeds.title AS feed_title" }, feedClause, 
-					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+					new String[] { String.valueOf(m_feedId) }, null, null, orderBy);
 		} else {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles."+BaseColumns._ID },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
-					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
+					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, orderBy);
 		}
 	}
 	
@@ -172,8 +177,11 @@ public class OfflineArticlePager extends Fragment {
 		
 		m_activity = (OfflineActivity)activity;
 		m_listener = (OfflineHeadlinesEventListener)activity;
-		m_cursor = createCursor();
 		
+		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		
+		m_cursor = createCursor();
+			
 	}
 	
 	public void refresh() {

@@ -22,20 +22,20 @@
             android:summary="@string/ttrss_url_summary"
             android:title="@string/ttrss_url" >
         </EditTextPreference>
-	</PreferenceCategory>
-    <PreferenceCategory android:title="@string/ssl" android:summary="blah blah blah" >  
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="blah blah blah"
+        android:title="@string/ssl" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="ssl_trust_any"
             android:summary="@string/ssl_trust_any_long"
             android:title="@string/ssl_trust_any" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="ssl_trust_any_host"
             android:summary="@string/ssl_trust_any_host_long"
             android:title="@string/ssl_trust_any_host" />
-        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/http_authentication" >
         <EditTextPreference
@@ -92,7 +92,7 @@
             android:defaultValue="false"
             android:key="combined_mode"
             android:summary="@string/combined_mode_summary"
-            android:title="@string/combined_mode" />
+            android:title="@string/combined_mode" />
         -->
 
         <CheckBoxPreference
@@ -120,6 +120,10 @@
             android:key="offline_image_cache_enabled"
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="offline_oldest_first"
+            android:title="@string/offline_oldest_first" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
         <CheckBoxPreference

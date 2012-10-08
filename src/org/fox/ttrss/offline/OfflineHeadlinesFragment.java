@@ -303,15 +303,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			feedClause = "feed_id = ?";
 		}
 		
+		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
+		
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
-					new String[] { String.valueOf(m_feedId) }, null, null, "updated DESC");
+					new String[] { String.valueOf(m_feedId) }, null, null, orderBy);
 		} else {
 			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
-					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, "updated DESC");
+					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, orderBy);
 		}
 	}
 	
