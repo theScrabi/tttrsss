@@ -23,9 +23,7 @@
             android:title="@string/ttrss_url" >
         </EditTextPreference>
     </PreferenceCategory>
-    <PreferenceCategory
-        android:summary="blah blah blah"
-        android:title="@string/ssl" >
+    <PreferenceCategory android:title="@string/ssl" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="ssl_trust_any"
@@ -92,7 +90,7 @@
             android:defaultValue="false"
             android:key="combined_mode"
             android:summary="@string/combined_mode_summary"
-            android:title="@string/combined_mode" />
+            android:title="@string/combined_mode" />
         -->
 
         <CheckBoxPreference
@@ -113,6 +111,12 @@
             android:key="use_volume_keys"
             android:summary="@string/use_volume_keys_long"
             android:title="@string/use_volume_keys" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="dim_status_bar"
+            android:title="@string/prefs_dim_status_bar" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <CheckBoxPreference

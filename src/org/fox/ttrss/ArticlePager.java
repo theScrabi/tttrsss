@@ -7,8 +7,11 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -30,6 +33,7 @@ public class ArticlePager extends Fragment {
 	private OnlineActivity m_activity;
 	private String m_searchQuery = "";
 	private Feed m_feed;
+	private SharedPreferences m_prefs;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 		
@@ -123,6 +127,11 @@ public class ArticlePager extends Fragment {
 			}
 		});
 	
+		
+		if (m_prefs.getBoolean("dim_status_bar", false)) {
+			view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+		}
+		
 		return view;
 	}
 	
@@ -229,8 +238,11 @@ public class ArticlePager extends Fragment {
 		
 		m_listener = (HeadlinesEventListener)activity;
 		m_activity = (OnlineActivity)activity;
+		
+		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -241,6 +253,10 @@ public class ArticlePager extends Fragment {
 		}
 		
 		m_activity.initMenu();
+		
+		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
+			getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
 	}
 
 	public Article getSelectedArticle() {
