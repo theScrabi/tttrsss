@@ -239,7 +239,9 @@ public class ArticleFragment extends Fragment {
 								URL url = new URL(a.content_url.trim());
 								String strUrl = url.toString().trim();
 								
-								if (a.content_type.indexOf("image") != -1 /* && !articleContent.contains(strUrl) */) {
+								String regex = String.format("<img.*?src=[\"']%1$[\"']", strUrl);
+								
+								if (a.content_type.indexOf("image") != -1 && !articleContent.matches(regex)) {
 									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
 								}
 								
