@@ -44,6 +44,10 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		}
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+
+		if (isPortrait()) {
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+		}
 		
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
@@ -136,8 +140,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.getSelectedArticles().size() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.getSelectedArticles().size() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait()&& hf != null && hf.getSelectedArticles().size() == 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, !isPortrait() && hf != null && hf.getSelectedArticles().size() != 0);
 			
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
@@ -182,9 +186,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			if (hf != null) {
-				hf.setActiveArticle(article);
-			}
+			hf.setActiveArticle(article);
 		}
 
 		GlobalState.getInstance().m_activeArticle = article;
