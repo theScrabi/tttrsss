@@ -343,6 +343,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		ApiRequest req = new ApiRequest(getActivity().getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
+				if (isDetached()) return;
+				
 				if (result != null) {
 
 					try {
@@ -399,6 +401,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		@Override
 		protected void onPostExecute(JsonElement result) {
+			if (isDetached()) return;
+			
 			m_activity.setProgressBarVisibility(false);
 
 			if (result != null) {
@@ -632,6 +636,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 		
 		protected void onPostExecute(Integer result) {
+			if (isDetached()) return;
+			
 			m_adapter.notifyDataSetInvalidated();
 		}
 		

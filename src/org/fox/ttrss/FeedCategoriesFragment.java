@@ -255,6 +255,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		@Override
 		protected void onPostExecute(JsonElement result) {
+			if (isDetached()) return;
+			
 			m_activity.setProgressBarVisibility(false);
 
 			if (result != null) {

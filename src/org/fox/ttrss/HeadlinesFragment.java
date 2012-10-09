@@ -368,6 +368,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				@Override
 				protected void onPostExecute(JsonElement result) {
+					if (isDetached()) return;
+					
 					m_activity.setProgressBarVisibility(false);
 					
 					super.onPostExecute(result);	

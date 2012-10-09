@@ -545,7 +545,9 @@ public class OnlineActivity extends CommonActivity {
 
 				ApiRequest req = new ApiRequest(getApplicationContext()) {
 					protected void onPostExecute(JsonElement result) {
-						hf.refresh(false);
+						if (hf.isAdded()) {
+							hf.refresh(false);
+						}
 					}
 				};
 

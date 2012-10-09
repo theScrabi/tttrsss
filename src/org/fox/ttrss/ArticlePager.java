@@ -144,6 +144,8 @@ public class ArticlePager extends Fragment {
 
 			@Override
 			protected void onPostExecute(JsonElement result) {
+				if (isDetached()) return;
+				
 				m_activity.setProgressBarVisibility(false);
 
 				super.onPostExecute(result);
