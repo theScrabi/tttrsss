@@ -21,7 +21,9 @@ public class Article implements Parcelable {
 	public List<Attachment> attachments;
 	public String content;
 	public List<List<String>> labels;
-	public String feed_title;
+	public String feed_title;	
+	public int comments_count;
+	public String comments_link;
 	
 	public Article(Parcel in) {
 		readFromParcel(in);

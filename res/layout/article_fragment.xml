@@ -22,6 +22,16 @@
                 android:text="There are many variations of passages of Lorem Ipsum available"
                 android:textSize="16sp" />
 
+            <TextView
+                android:id="@+id/comments"
+                android:textColor="?linkColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="24 comments"
+                android:textSize="13sp" />
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
