@@ -43,6 +43,10 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 		
+		if (isPortrait()) {
+			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+		}
+		
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
 			
