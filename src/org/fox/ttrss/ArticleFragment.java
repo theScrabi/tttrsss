@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -260,7 +261,7 @@ public class ArticleFragment extends Fragment {
 				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
 					
 					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					
+
 					for (Attachment a : m_article.attachments) {
 						if (a.content_type != null && a.content_url != null) {
 							
@@ -268,20 +269,19 @@ public class ArticleFragment extends Fragment {
 								URL url = new URL(a.content_url.trim());
 								String strUrl = url.toString().trim();
 								
-								String regex = String.format("<img.*?src=[\"']%1$[\"']", strUrl);
+								String regex = String.format(".*?<img.*src=[\"']%1$s[\"'].*", strUrl);
 								
-								if (a.content_type.indexOf("image") != -1 && !articleContent.matches(regex)) {
+								if (a.content_type.indexOf("image") != -1 && !articleContent.replaceAll("[\r\n]", "").matches(regex)) {
 									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
 								}
-								
-								spinnerArray.add(a);
 
 							} catch (MalformedURLException e) {
 								//
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-							
+
+							spinnerArray.add(a);
 						}					
 					}
 					
