@@ -141,6 +141,35 @@ public class ArticleFragment extends Fragment {
 				registerForContextMenu(title); 
 			}
 			
+			TextView comments = (TextView)view.findViewById(R.id.comments);
+			
+			if (comments != null) {
+				if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
+					String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
+					comments.setText(commentsTitle);
+					comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+					comments.setOnClickListener(new OnClickListener() {					
+						@Override
+						public void onClick(View v) {
+							try {
+								String link = (m_article.comments_link != null && m_article.comments_link.length() > 0) ?
+									m_article.comments_link : m_article.link; 
+								
+								Intent intent = new Intent(Intent.ACTION_VIEW, 
+										Uri.parse(link.trim()));
+									startActivity(intent);
+							} catch (Exception e) {
+								e.printStackTrace();
+								m_activity.toast(R.string.error_other_error);
+							}
+						}
+					});
+					
+				} else {
+					comments.setVisibility(View.GONE);					
+				}
+			}
+			
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {

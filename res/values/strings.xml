@@ -145,4 +145,5 @@
     <string name="error_ssl_hostname_rejected">Error: SSL hostname not verified</string>
     <string name="offline_oldest_first">Show oldest articles first</string>
     <string name="prefs_dim_status_bar">Dim status bar when reading</string>
+    <string name="article_comments">%1$d comments</string>
 </resources>

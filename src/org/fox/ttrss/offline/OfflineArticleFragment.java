@@ -143,6 +143,12 @@ public class OfflineArticleFragment extends Fragment {
 				registerForContextMenu(title);
 			}
 			
+			TextView comments = (TextView)view.findViewById(R.id.comments);
+			
+			if (comments != null) {
+				comments.setVisibility(View.GONE);
+			}
+			
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
