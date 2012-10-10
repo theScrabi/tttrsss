@@ -262,16 +262,19 @@ public class ArticleFragment extends Fragment {
 					
 					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+					String flatContent = articleContent.replaceAll("[\r\n]", "");
+					boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
+					
 					for (Attachment a : m_article.attachments) {
 						if (a.content_type != null && a.content_url != null) {
 							
 							try {
-								URL url = new URL(a.content_url.trim());
-								String strUrl = url.toString().trim();
-								
-								String regex = String.format(".*?<img.*src=[\"']%1$s[\"'].*", strUrl);
-								
-								if (a.content_type.indexOf("image") != -1 && !articleContent.replaceAll("[\r\n]", "").matches(regex)) {
+								if (a.content_type.indexOf("image") != -1 && 
+										(!hasImages || m_article.always_display_attachments)) {
+									
+									URL url = new URL(a.content_url.trim());
+									String strUrl = url.toString().trim();
+
 									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
 								}
 
