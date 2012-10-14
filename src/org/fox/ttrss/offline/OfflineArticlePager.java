@@ -79,6 +79,11 @@ public class OfflineArticlePager extends Fragment {
 			Log.d(TAG, "getItem: " + position);
 			
 			if (m_cursor.moveToPosition(position)) {
+				
+				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null) {
+					getView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+				}
+				
 				return new OfflineArticleFragment(m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)));
 			} 
 			

@@ -24,6 +24,7 @@ public class Article implements Parcelable {
 	public String feed_title;	
 	public int comments_count;
 	public String comments_link;
+	public boolean always_display_attachments;
 	
 	public Article(Parcel in) {
 		readFromParcel(in);
@@ -60,6 +61,9 @@ public class Article implements Parcelable {
 		out.writeString(content);
 		out.writeList(attachments);
 		out.writeString(feed_title);
+		out.writeInt(comments_count);
+		out.writeString(comments_link);
+		out.writeInt(always_display_attachments ? 1 : 0);
 	}
 	
 	public void readFromParcel(Parcel in) {
@@ -82,6 +86,10 @@ public class Article implements Parcelable {
 		in.readList(attachments, Attachment.class.getClassLoader());
 		
 		feed_title = in.readString();
+		
+		comments_count = in.readInt();
+		comments_link = in.readString();
+		always_display_attachments = in.readInt() == 1;
 	}
 	
 	@SuppressWarnings("rawtypes")

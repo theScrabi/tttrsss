@@ -47,6 +47,11 @@ public class ArticlePager extends Fragment {
 			
 			if (article != null) {
 				ArticleFragment af = new ArticleFragment(article);
+
+				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null) {
+					getView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+				}
+				
 				return af;
 			}
 			return null;
@@ -127,11 +132,6 @@ public class ArticlePager extends Fragment {
 			}
 		});
 	
-		
-		if (m_prefs.getBoolean("dim_status_bar", false)) {
-			view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-		}
-		
 		return view;
 	}
 	
