@@ -402,7 +402,7 @@ public class OfflineDownloadService extends Service {
 									String url = img.attr("src");
 									
 									if (url.indexOf("://") != -1) {
-										if (!ImageCacheService.isUrlCached(url)) {										
+										if (!ImageCacheService.isUrlCached(OfflineDownloadService.this, url)) {										
 											Intent intent = new Intent(OfflineDownloadService.this,
 													ImageCacheService.class);
 										
@@ -472,7 +472,7 @@ public class OfflineDownloadService extends Service {
 			m_sessionId = intent.getStringExtra("sessionId");
 		
 			if (!m_downloadInProgress) {
-				if (m_downloadImages) ImageCacheService.cleanupCache(false);
+				if (m_downloadImages) ImageCacheService.cleanupCache(this, false);
 			
 				updateNotification(R.string.notify_downloading_init);
 				m_downloadInProgress = true;

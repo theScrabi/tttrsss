@@ -202,8 +202,8 @@ public class OfflineArticleFragment extends Fragment {
 						for (Element img : images) {
 							String url = img.attr("src");
 							
-							if (ImageCacheService.isUrlCached(url)) {						
-								img.attr("src", "file://" + ImageCacheService.getCacheFileName(url));
+							if (ImageCacheService.isUrlCached(m_activity, url)) {						
+								img.attr("src", "file://" + ImageCacheService.getCacheFileName(m_activity, url));
 							}						
 						}
 					}

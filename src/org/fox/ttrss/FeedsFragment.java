@@ -69,7 +69,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private FeedsActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
-	private static final String ICON_PATH = "/data/org.fox.ttrss/icons/";
+	private static final String ICON_PATH = "/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	
@@ -514,7 +514,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				
 				if (m_enableFeedIcons) {
 					
-					File storage = Environment.getExternalStorageDirectory();
+					File storage = m_activity.getExternalCacheDir();
 					
 					File iconFile = new  File(storage.getAbsolutePath() + ICON_PATH + feed.id + ".ico");
 					if (iconFile.exists()) {
@@ -570,7 +570,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		protected Integer doInBackground(FeedList... params) {
 
 			try {
-				File storage = Environment.getExternalStorageDirectory();
+				File storage = m_activity.getExternalCacheDir();
 				final File iconPath = new File(storage.getAbsolutePath() + ICON_PATH);
 				if (!iconPath.exists()) iconPath.mkdirs();
 			

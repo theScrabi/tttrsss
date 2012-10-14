@@ -20,6 +20,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 
@@ -30,7 +31,7 @@ public class ImageCacheService extends IntentService {
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	
-	private static final String CACHE_PATH = "/data/org.fox.ttrss/image-cache/";
+	private static final String CACHE_PATH = "/image-cache/";
 
 	private int m_imagesDownloaded = 0;
 	
@@ -57,29 +58,29 @@ public class ImageCacheService extends IntentService {
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 	}
 
-	public static boolean isUrlCached(String url) {
+	public static boolean isUrlCached(Context context, String url) {
 		String hashedUrl = md5(url);
 		
-		File storage = Environment.getExternalStorageDirectory();
+		File storage = context.getExternalCacheDir();
 		
 		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl + ".png");
 		
 		return file.exists();
 	}
 
-	public static String getCacheFileName(String url) {
+	public static String getCacheFileName(Context context, String url) {
 		String hashedUrl = md5(url);
 		
-		File storage = Environment.getExternalStorageDirectory();
+		File storage = context.getExternalCacheDir();
 		
 		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl + ".png");
 		
 		return file.getAbsolutePath();
 	}
 	
-	public static void cleanupCache(boolean deleteAll) {
+	public static void cleanupCache(Context context, boolean deleteAll) {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			File storage = Environment.getExternalStorageDirectory();
+			File storage = context.getExternalCacheDir();
 			File cachePath = new File(storage.getAbsolutePath() + CACHE_PATH);
 		
 			long now = new Date().getTime();
@@ -155,7 +156,7 @@ public class ImageCacheService extends IntentService {
 		
 		String hashedUrl = md5(url);
 		
-		File storage = Environment.getExternalStorageDirectory();
+		File storage = getExternalCacheDir();
 		File cachePath = new File(storage.getAbsolutePath() + CACHE_PATH);
 		if (!cachePath.exists()) cachePath.mkdirs();
 		
