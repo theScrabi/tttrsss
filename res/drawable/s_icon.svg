@@ -15,9 +15,9 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.1 "
-   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttrss\res\drawable-hdpi\icon.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttrss\res\drawable-xhdpi\icon.png"
+   inkscape:export-xdpi="120"
+   inkscape:export-ydpi="120"
    sodipodi:docname="s_icon.svg">
   <defs
      id="defs2987">
@@ -662,6 +662,39 @@
            in="SourceGraphic" />
       </feMerge>
     </filter>
+    <filter
+       id="filter3293"
+       inkscape:label="Drop shadow"
+       width="1.5"
+       height="1.5"
+       x="-.25"
+       y="-.25">
+      <feGaussianBlur
+         id="feGaussianBlur3295"
+         in="SourceAlpha"
+         stdDeviation="3"
+         result="blur" />
+      <feColorMatrix
+         id="feColorMatrix3297"
+         result="bluralpha"
+         type="matrix"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.75 0 " />
+      <feOffset
+         id="feOffset3299"
+         in="bluralpha"
+         dx="1"
+         dy="1"
+         result="offsetBlur" />
+      <feMerge
+         id="feMerge3301">
+        <feMergeNode
+           id="feMergeNode3303"
+           in="offsetBlur" />
+        <feMergeNode
+           id="feMergeNode3305"
+           in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -703,7 +736,7 @@
     <g
        transform="matrix(0.34665172,0,0,0.34665859,-9.5847012,-15.505653)"
        id="g3022"
-       style="fill:url(#linearGradient3890);fill-opacity:1;stroke:url(#linearGradient5363);stroke-width:2.01254654000000020;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1"
+       style="fill:url(#linearGradient3890);fill-opacity:1;stroke:url(#linearGradient5363);stroke-width:2.01254654000000020;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;opacity:1;filter:url(#filter3293)"
        inkscape:export-xdpi="105.9"
        inkscape:export-ydpi="105.9">
       <g
