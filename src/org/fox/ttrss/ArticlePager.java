@@ -10,6 +10,7 @@ import org.fox.ttrss.util.HeadlinesRequest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -159,8 +160,14 @@ public class ArticlePager extends Fragment {
 
 				super.onPostExecute(result);
 				
-				if (result != null) {				
-					m_adapter.notifyDataSetChanged();
+				if (result != null) {
+					try {
+						m_adapter.notifyDataSetChanged();
+					} catch (BadParcelableException e) {
+						if (getActivity() != null) {							
+							getActivity().finish();
+						}
+					}
 					
 					if (m_article.id == 0 || m_articles.indexOf(m_article) == -1) {
 						if (m_articles.size() > 0) {
