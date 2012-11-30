@@ -44,6 +44,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		}
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+		
+		GlobalState.getInstance().load(savedInstanceState);
 
 		if (isPortrait()) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
@@ -114,7 +116,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
-		super.onSaveInstanceState(out);		
+		super.onSaveInstanceState(out);
+		
+		GlobalState.getInstance().save(out);
 	}
 	
 	@Override

@@ -38,6 +38,9 @@ public class GlobalState extends Application {
 		out.putParcelable("gs:activeFeed", m_activeFeed);
 		out.putParcelable("gs:activeArticle", m_activeArticle);
 		out.putString("gs:sessionId", m_sessionId);
+		out.putInt("gs:apiLevel", m_apiLevel);
+		out.putBoolean("gs:canUseProgress", m_canUseProgress);
+		out.putInt("gs:selectedArticleId", m_selectedArticleId);
 	}
 	
 	public void load(Bundle in) {
@@ -51,6 +54,9 @@ public class GlobalState extends Application {
 			m_activeFeed = (Feed) in.getParcelable("gs:activeFeed");
 			m_activeArticle = (Article) in.getParcelable("gs:activeArticle");
 			m_sessionId = in.getString("gs:sessionId");
+			m_apiLevel = in.getInt("gs:apiLevel");
+			m_canUseProgress = in.getBoolean("gs:canUseProgress");
+			m_selectedArticleId = in.getInt("gs:selectedArticleId");
 		}
 				
 	}
