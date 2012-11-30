@@ -45,7 +45,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		setContentView(R.layout.feeds);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
-		
+
+		if (isSmallScreen()) {
+			GlobalState.getInstance().load(savedInstanceState);
+		}		
+
 		Intent intent = getIntent();
 		
 		if (savedInstanceState == null) {
@@ -244,7 +248,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
-		super.onSaveInstanceState(out);
+		super.onSaveInstanceState(out);	
+		
+		if (isSmallScreen()) {
+			GlobalState.getInstance().save(out);
+		}
 	}
 	
 	@Override
