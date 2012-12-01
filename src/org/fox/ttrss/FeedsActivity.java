@@ -104,6 +104,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				ft.commit();
 				
 				AppRater.appLaunched(this);
+
+				if (GlobalState.getInstance().m_activeArticle != null || GlobalState.getInstance().m_activeFeed != null) {
+					if (!isCompatMode()) {
+						getActionBar().setDisplayHomeAsUpEnabled(true);
+					}
+				}
+
 			}
 		}
 		
