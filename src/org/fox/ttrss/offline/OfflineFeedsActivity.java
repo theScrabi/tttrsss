@@ -56,7 +56,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				
 				if (!isCompatMode()) {
 					getActionBar().setDisplayHomeAsUpEnabled(true);
-					
+					m_actionbarUpEnabled = true;
 				}
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

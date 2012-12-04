@@ -52,7 +52,7 @@
     <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
     <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">Download and display feed icons</string>
+    <string name="download_feed_icons">Enable feed icons</string>
     <string name="enable_cats">Enable feed categories</string>
     <string name="no_feeds_to_display">No feeds to display</string>
     <string name="no_headlines_to_display">No headlines to display</string>
@@ -144,6 +144,7 @@
     <string name="ssl">SSL</string>
     <string name="error_ssl_hostname_rejected">Error: SSL hostname not verified</string>
     <string name="offline_oldest_first">Show oldest articles first</string>
-    <string name="prefs_dim_status_bar">Dim status bar when reading</string>
+    <string name="prefs_dim_status_bar">Dim status bar</string>
+    <string name="prefs_dim_status_bar_long">Dim status bar when reading</string>
     <string name="article_comments">%1$d comments</string>
 </resources>

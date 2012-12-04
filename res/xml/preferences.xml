@@ -90,7 +90,7 @@
             android:defaultValue="false"
             android:key="combined_mode"
             android:summary="@string/combined_mode_summary"
-            android:title="@string/combined_mode" />
+            android:title="@string/combined_mode" />
         -->
 
         <CheckBoxPreference
@@ -111,14 +111,20 @@
             android:key="use_volume_keys"
             android:summary="@string/use_volume_keys_long"
             android:title="@string/use_volume_keys" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="dim_status_bar"
+            android:summary="@string/prefs_dim_status_bar_long"
             android:title="@string/prefs_dim_status_bar" />
-        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
+        <ListPreference
+            android:defaultValue="250"
+            android:entries="@array/pref_offline_amounts"
+            android:entryValues="@array/pref_offline_amounts"
+            android:key="offline_sync_max"
+            android:summary="How many articles to download (newest first)"
+            android:title="Download articles" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="offline_image_cache_enabled"

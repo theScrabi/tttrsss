@@ -82,7 +82,7 @@ public class OfflineDownloadService extends Service {
 						.getDefaultSharedPreferences(getApplicationContext());
  
 		m_downloadImages = m_prefs.getBoolean("offline_image_cache_enabled", false);
-		m_syncMax = m_prefs.getInt("offline_sync_max", OFFLINE_SYNC_MAX);
+		m_syncMax = Integer.parseInt(m_prefs.getString("offline_sync_max", String.valueOf(OFFLINE_SYNC_MAX)));
 		
 		initDatabase();
 	}
