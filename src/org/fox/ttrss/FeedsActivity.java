@@ -28,6 +28,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected SharedPreferences m_prefs;
 	protected long m_lastRefresh = 0;
 	
+	private boolean m_actionbarUpEnabled = false;
+	
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			
 				if (!isCompatMode()) {
 					getActionBar().setDisplayHomeAsUpEnabled(true);
+					m_actionbarUpEnabled = true;
 				}
 				
 				Feed feed = (Feed) intent.getParcelableExtra("feed");
@@ -105,12 +108,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				AppRater.appLaunched(this);
 
-				if (GlobalState.getInstance().m_activeArticle != null || GlobalState.getInstance().m_activeFeed != null) {
-					if (!isCompatMode()) {
-						getActionBar().setDisplayHomeAsUpEnabled(true);
-					}
-				}
-
+			}
+		} else { // savedInstanceState != null
+			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
+			
+			if (!isCompatMode() && m_actionbarUpEnabled) {
+				getActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
 		
@@ -254,6 +257,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);	
+		
+		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
 		
 		GlobalState.getInstance().save(out);
 	}

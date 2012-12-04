@@ -1,5 +1,6 @@
 package org.fox.ttrss.offline;
 
+import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
 import android.annotation.SuppressLint;
@@ -16,6 +17,8 @@ import android.view.View;
 
 public class OfflineFeedsActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
+	
+	private boolean m_actionbarUpEnabled = false;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -35,7 +38,15 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 		
+		GlobalState.getInstance().load(savedInstanceState);
+		
 		if (savedInstanceState != null) {
+			
+			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
+			
+			if (!isCompatMode() && m_actionbarUpEnabled) {
+				getActionBar().setDisplayHomeAsUpEnabled(true);
+			}
 			
 		} else {
 			Intent intent = getIntent();
@@ -45,6 +56,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				
 				if (!isCompatMode()) {
 					getActionBar().setDisplayHomeAsUpEnabled(true);
+					
 				}
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -115,6 +127,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 
+		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
+		
+		GlobalState.getInstance().save(out);
 	}
 	
 	public void initMenu() {

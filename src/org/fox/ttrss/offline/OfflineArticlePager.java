@@ -1,7 +1,6 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.types.Article;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

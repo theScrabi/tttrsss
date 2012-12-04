@@ -6,8 +6,6 @@ import android.annotation.SuppressLint;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;

@@ -1,15 +1,13 @@
 package org.fox.ttrss;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.CharBuffer;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -18,10 +16,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import org.apache.http.util.CharArrayBuffer;
-
-import java.security.cert.X509Certificate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
