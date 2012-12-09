@@ -97,6 +97,8 @@ public class ArticlePager extends Fragment {
 		
 		m_listener.onArticleSelected(m_article, false);
 		
+		m_activity.setProgressBarVisibility(true);
+		
 		pager.setAdapter(m_adapter);
 		pager.setCurrentItem(position);
 		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -125,7 +127,7 @@ public class ArticlePager extends Fragment {
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
-					if (m_activity.isSmallScreen() && position == m_adapter.getCount() - 5) {
+					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 5) {
 						Log.d(TAG, "loading more articles...");
 						refresh(true);
 					}
