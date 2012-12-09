@@ -185,7 +185,7 @@ public class ArticleFragment extends Fragment {
 				
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(true);
-				ws.setBuiltInZoomControls(true);
+				ws.setBuiltInZoomControls(false);
 
 				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 
