@@ -14,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,10 +25,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -40,7 +43,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class ArticleFragment extends Fragment {
+public class ArticleFragment extends Fragment implements GestureDetector.OnDoubleTapListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
@@ -48,7 +51,8 @@ public class ArticleFragment extends Fragment {
 	private OnlineActivity m_activity;
 	//private Article m_nextArticle;
 	//private Article m_prevArticle;
-
+	private GestureDetector m_detector;
+	
 	public ArticleFragment() {
 		super();
 	}
@@ -178,6 +182,13 @@ public class ArticleFragment extends Fragment {
 	                		m_activity.setProgressBarVisibility(false);
 	                	}
 	                }
+				});
+				
+				web.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						return m_detector.onTouchEvent(event);
+					}
 				});
 				
 				String content;
@@ -398,6 +409,100 @@ public class ArticleFragment extends Fragment {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_activity = (OnlineActivity)activity;
 		//m_article = m_onlineServices.getSelectedArticle(); 
+		
+		m_detector = new GestureDetector(m_activity, new GestureDetector.OnGestureListener() {			
+			@Override
+			public boolean onSingleTapUp(MotionEvent e) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onShowPress(MotionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+					float distanceY) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onLongPress(MotionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+					float velocityY) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean onDown(MotionEvent e) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+		
+		m_detector.setOnDoubleTapListener(this);
+	}
+
+	@Override
+	public boolean onDoubleTap(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private void onLeftSideTapped() {
+		ArticlePager ap = (ArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
+		
+		if (ap != null && ap.isAdded()) {
+			ap.selectArticle(false);
+		}
+	}
+	
+	private void onRightSideTapped() {
+		ArticlePager ap = (ArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
+		
+		if (ap != null && ap.isAdded()) {
+			ap.selectArticle(true);
+		}
+	}
+	
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e) {
+
+		int width = getView().getWidth();		
+		int x = Math.round(e.getX());
+		
+		if (x <= width/15) {
+			onLeftSideTapped();
+			return true;
+		} else if (x >= width-(width/15)) {
+			onRightSideTapped();
+			return true;
+		} /* else if (!m_activity.isCompatMode()) {
+			ActionBar bar = m_activity.getActionBar();
+			
+			if (bar.isShowing()) {
+				bar.hide();
+			} else {
+				bar.show();
+			}
+		} */
+		return false;
 	}
 
 }
