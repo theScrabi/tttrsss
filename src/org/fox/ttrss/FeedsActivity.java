@@ -315,6 +315,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				intent.putExtra("searchQuery", hf.getSearchQuery());
 		 	   
 				startActivityForResult(intent, 0);
+				overridePendingTransition(R.anim.right_slide_in, 0);
 			}
 		} else {
 			initMenu();

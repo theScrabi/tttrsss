@@ -439,6 +439,7 @@ public class OnlineActivity extends CommonActivity {
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
  	   
 		startActivityForResult(intent, 0);
+		overridePendingTransition(0, 0);
 	
 		if (hasPendingOfflineData())
 			syncOfflineData();

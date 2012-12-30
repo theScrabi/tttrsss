@@ -234,4 +234,10 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			}
 		}
 	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(0, R.anim.right_slide_out);
+	}
 }
