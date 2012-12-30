@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -450,18 +451,8 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	public void checkTrial(boolean notify) {
-		List<PackageInfo> pkgs = getPackageManager()
-				.getInstalledPackages(0);
-
-		boolean isTrial = true;
-		
-		for (PackageInfo p : pkgs) {
-			if ("org.fox.ttrss.key".equals(p.packageName)) {
-				//toast(R.string.donate_thanks);
-				isTrial = false;
-				break;
-			}
-		}
+		boolean isTrial = getPackageManager().checkSignatures(
+				getPackageName(), "org.fox.ttrss.key") != PackageManager.SIGNATURE_MATCH;
 
 		if (isTrial) {
 			long firstStart = m_prefs.getLong("date_firstlaunch_trial", -1);
@@ -512,6 +503,8 @@ public class OnlineActivity extends CommonActivity {
 					toast(getString(R.string.trial_mode_prompt, Long.valueOf(daysLeft)));
 				}
 			}
+		} else if (notify) {
+			toast(R.string.trial_thanks);
 		}
 	}
 	
