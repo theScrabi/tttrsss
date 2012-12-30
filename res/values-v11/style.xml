@@ -1,5 +1,6 @@
-<resources>
-	<style name="LightTheme" parent="android:Theme.Holo.Light">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
 		<item name="unreadCounterColor">#0000ff</item>
@@ -23,7 +24,23 @@
     	<item name="loadingBackground">@android:color/white</item>
 	</style>
 
+	<style name="SepiaTheme" parent="LightTheme">
+	    <item name="smallScreenBackground">@drawable/paper_sepia</item>
+		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
+		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
+		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
+		<item name="headlineSelectedBackground">@drawable/headline_row_selected_sepia</item>
+		<item name="headlineSelectedBackgroundSolid">@color/headline_row_selected_sepia</item>
+		<item name="feedsSelectedBackground">@drawable/headline_row_selected_sepia</item>
+		<item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_sepia</item>
+		<item name="articleBackground">@drawable/paper_sepia</item>
+		<item name="unreadCounterColor">#C46262</item>
+		<item name="feedlistTextColor">#35281C</item>
+		<item name="linkColor">#C46262</item>
+	</style>
+
 	<style name="DarkTheme" parent="android:Theme.Holo">
+	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/ics_divider_vertical</item>
 		<item name="unreadCounterColor">#303030</item>

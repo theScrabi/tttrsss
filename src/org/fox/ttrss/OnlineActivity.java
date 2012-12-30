@@ -134,6 +134,8 @@ public class OnlineActivity extends CommonActivity {
 		
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
+		} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_SEPIA")) {
+			setTheme(R.style.SepiaTheme);
 		} else {
 			setTheme(R.style.LightTheme);
 		}

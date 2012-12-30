@@ -104,6 +104,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
 				}
 				
+				/* if (!isSmallScreen()) {
+					ft.replace(R.id.headlines_fragment, new HeadlinesFragment(new Feed(-3, "Fresh articles", false)));
+				} */
+				
 				ft.commit();
 				
 				AppRater.appLaunched(this);

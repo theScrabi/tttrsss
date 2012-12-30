@@ -3,7 +3,10 @@
 
     <color name="feeds_light">#e0e0e0</color>
     <color name="headlines_light">#ffffff</color>
+    <color name="headlines_sepia">#EAE2DC</color>
+    <color name="feeds_sepia">#D3C6BA</color>
     <color name="headline_row_selected_light">#33b5e5</color>
+    <color name="headline_row_selected_sepia">#E5B0A0</color>
     <color name="ics_cyan">#33b5e5</color>
 
 </resources>

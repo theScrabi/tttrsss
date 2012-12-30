@@ -2,6 +2,7 @@
 <resources>
     <attr name="horizontalDivider" format="reference|color" />
     <attr name="feedlistBackground" format="reference|color" />
+    <attr name="smallScreenBackground" format="reference|color" />
     <attr name="unreadCounterColor" format="reference|color" />
     <attr name="headlinesBackground" format="reference|color" />
     <attr name="headlinesBackgroundSolid" format="reference|color" />
