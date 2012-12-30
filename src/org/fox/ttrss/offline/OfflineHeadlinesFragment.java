@@ -49,7 +49,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private int m_feedId;
 	private boolean m_feedIsCat = false;
 	private int m_activeArticleId;
-	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
 	
 	private SharedPreferences m_prefs;
@@ -266,7 +265,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_feedId = savedInstanceState.getInt("feedId");
 			m_activeArticleId = savedInstanceState.getInt("activeArticleId");
 			//m_selectedArticles = savedInstanceState.getParcelableArrayList("selectedArticles");
-			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
 		} else {
@@ -324,7 +322,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		m_activity = (OfflineActivity) activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override
@@ -344,17 +341,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				m_activeArticleId = articleId;
 			}
 
-			if (!m_combinedMode) { 
-				m_listener.onArticleSelected(articleId);
-			} else {
-				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
-						"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
-								+ " = ?");
-
-				stmt.bindLong(1, articleId);
-				stmt.execute();
-				stmt.close();
-			}
+			m_listener.onArticleSelected(articleId);
 			
 			refresh();
 		}
@@ -367,7 +354,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		out.putInt("feedId", m_feedId);
 		out.putInt("activeArticleId", m_activeArticleId);
 		//out.putParcelableArrayList("selectedArticles", m_selectedArticles);
-		out.putBoolean("combinedMode", m_combinedMode);
 		out.putCharSequence("searchQuery", m_searchQuery);
 		out.putBoolean("feedIsCat", m_feedIsCat);
 	}
@@ -451,13 +437,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
-				if (m_combinedMode) {
-					tt.setMovementMethod(LinkMovementMethod.getInstance());
-					tt.setText(Html.fromHtml("<a href=\""+article.getString(article.getColumnIndex("link")).trim().replace("\"", "\\\"")+"\">" + 
-							article.getString(article.getColumnIndex("title")) + "</a>"));
-				} else {
-					tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
-				}
+				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 			}
 			
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -524,16 +504,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
-				if (!m_combinedMode) {			
-					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
+				String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
 				
-					if (excerpt.length() > 100)
-						excerpt = excerpt.substring(0, 100) + "...";
+				if (excerpt.length() > 100)
+					excerpt = excerpt.substring(0, 100) + "...";
 				
-					te.setText(excerpt);
-				} else {
-					te.setVisibility(View.GONE);
-				}
+				te.setText(excerpt);
 			}       	
 
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
@@ -541,32 +517,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			if (separator != null && m_offlineServices.isSmallScreen()) {
 				separator.setVisibility(View.GONE);
 			} */
-			
-			TextView content = (TextView)v.findViewById(R.id.content);
-			
-			if (content != null) {
-				if (m_combinedMode) {
-					content.setMovementMethod(LinkMovementMethod.getInstance());
-					
-					content.setText(Html.fromHtml(article.getString(article.getColumnIndex("content")), m_dummyGetter, null));
-					
-					switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
-					case 0:
-						content.setTextSize(15F);
-						break;
-					case 1:
-						content.setTextSize(18F);
-						break;
-					case 2:
-						content.setTextSize(21F);
-						break;		
-					}
-				} else {
-					content.setVisibility(View.GONE);
-				}				
-			}
-			
-			v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 			
 			TextView dv = (TextView) v.findViewById(R.id.date);
 			

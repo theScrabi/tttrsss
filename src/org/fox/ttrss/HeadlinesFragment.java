@@ -63,7 +63,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private Feed m_feed;
 	private Article m_activeArticle;
-	private boolean m_combinedMode = true;
 	private String m_searchQuery = "";
 	private boolean m_refreshInProgress = false;
 	
@@ -263,7 +262,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			//m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
-			m_combinedMode = savedInstanceState.getBoolean("combinedMode");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
 
@@ -314,8 +312,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_activity = (OnlineActivity) activity;
 		m_listener = (HeadlinesEventListener) activity;
-
-		m_combinedMode = false; /* m_prefs.getBoolean("combined_mode", false); */
 	}
 
 	@Override
@@ -327,12 +323,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
 			if (article.id >= 0) {
-				if (m_combinedMode) {
-					article.unread = false;
-					m_activity.saveArticleUnread(article);
-				} else {
-					m_listener.onArticleSelected(article);
-				}
+				m_listener.onArticleSelected(article);
 				
 				// only set active article when it makes sense (in HeadlinesActivity)
 				if (getActivity().findViewById(R.id.article_fragment) != null) {
@@ -443,7 +434,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
-		out.putBoolean("combinedMode", m_combinedMode);
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
@@ -591,12 +581,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
-				if (m_combinedMode) {
-					tt.setMovementMethod(LinkMovementMethod.getInstance());
-					tt.setText(Html.fromHtml("<a href=\""+article.link.trim().replace("\"", "\\\"")+"\">" + article.title + "</a>"));
-				} else {
-					tt.setText(Html.fromHtml(article.title));
-				}
+				tt.setText(Html.fromHtml(article.title));
 			}
 
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -654,16 +639,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContent = article.content != null ? article.content : "";
 
 			if (te != null) {
-				if (!m_combinedMode) {			
-					String excerpt = Jsoup.parse(articleContent).text(); 
+				String excerpt = Jsoup.parse(articleContent).text(); 
 				
-					if (excerpt.length() > 100)
-						excerpt = excerpt.substring(0, 100) + "...";
+				if (excerpt.length() > 100)
+					excerpt = excerpt.substring(0, 100) + "...";
 				
-					te.setText(excerpt);
-				} else {
-					te.setVisibility(View.GONE);
-				}
+				te.setText(excerpt);
 			}       	
 
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
@@ -671,97 +652,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (separator != null && m_onlineServices.isSmallScreen()) {
 				separator.setVisibility(View.GONE);
 			} */
-
-			TextView content = (TextView)v.findViewById(R.id.content);
-			
-			if (content != null) {
-				if (m_combinedMode) {
-					content.setMovementMethod(LinkMovementMethod.getInstance());
-					
-					final Spinner spinner = (Spinner) v.findViewById(R.id.attachments);
-					
-					ArrayList<Attachment> spinnerArray = new ArrayList<Attachment>();
-					
-					ArrayAdapter<Attachment> spinnerArrayAdapter = new ArrayAdapter<Attachment>(
-				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
-					
-					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					
-					if (article.attachments != null && article.attachments.size() != 0) {
-						for (Attachment a : article.attachments) {
-							if (a.content_type != null && a.content_url != null) {
-								
-								try {
-									URL url = new URL(a.content_url.trim());
-
-									if (a.content_type.indexOf("image") != -1) {
-										articleContent += "<br/><img src=\"" + url.toString().trim().replace("\"", "\\\"") + "\">";
-									}
-									
-									spinnerArray.add(a);
-
-								} catch (MalformedURLException e) {
-									//
-								} catch (Exception e) {
-									e.printStackTrace();
-								}								
-							}					
-						}
-						
-						spinner.setAdapter(spinnerArrayAdapter);
-						
-						Button attachmentsView = (Button) v.findViewById(R.id.attachment_view);
-						
-						attachmentsView.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								Attachment attachment = (Attachment) spinner.getSelectedItem();
-								
-								Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(attachment.content_url));
-								startActivity(browserIntent);
-							}
-						});
-						
-						Button attachmentsCopy = (Button) v.findViewById(R.id.attachment_copy);
-						
-						attachmentsCopy.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								Attachment attachment = (Attachment) spinner.getSelectedItem();
-
-								if (attachment != null) {
-									m_activity.copyToClipboard(attachment.content_url);
-								}
-							}
-						});
-						
-					} else {
-						v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
-					}
-					
-					//content.setText(Html.fromHtml(article.content, new URLImageGetter(content, getActivity()), null));
-					content.setText(Html.fromHtml(articleContent, m_dummyGetter, null));
-
-					switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
-					case 0:
-						content.setTextSize(15F);
-						break;
-					case 1:
-						content.setTextSize(18F);
-						break;
-					case 2:
-						content.setTextSize(21F);
-						break;		
-					}
-
-				} else {
-					content.setVisibility(View.GONE);
-					v.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
-				}
-				
-			}
 			
 			TextView dv = (TextView) v.findViewById(R.id.date);
 			
