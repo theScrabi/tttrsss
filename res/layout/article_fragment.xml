@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
-    android:padding="5sp"
     android:layout_height="fill_parent"
+    android:padding="5sp" 
     android:orientation="vertical" >
 
         <LinearLayout
@@ -10,8 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical"
-            android:paddingBottom="5sp" >
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/title"
@@ -56,21 +55,23 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textSize="13sp" />
             </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="?horizontalDivider"
+                android:layout_marginBottom="5sp"                
+                android:paddingTop="2dip" />
+
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="?horizontalDivider"
-            android:paddingTop="2dip" />
-
-        <WebView
+        <com.nobu_games.android.view.web.TitleBarWebView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5sp" />
+            />
 
         <LinearLayout
             android:id="@+id/attachments_holder"

@@ -13,6 +13,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.nobu_games.android.view.web.TitleBarWebView;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -40,6 +42,7 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -171,9 +174,17 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				}
 			}
 			
-			WebView web = (WebView)view.findViewById(R.id.content);
+			TitleBarWebView web = (TitleBarWebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				if (m_activity.isSmallScreen()) {
+					View header = view.findViewById(R.id.article_header);
+					LinearLayout article = (LinearLayout)view.findViewById(R.id.article_fragment);
+					article.removeView(header);
+								
+					web.setEmbeddedTitleBarCompat(header);
+				}
+				
 				web.setWebChromeClient(new WebChromeClient() {					
 					@Override
 	                public void onProgressChanged(WebView view, int progress) {
