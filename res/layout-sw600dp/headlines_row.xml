@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="?headlineNormalBackground"
+    android:padding="4sp"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -34,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:singleLine="false"
                 android:text="{Title...}"
                 android:textColor="?headlineTextColor"
                 android:textSize="16sp"
@@ -61,40 +62,29 @@
                 android:textStyle="italic" />
 
         </LinearLayout>
-
+
         <LinearLayout
-            android:id="@+id/linerLayout3"
+            android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15px"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="3dip" >
+            android:paddingRight="15px" >
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
+            <ImageView
+                android:id="@+id/marked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingRight="2sp" >
+                android:clickable="true"
+                android:src="@android:drawable/star_off" />
 
-                <ImageView
-                    android:id="@+id/marked"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:src="@android:drawable/star_off" >
-                </ImageView>
-
-                <ImageView
-                    android:id="@+id/published"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:src="@drawable/ic_rss_bw" >
-                </ImageView>
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/published"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_rss_bw" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

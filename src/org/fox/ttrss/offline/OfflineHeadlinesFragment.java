@@ -553,7 +553,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				});
 			}
 			
-			ImageButton ib = (ImageButton) v.findViewById(R.id.article_menu_button);
+			/* ImageButton ib = (ImageButton) v.findViewById(R.id.article_menu_button);
 			
 			if (ib != null) {
 				ib.setVisibility(android.os.Build.VERSION.SDK_INT >= 10 ? View.VISIBLE : View.GONE);				
@@ -563,7 +563,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						getActivity().openContextMenu(v);
 					}
 				});								
-			}
+			} */
 			
 			return v;
 		}

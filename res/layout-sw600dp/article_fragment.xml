@@ -2,32 +2,35 @@
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5sp" 
-    android:orientation="vertical" >
-
+    android:orientation="vertical"
+    android:padding="10sp" >
+
         <LinearLayout
             android:id="@+id/article_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:orientation="vertical" >
-
+            android:orientation="vertical"
+            android:paddingBottom="4sp" >
+
             <TextView
                 android:id="@+id/title"
-                android:textColor="?linkColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="There are many variations of passages of Lorem Ipsum available"
-                android:textSize="16sp" />
-
+                android:textColor="?linkColor"
+                android:textSize="21sp" />
+
             <TextView
                 android:id="@+id/comments"
-                android:textColor="?linkColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingBottom="2sp"
+                android:paddingTop="2sp"
                 android:text="24 comments"
+                android:textColor="?linkColor"
                 android:textSize="13sp" />
             
             <LinearLayout
@@ -40,9 +43,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:textColor="?headlineExcerptTextColor"
                     android:ellipsize="end"
                     android:singleLine="true"
+                    android:textColor="?headlineExcerptTextColor"
                     android:text="{TAGS}"
                     android:textSize="13sp" />
 
@@ -53,8 +56,8 @@
                     android:layout_weight="0.2"
                     android:gravity="right"
                     android:text="{DATE}"
-                    android:textColor="?headlineExcerptTextColor"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="?headlineExcerptTextColor"
                     android:textSize="13sp"
                     android:textStyle="italic" />
 
@@ -65,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:background="?horizontalDivider"
+                android:layout_marginTop="5sp"
                 android:layout_marginBottom="5sp"                
                 android:paddingTop="2dip" />
 
@@ -76,12 +80,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             />
-
+
         <LinearLayout
             android:id="@+id/attachments_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0" >
+            android:layout_weight="0"
+            android:paddingTop="5sp" >
 
             <Spinner
                 android:id="@+id/attachments"

@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="?headlineSelectedBackgroundSolid"
+    android:padding="4sp"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -34,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:singleLine="false"
                 android:text="{Title...}"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp"
@@ -53,58 +54,27 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linerLayout3"
+            android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="3dip" >
+            android:paddingRight="15px" >
 
-            <TextView
-                android:id="@+id/date"
+            <ImageView
+                android:id="@+id/marked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jan 01"
-                android:textColor="?headlineSelectedExcerptTextColor"
-                android:textSize="13sp" >
-            </TextView>
+                android:clickable="true"
+                android:src="@android:drawable/star_off" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
+            <ImageView
+                android:id="@+id/published"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingRight="2sp" >
-
-                <ImageView
-                    android:id="@+id/marked"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:src="@android:drawable/star_off" >
-                </ImageView>
-
-                <ImageView
-                    android:id="@+id/published"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:src="@drawable/ic_rss_bw" >
-                </ImageView>
-            </LinearLayout>
+                android:clickable="true"
+                android:src="@drawable/ic_rss_bw" />
         </LinearLayout>
-    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/article_menu_button"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@android:color/transparent"
-        android:paddingBottom="4dp"
-        android:paddingRight="4dp"
-        android:paddingTop="4dp"
-        android:scaleType="fitEnd"
-        android:src="@drawable/ic_mailbox_collapsed_holo_light" />
+    </LinearLayout>
 
 </LinearLayout>
