@@ -1,12 +1,16 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.LoadingFragment;
 import org.fox.ttrss.R;
 
+import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
@@ -14,6 +18,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 public class OfflineFeedsActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -96,6 +102,16 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
+
+		/* if (!isSmallScreen()) {
+			LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+			container.setWeightSum(3f);
+		} */
+		
+		if (!isCompatMode() && !isSmallScreen()) {
+			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
+			((ViewGroup)findViewById(R.id.feeds_fragment)).setLayoutTransition(new LayoutTransition());
+		}
 	}
 
 	public void openFeedArticles(int feedId, boolean isCat) {
@@ -189,7 +205,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		onFeedSelected(feedId, false, true);		
 	}
 
-	public void onFeedSelected(int feedId, boolean isCat, boolean open) {
+	public void onFeedSelected(final int feedId, final boolean isCat, boolean open) {
 		
 		if (open) {
 			if (isSmallScreen()) {
@@ -201,13 +217,34 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				startActivityForResult(intent, 0);		
 				
 			} else {
-				FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
+				/* if (!isCompatMode()) {
+					LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+					float wSum = container.getWeightSum();
+					if (wSum <= 2.0f) {
+						ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
+						anim.setDuration(200);
+						anim.start();
+					}
+				} */
 				
-				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);
-				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+				// ^ no idea why the animation hangs half the time :(
 				
-				ft.commit();
+				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+				container.setWeightSum(3f);
+				
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						FragmentTransaction ft = getSupportFragmentManager()
+								.beginTransaction();
+						
+						OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);
+						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+						
+						ft.commit();
+					}
+				}, 10);
+				
 			}
 		}		
 	}

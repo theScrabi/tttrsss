@@ -10,6 +10,7 @@ import org.fox.ttrss.util.AppRater;
 
 import android.view.ViewGroup;
 import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -97,7 +99,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			} else  {
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
+				
 				if (m_prefs.getBoolean("enable_cats", false)) {
 					ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
 				} else {
@@ -115,7 +117,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 		} else { // savedInstanceState != null
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
-			
+
+			if (!isSmallScreen()) {
+				// temporary hack because FeedsActivity doesn't track whether active feed is open
+				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+				container.setWeightSum(3f);
+			}
+
 			if (!isCompatMode() && m_actionbarUpEnabled) {
 				getActionBar().setDisplayHomeAsUpEnabled(true);
 			}
@@ -175,7 +183,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
 			ft.commit();
-			
+
+			if (!isCompatMode()) {
+				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+				float wSum = container.getWeightSum();
+				if (wSum <= 2.0f) {
+					ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
+					anim.setDuration(200);
+					anim.start();
+				}
+			}
+
 			final Feed fFeed = feed;
 			
 			new Handler().postDelayed(new Runnable() {

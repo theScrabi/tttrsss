@@ -126,6 +126,10 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				else
 					titleStr = m_article.title;
 				
+				if (!m_activity.isSmallScreen()) {
+					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21f);
+				}
+				
 				title.setText(titleStr);
 				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
