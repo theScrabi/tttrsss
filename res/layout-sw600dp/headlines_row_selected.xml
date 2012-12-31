@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical" >
-
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -39,7 +39,6 @@
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" >
-
             </TextView>
 
             <TextView
@@ -50,24 +49,26 @@
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linerLayout3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="3dip" >
-
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jan 01"
                 android:textColor="?headlineSelectedExcerptTextColor"
-                android:textSize="13sp" >
-            </TextView>
+                android:textSize="11sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linerLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15px"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="3dip" >
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
@@ -94,17 +95,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/article_menu_button"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@android:color/transparent"
-        android:paddingBottom="4dp"
-        android:paddingRight="4dp"
-        android:paddingTop="4dp"
-        android:scaleType="fitEnd"
-        android:src="@drawable/ic_mailbox_collapsed_holo_light" />
 
 </LinearLayout>

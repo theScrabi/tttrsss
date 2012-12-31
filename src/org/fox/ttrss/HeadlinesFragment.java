@@ -641,8 +641,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (te != null) {
 				String excerpt = Jsoup.parse(articleContent).text(); 
 				
-				if (excerpt.length() > 100)
-					excerpt = excerpt.substring(0, 100) + "...";
+				if (excerpt.length() > 200)
+					excerpt = excerpt.substring(0, 200) + "...";
 				
 				te.setText(excerpt);
 			}       	
