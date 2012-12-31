@@ -131,7 +131,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				}
 				
 				title.setText(titleStr);
-				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {
@@ -155,7 +155,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
 					String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
 					comments.setText(commentsTitle);
-					comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+					//comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 					comments.setOnClickListener(new OnClickListener() {					
 						@Override
 						public void onClick(View v) {

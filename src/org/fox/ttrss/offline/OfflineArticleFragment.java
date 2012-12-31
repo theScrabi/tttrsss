@@ -128,7 +128,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 				final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 				
 				title.setText(titleStr);
-				title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {
