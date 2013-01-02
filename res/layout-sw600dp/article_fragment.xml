@@ -74,7 +74,7 @@
 
         </LinearLayout>
 
-        <com.nobu_games.android.view.web.TitleBarWebView
+        <WebView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

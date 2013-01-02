@@ -169,18 +169,9 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				}
 			}
 			
-			TitleWebView web = (TitleWebView)view.findViewById(R.id.content);
+			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
-				/* if (!m_activity.isPortrait() && m_activity.isSmallScreen()) {
-					
-					View header = view.findViewById(R.id.article_header);
-					LinearLayout article = (LinearLayout)view.findViewById(R.id.article_fragment);
-					article.removeView(header);
-					
-					web.setEmbeddedTitleBarCompat(header);
-				} */
-				
 				web.setWebChromeClient(new WebChromeClient() {					
 					@Override
 	                public void onProgressChanged(WebView view, int progress) {
