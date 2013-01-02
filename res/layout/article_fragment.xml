@@ -2,8 +2,14 @@
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5sp" 
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="5sp" >
+
+    <org.fox.ttrss.TitleWebView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/article_header"
@@ -14,22 +20,22 @@
 
             <TextView
                 android:id="@+id/title"
-                android:textColor="?linkColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="There are many variations of passages of Lorem Ipsum available"
+                android:textColor="?linkColor"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/comments"
-                android:textColor="?linkColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="24 comments"
+                android:textColor="?linkColor"
                 android:textSize="13sp" />
-            
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,12 +46,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:textColor="?headlineExcerptTextColor"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="{TAGS}"
+                    android:textColor="?headlineExcerptTextColor"
                     android:textSize="13sp" />
-
+
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
@@ -53,63 +59,55 @@
                     android:layout_weight="0.2"
                     android:gravity="right"
                     android:text="{DATE}"
-                    android:textColor="?headlineExcerptTextColor"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="?headlineExcerptTextColor"
                     android:textSize="13sp"
                     android:textStyle="italic" />
-
             </LinearLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5sp"
                 android:layout_weight="0"
                 android:background="?horizontalDivider"
-                android:layout_marginBottom="5sp"                
                 android:paddingTop="2dip" />
-
         </LinearLayout>
+    </org.fox.ttrss.TitleWebView>
 
-        <com.nobu_games.android.view.web.TitleBarWebView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+    <LinearLayout
+        android:id="@+id/attachments_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
 
-        <LinearLayout
-            android:id="@+id/attachments_holder"
+        <Spinner
+            android:id="@+id/attachments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0" >
+            android:layout_weight="1"
+            android:prompt="@string/attachments_prompt" />
 
-            <Spinner
-                android:id="@+id/attachments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:prompt="@string/attachments_prompt" />
+        <Button
+            android:id="@+id/attachment_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_view" />
 
-            <Button
-                android:id="@+id/attachment_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_view" />
+        <Button
+            android:id="@+id/attachment_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_share" />
 
-            <Button
-                android:id="@+id/attachment_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_share" />
-            
-            <Button
-                android:id="@+id/attachment_copy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/attachment_copy" />
-        </LinearLayout>
-    
+        <Button
+            android:id="@+id/attachment_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/attachment_copy" />
+    </LinearLayout>
+
 </LinearLayout>
