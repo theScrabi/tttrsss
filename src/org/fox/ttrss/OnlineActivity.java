@@ -506,8 +506,8 @@ public class OnlineActivity extends CommonActivity {
 					toast(getString(R.string.trial_mode_prompt, Long.valueOf(daysLeft)));
 				}
 			}
-		} else if (notify) {
-			toast(R.string.trial_thanks);
+		} else if (notify) {			
+			//toast(R.string.trial_thanks);
 		}
 	}
 	
