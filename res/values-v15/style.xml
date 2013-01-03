@@ -1,6 +1,5 @@
-<!-- Note: the only difference between this and v15 style is Holo.Light base theme (Holo.Light.DarkActionBar does not exist in HC and causes breakage) -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="LightTheme" parent="android:Theme.Holo.Light">
+	<style name="LightTheme" parent="android:Theme.Holo.Light.DarkActionBar">
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
