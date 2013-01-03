@@ -227,8 +227,6 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					articleContent = doc.toString();
 				}
 				
-				view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
-				
 				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justified" : "";
 				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {

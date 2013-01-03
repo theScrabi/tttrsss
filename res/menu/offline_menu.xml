@@ -62,7 +62,7 @@
             android:title="@string/selection_toggle_marked"/>
         <item
             android:id="@+id/selection_toggle_published"
-            android:icon="@drawable/ic_menu_rss"
+            android:icon="@drawable/ic_menu_publish"
             android:showAsAction="ifRoom"
             android:title="@string/selection_toggle_published"/>
         <item
@@ -79,7 +79,7 @@
             android:title="@string/article_toggle_marked"/>
         <item
             android:id="@+id/toggle_published"
-            android:icon="@drawable/ic_menu_rss"
+            android:icon="@drawable/ic_menu_publish"
             android:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
         <item

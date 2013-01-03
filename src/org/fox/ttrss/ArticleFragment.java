@@ -256,22 +256,12 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					"</head>" +
 					"<body>" + articleContent;
 				
-				final Spinner spinner = (Spinner) view.findViewById(R.id.attachments);
-				
 				if (m_article.attachments != null && m_article.attachments.size() != 0) {
-					ArrayList<Attachment> spinnerArray = new ArrayList<Attachment>();
-					
-					ArrayAdapter<Attachment> spinnerArrayAdapter = new ArrayAdapter<Attachment>(
-				            getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
-					
-					spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
 					String flatContent = articleContent.replaceAll("[\r\n]", "");
 					boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
 					
 					for (Attachment a : m_article.attachments) {
-						if (a.content_type != null && a.content_url != null) {
-							
+						if (a.content_type != null && a.content_url != null) {							
 							try {
 								if (a.content_type.indexOf("image") != -1 && 
 										(!hasImages || m_article.always_display_attachments)) {
@@ -287,60 +277,8 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-
-							spinnerArray.add(a);
 						}					
 					}
-					
-					spinner.setAdapter(spinnerArrayAdapter);
-					
-					Button attachmentsView = (Button) view.findViewById(R.id.attachment_view);
-					
-					attachmentsView.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Attachment attachment = (Attachment) spinner.getSelectedItem();
-							
-							Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(attachment.content_url));
-							startActivity(browserIntent);
-						}
-					});
-					
-					Button attachmentsCopy = (Button) view.findViewById(R.id.attachment_copy);
-					
-					attachmentsCopy.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							Attachment attachment = (Attachment) spinner.getSelectedItem();
-
-							if (attachment != null) {
-								m_activity.copyToClipboard(attachment.content_url);
-							}
-						}
-					});
-
-					Button attachmentsShare = (Button) view.findViewById(R.id.attachment_share);
-					
-					if (!m_activity.isPortrait()) {
-						attachmentsShare.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								Attachment attachment = (Attachment) spinner.getSelectedItem();
-	
-								if (attachment != null) {
-									m_activity.shareText(attachment.content_url);
-								}
-							}
-						});
-					} else {
-						attachmentsShare.setVisibility(View.GONE);
-					}
-
-				} else {
-					view.findViewById(R.id.attachments_holder).setVisibility(View.GONE);
 				}
 				
 				content += "</body></html>";

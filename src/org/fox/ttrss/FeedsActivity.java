@@ -159,6 +159,20 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
 			}
 			
+			if (af != null) {
+				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
+					if (!isCompatMode()) {
+						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+					}
+					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
+				} else {
+					if (!isCompatMode()) {
+						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					}
+					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
+				}
+			}
+			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {

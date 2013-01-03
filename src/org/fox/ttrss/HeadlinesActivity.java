@@ -149,9 +149,23 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait()&& hf != null && hf.getSelectedArticles().size() == 0);
 			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, !isPortrait() && hf != null && hf.getSelectedArticles().size() != 0);
 			
-			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
+			
+			if (af != null) {
+				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
+					if (!isCompatMode()) {
+						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+					}
+					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
+				} else {
+					if (!isCompatMode()) {
+						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					}
+					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
+				}
+			}
 			
 			m_menu.findItem(R.id.search).setVisible(false);
 		}		

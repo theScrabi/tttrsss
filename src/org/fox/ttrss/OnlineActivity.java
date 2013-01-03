@@ -1,6 +1,8 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import org.fox.ttrss.offline.OfflineDownloadService;
 import org.fox.ttrss.offline.OfflineUploadService;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
 
@@ -533,6 +536,60 @@ public class OnlineActivity extends CommonActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
+			return true;
+		case R.id.toggle_attachments:
+			if (true) {
+				Article article = ap.getSelectedArticle();
+				
+				if (article != null && article.attachments != null && article.attachments.size() > 0) {
+					CharSequence[] items = new CharSequence[article.attachments.size()];
+					final CharSequence[] itemUrls = new CharSequence[article.attachments.size()];
+
+					for (int i = 0; i < article.attachments.size(); i++) {
+						items[i] = article.attachments.get(i).title != null ? article.attachments.get(i).content_url : 
+							article.attachments.get(i).content_url;
+						
+						itemUrls[i] = article.attachments.get(i).content_url;
+					}
+
+					Dialog dialog = new Dialog(OnlineActivity.this);
+					AlertDialog.Builder builder = new AlertDialog.Builder(OnlineActivity.this)
+							.setTitle(R.string.attachments_prompt)
+							.setSingleChoiceItems(items, 0, new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									//
+								}
+							}).setNeutralButton(R.string.attachment_copy, new OnClickListener() {								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+									
+									copyToClipboard((String)itemUrls[selectedPosition]);
+								}
+							}).setPositiveButton(R.string.attachment_view, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+									
+									Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse((String)itemUrls[selectedPosition]));
+									startActivity(browserIntent);
+
+									dialog.cancel();
+								}
+							}).setNegativeButton(R.string.dialog_cancel, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									dialog.cancel();
+								}
+							});
+
+					dialog = builder.create();
+					dialog.show();
+				}
+			}
 			return true;
 		case R.id.donate:
 			if (true) {
