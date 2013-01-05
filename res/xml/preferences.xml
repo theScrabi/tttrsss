@@ -59,12 +59,6 @@
             android:key="theme"
             android:summary="@string/pref_theme_long"
             android:title="@string/pref_theme" />
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/pref_font_size_names"
-            android:entryValues="@array/pref_font_size_values"
-            android:key="font_size"
-            android:title="@string/pref_font_size" />
 
         <CheckBoxPreference
             android:defaultValue="false"
@@ -85,19 +79,6 @@
             android:summary="@string/browse_cats_like_feeds_summary"
             android:title="@string/browse_cats_like_feeds" />
 
-        <!--
-              <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="combined_mode"
-            android:summary="@string/combined_mode_summary"
-            android:title="@string/combined_mode" />
-        -->
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="justify_article_text"
-            android:title="@string/justify_article_text" />
-
         <ListPreference
             android:defaultValue="HEADLINES"
             android:entries="@array/pref_view_mode_names"
@@ -105,7 +86,19 @@
             android:key="default_view_mode"
             android:summary="@string/pref_default_view_mode_long"
             android:title="@string/pref_default_view_mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/reading" >
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_font_size_names"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="font_size"
+            android:title="@string/pref_font_size" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="justify_article_text"
+            android:title="@string/justify_article_text" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_volume_keys"
@@ -116,6 +109,10 @@
             android:key="dim_status_bar"
             android:summary="@string/prefs_dim_status_bar_long"
             android:title="@string/prefs_dim_status_bar" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="full_screen_mode"
+            android:title="@string/prefs_fullscreen_mode" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference
@@ -125,6 +122,7 @@
             android:key="offline_sync_max"
             android:summary="How many articles to download (newest first)"
             android:title="Download articles" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="offline_image_cache_enabled"

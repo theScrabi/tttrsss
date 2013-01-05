@@ -153,4 +153,6 @@
     <string name="trial_expired_message">To continue using Tiny Tiny RSS please unlock the full version by purchasing the key.</string>
     <string name="theme_sepia">Sepia</string>
     <string name="trial_thanks">Full version, thank you for support!</string>
+    <string name="prefs_fullscreen_mode">Fullscreen mode</string>
+    <string name="reading">Reading</string>
 </resources>

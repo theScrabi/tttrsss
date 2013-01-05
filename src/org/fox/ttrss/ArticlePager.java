@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.google.gson.JsonElement;
 
@@ -263,8 +264,17 @@ public class ArticlePager extends Fragment {
 		
 		m_activity.initMenu();
 		
-		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false) && !m_activity.isCompatMode()) {
+		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
 			getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
+		
+		if (m_prefs.getBoolean("full_screen_mode", false)) {
+			m_activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			
+			/* if (!m_activity.isCompatMode()) {
+	            m_activity.getActionBar().hide();
+	        } */
 		}
 	}
 
