@@ -1,11 +1,9 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.GlobalState;
-import org.fox.ttrss.LoadingFragment;
 import org.fox.ttrss.R;
 
 import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteStatement;

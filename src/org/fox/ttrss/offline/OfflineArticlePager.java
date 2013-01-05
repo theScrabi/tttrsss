@@ -79,7 +79,7 @@ public class OfflineArticlePager extends Fragment {
 			
 			if (m_cursor.moveToPosition(position)) {
 				
-				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null) {
+				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null && !m_activity.isCompatMode()) {
 					getView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
 				}
 				
@@ -92,6 +92,15 @@ public class OfflineArticlePager extends Fragment {
 		@Override
 		public int getCount() {
 			return m_cursor.getCount();
+		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false) && !m_activity.isCompatMode()) {
+			getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 		}
 	}
 	

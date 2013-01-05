@@ -1,8 +1,6 @@
 package org.fox.ttrss;
 
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import org.fox.ttrss.offline.OfflineDownloadService;
 import org.fox.ttrss.offline.OfflineUploadService;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
 
