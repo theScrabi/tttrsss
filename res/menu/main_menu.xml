@@ -88,6 +88,11 @@
         </group>
         <group android:id="@+id/menu_group_article" >
             <item
+                android:id="@+id/toggle_attachments"
+                android:icon="@drawable/ic_menu_attaches"
+                android:showAsAction="ifRoom"
+                android:title="@string/attachments_prompt"/>
+            <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
                 android:showAsAction="ifRoom"
@@ -97,12 +102,6 @@
                 android:icon="@drawable/ic_menu_publish"
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
-            <item
-                android:id="@+id/toggle_attachments"
-                android:icon="@drawable/ic_menu_attaches"
-                android:showAsAction="ifRoom"
-                android:title="@string/attachments_prompt"/>
-            
             <item
                 android:id="@+id/share_article"
                 android:actionProviderClass="android.widget.ShareActionProvider"
