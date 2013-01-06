@@ -50,8 +50,8 @@ public class ArticlePager extends Fragment {
 			if (article != null) {
 				ArticleFragment af = new ArticleFragment(article);
 
-				if (!m_prefs.getBoolean("dim_status_bar", false) && getView() != null && !m_activity.isCompatMode()) {
-					getView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null && !m_activity.isCompatMode()) {
+					getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 				}
 				
 				return af;
