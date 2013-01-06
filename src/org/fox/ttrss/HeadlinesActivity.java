@@ -73,7 +73,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						HeadlinesFragment hf = new HeadlinesFragment(feed, article);
 						hf.setSearchQuery(searchQuery);
 
-						ArticlePager af = new ArticlePager(hf.getArticleById(article.id), feed);
+						ArticlePager af = new ArticlePager(article != null ? hf.getArticleById(article.id) : new Article(), feed);
 						af.setSearchQuery(searchQuery);
 
 						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
