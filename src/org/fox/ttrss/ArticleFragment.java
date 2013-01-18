@@ -47,6 +47,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	//private Article m_nextArticle;
 	//private Article m_prevArticle;
 	private GestureDetector m_detector;
+	private boolean m_visible = true;
 	
 	public ArticleFragment() {
 		super();
@@ -67,12 +68,12 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 		
 		switch (item.getItemId()) {
 		case R.id.article_link_share:
-			if (true) {
+			if (m_visible) {
 				((OnlineActivity) getActivity()).shareArticle(m_article);
 			}
 			return true;
 		case R.id.article_link_copy:
-			if (true) {
+			if (m_visible) {
 				((OnlineActivity) getActivity()).copyToClipboard(m_article.link);
 			}
 			return true;
@@ -80,6 +81,13 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
 			return super.onContextItemSelected(item);
 		}
+	}
+	
+	@Override
+	public void setUserVisibleHint(boolean visible) {
+		super.setUserVisibleHint(visible);
+
+		m_visible = visible;
 	}
 	
 	@Override
