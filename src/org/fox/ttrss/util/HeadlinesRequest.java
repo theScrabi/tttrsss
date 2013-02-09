@@ -56,10 +56,11 @@ public class HeadlinesRequest extends ApiRequest {
 						m_articles.add(placeholder);
 					}
 
-					if (m_articles.size() == 0)
+					/* if (m_articles.size() == 0)
 						m_activity.setLoadingStatus(R.string.no_headlines_to_display, false);
-					else
-						m_activity.setLoadingStatus(R.string.blank, false);
+					else */
+					
+					m_activity.setLoadingStatus(R.string.blank, false);
 					
 					return;
 				}

@@ -78,6 +78,8 @@ public class OfflineActivity extends CommonActivity {
 			setTheme(R.style.DarkTheme);
 		} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_SEPIA")) {
 			setTheme(R.style.SepiaTheme);
+		} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
+			setTheme(R.style.DarkGrayTheme);
 		} else {
 			setTheme(R.style.LightTheme);
 		}

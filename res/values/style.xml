@@ -65,4 +65,24 @@
         <item name="loadingBackground">@android:color/black</item>
     </style>
 
+    	<style name="DarkGrayTheme" parent="DarkTheme">
+	    <item name="smallScreenBackground">#1c1d1e</item>
+		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="feedlistBackground">@color/feeds_dark_gray</item>
+		<item name="unreadCounterColor">#a0a0a0</item>
+		<item name="headlinesBackground">@color/feeds_dark_gray</item>
+		<item name="headlinesBackgroundSolid">@color/headline_row_selected_gray</item>
+		<item name="articleBackground">#1c1d1e</item>
+		<item name="headlineSelectedBackground">@color/headline_row_selected_gray</item>
+		<item name="headlineSelectedBackgroundSolid">@color/headline_row_selected_gray</item>
+		<item name="headlineUnreadBackground">@color/headline_row_unread_gray</item>
+		<item name="feedsSelectedBackground">@color/headline_row_selected_gray</item>
+		<item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_gray</item>
+        <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
+        <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineTextColor">@android:color/secondary_text_dark</item>
+        <item name="android:actionBarStyle">@style/ActionBarDarkGray</item>
+	</style>
+    
+    
 </resources>

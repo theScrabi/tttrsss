@@ -1,11 +1,13 @@
 <resources>
     <string-array name="pref_theme_names">
         <item>@string/theme_dark</item>
+        <item>@string/theme_dark_gray</item>
         <item>@string/theme_light</item>
-        <item>@string/theme_sepia</item>
+        <item>@string/theme_sepia</item>        
     </string-array>
     <string-array name="pref_theme_values">
         <item>THEME_DARK</item>
+        <item>THEME_DARK_GRAY</item>
         <item>THEME_LIGHT</item>
         <item>THEME_SEPIA</item>
     </string-array>

@@ -8,5 +8,7 @@
     <color name="headline_row_selected_light">#33b5e5</color>
     <color name="headline_row_selected_sepia">#E5B0A0</color>
     <color name="ics_cyan">#33b5e5</color>
-
+    <color name="feeds_dark_gray">#1c1d1e</color>
+	<color name="headline_row_selected_gray">#22667f</color>
+	<color name="headline_row_unread_gray">#383c42</color>
 </resources>

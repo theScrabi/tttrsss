@@ -155,4 +155,5 @@
     <string name="trial_thanks">Full version, thank you for support!</string>
     <string name="prefs_fullscreen_mode">Fullscreen mode</string>
     <string name="reading">Reading</string>
+    <string name="theme_dark_gray">Dark gray</string>
 </resources>
