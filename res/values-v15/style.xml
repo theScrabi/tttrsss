@@ -43,7 +43,7 @@
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/ics_divider_vertical</item>
-		<item name="unreadCounterColor">#303030</item>
+		<item name="unreadCounterColor">@color/ics_cyan</item>
 		<item name="headlinesBackground">@drawable/headlines_dark</item>
 		<item name="headlinesBackgroundSolid">@drawable/headlines_dark</item>
 		<item name="articleBackground">@android:color/black</item>
