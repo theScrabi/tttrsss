@@ -221,7 +221,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		if (hf != null) {
 			Article article = hf.getActiveArticle();
 						
-			if (article == null) {
+			if (article == null && hf.getAllArticles().size() > 0) {
 				article = hf.getAllArticles().get(0);
 
 				hf.setActiveArticle(article);
