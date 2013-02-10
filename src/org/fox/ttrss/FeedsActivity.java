@@ -321,6 +321,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("article", new Article());
 			startActivityForResult(intent, 0);
 		} else {
+			GlobalState.getInstance().m_loadedArticles.clear();
+			
 			Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
 			intent.putExtra("feed", feed);
 			intent.putExtra("article", (Article)null);
