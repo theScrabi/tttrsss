@@ -37,8 +37,13 @@
 		<item name="unreadCounterColor">#C46262</item>
 		<item name="feedlistTextColor">#35281C</item>
 		<item name="linkColor">#C46262</item>
+        <!--  <item name="android:actionBarStyle">@style/ActionBarSepia</item> -->
 	</style>
-
+	
+	<!--  <style name="ActionBarSepia" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    	<item name="android:background">#351d11</item>
+	</style> -->
+	
 	<style name="DarkTheme" parent="android:Theme.Holo">
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
@@ -63,7 +68,7 @@
         <item name="linkColor">@color/ics_cyan</item>
         <item name="loadingBackground">@android:color/black</item>
 	</style>
-
+	
 	<style name="DarkGrayTheme" parent="DarkTheme">
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
