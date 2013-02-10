@@ -355,6 +355,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				protected void onPostExecute(JsonElement result) {
 					if (isDetached()) return;
 					
+					ListView list = (ListView)getView().findViewById(R.id.headlines);
+					
+					if (list != null) {
+						list.setEmptyView(getView().findViewById(R.id.no_headlines));
+					}
+					
 					m_activity.setProgressBarVisibility(false);
 					
 					super.onPostExecute(result);	
