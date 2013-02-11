@@ -169,6 +169,7 @@ public class ArticlePager extends Fragment {
 					} catch (BadParcelableException e) {
 						if (getActivity() != null) {							
 							getActivity().finish();
+							return;
 						}
 					}
 					

@@ -291,8 +291,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 
 		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
-			refresh(false);
-			GlobalState.getInstance().m_activeFeed = m_feed;
+			if (m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE) == null) {
+				refresh(false);
+				GlobalState.getInstance().m_activeFeed = m_feed;
+			}			
 		} else {
 			notifyUpdated();
 		}
