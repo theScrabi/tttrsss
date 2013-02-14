@@ -137,6 +137,10 @@ public class OfflineArticlePager extends Fragment {
 			m_isCat = savedInstanceState.getBoolean("isCat", false);
 		}
 		
+		Log.d(TAG, "feed=" + m_feedId + "; iscat=" + m_isCat);
+		
+		m_cursor = createCursor();
+		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
 		int position = 0;
@@ -202,8 +206,6 @@ public class OfflineArticlePager extends Fragment {
 		m_listener = (OfflineHeadlinesEventListener)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		
-		m_cursor = createCursor();
 			
 	}
 	
