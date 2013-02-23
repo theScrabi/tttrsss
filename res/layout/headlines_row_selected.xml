@@ -21,7 +21,8 @@
             android:paddingLeft="6dip"
             android:paddingRight="6dip" >
         </CheckBox>
-
+
+
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
@@ -29,7 +30,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="3dp" >
-
+
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -62,7 +64,8 @@
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
-
+
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
@@ -74,7 +77,9 @@
                 android:textStyle="italic" />
 
         </LinearLayout>
-
+
+
+
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"

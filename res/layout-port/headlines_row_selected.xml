@@ -14,7 +14,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="3dip" >
-
+
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -46,7 +47,8 @@
                 android:text="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" />
-
+
+
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
@@ -62,7 +64,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:focusable="false" />
-
+
+
+
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="match_parent"

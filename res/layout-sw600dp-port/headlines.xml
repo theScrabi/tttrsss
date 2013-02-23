@@ -2,8 +2,8 @@
     android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/loading_container"
         android:layout_width="match_parent"
