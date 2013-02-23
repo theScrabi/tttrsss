@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
+	private static final int HEADLINES_REQUEST = 1;
+	
 	protected SharedPreferences m_prefs;
 	protected long m_lastRefresh = 0;
 	
@@ -328,7 +330,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("article", (Article)null);
 			intent.putExtra("searchQuery", (String)null);
 	 	   
-			startActivityForResult(intent, 0);
+			startActivityForResult(intent, HEADLINES_REQUEST);
 			overridePendingTransition(R.anim.right_slide_in, 0);
 		}
 	}
@@ -360,7 +362,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				intent.putExtra("article", article);
 				intent.putExtra("searchQuery", hf.getSearchQuery());
 		 	   
-				startActivityForResult(intent, 0);
+				startActivityForResult(intent, HEADLINES_REQUEST);
 				overridePendingTransition(R.anim.right_slide_in, 0);
 			}
 		} else {
@@ -382,5 +384,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onHeadlinesLoaded(boolean appended) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == HEADLINES_REQUEST) {
+			GlobalState.getInstance().m_activeArticle = null;			
+		}		
 	}
 }
