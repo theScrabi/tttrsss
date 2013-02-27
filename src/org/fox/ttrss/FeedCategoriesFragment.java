@@ -293,7 +293,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 							setLoadingStatus(R.string.no_feeds_to_display, false);
 						else */
 						
-						m_adapter.notifyDataSetInvalidated();
+						//m_adapter.notifyDataSetChanged(); (done by sortCats)
 						m_activity.setLoadingStatus(R.string.blank, false);
 						
 						return;
@@ -328,7 +328,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		Collections.sort(m_cats, cmp);
 		try {
-			m_adapter.notifyDataSetInvalidated();
+			m_adapter.notifyDataSetChanged();
 		} catch (NullPointerException e) {
 			// adapter missing
 		}

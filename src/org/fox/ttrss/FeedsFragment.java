@@ -423,7 +423,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						else */
 						
 						m_activity.setLoadingStatus(R.string.blank, false);
-						m_adapter.notifyDataSetInvalidated();
+						//m_adapter.notifyDataSetChanged(); (done by sortFeeds)
 						
 						if (m_enableFeedIcons && !m_feedIconsChecked && 
 								Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
@@ -550,7 +550,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		Collections.sort(m_feeds, cmp);
 		
 		try {
-			m_adapter.notifyDataSetInvalidated();
+			m_adapter.notifyDataSetChanged();
 		} catch (NullPointerException e) {
 			// adapter missing
 		}
@@ -636,7 +636,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		protected void onPostExecute(Integer result) {
 			if (isDetached()) return;
 			
-			m_adapter.notifyDataSetInvalidated();
+			m_adapter.notifyDataSetChanged();
 		}
 		
 	}
