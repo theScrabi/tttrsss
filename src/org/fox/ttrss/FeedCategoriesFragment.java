@@ -258,6 +258,14 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			
 			m_activity.setProgressBarVisibility(false);
 
+			if (getView() != null) {
+				ListView list = (ListView)getView().findViewById(R.id.feeds);
+			
+				if (list != null) {
+					list.setEmptyView(getView().findViewById(R.id.no_feeds));
+				}
+			}
+			
 			if (result != null) {
 				try {			
 					JsonArray content = result.getAsJsonArray();
@@ -285,6 +293,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 							setLoadingStatus(R.string.no_feeds_to_display, false);
 						else */
 						
+						m_adapter.notifyDataSetInvalidated();
 						m_activity.setLoadingStatus(R.string.blank, false);
 						
 						return;

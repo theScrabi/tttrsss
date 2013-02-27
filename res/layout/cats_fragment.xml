@@ -1,12 +1,37 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cats_fragment.xml"
     android:layout_width="match_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout android:id="@+id/loading_container" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message" android:layout_height="wrap_content" ></TextView>
+    <LinearLayout
+        android:id="@+id/loading_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/loading_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+        </TextView>
     </LinearLayout>
-    <ListView android:id="@+id/feeds" android:layout_height="match_parent" android:layout_width="match_parent"></ListView>
-        
-    </FrameLayout>
+
+    <ListView
+        android:id="@+id/feeds"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
+    
+    <TextView
+        android:id="@+id/no_feeds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_feeds"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="invisible" >
+    </TextView>
+
+</FrameLayout>

@@ -391,6 +391,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		@Override
 		protected void onPostExecute(JsonElement result) {
 			if (isDetached()) return;
+
+			if (getView() != null) {
+				ListView list = (ListView)getView().findViewById(R.id.feeds);
+			
+				if (list != null) {
+					list.setEmptyView(getView().findViewById(R.id.no_feeds));
+				}
+			}
 			
 			m_activity.setProgressBarVisibility(false);
 
@@ -415,7 +423,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						else */
 						
 						m_activity.setLoadingStatus(R.string.blank, false);
-
+						m_adapter.notifyDataSetInvalidated();
+						
 						if (m_enableFeedIcons && !m_feedIconsChecked && 
 								Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
 							getFeedIcons();
