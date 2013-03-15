@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -87,11 +88,11 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				String titleStr;
 				
 				if (m_article.title.length() > 200)
-					titleStr = m_article.title.substring(0, 200) + "…";
+					titleStr = m_article.title.substring(0, 200) + "ï¿½";
 				else
 					titleStr = m_article.title;
 				
-				title.setText(titleStr);
+				title.setText(Html.fromHtml(titleStr));
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
 					@Override
