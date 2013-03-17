@@ -156,4 +156,6 @@
     <string name="prefs_fullscreen_mode">Fullscreen mode</string>
     <string name="reading">Reading</string>
     <string name="theme_dark_gray">Dark gray</string>
+	<string name="offline_articles_to_download">Number of articles to download</string>
+  <string name="offline_articles_to_download_long">Number of articles to download for Offlinemode. (newest first)</string>
 </resources>

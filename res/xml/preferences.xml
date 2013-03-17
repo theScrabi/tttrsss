@@ -120,8 +120,8 @@
             android:entries="@array/pref_offline_amounts"
             android:entryValues="@array/pref_offline_amounts"
             android:key="offline_sync_max"
-            android:summary="How many articles to download (newest first)"
-            android:title="Download articles" />
+            android:summary="@string/offline_articles_to_download_long"
+            android:title="@string/offline_articles_to_download" />
 
         <CheckBoxPreference
             android:defaultValue="false"
