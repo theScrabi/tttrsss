@@ -141,8 +141,18 @@
   <string name="ssl_trust_any_long">Akzeptiert jedes SSL Zertifikat ohne Überprüfung!</string>
   <string name="ssl_trust_any_host_long">Serverhostname nicht überprüfen</string>
   <string name="ssl">SSL</string>
-  <string name="error_ssl_hostname_rejected">Fehler: SSL Hostname nicht überprüft</string>
+  <string name="error_ssl_hostname_rejected">Fehler: SSL Hostname nicht korrekt</string>
   <string name="offline_oldest_first">Älteste Artikel zuerst anzeigen</string>
-  <string name="prefs_dim_status_bar">Statusbar beim Lesen abblenden</string>
+  <string name="prefs_dim_status_bar">Statusleiste abblenden</string>
+  <string name="prefs_dim_status_bar_long">Statusleiste beim Lesen abblenden</string>
   <string name="article_comments">%1$d Kommentare</string>
+  <string name="trial_mode_prompt">Trial mode, %1$d Tag(e) übrig.</string>
+  <string name="trial_purchase">Vollversion freischalten</string>
+  <string name="trial_expired">Testzeitraum abgelaufen</string>
+  <string name="trial_expired_message">Um Tiny Tiny RSS weiterhin nutzen zu können kaufen Sie bitte den Schlüssel.</string>
+  <string name="theme_sepia">Sepia</string>
+  <string name="trial_thanks">Vollversion, Vielen Dank für die Unterstützung!</string>
+  <string name="prefs_fullscreen_mode">Vollbild</string>
+  <string name="reading">Lese</string>
+  <string name="theme_dark_gray">Dunkel Grau</string>
 </resources>
