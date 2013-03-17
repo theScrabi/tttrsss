@@ -31,7 +31,7 @@
   <string name="category_browse_feeds">Feeds anzeigen</string>
   <string name="category_browse_articles">Artikel anzeigen</string>
   <string name="blank"></string>
-  <string name="transport_debugging">Log versendet und Daten empfangen</string>
+  <string name="transport_debugging">Gesendete und empfangene Daten aufzeichnen</string>
   <string name="article_toggle_marked">(Un)Star</string>
   <string name="article_toggle_published">(Un)Publish</string>
   <string name="headlines_select">Artikel auswählen</string>
@@ -153,6 +153,8 @@
   <string name="theme_sepia">Sepia</string>
   <string name="trial_thanks">Vollversion, Vielen Dank für die Unterstützung!</string>
   <string name="prefs_fullscreen_mode">Vollbild</string>
-  <string name="reading">Lese</string>
+  <string name="reading">Lesen</string>
   <string name="theme_dark_gray">Dunkel Grau</string>
+  <string name="offline_articles_to_download">Anzahl der Artikel</string>
+  <string name="offline_articles_to_download_long">Anzahl der rtikel die für den Offlinemodus heruntergeladen werden. (Neueste zuerst)</string>
 </resources>
