@@ -41,7 +41,7 @@
                 android:text="{Title...}"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold" >
+                android:textStyle="normal" >
 
             </TextView>
 

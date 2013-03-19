@@ -4,7 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="?headlineSelectedBackgroundSolid"
-    android:padding="4sp"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -23,12 +22,15 @@
             android:paddingRight="6dip" >
         </CheckBox>
 
+
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="3dp" >
+
 
             <TextView
                 android:id="@+id/title"
@@ -39,9 +41,20 @@
                 android:text="{Title...}"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp"
-                android:textStyle="normal" >
+                android:textStyle="bold" >
 
             </TextView>
+
+            <TextView
+                android:id="@+id/feed_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:gravity="center_horizontal|right"
+                android:singleLine="true"
+                android:text="{Feed title...}"
+                android:textColor="?headlineSelectedExcerptTextColor"
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/excerpt"
@@ -51,14 +64,28 @@
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
+
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Jan 01"
+                android:textColor="?headlineSelectedExcerptTextColor"
+                android:textSize="10sp"
+                android:textStyle="italic" />
+
         </LinearLayout>
+
+
 
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingRight="15px" >
+            android:paddingRight="6dp" >
 
             <ImageView
                 android:id="@+id/marked"
@@ -74,7 +101,6 @@
                 android:clickable="true"
                 android:src="@drawable/ic_rss_bw" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

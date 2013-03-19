@@ -3,7 +3,7 @@
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?headlineSelectedBackgroundSolid"
+    android:background="?headlineSelectedBackground"
     android:padding="4sp"
     android:orientation="vertical" >
 
@@ -39,8 +39,7 @@
                 android:text="{Title...}"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="16sp"
-                android:textStyle="normal" >
-
+                android:textStyle="bold" >
             </TextView>
 
             <TextView
@@ -51,7 +50,23 @@
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp" >
             </TextView>
+
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jan 01"
+                android:textColor="?headlineSelectedExcerptTextColor"
+                android:textSize="11sp"
+                android:textStyle="italic" />
+
         </LinearLayout>
+
+
+
+
+
 
         <LinearLayout
             android:id="@+id/linearLayout4"
@@ -74,7 +89,6 @@
                 android:clickable="true"
                 android:src="@drawable/ic_rss_bw" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

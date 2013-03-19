@@ -525,7 +525,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
-		public static final int VIEW_LOADMORE = 3;
+		public static final int VIEW_SELECTED_UNREAD = 3;
+		public static final int VIEW_LOADMORE = 4;
 		
 		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
 		
@@ -544,6 +545,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (a.id == -1) {
 				return VIEW_LOADMORE;
+			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
+				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
 				return VIEW_SELECTED;
 			} else if (a.unread) {
@@ -572,6 +575,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					break;
 				case VIEW_SELECTED:
 					layoutId = R.layout.headlines_row_selected;
+					break;
+				case VIEW_SELECTED_UNREAD:
+					layoutId = R.layout.headlines_row_selected_unread;
 					break;
 				}
 				

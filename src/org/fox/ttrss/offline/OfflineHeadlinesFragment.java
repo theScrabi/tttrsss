@@ -378,7 +378,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
-		public static final int VIEW_LOADMORE = 3;
+		public static final int VIEW_SELECTED_UNREAD = 3;
+		public static final int VIEW_LOADMORE = 4;
 		
 		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
 		
@@ -393,7 +394,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			//Log.d(TAG, "@gIVT " + position + " " + c.getInt(0) + " vs " + m_activeArticleId);
 			
-			if (c.getInt(0) == m_activeArticleId) {
+			if (c.getInt(0) == m_activeArticleId && c.getInt(c.getColumnIndex("unread")) == 1) {				
+				return VIEW_SELECTED_UNREAD;
+			} else if (c.getInt(0) == m_activeArticleId) {
 				return VIEW_SELECTED;
 			} else if (c.getInt(c.getColumnIndex("unread")) == 1) {
 				return VIEW_UNREAD;
@@ -419,6 +422,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					break;
 				case VIEW_UNREAD:
 					layoutId = R.layout.headlines_row_unread;
+					break;
+				case VIEW_SELECTED_UNREAD:
+					layoutId = R.layout.headlines_row_selected_unread;
 					break;
 				case VIEW_SELECTED:
 					layoutId = R.layout.headlines_row_selected;
