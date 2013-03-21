@@ -158,5 +158,6 @@
     <string name="theme_dark_gray">Gris sombre</string>
     <string name="offline_articles_to_download">Nombre d\'articles à télécharger</string>
     <string name="offline_articles_to_download_long">Combien d\'articles à télécharger pour la lecture Hors Ligne. (les plus récents)</string>
-    
+    <string name="pref_headlines_show_content_long">Afficher un aperçu du contenu dans les titres</string>
+    <string name="pref_headlines_show_content">Afficher un aperçu</string>
 </resources>
