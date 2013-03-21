@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/feeds_row"
+    android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
     android:background="?feedsSelectedBackground"
     android:gravity="center_vertical"
-    android:id="@+id/feeds_row" android:layout_width="match_parent" android:paddingBottom="4dip" android:paddingLeft="8dip" android:paddingRight="8dip" android:paddingTop="4dip">
+    android:orientation="horizontal"
+    android:paddingBottom="10dip"
+    android:paddingLeft="8dip"
+    android:paddingRight="8dip"
+    android:paddingTop="10dip" >
 
     <ImageView
         android:id="@+id/icon"
-		android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:scaleType="fitXY"
-        
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_weight="0"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_rss_bw" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"           
-            android:layout_gravity="center_vertical"    
-            android:paddingLeft="6dip" 
-            android:textColor="?feedlistSelectedTextColor"  
-            android:text="{FEED}" android:layout_width="0dp" android:textSize="18dip"/>
-        <TextView
-            android:id="@+id/unread_counter"
-            android:gravity="right"
-            android:textStyle="bold"
-            android:paddingRight="12dp"
-            android:textColor="?unreadCounterColor"
-            android:layout_gravity="center_vertical"            
-            android:layout_width="wrap_content"
-            android:layout_weight="0"
-            android:layout_height="wrap_content"
-            android:text="{123}" android:textSize="13sp"/>
-                   
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:paddingLeft="6dip"
+        android:text="{FEED}"
+        android:textColor="?feedlistSelectedTextColor"
+        android:textSize="18dip" />
+
+    <TextView
+        android:id="@+id/unread_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:gravity="right"
+        android:paddingRight="12dip"
+        android:text="{123}"
+        android:textColor="?unreadCounterColor"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
 </LinearLayout>
