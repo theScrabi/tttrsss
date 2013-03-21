@@ -158,4 +158,6 @@
     <string name="theme_dark_gray">Dark gray</string>
 	<string name="offline_articles_to_download">Number of articles to download</string>
   <string name="offline_articles_to_download_long">Number of articles to download for Offlinemode. (newest first)</string>
+  <string name="pref_headlines_show_content_long">Show content previews in headlines list</string>
+  <string name="pref_headlines_show_content">Preview article content</string>
 </resources>

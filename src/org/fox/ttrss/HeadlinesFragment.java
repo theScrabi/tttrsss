@@ -650,14 +650,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContent = article.content != null ? article.content : "";
 
 			if (te != null) {
-				String excerpt = Jsoup.parse(articleContent).text(); 
-				
-				if (excerpt.length() > 200)
-					excerpt = excerpt.substring(0, 200) + "...";
-				
-				te.setText(excerpt);
+				if (!m_prefs.getBoolean("headlines_show_content", true)) {
+					te.setVisibility(View.GONE);
+				} else {
+					String excerpt = Jsoup.parse(articleContent).text(); 
+					
+					if (excerpt.length() > 200)
+						excerpt = excerpt.substring(0, 200) + "...";
+					
+					te.setText(excerpt);
+				}
 			}       	
-
+			
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
 			
 			if (separator != null && m_onlineServices.isSmallScreen()) {

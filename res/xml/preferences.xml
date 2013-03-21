@@ -86,6 +86,12 @@
             android:key="default_view_mode"
             android:summary="@string/pref_default_view_mode_long"
             android:title="@string/pref_default_view_mode" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="headlines_show_content"
+            android:summary="@string/pref_headlines_show_content_long"
+            android:title="@string/pref_headlines_show_content" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <ListPreference
