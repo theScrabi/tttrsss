@@ -1198,7 +1198,22 @@ public class OnlineActivity extends CommonActivity {
 		
 		return super.onKeyDown(keyCode, event);			
 	}
+	
+	// Handle onKeyUp too to suppress beep
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (m_prefs.getBoolean("use_volume_keys", false)) {
+					
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_VOLUME_UP:
+			case KeyEvent.KEYCODE_VOLUME_DOWN:
+				return true;
+			}
+		}
 		
+		return super.onKeyUp(keyCode, event);		
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void catchupFeed(final Feed feed) {
 		Log.d(TAG, "catchupFeed=" + feed);
