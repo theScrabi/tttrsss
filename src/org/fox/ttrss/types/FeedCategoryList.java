@@ -28,7 +28,7 @@ public class FeedCategoryList extends ArrayList<FeedCategory> implements Parcela
 			int length = in.readInt();
 			
 			for (int i = 0; i < length; i++) {
-				FeedCategory feed = in.readParcelable(Feed.class.getClassLoader());
+				FeedCategory feed = in.readParcelable(FeedCategory.class.getClassLoader());
 				this.add(feed);
 			}
 			
