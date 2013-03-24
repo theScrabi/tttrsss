@@ -2,11 +2,15 @@ package org.fox.ttrss.share;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.ApiRequest.ApiError;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedCategoryList;
 import org.fox.ttrss.R;
 
 import android.content.Context;
@@ -33,6 +37,29 @@ public class SubscribeActivity extends CommonShareActivity {
 	
 	private static final int REQ_CATS = 1;
 	private static final int REQ_POST = 2;
+	
+	class CatTitleComparator implements Comparator<FeedCategory> {
+
+		@Override
+		public int compare(FeedCategory a, FeedCategory b) {
+			if (a.id >= 0 && b.id >= 0)
+				return a.title.compareTo(b.title);
+			else
+				return a.id - b.id;
+		}
+		
+	}
+	
+	public void sortCats() {
+		Comparator<FeedCategory> cmp = new CatTitleComparator();
+		
+		Collections.sort(m_cats, cmp);
+		try {
+			m_adapter.notifyDataSetChanged();
+		} catch (NullPointerException e) {
+			// adapter missing
+		}
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -203,6 +230,8 @@ public class SubscribeActivity extends CommonShareActivity {
 							if (c.id > 0)
 								m_cats.add(c);							
 						}
+						
+						sortCats();
 						
 						m_adapter.notifyDataSetChanged();
 						
