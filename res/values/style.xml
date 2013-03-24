@@ -84,5 +84,7 @@
         <item name="android:actionBarStyle">@style/ActionBarDarkGray</item>
 	</style>
     
+  	<style name="DarkDialogTheme" parent="android:Theme.Dialog">
+    </style>
     
 </resources>

@@ -12,6 +12,12 @@
             -->
 
             <item
+                android:id="@+id/subscribe_to_feed"
+                android:icon="@android:drawable/ic_menu_add"
+                android:showAsAction=""
+                android:title="Subscribe to feed"/>
+
+            <item
                 android:id="@+id/show_feeds"
                 android:icon="@android:drawable/ic_menu_agenda"
                 android:showAsAction=""

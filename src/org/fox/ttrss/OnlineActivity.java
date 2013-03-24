@@ -7,6 +7,7 @@ import java.util.List;
 import org.fox.ttrss.offline.OfflineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
 import org.fox.ttrss.offline.OfflineUploadService;
+import org.fox.ttrss.share.SubscribeActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
@@ -560,6 +561,10 @@ public class OnlineActivity extends CommonActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
+			return true;
+		case R.id.subscribe_to_feed:
+			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
+			startActivityForResult(subscribe, 0);
 			return true;
 		case R.id.toggle_attachments:
 			if (true) {
@@ -1311,6 +1316,7 @@ public class OnlineActivity extends CommonActivity {
 			
 			m_menu.findItem(R.id.set_labels).setEnabled(getApiLevel() >= 1);
 			m_menu.findItem(R.id.article_set_note).setEnabled(getApiLevel() >= 1);
+			m_menu.findItem(R.id.subscribe_to_feed).setEnabled(getApiLevel() >= 5);
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(getApiLevel() >= 2);
