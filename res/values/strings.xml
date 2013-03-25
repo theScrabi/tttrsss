@@ -179,5 +179,11 @@
     <string name="error_url_is_an_html_page_no_feeds_found">Error: URL is an HTML page, no feeds found.</string>
     <string name="error_url_contains_multiple_feeds">Error: URL contains multiple feeds</string>
     <string name="error_could_not_download_url">Error: Could not download URL</string>
-
+	<string name="headlines_view_mode">Set view mode</string>
+	<string name="headlines_set_view_mode">Set view mode</string>
+	<string name="headlines_adaptive">Adaptive</string>
+	<string name="headlines_all_articles">All articles</string>
+	<string name="headlines_starred">Starred</string>
+	<string name="headlines_published">Published</string>
+	<string name="headlines_unread">Unread</string>
 </resources>

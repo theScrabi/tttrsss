@@ -344,7 +344,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			final boolean fappend = append;
 			final String sessionId = m_activity.getSessionId();
-			final boolean showUnread = m_activity.getUnreadArticlesOnly();
 			final boolean isCat = m_feed.is_cat;
 			
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
@@ -410,9 +409,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("feed_id", String.valueOf(m_feed.id));
 					put("show_content", "true");
 					put("include_attachments", "true");
+					put("view_mode", m_activity.getViewMode());
 					put("limit", String.valueOf(HEADLINES_REQUEST_SIZE));
 					put("offset", String.valueOf(0));
-					put("view_mode", showUnread ? "adaptive" : "all_articles");
 					put("skip", String.valueOf(fskip));
 					put("include_nested", "true");
 					
