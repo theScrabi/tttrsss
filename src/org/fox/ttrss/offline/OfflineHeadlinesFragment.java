@@ -186,12 +186,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					stmt = m_activity.getWritableDb().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+							"AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
 					stmt = m_activity.getWritableDb().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND feed_id = ?");						
+							"AND unread = 1 AND feed_id = ?");						
 				}
 				
 				stmt.bindLong(1, articleId);
