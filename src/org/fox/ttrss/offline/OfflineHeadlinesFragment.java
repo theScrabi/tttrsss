@@ -180,15 +180,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				
 				SQLiteStatement stmt = null;
 				
+				String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
+				
 				if (m_feedIsCat) {
 					stmt = m_activity.getWritableDb().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
 					stmt = m_activity.getWritableDb().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id = ?");						
 				}
 				
