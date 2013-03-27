@@ -205,10 +205,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					ArticleList articles = getAllArticles();
 					ArticleList tmp = new ArticleList();
 					for (Article a : articles) {
-						a.unread = false;
-						tmp.add(a);
-						if (article.id == a.id)
-							break;
+						if (a.unread) {
+							if (article.id == a.id)
+								break;
+
+							a.unread = false;
+							tmp.add(a);
+						}
 					}
 					if (tmp.size() > 0) {
 						m_activity.toggleArticlesUnread(tmp);

@@ -19,7 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class HeadlinesRequest extends ApiRequest {
 	public static final int HEADLINES_REQUEST_SIZE = 30;
-	public static final int HEADLINES_BUFFER_MAX = 500;
+	public static final int HEADLINES_BUFFER_MAX = 1500;
 
 	private int m_offset = 0;
 	private OnlineActivity m_activity;
