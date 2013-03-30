@@ -664,6 +664,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}       	
 			
+			String articleAuthor = article.author != null ? article.author : "";
+			
+			TextView author = (TextView)v.findViewById(R.id.author);
+			
+			if (author != null) {
+				author.setText(articleAuthor);
+			}
+			
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
 			
 			if (separator != null && m_onlineServices.isSmallScreen()) {

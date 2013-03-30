@@ -22,7 +22,6 @@
             android:paddingRight="6dip" >
         </CheckBox>
 
-
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
@@ -30,7 +29,6 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="3dp" >
-
 
             <TextView
                 android:id="@+id/title"
@@ -42,19 +40,37 @@
                 android:textColor="?headlineTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" >
-
             </TextView>
 
-            <TextView
-                android:id="@+id/feed_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:text="{Feed title...}"
-                android:textColor="?headlineExcerptTextColor"
-                android:textSize="10sp" />
+            <LinearLayout
+                android:id="@+id/feed_and_author"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/feed_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:layout_weight="0.5"
+                    android:singleLine="true"
+                    android:text="{Feed title...}"
+                    android:textColor="?headlineExcerptTextColor"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="{Author}"
+                    android:textColor="?headlineExcerptTextColor"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/excerpt"
@@ -65,7 +81,6 @@
                 android:textSize="13sp" >
             </TextView>
 
-
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
@@ -75,10 +90,7 @@
                 android:textColor="?headlineExcerptTextColor"
                 android:textSize="10sp"
                 android:textStyle="italic" />
-
         </LinearLayout>
-
-
 
         <LinearLayout
             android:id="@+id/linearLayout4"

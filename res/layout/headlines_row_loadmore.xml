@@ -7,7 +7,8 @@
     android:gravity="center"
     android:padding="5dp"
     android:orientation="horizontal" >
-
+
+
         <ProgressBar
             android:id="@+id/loadmore_progress"
             style="?android:attr/progressBarStyleSmall"

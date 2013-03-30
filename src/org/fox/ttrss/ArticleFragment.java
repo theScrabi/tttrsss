@@ -291,7 +291,17 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				} else {
 					tagv.setVisibility(View.GONE);
 				}
-			}			
+			}
+			
+			TextView author = (TextView)view.findViewById(R.id.author);
+
+			if (author != null) {
+				if (m_article.author != null && m_article.author.length() > 0) {
+					author.setText(m_article.author);				
+				} else {
+					author.setVisibility(View.GONE);
+				}
+			}
 		} 
 		
 		return view;    	
