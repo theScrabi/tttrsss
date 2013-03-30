@@ -796,6 +796,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
+
+		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+			if (firstVisibleItem > 0) {
+				Article a = m_articles.get(firstVisibleItem - 1);
+				if (a != null) {
+					if (a.unread) {
+						a.unread = false;
+						m_activity.saveArticleUnread(a);
+						m_feed.unread--;
+						m_activity.refresh(false);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
