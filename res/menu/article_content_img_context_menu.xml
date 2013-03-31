@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/article_img_open"
+        android:showAsAction=""
+        android:title="@string/article_img_open"/>
+    
+    <item
+        android:id="@+id/article_img_share"
+        android:showAsAction=""
+        android:title="@string/article_img_share"/>
+
+    <!--  <item
+        android:id="@+id/article_img_save"
+        android:showAsAction=""
+        android:title="Save image to file"/> -->
+
+</menu>

@@ -39,6 +39,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
@@ -60,6 +62,8 @@ public class OnlineActivity extends CommonActivity {
 	
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+
+	private String m_lastImageHitTestUrl;
 
 	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -536,6 +540,29 @@ public class OnlineActivity extends CommonActivity {
 		final ArticlePager ap = (ArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 		
 		switch (item.getItemId()) {
+		case R.id.article_img_open:
+			if (getLastContentImageHitTestUrl() != null) {
+				try {
+					Intent intent = new Intent(Intent.ACTION_VIEW, 
+							Uri.parse(getLastContentImageHitTestUrl()));
+					startActivity(intent);
+				} catch (Exception e) {
+					e.printStackTrace();
+					toast(R.string.error_other_error);
+				}
+			}			
+			return true;
+		case R.id.article_img_share:
+			if (getLastContentImageHitTestUrl() != null) {
+				Intent intent = new Intent(Intent.ACTION_SEND);
+
+				intent.setType("image/png");
+				intent.putExtra(Intent.EXTRA_SUBJECT, getLastContentImageHitTestUrl());
+				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
+
+				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
+			}
+			return true;
 		case R.id.article_link_share:
 			if (ap != null && ap.getSelectedArticle() != null) {
 				shareArticle(ap.getSelectedArticle());
@@ -1569,5 +1596,13 @@ public class OnlineActivity extends CommonActivity {
 	
 	public String getViewMode() {		
 		return m_prefs.getString("view_mode", "adaptive");
+	}
+	
+	public void setLastContentImageHitTestUrl(String url) {
+		m_lastImageHitTestUrl = url;		
+	}
+	
+	public String getLastContentImageHitTestUrl() {
+		return m_lastImageHitTestUrl;
 	}
 }

@@ -21,11 +21,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +36,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ArticleFragment extends Fragment implements GestureDetector.OnDoubleTapListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -59,9 +63,26 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-		
-		getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
-		menu.setHeaderTitle(m_article.title);
+
+		if (v.getId() == R.id.content) {
+			HitTestResult result = ((WebView)v).getHitTestResult();
+
+			if (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+				menu.setHeaderTitle(result.getExtra());
+				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+				
+				/* FIXME I have no idea how to do this correctly ;( */
+				
+				m_activity.setLastContentImageHitTestUrl(result.getExtra());
+				
+			} else {
+				menu.setHeaderTitle(m_article.title);
+				getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+			}
+		} else {
+			menu.setHeaderTitle(m_article.title);
+			getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
@@ -143,6 +164,8 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				registerForContextMenu(web);
+				
 				web.setWebChromeClient(new WebChromeClient() {					
 					@Override
 	                public void onProgressChanged(WebView view, int progress) {
@@ -319,7 +342,6 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 		out.putParcelable("article", m_article);
 	}
 
-	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
@@ -350,8 +372,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			
 			@Override
 			public void onLongPress(MotionEvent e) {
-				// TODO Auto-generated method stub
-				
+				m_activity.openContextMenu(getView());				
 			}
 			
 			@Override

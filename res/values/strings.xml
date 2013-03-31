@@ -186,4 +186,6 @@
     <string name="headlines_starred">Starred</string>
     <string name="headlines_published">Published</string>
     <string name="headlines_unread">Unread</string>
+    <string name="article_img_open">Open image</string>
+    <string name="article_img_share">Share image</string>
 </resources>
