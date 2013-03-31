@@ -186,4 +186,6 @@
     <string name="headlines_starred">Articles marqués</string>
     <string name="headlines_published">Articles publiés</string>
     <string name="headlines_unread">Articles non lus</string>
+    <string name="article_img_open">Ouvrir l'image</string>
+    <string name="article_img_share">Partager l'image</string>
 </resources>
