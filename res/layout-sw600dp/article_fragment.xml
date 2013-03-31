@@ -18,7 +18,7 @@
             android:layout_weight="0"
             android:orientation="vertical"
             android:paddingBottom="4sp" >
-
+            
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -27,7 +27,20 @@
                 android:text="There are many variations of passages of Lorem Ipsum available"
                 android:textColor="?linkColor"
                 android:textSize="21sp" />
-
+            
+            <TextView
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:gravity="right"
+                    android:textStyle="italic"
+                    android:text="{Author}"
+                    android:textColor="?headlineExcerptTextColor"
+                    android:textSize="13sp" />
+            
             <TextView
                 android:id="@+id/comments"
                 android:layout_width="match_parent"
