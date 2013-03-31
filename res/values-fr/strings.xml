@@ -55,6 +55,7 @@
     <string name="download_feed_icons">Activer les icônes des flux</string>
     <string name="enable_cats">Activer les catégories des flux</string>
     <string name="no_feeds_to_display">Aucun flux à afficher</string>
+    <string name="no_caption_to_display">Aucun sous-titre trouvé</string>
     <string name="no_headlines_to_display">Aucun titre à afficher</string>
     <string name="browse_cats_like_feeds">Parcourir les catégories comme les flux</string>
     <string name="browse_cats_like_feeds_summary">Utilisez le menu contexte des catégories pour redéfinir ce paramètre.</string>
@@ -189,4 +190,5 @@
     <string name="article_img_open">Ouvrir l\'image</string>
     <string name="article_img_share">Partager l\'image</string>
     <string name="requires_api5">Nécessite la version 1.7.6</string>
+    <string name="article_img_view_caption">Montrer le sous-titre</string>
 </resources>

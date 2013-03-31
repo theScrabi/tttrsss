@@ -44,11 +44,18 @@ import android.webkit.WebView.HitTestResult;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.ShareActionProvider;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -564,6 +571,37 @@ public class OnlineActivity extends CommonActivity {
 				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
 			}
 			return true;
+		case R.id.article_img_view_caption:
+			if (getLastContentImageHitTestUrl() != null) {
+
+                // Android doesn't give us an easy way to access title tags;
+                // we'll use Jsoup on the body text to grab the title text
+                // from the first image tag with this url. This will show
+                // the wrong text if an image is used multiple times.
+                Document doc = Jsoup.parse(ap.getSelectedArticle().content);
+                Elements es = doc.getElementsByAttributeValue("src", getLastContentImageHitTestUrl());
+                if (es.size() > 0){
+                    if (es.get(0).hasAttr("title")){
+                        Dialog dia = new Dialog(this);
+                        if (es.get(0).hasAttr("alt")){
+                            dia.setTitle(es.get(0).attr("alt"));
+                        } else {
+                            dia.setTitle(es.get(0).attr("title"));
+                        }
+                        TextView titleText = new TextView(this);
+                        titleText.setPaddingRelative(24, 24, 24, 24);
+                        titleText.setTextSize(16);
+                        titleText.setText(es.get(0).attr("title"));
+                        dia.setContentView(titleText);
+                        dia.show();
+                    } else {
+                        toast(R.string.no_caption_to_display);
+                    }
+                } else {
+                    toast(R.string.no_caption_to_display);
+                }
+            }
+            return true;
 		case R.id.article_link_share:
 			if (ap != null && ap.getSelectedArticle() != null) {
 				shareArticle(ap.getSelectedArticle());

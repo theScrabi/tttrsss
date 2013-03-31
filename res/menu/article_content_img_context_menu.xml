@@ -9,6 +9,11 @@
         android:id="@+id/article_img_share"
         android:showAsAction=""
         android:title="@string/article_img_share"/>
+    
+    <item
+        android:id="@+id/article_img_view_caption"
+        android:showAsAction=""
+        android:title="@string/article_img_view_caption"/>
 
     <!--  <item
         android:id="@+id/article_img_save"
