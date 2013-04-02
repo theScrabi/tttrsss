@@ -92,6 +92,13 @@
             android:key="headlines_show_content"
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="oldest_first"
+            android:summary="Requires version 1.7.6"
+            android:title="@string/offline_oldest_first" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <ListPreference

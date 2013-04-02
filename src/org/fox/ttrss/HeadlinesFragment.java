@@ -417,6 +417,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("offset", String.valueOf(0));
 					put("skip", String.valueOf(fskip));
 					put("include_nested", "true");
+					put("order_by", m_prefs.getBoolean("oldest_first", false) ? "date_reverse" : "");
 					
 					if (isCat) put("is_cat", "true");
 					
