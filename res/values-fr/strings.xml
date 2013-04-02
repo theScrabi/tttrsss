@@ -188,4 +188,5 @@
     <string name="headlines_unread">Articles non lus</string>
     <string name="article_img_open">Ouvrir l\'image</string>
     <string name="article_img_share">Partager l\'image</string>
+    <string name="requires_api5">Nécessite la version 1.7.6</string>
 </resources>
