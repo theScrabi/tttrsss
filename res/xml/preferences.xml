@@ -96,7 +96,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="oldest_first"
-            android:summary="Requires version 1.7.6"
+            android:summary="@string/requires_api5"
             android:title="@string/offline_oldest_first" />
         
     </PreferenceCategory>

@@ -188,4 +188,5 @@
     <string name="headlines_unread">Unread</string>
     <string name="article_img_open">Open image</string>
     <string name="article_img_share">Share image</string>
+    <string name="requires_api5">Requires version 1.7.6</string>
 </resources>
