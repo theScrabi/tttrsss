@@ -5,7 +5,7 @@
         <item>@string/theme_light</item>
         <item>@string/theme_sepia</item>        
     </string-array>
-    <string-array name="pref_theme_values">
+    <string-array name="pref_theme_values" translatable="false">
         <item>THEME_DARK</item>
         <item>THEME_DARK_GRAY</item>
         <item>THEME_LIGHT</item>
@@ -16,7 +16,7 @@
         <item>@string/font_size_medium</item>
         <item>@string/font_size_large</item>
     </string-array>
-    <string-array name="pref_font_size_values">
+    <string-array name="pref_font_size_values" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -25,11 +25,11 @@
         <item>@string/category_browse_headlines</item>
         <item>@string/category_browse_articles</item>
     </string-array>
-    <string-array name="pref_view_mode_values">
+    <string-array name="pref_view_mode_values" translatable="false">
         <item>HEADLINES</item>
         <item>ARTICLES</item>
     </string-array>
-    <string-array name="pref_offline_amounts">
+    <string-array name="pref_offline_amounts" translatable="false">
         <item>150</item>
         <item>250</item>
         <item>500</item>
