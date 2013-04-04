@@ -194,7 +194,6 @@ public class ArticlePager extends Fragment {
 		final Feed feed = m_feed;
 		
 		final String sessionId = m_activity.getSessionId();
-		final boolean showUnread = m_activity.getUnreadArticlesOnly();
 		int skip = 0;
 		
 		if (append) {

@@ -133,10 +133,11 @@ public class OnlineActivity extends CommonActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		ApiRequest.disableConnectionReuseIfNecessary();
+		
+		// we use that before parent onCreate so let's init locally
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-
-		ApiRequest.disableConnectionReuseIfNecessary();
 		
 		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
@@ -1605,4 +1606,5 @@ public class OnlineActivity extends CommonActivity {
 	public String getLastContentImageHitTestUrl() {
 		return m_lastImageHitTestUrl;
 	}
+
 }

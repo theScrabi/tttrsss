@@ -3,8 +3,10 @@ package org.fox.ttrss;
 import org.fox.ttrss.util.DatabaseHelper;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
@@ -26,27 +28,23 @@ public class CommonActivity extends FragmentActivity {
 	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
 
+	protected SharedPreferences m_prefs;
+
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
 	}
 	
-	public boolean getUnreadArticlesOnly() {
-		return GlobalState.getInstance().m_unreadArticlesOnly;
-	}
-	
 	public boolean getUnreadOnly() {
-		return GlobalState.getInstance().m_unreadOnly;
+		return m_prefs.getBoolean("show_unread_only", false);
 	}
 	
 	public void setUnreadOnly(boolean unread) {
-		GlobalState.getInstance().m_unreadOnly = unread;
+		SharedPreferences.Editor editor = m_prefs.edit();
+		editor.putBoolean("show_unread_only", unread);
+		editor.commit();
 	}
 
-	public void setUnreadArticlesOnly(boolean unread) {
-		GlobalState.getInstance().m_unreadArticlesOnly = unread;
-	}
-	
 	public void setLoadingStatus(int status, boolean showProgress) {
 		TextView tv = (TextView) findViewById(R.id.loading_message);
 
@@ -94,6 +92,9 @@ public class CommonActivity extends FragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		m_prefs = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+
 		initDatabase();
 		
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;

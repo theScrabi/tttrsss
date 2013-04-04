@@ -17,8 +17,6 @@ public class GlobalState extends Application {
 	public Feed m_activeFeed;
 	public Article m_activeArticle;
 	public int m_selectedArticleId;
-	public boolean m_unreadOnly = true;
-	public boolean m_unreadArticlesOnly = true;
 	public String m_sessionId;
 	public int m_apiLevel;
 	public boolean m_canUseProgress;
