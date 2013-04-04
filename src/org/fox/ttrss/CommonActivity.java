@@ -36,7 +36,7 @@ public class CommonActivity extends FragmentActivity {
 	}
 	
 	public boolean getUnreadOnly() {
-		return m_prefs.getBoolean("show_unread_only", false);
+		return m_prefs.getBoolean("show_unread_only", true);
 	}
 	
 	public void setUnreadOnly(boolean unread) {
