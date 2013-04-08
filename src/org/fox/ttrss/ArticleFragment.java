@@ -67,7 +67,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 		if (v.getId() == R.id.content) {
 			HitTestResult result = ((WebView)v).getHitTestResult();
 
-			if (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
 				menu.setHeaderTitle(result.getExtra());
 				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
 				
