@@ -15,7 +15,7 @@
                 android:id="@+id/subscribe_to_feed"
                 android:icon="@android:drawable/ic_menu_add"
                 android:showAsAction=""
-                android:title="Subscribe to feed"/>
+                android:title="@string/subscribe_to_feed"/>
 
             <item
                 android:id="@+id/show_feeds"
