@@ -98,7 +98,7 @@
 	<string name="offline_image_cache_enabled">Pré-chargement des images</string>
 	<string name="offline_image_cache_enabled_summary">Télécharger les images sur la carte SD. Cela pourrait augmenter de manière significative le temps de passage hors connexion.</string>
 	<string name="notify_downloading_images">Téléchargement des images (%1$d)…</string>
-	<string name="article_set_labels">Préparer les étiquettes</string>
+	<string name="article_set_labels">Modifier les tags</string>
 	<string name="search">Rechercher</string>
 	<string name="cancel">Annuler</string>
 	<string name="font_size_small">Petit</string>
@@ -191,4 +191,5 @@
     <string name="article_img_share">Partager l\'image</string>
     <string name="requires_api5">Nécessite la version 1.7.6</string>
     <string name="article_img_view_caption">Montrer le sous-titre</string>
+    <string name="labels">Tags</string>
 </resources>
