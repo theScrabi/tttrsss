@@ -650,6 +650,7 @@ public class OnlineActivity extends CommonActivity {
 					Dialog dialog = new Dialog(OnlineActivity.this);
 					AlertDialog.Builder builder = new AlertDialog.Builder(OnlineActivity.this)
 							.setTitle(R.string.attachments_prompt)
+							.setCancelable(true)
 							.setSingleChoiceItems(items, 0, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
