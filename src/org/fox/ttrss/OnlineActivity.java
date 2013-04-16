@@ -145,16 +145,8 @@ public class OnlineActivity extends CommonActivity {
 		// we use that before parent onCreate so let's init locally
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		
-		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-			setTheme(R.style.DarkTheme);
-		} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_SEPIA")) {
-			setTheme(R.style.SepiaTheme);
-		} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
-			setTheme(R.style.DarkGrayTheme);
-		} else {
-			setTheme(R.style.LightTheme);
-		}
+
+		setAppTheme(m_prefs);
 
 		super.onCreate(savedInstanceState);
 

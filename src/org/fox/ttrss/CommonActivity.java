@@ -30,11 +30,6 @@ public class CommonActivity extends FragmentActivity {
 
 	protected SharedPreferences m_prefs;
 
-	protected boolean isDarkTheme() {
-		return m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK") ||
-				m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY");
-	}
-	
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
@@ -142,4 +137,24 @@ public class CommonActivity extends FragmentActivity {
 		toast.show();
 	}
 
+	protected void setAppTheme(SharedPreferences prefs) {
+		String defaultTheme = "THEME_DARK";
+		
+		if (prefs.getString("theme", defaultTheme).equals("THEME_DARK")) {
+			setTheme(R.style.DarkTheme);
+		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SEPIA")) {
+			setTheme(R.style.SepiaTheme);
+		} else if (prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY")) {
+			setTheme(R.style.DarkGrayTheme);
+		} else {
+			// LightTheme is not supported on honeycomb
+
+			if (android.os.Build.VERSION.SDK_INT >= 11 && android.os.Build.VERSION.SDK_INT < 14) {
+				toast(R.string.light_theme_is_not_supported_on_honeycomb);
+				setTheme(R.style.DarkTheme);
+			} else {
+				setTheme(R.style.LightTheme);
+			}				
+		}
+	}
 }

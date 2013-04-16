@@ -26,11 +26,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-		if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-			setTheme(R.style.DarkTheme);
-		} else {
-			setTheme(R.style.LightTheme);
-		}
+		setAppTheme(m_prefs);
 		
 		super.onCreate(savedInstanceState);
 
