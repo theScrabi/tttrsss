@@ -2,6 +2,8 @@ package org.fox.ttrss.offline;
 
 import org.fox.ttrss.R;
 
+import com.viewpagerindicator.UnderlinePageIndicator;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -171,8 +173,12 @@ public class OfflineArticlePager extends Fragment {
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
 		pager.setAdapter(m_adapter);
+		
+		UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_titles);
+		indicator.setViewPager(pager);
+		
 		pager.setCurrentItem(position);
-		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+		indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
