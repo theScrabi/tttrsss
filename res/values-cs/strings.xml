@@ -27,7 +27,7 @@
   <string name="menu_all_feeds">Zobrazit všechny zdroje</string>
   <string name="update_feeds">Obnovit</string>
   <string name="share_article">Sdílet článek</string>
-  <string name="catchup">Označit jako přečtený</string>
+  <string name="catchup">Označit jako přečtené</string>
   <string name="sort_feeds_by_unread">Řadit zdroje podle počtu nepřečtených článků</string>
   <string name="ssl_trust_any">Přijmout jakýkoliv certifikát</string>
   <string name="category_browse_feeds">Procházet zdroje</string>
@@ -43,13 +43,13 @@
   <string name="headlines_select_none">Odoznačit vše</string>
   <string name="selection_toggle_marked">Hvězdička</string>
   <string name="selection_toggle_published">Publikovaný</string>
-  <string name="selection_toggle_unread">Nepřečtený</string>
+  <string name="selection_toggle_unread">Nepřečtené</string>
   <string name="selection_select_none">Odoznačit vše</string>
   <string name="context_selection_toggle_marked">Hvězdička</string>
   <string name="context_selection_toggle_published">Publikovaný</string>
-  <string name="context_selection_toggle_unread">Nepřečtený</string>
-  <string name="article_set_unread">Nastavit nepřečtený</string>
-  <string name="article_mark_read_above">Nastavit jako přečtený</string>
+  <string name="context_selection_toggle_unread">Nepřečtené</string>
+  <string name="article_set_unread">Nastavit nepřečtené</string>
+  <string name="article_mark_read_above">Nastavit jako přečtené</string>
   <string name="ttrss_url_summary">Adresa tt-rss serveru. Například: http://muj_server.cz/tt-rss/</string>
   <string name="download_feed_icons">Povolit ikony zdrojů</string>
   <string name="enable_cats">Povolit kategorie</string>
