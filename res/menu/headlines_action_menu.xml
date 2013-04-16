@@ -3,17 +3,18 @@
     <item
         android:id="@+id/selection_toggle_unread"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_undo_light"
         android:title="@string/selection_toggle_unread"/>
 
     <item
         android:id="@+id/selection_toggle_marked"
-        android:icon="@drawable/ic_menu_marked"
+        android:icon="@drawable/ic_unimportant_light"
         android:showAsAction="ifRoom"
         android:title="@string/selection_toggle_marked"/>
 
     <item
         android:id="@+id/selection_toggle_published"
-        android:icon="@drawable/ic_menu_publish"
+        android:icon="@drawable/ic_menu_publish_light"
         android:showAsAction="ifRoom"
         android:title="@string/selection_toggle_published"/>
 

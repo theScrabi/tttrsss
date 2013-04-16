@@ -82,29 +82,28 @@
                 android:title="@string/selection_toggle_unread"/>
             <item
                 android:id="@+id/selection_toggle_marked"
-                android:icon="@drawable/ic_menu_marked"
+                android:icon="@drawable/ic_unimportant_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_marked"/>
             <item
                 android:id="@+id/selection_toggle_published"
-                android:icon="@drawable/ic_menu_publish"
+                android:icon="@drawable/ic_menu_publish_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_published"/>
             <item
                 android:id="@+id/selection_select_none"
-                android:icon="@android:drawable/ic_menu_close_clear_cancel"
                 android:showAsAction=""
                 android:title="@string/selection_select_none"/>
         </group>
         <group android:id="@+id/menu_group_article" >
             <item
                 android:id="@+id/toggle_marked"
-                android:icon="@drawable/ic_menu_marked"
+                android:icon="@drawable/ic_unimportant_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_marked"/>
             <item
                 android:id="@+id/toggle_published"
-                android:icon="@drawable/ic_menu_publish"
+                android:icon="@drawable/ic_menu_publish_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
             <item
@@ -120,7 +119,7 @@
                 android:title="@string/article_set_unread"/>
             <item
                 android:id="@+id/toggle_attachments"
-                android:icon="@drawable/ic_menu_attaches"
+                android:icon="@drawable/ic_menu_attaches_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/attachments_prompt"/>            
             <item
