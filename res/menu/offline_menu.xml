@@ -3,7 +3,6 @@
     <group android:id="@+id/menu_group_feeds" >
         <item
             android:id="@+id/go_online"
-            android:icon="@drawable/ic_menu_cloud"
             android:showAsAction="ifRoom|withText"
             android:title="@string/go_online"
             android:visible="false"/>
@@ -23,11 +22,6 @@
             android:title="@string/menu_all_feeds"/>
     </group>
     <group android:id="@+id/menu_group_headlines" >
-        <!--  <item
-            android:id="@+id/go_online"
-            android:icon="@drawable/ic_menu_cloud"
-            android:title="@string/go_online"
-            android:visible="false"/> -->
         <item
             android:id="@+id/search"
             android:actionViewClass="android.widget.SearchView"
@@ -36,11 +30,9 @@
             android:title="@string/search"/>
         <item
             android:id="@+id/headlines_mark_as_read"
-            android:icon="@drawable/ic_menu_tick"
             android:title="@string/headlines_mark_as_read"/>
         <item
             android:id="@+id/headlines_select"
-            android:icon="@drawable/ic_menu_database"
             android:showAsAction=""
             android:title="@string/headlines_select"/>
         <!-- <item
@@ -52,7 +44,6 @@
     <group android:id="@+id/menu_group_headlines_selection" >
         <item
             android:id="@+id/selection_toggle_unread"
-            android:icon="@drawable/ic_menu_tick"
             android:showAsAction="ifRoom"
             android:title="@string/selection_toggle_unread"/>
         <item
@@ -95,7 +86,6 @@
             android:title="@string/article_set_unread"/>
         <item
             android:id="@+id/catchup_above"
-            android:icon="@drawable/ic_menu_tick"
             android:title="@string/article_mark_read_above"/>
         <!-- <item
                 android:id="@+id/close_article"

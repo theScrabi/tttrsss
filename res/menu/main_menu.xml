@@ -13,52 +13,50 @@
 
             <item
                 android:id="@+id/subscribe_to_feed"
-                android:icon="@android:drawable/ic_menu_add"
-                android:showAsAction=""
+                android:icon="@drawable/ic_new_light"
+                android:showAsAction="ifRoom"
                 android:title="@string/subscribe_to_feed"/>
 
             <item
                 android:id="@+id/show_feeds"
-                android:icon="@android:drawable/ic_menu_agenda"
-                android:showAsAction=""
+                android:icon="@drawable/ic_list_light"
+                android:showAsAction="ifRoom"
                 android:title="@string/menu_all_feeds"/>
             <item
                 android:id="@+id/update_feeds"
-                android:icon="@android:drawable/ic_menu_rotate"
+                android:icon="@drawable/ic_refresh_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/update_feeds"/>
             <item
                 android:id="@+id/go_offline"
-                android:icon="@drawable/ic_menu_cloud"
                 android:showAsAction=""
                 android:title="@string/go_offline"/>
             <item
                 android:id="@+id/logout"
-                android:icon="@drawable/ic_menu_exit"
                 android:showAsAction=""
                 android:title="@string/logout"/>
         </group>
         <group android:id="@+id/menu_group_headlines" >
             <item
                 android:id="@+id/update_headlines"
-                android:icon="@android:drawable/ic_menu_rotate"
+                android:icon="@drawable/ic_refresh_light" 
                 android:showAsAction="ifRoom"
                 android:title="@string/update_headlines"/>
             <item
                 android:id="@+id/search"
                 android:actionViewClass="android.widget.SearchView"
-                android:icon="@android:drawable/ic_menu_search"
+                android:icon="@drawable/ic_search_light"
                 android:showAsAction="ifRoom|collapseActionView"
                 android:title="@string/search"/>
             <item
                 android:id="@+id/headlines_mark_as_read"
-                android:icon="@drawable/ic_menu_tick"
-                android:showAsAction=""
+                android:icon="@drawable/ic_accept_light"
+                android:showAsAction="ifRoom"
                 android:title="@string/headlines_mark_as_read"/>
             <item
                 android:id="@+id/headlines_select"
-                android:icon="@drawable/ic_menu_database"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
+                android:icon="@drawable/ic_select_all_light"
                 android:title="@string/headlines_select"/>
 
             <item
@@ -79,7 +77,6 @@
         <group android:id="@+id/menu_group_headlines_selection" >
             <item
                 android:id="@+id/selection_toggle_unread"
-                android:icon="@drawable/ic_menu_tick"
                 android:showAsAction="ifRoom"
                 android:title="@string/selection_toggle_unread"/>
             <item
@@ -118,20 +115,20 @@
                 android:id="@+id/share_article"
                 android:actionProviderClass="android.widget.ShareActionProvider"
                 android:icon="@android:drawable/ic_menu_share"
-                android:showAsAction=""
+                android:showAsAction="ifRoom"
                 android:title="@string/share_article"/>
             <item
                 android:id="@+id/set_unread"
-                android:icon="@android:drawable/ic_menu_recent_history"
-                android:showAsAction=""
+                android:icon="@drawable/ic_undo_light"
+                android:showAsAction="ifRoom"
                 android:title="@string/article_set_unread"/>
             <item
                 android:id="@+id/catchup_above"
-                android:icon="@drawable/ic_menu_tick"
                 android:title="@string/article_mark_read_above"/>
             <item
                 android:id="@+id/set_labels"
-                android:icon="@drawable/ic_menu_marked"
+                android:showAsAction="ifRoom"
+                android:icon="@drawable/ic_labels_light"
                 android:title="@string/article_set_labels"/>
             <item
                 android:id="@+id/article_set_note"

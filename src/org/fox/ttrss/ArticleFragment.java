@@ -16,6 +16,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -113,6 +114,8 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				else
 					titleStr = m_article.title;
 				
+				
+				title.setTypeface(null, m_article.unread ? Typeface.BOLD : Typeface.NORMAL);
 				title.setText(Html.fromHtml(titleStr));
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					

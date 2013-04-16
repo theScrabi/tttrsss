@@ -30,6 +30,11 @@ public class CommonActivity extends FragmentActivity {
 
 	protected SharedPreferences m_prefs;
 
+	protected boolean isDarkTheme() {
+		return m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK") ||
+				m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY");
+	}
+	
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
