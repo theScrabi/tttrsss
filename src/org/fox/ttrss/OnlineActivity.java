@@ -584,6 +584,8 @@ public class OnlineActivity extends CommonActivity {
                         
                         if (android.os.Build.VERSION.SDK_INT >= 16) {
                         	titleText.setPaddingRelative(24, 24, 24, 24);
+                        } else {
+                        	titleText.setPadding(24, 24, 24, 24);
                         }
                         
                         titleText.setTextSize(16);
