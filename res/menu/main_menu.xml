@@ -23,14 +23,15 @@
                 android:showAsAction="ifRoom"
                 android:title="@string/menu_all_feeds"/>
             <item
+                android:id="@+id/go_offline"
+                android:icon="@drawable/ic_cloud_light"
+                android:showAsAction="ifRoom"
+                android:title="@string/go_offline"/>            
+            <item
                 android:id="@+id/update_feeds"
                 android:icon="@drawable/ic_refresh_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/update_feeds"/>
-            <item
-                android:id="@+id/go_offline"
-                android:showAsAction=""
-                android:title="@string/go_offline"/>
             <item
                 android:id="@+id/logout"
                 android:showAsAction=""
@@ -97,11 +98,6 @@
         </group>
         <group android:id="@+id/menu_group_article" >
             <item
-                android:id="@+id/toggle_attachments"
-                android:icon="@drawable/ic_menu_attaches"
-                android:showAsAction="ifRoom"
-                android:title="@string/attachments_prompt"/>
-            <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_menu_marked"
                 android:showAsAction="ifRoom"
@@ -123,11 +119,16 @@
                 android:showAsAction="ifRoom"
                 android:title="@string/article_set_unread"/>
             <item
+                android:id="@+id/toggle_attachments"
+                android:icon="@drawable/ic_menu_attaches"
+                android:showAsAction="ifRoom"
+                android:title="@string/attachments_prompt"/>            
+            <item
                 android:id="@+id/catchup_above"
                 android:title="@string/article_mark_read_above"/>
             <item
                 android:id="@+id/set_labels"
-                android:showAsAction="ifRoom"
+                android:showAsAction=""
                 android:icon="@drawable/ic_labels_light"
                 android:title="@string/article_set_labels"/>
             <item

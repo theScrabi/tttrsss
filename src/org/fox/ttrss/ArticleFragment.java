@@ -110,7 +110,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				String titleStr;
 				
 				if (m_article.title.length() > 200)
-					titleStr = m_article.title.substring(0, 200) + "�";
+					titleStr = m_article.title.substring(0, 200) + "...";
 				else
 					titleStr = m_article.title;
 				
