@@ -581,7 +581,11 @@ public class OnlineActivity extends CommonActivity {
                             dia.setTitle(es.get(0).attr("title"));
                         }
                         TextView titleText = new TextView(this);
-                        titleText.setPaddingRelative(24, 24, 24, 24);
+                        
+                        if (android.os.Build.VERSION.SDK_INT >= 16) {
+                        	titleText.setPaddingRelative(24, 24, 24, 24);
+                        }
+                        
                         titleText.setTextSize(16);
                         titleText.setText(es.get(0).attr("title"));
                         dia.setContentView(titleText);
