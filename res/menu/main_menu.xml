@@ -113,7 +113,7 @@
                 android:title="@string/attachments_prompt"/>
             <item
                 android:id="@+id/share_article"
-                android:icon="@android:drawable/ic_menu_share"
+                android:icon="@drawable/ic_share_light"
                 android:showAsAction="ifRoom"
                 android:title="@string/share_article"/>
             <!--  android:actionProviderClass="android.widget.ShareActionProvider" -->

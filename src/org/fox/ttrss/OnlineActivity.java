@@ -971,7 +971,7 @@ public class OnlineActivity extends CommonActivity {
 				a.unread = true;
 				saveArticleUnread(a);
 				if (hf != null) hf.notifyUpdated();
-				if (ap != null) ap.notifyUpdated();
+				//if (ap != null) ap.notifyUpdated();
 			}
 			return true;
 		case R.id.set_labels:
@@ -1194,7 +1194,11 @@ public class OnlineActivity extends CommonActivity {
 	
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void saveArticleUnread(final Article article) {
-		ApiRequest req = new ApiRequest(getApplicationContext());
+		ApiRequest req = new ApiRequest(getApplicationContext()) {
+			protected void onPostExecute(JsonElement result) {
+				toast(R.string.article_set_unread);
+			}
+		};
 
 		HashMap<String, String> map = new HashMap<String, String>() {
 			{
