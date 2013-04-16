@@ -14,7 +14,7 @@
 
     <item
         android:id="@+id/selection_toggle_published"
-        android:icon="@drawable/ic_menu_publish_light"
+        android:icon="@drawable/ic_menu_unpublished_light"
         android:showAsAction="ifRoom"
         android:title="@string/selection_toggle_published"/>
 

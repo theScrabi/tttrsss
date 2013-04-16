@@ -900,6 +900,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesUnread(selected);
 					hf.notifyUpdated();
+					initMenu();
 				}
 			}
 			return true;
@@ -913,6 +914,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesMarked(selected);
 					hf.notifyUpdated();
+					initMenu();
 				}
 			}
 			return true;
@@ -926,6 +928,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesPublished(selected);
 					hf.notifyUpdated();
+					initMenu();
 				}
 			}
 			return true;
@@ -953,6 +956,7 @@ public class OnlineActivity extends CommonActivity {
 					if (tmp.size() > 0) {
 						toggleArticlesUnread(tmp);
 						hf.notifyUpdated();
+						initMenu();
 					}
 				}
 			}
@@ -960,10 +964,13 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.set_unread:
 			if (ap != null && ap.getSelectedArticle() != null) {
 				Article a = ap.getSelectedArticle();
-				a.unread = true;
-				saveArticleUnread(a);
+				
+				if (a != null) {
+					a.unread = !a.unread;
+					saveArticleUnread(a);
+				}
+				
 				if (hf != null) hf.notifyUpdated();
-				//if (ap != null) ap.notifyUpdated();
 			}
 			return true;
 		case R.id.set_labels:
@@ -1188,7 +1195,8 @@ public class OnlineActivity extends CommonActivity {
 	public void saveArticleUnread(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				toast(R.string.article_set_unread);
+				//toast(R.string.article_set_unread);
+				initMenu();
 			}
 		};
 
@@ -1210,6 +1218,7 @@ public class OnlineActivity extends CommonActivity {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
 				toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
+				initMenu();
 			}
 		};
 
@@ -1232,6 +1241,7 @@ public class OnlineActivity extends CommonActivity {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
 				toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
+				initMenu();
 			}
 		};
 
@@ -1445,6 +1455,23 @@ public class OnlineActivity extends CommonActivity {
 			
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(getApiLevel() >= 2);
+			
+			ArticlePager ap = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			if (ap != null) {
+				Article article = ap.getSelectedArticle();
+				
+				if (article != null) {
+					m_menu.findItem(R.id.toggle_marked).setIcon(article.marked ? R.drawable.ic_important_light :
+						R.drawable.ic_unimportant_light);
+
+					m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_menu_published_light :
+						R.drawable.ic_menu_unpublished_light);
+
+					m_menu.findItem(R.id.set_unread).setIcon(article.unread ? R.drawable.ic_unread_light :
+						R.drawable.ic_read_light);
+				}				
+			}
 			
 			/* if (android.os.Build.VERSION.SDK_INT >= 14) {			
 				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();

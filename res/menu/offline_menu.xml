@@ -41,7 +41,7 @@
             android:title="@string/selection_toggle_marked"/>
         <item
             android:id="@+id/selection_toggle_published"
-            android:icon="@drawable/ic_menu_publish_light"
+            android:icon="@drawable/ic_menu_unpublished_light"
             android:showAsAction="ifRoom"
             android:title="@string/selection_toggle_published"/>
         <item
@@ -57,7 +57,7 @@
             android:title="@string/article_toggle_marked"/>
         <item
             android:id="@+id/toggle_published"
-            android:icon="@drawable/ic_menu_publish_light"
+            android:icon="@drawable/ic_menu_unpublished_light"
             android:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
         <item
@@ -68,7 +68,7 @@
             android:title="@string/share_article"/>
         <item
             android:id="@+id/set_unread"
-            android:icon="@drawable/ic_undo_light"
+            android:icon="@drawable/ic_read_light"
             android:showAsAction=""
             android:title="@string/article_set_unread"/>
         <item

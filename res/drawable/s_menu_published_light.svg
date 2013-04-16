@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="16"
+   height="16"
+   id="RSSicon"
+   viewBox="0 0 32 32"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="s_menu_published_light.svg"
+   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttrss\res\drawable-hdpi\ic_menu_published_light.png"
+   inkscape:export-xdpi="270"
+   inkscape:export-ydpi="270">
+  <metadata
+     id="metadata34">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#171717"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1600"
+     inkscape:window-height="1137"
+     id="namedview32"
+     showgrid="false"
+     inkscape:zoom="23.953242"
+     inkscape:cx="0.75615658"
+     inkscape:cy="8.340867"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="RSSicon" />
+  <defs
+     id="defs3">
+    <linearGradient
+       x1="30.059999"
+       y1="30.059999"
+       x2="225.94"
+       y2="225.94"
+       id="RSSg"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-224)">
+      <stop
+         offset="0.0"
+         stop-color="#E3702D"
+         id="stop6" />
+      <stop
+         offset="0.1071"
+         stop-color="#EA7D31"
+         id="stop8" />
+      <stop
+         offset="0.3503"
+         stop-color="#F69537"
+         id="stop10" />
+      <stop
+         offset="0.5"
+         stop-color="#FB9E3A"
+         id="stop12" />
+      <stop
+         offset="0.7016"
+         stop-color="#EA7C31"
+         id="stop14" />
+      <stop
+         offset="0.8866"
+         stop-color="#DE642B"
+         id="stop16" />
+      <stop
+         offset="1.0"
+         stop-color="#D95B29"
+         id="stop18" />
+    </linearGradient>
+    <filter
+       id="filter3031"
+       inkscape:label="Desaturate"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Render in shades of gray by reducing saturation to zero"
+       color-interpolation-filters="sRGB">
+      <feColorMatrix
+         id="feColorMatrix3033"
+         type="saturate"
+         values="0" />
+    </filter>
+    <filter
+       id="filter3031-1"
+       inkscape:label="Desaturate"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Render in shades of gray by reducing saturation to zero"
+       color-interpolation-filters="sRGB">
+      <feColorMatrix
+         id="feColorMatrix3033-7"
+         type="saturate"
+         values="0" />
+    </filter>
+    <linearGradient
+       id="RSSg-9"
+       y2="225.94001"
+       x2="225.94001"
+       y1="30.06"
+       x1="30.06"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         id="stop3126"
+         stop-color="#E3702D"
+         offset="0.0" />
+      <stop
+         id="stop3128"
+         stop-color="#EA7D31"
+         offset="0.1071" />
+      <stop
+         id="stop3130"
+         stop-color="#F69537"
+         offset="0.3503" />
+      <stop
+         id="stop3132"
+         stop-color="#FB9E3A"
+         offset="0.5" />
+      <stop
+         id="stop3134"
+         stop-color="#EA7C31"
+         offset="0.7016" />
+      <stop
+         id="stop3136"
+         stop-color="#DE642B"
+         offset="0.8866" />
+      <stop
+         id="stop3138"
+         stop-color="#D95B29"
+         offset="1.0" />
+    </linearGradient>
+    <filter
+       id="filter3031-4"
+       inkscape:label="Desaturate"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Render in shades of gray by reducing saturation to zero"
+       color-interpolation-filters="sRGB">
+      <feColorMatrix
+         id="feColorMatrix3033-8"
+         type="saturate"
+         values="0" />
+    </filter>
+  </defs>
+  <path
+     style="opacity:0.8;fill:#ffffff;fill-opacity:1;filter:url(#filter3031)"
+     d="m 9.0929935,3.8989242 c -2.8816759,0 -5.1940693,2.3123934 -5.1940693,5.1940693 l 0,13.8140145 c 0,2.881674 2.3123934,5.194069 5.1940693,5.194069 l 13.8140145,0 c 2.881674,0 5.194069,-2.312395 5.194069,-5.194069 l 0,-13.8140145 c 0,-2.8816759 -2.312395,-5.1940693 -5.194069,-5.1940693 l -13.8140145,0 z"
+     id="path3999" />
+  <path
+     style="opacity:0.8;fill:#ffffff;fill-opacity:1;filter:url(#filter3031)"
+     d="M 8.0431284,7.4905678 A 16.550485,16.550485 0 0 1 24.619945,24.012129 l -3.315363,0 A 13.240388,13.240388 0 0 0 8.0431284,10.805931 l 0,-3.3153632 z"
+     id="path3997" />
+  <path
+     style="opacity:0.8;fill:#ffffff;fill-opacity:1;filter:url(#filter3031)"
+     d="M 8.0431284,13.07143 A 10.970607,10.970607 0 0 1 19.039084,24.012129 l -3.204852,0 A 7.7550842,7.7550842 0 0 0 8.0431284,16.276281 l 0,-3.204851 z"
+     id="path3995" />
+  <path
+     style="opacity:0.8;fill:#ffffff;fill-opacity:1;filter:url(#filter3031)"
+     d="m 10.308627,19.481132 c 1.253565,0 2.265498,1.011934 2.265498,2.265498 0,1.253565 -1.011933,2.265499 -2.265498,2.265499 -1.2535655,0 -2.2654986,-1.011934 -2.2654986,-2.265499 0,-1.253564 1.0119331,-2.265498 2.2654986,-2.265498 z"
+     id="rect20" />
+</svg>
