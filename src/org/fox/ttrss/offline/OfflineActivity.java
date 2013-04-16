@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.ShareActionProvider;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -269,7 +268,7 @@ public class OfflineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.share_article:
-			if (android.os.Build.VERSION.SDK_INT < 14 && oap != null && android.os.Build.VERSION.SDK_INT < 14) {
+			if (true) {
 				int articleId = oap.getSelectedArticleId();
 				
 				shareArticle(articleId);
@@ -408,20 +407,6 @@ public class OfflineActivity extends CommonActivity {
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 			
-			if (android.os.Build.VERSION.SDK_INT >= 14) {			
-				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-
-				OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-				
-				if (af != null && af.getSelectedArticleId() > 0) {
-					shareProvider.setShareIntent(getShareIntent(getArticleById(af.getSelectedArticleId())));
-					
-					if (!isSmallScreen()) {
-						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-					}
-				}
-			}
-			
 			if (!isCompatMode()) {
 				MenuItem search = m_menu.findItem(R.id.search);
 				
@@ -433,6 +418,31 @@ public class OfflineActivity extends CommonActivity {
 					} else if (hf.getSelectedArticleCount() == 0 && m_headlinesActionMode != null) { 
 						m_headlinesActionMode.finish();
 					}
+				}
+				
+				OfflineArticlePager ap = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+				
+				if (ap != null) {
+					int articleId = ap.getSelectedArticleId();
+					
+					Cursor article = getArticleById(articleId);
+					
+					if (article != null) {
+						boolean unread = article.getInt(article.getColumnIndex("unread")) == 1;
+						boolean marked = article.getInt(article.getColumnIndex("marked")) == 1;
+						boolean published = article.getInt(article.getColumnIndex("published")) == 1;
+
+						m_menu.findItem(R.id.toggle_marked).setIcon(marked ? R.drawable.ic_important_light :
+							R.drawable.ic_unimportant_light);
+
+						m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_menu_published_light :
+							R.drawable.ic_menu_unpublished_light);
+
+						m_menu.findItem(R.id.set_unread).setIcon(unread ? R.drawable.ic_unread_light :
+							R.drawable.ic_read_light);
+						
+						article.close();
+					}				
 				}
 				
 				SearchView searchView = (SearchView) search.getActionView();
@@ -618,8 +628,10 @@ public class OfflineActivity extends CommonActivity {
 				.findFragmentByTag(FRAG_HEADLINES);
 
 		if (ohf != null) {
-			ohf.refresh();
-		} 
+			ohf.refresh();		
+		}
+		
+		initMenu();		
 	}
 
 }

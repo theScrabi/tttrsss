@@ -192,11 +192,9 @@ public class OfflineArticlePager extends Fragment {
 			public void onPageSelected(int position) {
 				if (m_cursor.moveToPosition(position)) {
 					int articleId = m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID));
-
-					m_listener.onArticleSelected(articleId, false);
 					
 					m_articleId = articleId;
-					
+					m_listener.onArticleSelected(articleId, false);
 				}
 			}
 		});

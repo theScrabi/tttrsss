@@ -272,6 +272,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		stmt.execute();
 		stmt.close();
 		
+		initMenu();
+		
 		if (open) {
 			if (isSmallScreen()) {
 

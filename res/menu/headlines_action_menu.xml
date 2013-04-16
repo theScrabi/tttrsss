@@ -3,7 +3,7 @@
     <item
         android:id="@+id/selection_toggle_unread"
         android:showAsAction="ifRoom"
-        android:icon="@drawable/ic_undo_light"
+        android:icon="@drawable/ic_unread_light"
         android:title="@string/selection_toggle_unread"/>
 
     <item

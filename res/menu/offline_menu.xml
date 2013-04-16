@@ -23,10 +23,13 @@
             android:title="@string/search"/>
         <item
             android:id="@+id/headlines_mark_as_read"
+            android:icon="@drawable/ic_accept_light"
+            android:showAsAction="ifRoom"
             android:title="@string/headlines_mark_as_read"/>
         <item
             android:id="@+id/headlines_select"
-            android:showAsAction=""
+            android:icon="@drawable/ic_select_all_light"
+            android:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
     </group>
     <group android:id="@+id/menu_group_headlines_selection" >
@@ -62,14 +65,13 @@
             android:title="@string/article_toggle_published"/>
         <item
             android:id="@+id/share_article"
-            android:actionProviderClass="android.widget.ShareActionProvider"
             android:icon="@drawable/ic_share_light"
-            android:showAsAction=""
+            android:showAsAction="ifRoom"
             android:title="@string/share_article"/>
         <item
             android:id="@+id/set_unread"
             android:icon="@drawable/ic_read_light"
-            android:showAsAction=""
+            android:showAsAction="ifRoom"
             android:title="@string/article_set_unread"/>
         <item
             android:id="@+id/catchup_above"
