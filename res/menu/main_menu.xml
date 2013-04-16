@@ -107,24 +107,16 @@
                 android:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
             <item
-                android:id="@+id/share_article"
-                android:actionProviderClass="android.widget.ShareActionProvider"
-                android:icon="@android:drawable/ic_menu_share"
-                android:showAsAction="ifRoom"
-                android:title="@string/share_article"/>
-            <item
-                android:id="@+id/set_unread"
-                android:icon="@drawable/ic_undo_light"
-                android:showAsAction="ifRoom"
-                android:title="@string/article_set_unread"/>
-            <item
                 android:id="@+id/toggle_attachments"
                 android:icon="@drawable/ic_menu_attaches_light"
                 android:showAsAction="ifRoom"
-                android:title="@string/attachments_prompt"/>            
+                android:title="@string/attachments_prompt"/>
             <item
-                android:id="@+id/catchup_above"
-                android:title="@string/article_mark_read_above"/>
+                android:id="@+id/share_article"
+                android:icon="@android:drawable/ic_menu_share"
+                android:showAsAction="ifRoom"
+                android:title="@string/share_article"/>
+            <!--  android:actionProviderClass="android.widget.ShareActionProvider" -->
             <item
                 android:id="@+id/set_labels"
                 android:showAsAction=""
@@ -135,13 +127,15 @@
                 android:showAsAction=""
                 android:title="@string/article_set_note"/>
 
-            <!--
-                  <item
-                android:id="@+id/close_article"
-                android:icon="@android:drawable/ic_menu_close_clear_cancel"
-                android:showAsAction=""
-                android:title="@string/close_article"/>
-            -->
+            <item
+                android:id="@+id/catchup_above"
+                android:title="@string/article_mark_read_above"/>
+
+            <item
+                android:id="@+id/set_unread"
+                android:icon="@drawable/ic_undo_light"
+                android:showAsAction="ifRoom"
+                android:title="@string/article_set_unread"/>
 
         </group>
 

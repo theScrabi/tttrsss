@@ -874,11 +874,11 @@ public class OnlineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.share_article:
-			if (android.os.Build.VERSION.SDK_INT < 14) {
+			//if (android.os.Build.VERSION.SDK_INT < 14) {
 				if (ap != null) {
 					shareArticle(ap.getSelectedArticle());
 				}
-			}
+			//}
 			return true;
 		case R.id.toggle_marked:
 			if (ap != null & ap.getSelectedArticle() != null) {
@@ -971,6 +971,7 @@ public class OnlineActivity extends CommonActivity {
 				a.unread = true;
 				saveArticleUnread(a);
 				if (hf != null) hf.notifyUpdated();
+				if (ap != null) ap.notifyUpdated();
 			}
 			return true;
 		case R.id.set_labels:
@@ -1449,7 +1450,7 @@ public class OnlineActivity extends CommonActivity {
 			MenuItem search = m_menu.findItem(R.id.search);
 			search.setEnabled(getApiLevel() >= 2);
 			
-			if (android.os.Build.VERSION.SDK_INT >= 14) {			
+			/* if (android.os.Build.VERSION.SDK_INT >= 14) {			
 				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
 
 				ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
@@ -1461,7 +1462,7 @@ public class OnlineActivity extends CommonActivity {
 						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 					}
 				}
-			}
+			} */
 			
 			if (!isCompatMode()) {
 				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);

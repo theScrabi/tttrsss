@@ -316,4 +316,8 @@ public class ArticlePager extends Fragment {
 			}
 		}		
 	}
+
+	public void notifyUpdated() {
+		m_adapter.notifyDataSetChanged();
+	}
 }
