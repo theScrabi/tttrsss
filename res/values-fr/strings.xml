@@ -192,4 +192,5 @@
     <string name="requires_api5">Nécessite la version 1.7.6</string>
     <string name="article_img_view_caption">Montrer le sous-titre</string>
     <string name="labels">Tags</string>
+    <string name="light_theme_is_not_supported_on_honeycomb">Le thème clair n\'est pas supporté sur Honeycomb</string>
 </resources>
