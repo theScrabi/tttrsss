@@ -1217,7 +1217,7 @@ public class OnlineActivity extends CommonActivity {
 	public void saveArticleMarked(final Article article) {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
+				//toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
 				initMenu();
 			}
 		};
@@ -1240,7 +1240,7 @@ public class OnlineActivity extends CommonActivity {
 
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
+				//toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
 				initMenu();
 			}
 		};
