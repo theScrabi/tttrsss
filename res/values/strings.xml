@@ -193,4 +193,6 @@
     <string name="labels">Labels</string>
     <string name="article_img_view_caption">View Caption</string>
     <string name="light_theme_is_not_supported_on_honeycomb">Light theme is not supported on Honeycomb</string>
+    <string name="pref_headlines_mark_read_scroll">Mark read on scroll</string>
+    <string name="pref_headlines_mark_read_scroll_long">Headlines will be marked read when scrolling past them</string>
 </resources>

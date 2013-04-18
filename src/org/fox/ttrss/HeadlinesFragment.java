@@ -62,6 +62,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
+	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
 	
@@ -797,11 +798,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
+
+		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0) {
+			Article a = m_articles.get(firstVisibleItem - 1);
+
+			if (a != null && a.unread) {
+				a.unread = false;
+				m_readArticles.add(a);
+				m_feed.unread--;
+			} 
+		}
 	}
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// no-op
+		if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+			if (!m_readArticles.isEmpty()) {
+				m_activity.toggleArticlesUnread(m_readArticles);
+				m_activity.refresh(false);
+				m_readArticles.clear();
+			}
+		}
 	}
 
 	public Article getActiveArticle() {

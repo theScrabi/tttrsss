@@ -92,13 +92,16 @@
             android:key="headlines_show_content"
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="oldest_first"
             android:summary="@string/requires_api5"
             android:title="@string/offline_oldest_first" />
-        
+        <CheckBoxPreference android:key="headlines_mark_read_scroll"
+            android:title="@string/pref_headlines_mark_read_scroll"
+            android:summary="@string/pref_headlines_mark_read_scroll_long"
+            android:defaultValue="false"/>
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <ListPreference
