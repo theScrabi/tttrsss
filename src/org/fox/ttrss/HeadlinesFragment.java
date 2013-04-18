@@ -62,6 +62,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
+	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
 	
