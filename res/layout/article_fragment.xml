@@ -2,8 +2,8 @@
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:background="?articleBackground"
+    android:orientation="vertical"
     android:padding="5sp" >
 
     <org.fox.ttrss.TitleWebView
@@ -28,29 +28,35 @@
                 android:textColor="?linkColor"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/comments"
+            <LinearLayout
+                android:id="@+id/comments_and_author"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="24 comments"
-                android:textColor="?linkColor"
-                android:textSize="13sp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal" >
 
-            <TextView
+                <TextView
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="24 comments"
+                    android:textColor="?linkColor"
+                    android:textSize="13sp" />
+
+                <TextView
                     android:id="@+id/author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:singleLine="true"
                     android:gravity="right"
-                    android:textStyle="italic"
+                    android:singleLine="true"
                     android:text="{Author}"
                     android:textColor="?headlineExcerptTextColor"
-                    android:textSize="13sp" />
-            
-            
+                    android:textSize="13sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
