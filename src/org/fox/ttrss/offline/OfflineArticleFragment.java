@@ -397,7 +397,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			onRightSideTapped();
 			return true;
 		} /* else if (!m_activity.isCompatMode()) {
-			ActionBar bar = m_activity.getActionBar();
+			ActionBar bar = m_activity.getSupportActionBar();
 			
 			if (bar.isShowing()) {
 				bar.hide();

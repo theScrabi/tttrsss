@@ -2,6 +2,8 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CommonActivity extends FragmentActivity {
+public class CommonActivity extends SherlockFragmentActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	public final static String FRAG_HEADLINES = "headlines";
@@ -147,14 +149,7 @@ public class CommonActivity extends FragmentActivity {
 		} else if (prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY")) {
 			setTheme(R.style.DarkGrayTheme);
 		} else {
-			// LightTheme is not supported on honeycomb
-
-			if (android.os.Build.VERSION.SDK_INT >= 11 && android.os.Build.VERSION.SDK_INT < 14) {
-				toast(R.string.light_theme_is_not_supported_on_honeycomb);
-				setTheme(R.style.DarkTheme);
-			} else {
-				setTheme(R.style.LightTheme);
-			}				
+			setTheme(R.style.LightTheme);
 		}
 	}
 }

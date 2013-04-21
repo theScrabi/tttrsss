@@ -281,7 +281,7 @@ public class ArticlePager extends Fragment {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
 			
 			/* if (!m_activity.isCompatMode()) {
-	            m_activity.getActionBar().hide();
+	            m_activity.getSupportActionBar().hide();
 	        } */
 		}
 	}

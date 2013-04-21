@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5sp"
                 android:layout_weight="0"
-                android:background="?horizontalDivider"
+                android:background="?ttrssHorizontalDivider"
                 android:paddingTop="2dip" />
         </LinearLayout>
     </org.fox.ttrss.TitleWebView>

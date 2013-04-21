@@ -75,7 +75,7 @@
             -->
 
         </group>
-        <group android:id="@+id/menu_group_headlines_selection" >
+        <!--  <group android:id="@+id/menu_group_headlines_selection" >
             <item
                 android:id="@+id/selection_toggle_unread"
                 android:showAsAction="ifRoom"
@@ -94,7 +94,7 @@
                 android:id="@+id/selection_select_none"
                 android:showAsAction=""
                 android:title="@string/selection_select_none"/>
-        </group>
+        </group> -->
         <group android:id="@+id/menu_group_article" >
             <item
                 android:id="@+id/toggle_marked"

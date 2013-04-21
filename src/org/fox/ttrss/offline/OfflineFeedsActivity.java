@@ -3,6 +3,8 @@ package org.fox.ttrss.offline;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -14,7 +16,6 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -45,7 +46,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			
 			if (!isCompatMode() && m_actionbarUpEnabled) {
-				getActionBar().setDisplayHomeAsUpEnabled(true);
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 			
 		} else {
@@ -55,7 +56,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 					intent.getIntExtra("article", -10000) != -10000) {
 				
 				if (!isCompatMode()) {
-					getActionBar().setDisplayHomeAsUpEnabled(true);
+					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 					m_actionbarUpEnabled = true;
 				}
 				
@@ -155,8 +156,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && getSelectedArticleCount() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && getSelectedArticleCount() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+			//m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && getSelectedArticleCount() == 0);
+			//m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && getSelectedArticleCount() != 0);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 

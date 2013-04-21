@@ -32,11 +32,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
@@ -46,6 +42,10 @@ import android.widget.SearchView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -100,6 +100,8 @@ public class OnlineActivity extends CommonActivity {
 		
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+			m_headlinesActionMode = null;
+
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
 			if (hf != null) {
@@ -110,15 +112,13 @@ public class OnlineActivity extends CommonActivity {
 					hf.notifyUpdated();
 				}
 			}
-
-			m_headlinesActionMode = null;
 		}
 		
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			
-			 MenuInflater inflater = getMenuInflater();
-	            inflater.inflate(R.menu.headlines_action_menu, menu);
+
+			MenuInflater inflater = getSupportMenuInflater();
+			inflater.inflate(R.menu.headlines_action_menu, menu);
 			
 			return true;
 		}
@@ -182,9 +182,7 @@ public class OnlineActivity extends CommonActivity {
 				m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
 			}
 			
-			if (!isCompatMode()) {
-				m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
-			}
+			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 	}
 	
@@ -533,7 +531,7 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo(); */
 		
@@ -886,7 +884,7 @@ public class OnlineActivity extends CommonActivity {
 				if (hf != null) hf.notifyUpdated();
 			}
 			return true;
-		case R.id.selection_select_none:
+		/* case R.id.selection_select_none:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
 				if (selected.size() > 0) {
@@ -895,7 +893,7 @@ public class OnlineActivity extends CommonActivity {
 					hf.notifyUpdated();
 				}
 			}
-			return true;
+			return true; */
 		case R.id.selection_toggle_unread:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
@@ -1168,7 +1166,7 @@ public class OnlineActivity extends CommonActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 
 		m_menu = menu;
@@ -1451,7 +1449,6 @@ public class OnlineActivity extends CommonActivity {
 			}
 			
 			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 			
@@ -1493,17 +1490,17 @@ public class OnlineActivity extends CommonActivity {
 				}
 			} */
 			
-			if (!isCompatMode()) {
-				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
-				if (hf != null) {
-					if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
-						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
-					} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
-						m_headlinesActionMode.finish();
-					}
+			if (hf != null) {
+				if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
+					m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+				} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
+					m_headlinesActionMode.finish();
 				}
-				
+			}
+
+			if (!isCompatMode()) {
 				SearchView searchView = (SearchView) search.getActionView();
 				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 					private String query = "";

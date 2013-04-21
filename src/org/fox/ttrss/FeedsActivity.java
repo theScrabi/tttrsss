@@ -8,6 +8,8 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.AppRater;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import android.view.ViewGroup;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
@@ -20,7 +22,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -58,7 +59,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				intent.getParcelableExtra("article") != null) {
 			
 				if (!isCompatMode()) {
-					getActionBar().setDisplayHomeAsUpEnabled(true);
+					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 					m_actionbarUpEnabled = true;
 				}
 				
@@ -123,7 +124,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 
 			if (!isCompatMode() && m_actionbarUpEnabled) {
-				getActionBar().setDisplayHomeAsUpEnabled(true);
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
 		
@@ -148,9 +149,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && hf.getSelectedArticles().size() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && hf.getSelectedArticles().size() != 0);
-			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+						
 			if (isSmallScreen()) {
 				m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
 			} else {

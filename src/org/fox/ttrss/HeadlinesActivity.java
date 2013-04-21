@@ -4,6 +4,8 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +14,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
@@ -33,7 +34,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		setContentView(R.layout.headlines);
 		
 		if (!isCompatMode()) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
@@ -141,8 +142,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait()&& hf != null && hf.getSelectedArticles().size() == 0);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, !isPortrait() && hf != null && hf.getSelectedArticles().size() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && hf != null && hf.isAdded());			
 			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

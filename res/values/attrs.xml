@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="horizontalDivider" format="reference|color" />
+    <attr name="ttrssHorizontalDivider" format="reference|color" />
     <attr name="feedlistBackground" format="reference|color" />
     <attr name="smallScreenBackground" format="reference|color" />
     <attr name="unreadCounterColor" format="reference|color" />

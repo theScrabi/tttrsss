@@ -4,6 +4,11 @@ import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,11 +23,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -47,15 +49,14 @@ public class OfflineActivity extends CommonActivity {
 		
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			deselectAllArticles();
 			m_headlinesActionMode = null;
-			initMenu();
+			deselectAllArticles();
 		}
 		
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			
-			 MenuInflater inflater = getMenuInflater();
+			 MenuInflater inflater = getSupportMenuInflater();
 	            inflater.inflate(R.menu.headlines_action_menu, menu);
 			
 			return true;
@@ -104,10 +105,7 @@ public class OfflineActivity extends CommonActivity {
 
 		} */
 
-		if (!isCompatMode()) {
-			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
-		}
-
+		m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 	}
 	
 	@Override
@@ -288,9 +286,9 @@ public class OfflineActivity extends CommonActivity {
 				refresh();
 			}
 			return true;
-		case R.id.selection_select_none:
+		/* case R.id.selection_select_none:
 			deselectAllArticles();			
-			return true;
+			return true; */
 		case R.id.selection_toggle_unread:
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getWritableDb()
@@ -389,7 +387,7 @@ public class OfflineActivity extends CommonActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.offline_menu, menu);
 
 		m_menu = menu;
@@ -403,47 +401,46 @@ public class OfflineActivity extends CommonActivity {
 	protected void initMenu() {
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-			m_menu.setGroupVisible(R.id.menu_group_headlines_selection, false);
 			m_menu.setGroupVisible(R.id.menu_group_article, false);
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+
+			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+
+			if (hf != null) {
+				if (hf.getSelectedArticleCount() > 0 && m_headlinesActionMode == null) {
+					m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+				} else if (hf.getSelectedArticleCount() == 0 && m_headlinesActionMode != null) { 
+					m_headlinesActionMode.finish();
+				}
+			}
 			
+			OfflineArticlePager ap = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			
+			if (ap != null) {
+				int articleId = ap.getSelectedArticleId();
+				
+				Cursor article = getArticleById(articleId);
+				
+				if (article != null) {
+					boolean unread = article.getInt(article.getColumnIndex("unread")) == 1;
+					boolean marked = article.getInt(article.getColumnIndex("marked")) == 1;
+					boolean published = article.getInt(article.getColumnIndex("published")) == 1;
+
+					m_menu.findItem(R.id.toggle_marked).setIcon(marked ? R.drawable.ic_important_light :
+						R.drawable.ic_unimportant_light);
+
+					m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_menu_published_light :
+						R.drawable.ic_menu_unpublished_light);
+
+					m_menu.findItem(R.id.set_unread).setIcon(unread ? R.drawable.ic_unread_light :
+						R.drawable.ic_read_light);
+					
+					article.close();
+				}				
+			}
+
 			if (!isCompatMode()) {
 				MenuItem search = m_menu.findItem(R.id.search);
-				
-				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-				
-				if (hf != null) {
-					if (hf.getSelectedArticleCount() > 0 && m_headlinesActionMode == null) {
-						m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
-					} else if (hf.getSelectedArticleCount() == 0 && m_headlinesActionMode != null) { 
-						m_headlinesActionMode.finish();
-					}
-				}
-				
-				OfflineArticlePager ap = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-				
-				if (ap != null) {
-					int articleId = ap.getSelectedArticleId();
-					
-					Cursor article = getArticleById(articleId);
-					
-					if (article != null) {
-						boolean unread = article.getInt(article.getColumnIndex("unread")) == 1;
-						boolean marked = article.getInt(article.getColumnIndex("marked")) == 1;
-						boolean published = article.getInt(article.getColumnIndex("published")) == 1;
-
-						m_menu.findItem(R.id.toggle_marked).setIcon(marked ? R.drawable.ic_important_light :
-							R.drawable.ic_unimportant_light);
-
-						m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_menu_published_light :
-							R.drawable.ic_menu_unpublished_light);
-
-						m_menu.findItem(R.id.set_unread).setIcon(unread ? R.drawable.ic_unread_light :
-							R.drawable.ic_read_light);
-						
-						article.close();
-					}				
-				}
 				
 				SearchView searchView = (SearchView) search.getActionView();
 				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

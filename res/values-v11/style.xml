@@ -1,8 +1,8 @@
 <!-- Note: the only difference between this and v15 style is Holo.Light base theme (Holo.Light.DarkActionBar does not exist in HC and causes breakage) -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="LightTheme" parent="android:Theme.Holo.Light">
+	<style name="LightTheme" parent="Theme.Sherlock.Light.DarkActionBar">
 	    <item name="smallScreenBackground">@android:color/transparent</item>
-		<item name="horizontalDivider">@android:drawable/divider_horizontal_bright</item>
+		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
@@ -40,9 +40,9 @@
 		<item name="linkColor">#C46262</item>
 	</style>
 
-	<style name="DarkTheme" parent="android:Theme.Holo">
+	<style name="DarkTheme" parent="Theme.Sherlock">
 	    <item name="smallScreenBackground">@android:color/transparent</item>
-		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/ics_divider_vertical</item>
 		<item name="unreadCounterColor">@color/ics_cyan</item>
 		<item name="headlinesBackground">@drawable/headlines_dark</item>
@@ -67,7 +67,7 @@
 
 	<style name="DarkGrayTheme" parent="DarkTheme">
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
-		<item name="horizontalDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>
 		<item name="unreadCounterColor">#a0a0a0</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
@@ -82,9 +82,10 @@
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="android:actionBarStyle">@style/ActionBarDarkGray</item>
+        <item name="actionBarStyle">@style/ActionBarDarkGray</item>
 	</style>
 	
-	<style name="ActionBarDarkGray" parent="@android:style/Widget.Holo.ActionBar">
+	<style name="ActionBarDarkGray" parent="Widget.Sherlock.ActionBar.Solid">
     	<item name="android:background">#232527</item>
 	</style>
 	
