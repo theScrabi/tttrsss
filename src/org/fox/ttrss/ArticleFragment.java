@@ -280,7 +280,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					}
 				}
 				
-				content += "<p>&nbsp;</p><p>&nbsp;</p></body></html>";
+				content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);

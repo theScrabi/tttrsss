@@ -249,7 +249,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride +
 					"</style>" +
 					"</head>" +
-					"<body>" + articleContent + "<p>&nbsp;</p><p>&nbsp;</p></body></html>";;
+					"<body>" + articleContent + "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
 					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
