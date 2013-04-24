@@ -284,7 +284,11 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			TextView author = (TextView)view.findViewById(R.id.author);
 
 			if (author != null) {
-				author.setVisibility(View.GONE);
+				int authorIndex = m_cursor.getColumnIndex("author");
+				if(authorIndex >= 0)
+					author.setText(m_cursor.getString(authorIndex));
+				else
+					author.setVisibility(View.GONE);
 			}
 		} 
 		

@@ -367,10 +367,8 @@ public class OfflineDownloadService extends Service {
 					m_articles = new Gson().fromJson(content, listType);
 	
 					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
- "(" +
-                                    BaseColumns._ID +
-                                    ", unread, marked, published, score, updated, is_updated, title, link, feed_id, tags, content) " +
-                                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+							"("+BaseColumns._ID+", unread, marked, published, score, updated, is_updated, title, link, feed_id, tags, content, author) " +
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 	
 					for (Article article : m_articles) {
 	
@@ -395,6 +393,7 @@ public class OfflineDownloadService extends Service {
 						stmtInsert.bindLong(index++, article.feed_id);
 						stmtInsert.bindString(index++, tagsString); // comma-separated tags
 						stmtInsert.bindString(index++, article.content);
+						stmtInsert.bindString(index++, article.author);
 						
 						if (m_downloadImages) {
 							Document doc = Jsoup.parse(article.content);

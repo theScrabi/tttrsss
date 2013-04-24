@@ -532,6 +532,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				te.setText(excerpt);
 			}       	
 
+			TextView ta = (TextView)v.findViewById(R.id.author);
+
+			if (ta != null) {
+				int authorIndex = article.getColumnIndex("author");
+				if(authorIndex >= 0)
+					ta.setText(article.getString(authorIndex));
+			}
+
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
 			
 			if (separator != null && m_offlineServices.isSmallScreen()) {

@@ -51,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "feed_id INTEGER, " +
                 "tags TEXT, " +
                 "content TEXT, " +
+                "author TEXT, " +
                 "selected BOOLEAN, " +
                 "modified BOOLEAN" +
                 ");");
