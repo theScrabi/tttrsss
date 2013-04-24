@@ -16,6 +16,8 @@ import org.jsoup.Jsoup;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources.Theme;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -534,9 +537,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
 		
+		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
+		private final int titleHighScoreUnreadColor;
+
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
+			
+			Theme theme = context.getTheme();
+			TypedValue tv = new TypedValue();
+			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
+			titleHighScoreUnreadColor = tv.data;
 		}
 		
 		public int getViewTypeCount() {
@@ -596,6 +607,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (tt != null) {
 				tt.setText(Html.fromHtml(article.title));
+				adjustTitleTextView(article.score, article.unread, tt, position);
 			}
 
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -726,6 +738,24 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			} */
 			
 			return v;
+		}
+
+		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
+			int viewType = getItemViewType(position);
+            if (origTitleColors[viewType] == null)
+				// store original color
+				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
+
+			if(score < -100) {
+				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			} else if(score > 500) {
+				if(unread)
+					tv.setTextColor(titleHighScoreUnreadColor);
+				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			} else {
+				tv.setTextColor(origTitleColors[viewType].intValue());
+				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			}
 		}
 	}
 

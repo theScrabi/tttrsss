@@ -12,8 +12,10 @@ import org.jsoup.Jsoup;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -371,12 +374,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	} */
 	
 	private class ArticleListAdapter extends SimpleCursorAdapter {
-		public ArticleListAdapter(Context context, int layout, Cursor c,
-				String[] from, int[] to, int flags) {
-			super(context, layout, c, from, to, flags);
-			// TODO Auto-generated constructor stub
-		}
-
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
@@ -385,7 +382,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
 		
+		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
+		private final int titleHighScoreUnreadColor;
 		
+		public ArticleListAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
+			
+			Theme theme = context.getTheme();
+			TypedValue tv = new TypedValue();
+			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
+			titleHighScoreUnreadColor = tv.data;
+		}
+
 		public int getViewTypeCount() {
 			return VIEW_COUNT;
 		}
@@ -444,6 +453,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			if (tt != null) {
 				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
+				
+				int scoreIndex = article.getColumnIndex("score");
+				boolean unread = article.getInt(article.getColumnIndex("unread")) == 1;
+				if(scoreIndex >= 0)
+					adjustTitleTextView(article.getInt(scoreIndex), unread, tt, position);
 			}
 			
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -572,6 +586,24 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			} */
 			
 			return v;
+		}
+
+		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
+			int viewType = getItemViewType(position);
+            if (origTitleColors[viewType] == null)
+				// store original color
+				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
+
+			if(score < -100) {
+				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			} else if(score > 500) {
+				if(unread)
+					tv.setTextColor(titleHighScoreUnreadColor);
+				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			} else {
+				tv.setTextColor(origTitleColors[viewType].intValue());
+				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			}
 		}
 	}
 

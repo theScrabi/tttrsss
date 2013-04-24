@@ -12,6 +12,7 @@ public class Article implements Parcelable {
 	public boolean unread; 
 	public boolean marked; 
 	public boolean published; 
+	public int score;
 	public int updated; 
 	public boolean is_updated; 
 	public String title; 
@@ -53,6 +54,7 @@ public class Article implements Parcelable {
 		out.writeInt(unread ? 1 : 0);
 		out.writeInt(marked ? 1 : 0);
 		out.writeInt(published ? 1 : 0);
+		out.writeInt(score);
 		out.writeInt(updated);
 		out.writeInt(is_updated ? 1 : 0);
 		out.writeString(title);
@@ -73,6 +75,7 @@ public class Article implements Parcelable {
 		unread = in.readInt() == 1;
 		marked = in.readInt() == 1;
 		published = in.readInt() == 1;
+		score = in.readInt();
 		updated = in.readInt();
 		is_updated = in.readInt() == 1;
 		title = in.readString();

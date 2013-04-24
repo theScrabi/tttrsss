@@ -20,6 +20,7 @@
     <attr name="headlineSelectedTextColor" format="reference|color" />
     <attr name="headlineExcerptTextColor" format="reference|color" />
     <attr name="headlineSelectedExcerptTextColor" format="reference|color" />
+    <attr name="headlineTitleHighScoreUnreadTextColor" format="reference|color" />
     <attr name="linkColor" format="reference|color" />
     <attr name="loadingBackground" format="reference|color" />
 </resources>
