@@ -536,7 +536,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			if (ta != null) {
 				int authorIndex = article.getColumnIndex("author");
-				if(authorIndex >= 0)
+				if (authorIndex >= 0)
 					ta.setText(article.getString(authorIndex));
 			}
 
@@ -598,14 +598,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
 			int viewType = getItemViewType(position);
-            if (origTitleColors[viewType] == null)
+			if (origTitleColors[viewType] == null)
 				// store original color
 				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
 
-			if(score < -100) {
+			if (score < -100) {
 				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			} else if(score > 500) {
-				if(unread)
+			} else if (score > 500) {
+				if (unread)
 					tv.setTextColor(titleHighScoreUnreadColor);
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			} else {

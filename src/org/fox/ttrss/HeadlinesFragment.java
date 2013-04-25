@@ -543,7 +543,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
-			
+
 			Theme theme = context.getTheme();
 			TypedValue tv = new TypedValue();
 			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
@@ -742,14 +742,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
 			int viewType = getItemViewType(position);
-            if (origTitleColors[viewType] == null)
+			if (origTitleColors[viewType] == null)
 				// store original color
 				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
 
-			if(score < -100) {
+			if (score < -100) {
 				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-			} else if(score > 500) {
-				if(unread)
+			} else if (score > 500) {
+				if (unread)
 					tv.setTextColor(titleHighScoreUnreadColor);
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			} else {
@@ -758,7 +758,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		}
 	}
-
 
 
 	public void notifyUpdated() {
