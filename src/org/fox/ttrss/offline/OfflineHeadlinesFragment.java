@@ -453,11 +453,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			if (tt != null) {
 				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
-				
+
 				int scoreIndex = article.getColumnIndex("score");
-				boolean unread = article.getInt(article.getColumnIndex("unread")) == 1;
-				if(scoreIndex >= 0)
-					adjustTitleTextView(article.getInt(scoreIndex), unread, tt, position);
+				if (scoreIndex >= 0)
+					adjustTitleTextView(article.getInt(scoreIndex), tt, position);
 			}
 			
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -596,17 +595,16 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			return v;
 		}
 
-		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
+		private void adjustTitleTextView(int score, TextView tv, int position) {
 			int viewType = getItemViewType(position);
 			if (origTitleColors[viewType] == null)
 				// store original color
 				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
 
-			if (score < -100) {
+			if (score < -500) {
 				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			} else if (score > 500) {
-				if (unread)
-					tv.setTextColor(titleHighScoreUnreadColor);
+				tv.setTextColor(titleHighScoreUnreadColor);
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			} else {
 				tv.setTextColor(origTitleColors[viewType].intValue());

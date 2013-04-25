@@ -607,7 +607,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (tt != null) {
 				tt.setText(Html.fromHtml(article.title));
-				adjustTitleTextView(article.score, article.unread, tt, position);
+				adjustTitleTextView(article.score, tt, position);
 			}
 
 			TextView ft = (TextView)v.findViewById(R.id.feed_title);
@@ -740,17 +740,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return v;
 		}
 
-		private void adjustTitleTextView(int score, boolean unread, TextView tv, int position) {
+		private void adjustTitleTextView(int score, TextView tv, int position) {
 			int viewType = getItemViewType(position);
 			if (origTitleColors[viewType] == null)
 				// store original color
 				origTitleColors[viewType] = Integer.valueOf(tv.getCurrentTextColor());
 
-			if (score < -100) {
+			if (score < -500) {
 				tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			} else if (score > 500) {
-				if (unread)
-					tv.setTextColor(titleHighScoreUnreadColor);
+				tv.setTextColor(titleHighScoreUnreadColor);
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			} else {
 				tv.setTextColor(origTitleColors[viewType].intValue());
