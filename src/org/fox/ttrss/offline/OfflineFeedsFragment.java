@@ -339,7 +339,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		
 		if (c != null) {
 			int feedId = c.getInt(0);
-			c.close();
 			return feedId;
 		}
 		
