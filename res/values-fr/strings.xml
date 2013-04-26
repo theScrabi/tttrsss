@@ -47,7 +47,7 @@
     <string name="context_selection_toggle_marked">(Non)Marqué</string>
     <string name="context_selection_toggle_published">(Non)Publié</string>
     <string name="context_selection_toggle_unread">(Non)Lu</string>
-    <string name="article_set_unread">Marqué non-lu</string>
+    <string name="article_set_unread">Marquer non-lu</string>
     <string name="article_mark_read_above">Marquer les articles ci-dessus lus</string>
     <string name="http_login_summary">Optionnel. Remplissez ceci si votre installation tt-rss est protégée par une authentification HTTP Basique.</string>
     <string name="login_summary">Votre identifiant tt-rss. Inutile en mode utilisateur unique.</string>
