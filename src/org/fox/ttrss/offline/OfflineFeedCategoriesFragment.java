@@ -309,7 +309,6 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		
 		if (c != null) {
 			int catId = c.getInt(0);
-			c.close();
 			return catId;
 		}
 		
