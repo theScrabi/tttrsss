@@ -51,7 +51,7 @@
         <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#F5B800</item>
         <item name="headlineSelectedBackgroundSolid">#F5B800</item>
-        <item name="headlineUnreadBackground">#303030</item>
+        <item name="headlineUnreadBackground">#202020</item>
         <item name="headlineNormalBackground">@android:color/transparent</item>
         <item name="feedsSelectedBackground">#F5B800</item>
         <item name="feedsSelectedBackgroundSolid">#F5B800</item>
