@@ -30,7 +30,6 @@
             android:layout_weight="1"
             android:orientation="vertical" >
 
-
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -39,8 +38,7 @@
                 android:singleLine="false"
                 android:text="{Title...}"
                 android:textColor="?headlineTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold" >
+                android:textSize="16sp" >
 
             </TextView>
 

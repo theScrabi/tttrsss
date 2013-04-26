@@ -38,8 +38,8 @@
                 android:singleLine="false"
                 android:text="{Title...}"
                 android:textColor="?headlineTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold" >
+                android:textSize="16sp" >
+
             </TextView>
 
             <LinearLayout
