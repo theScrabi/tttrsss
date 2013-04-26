@@ -367,8 +367,8 @@ public class OfflineDownloadService extends Service {
 					m_articles = new Gson().fromJson(content, listType);
 	
 					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
-							"("+BaseColumns._ID+", unread, marked, published, updated, is_updated, title, link, feed_id, tags, content) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+							"("+BaseColumns._ID+", unread, marked, published, score, updated, is_updated, title, link, feed_id, tags, content, author) " +
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 	
 					for (Article article : m_articles) {
 	
@@ -380,17 +380,20 @@ public class OfflineDownloadService extends Service {
 						
 						tagsString = tagsString.replaceAll(", $", "");
 						
-						stmtInsert.bindLong(1, article.id);
-						stmtInsert.bindLong(2, article.unread ? 1 : 0);
-						stmtInsert.bindLong(3, article.marked ? 1 : 0);
-						stmtInsert.bindLong(4, article.published ? 1 : 0);
-						stmtInsert.bindLong(5, article.updated);
-						stmtInsert.bindLong(6, article.is_updated ? 1 : 0);
-						stmtInsert.bindString(7, article.title);
-						stmtInsert.bindString(8, article.link);
-						stmtInsert.bindLong(9, article.feed_id);
-						stmtInsert.bindString(10, tagsString); // comma-separated tags
-						stmtInsert.bindString(11, article.content);
+						int index = 1;
+						stmtInsert.bindLong(index++, article.id);
+						stmtInsert.bindLong(index++, article.unread ? 1 : 0);
+						stmtInsert.bindLong(index++, article.marked ? 1 : 0);
+						stmtInsert.bindLong(index++, article.published ? 1 : 0);
+						stmtInsert.bindLong(index++, article.score);
+						stmtInsert.bindLong(index++, article.updated);
+						stmtInsert.bindLong(index++, article.is_updated ? 1 : 0);
+						stmtInsert.bindString(index++, article.title);
+						stmtInsert.bindString(index++, article.link);
+						stmtInsert.bindLong(index++, article.feed_id);
+						stmtInsert.bindString(index++, tagsString); // comma-separated tags
+						stmtInsert.bindString(index++, article.content);
+						stmtInsert.bindString(index++, article.author);
 						
 						if (m_downloadImages) {
 							Document doc = Jsoup.parse(article.content);
