@@ -48,15 +48,9 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 	private OfflineActivity m_activity;
 	private GestureDetector m_detector;
 	
-	public OfflineArticleFragment() {
-		super();
-	}
-	
-	public OfflineArticleFragment(int articleId) {
-		super();
+	public void initialize(int articleId) {
 		m_articleId = articleId;
 	}
-
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {

@@ -82,20 +82,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		return m_selectedArticles;
 	}
 	
-	public HeadlinesFragment(Feed feed) {
+	public void initialize(Feed feed) {
 		m_feed = feed;
 	}
 
-	public HeadlinesFragment(Feed feed, Article activeArticle) {
+	public void initialize(Feed feed, Article activeArticle) {
 		m_feed = feed;
 		
 		if (activeArticle != null) {
 			m_activeArticle = getArticleById(activeArticle.id);
 		}
-	}
-
-	public HeadlinesFragment() {
-		//
 	}
 	
 	@Override

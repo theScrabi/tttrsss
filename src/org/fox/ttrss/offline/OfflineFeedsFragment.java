@@ -42,11 +42,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private Cursor m_cursor;
 	private OfflineFeedsActivity m_activity;
 	
-	public OfflineFeedsFragment() {
-		//
-	}
-	
-	public OfflineFeedsFragment(int catId) {
+	public void initialize(int catId) {
 		m_catId = catId;
 	}
 	

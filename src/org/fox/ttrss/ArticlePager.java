@@ -50,7 +50,8 @@ public class ArticlePager extends Fragment {
 			Article article = m_articles.get(position);
 			
 			if (article != null) {
-				ArticleFragment af = new ArticleFragment(article);
+				ArticleFragment af = new ArticleFragment();
+				af.initialize(article);
 
 				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null && !m_activity.isCompatMode()) {
 					getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
@@ -67,14 +68,8 @@ public class ArticlePager extends Fragment {
 		}
 		
 	}
-	
-	public ArticlePager() {
-		super();
-	}
-	
-	public ArticlePager(Article article, Feed feed) {
-		super();
-				
+		
+	public void initialize(Article article, Feed feed) {
 		m_article = article;
 		m_feed = feed;
 	}

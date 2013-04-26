@@ -62,12 +62,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	
-	public FeedsFragment() {
-		
-		
-	}
-	
-	public FeedsFragment(FeedCategory cat) {
+	public void initialize(FeedCategory cat) {
 		m_activeCategory = cat;
 	}
 	

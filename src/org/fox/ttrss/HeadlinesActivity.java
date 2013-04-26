@@ -67,10 +67,12 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 					public void run() {
 						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-						HeadlinesFragment hf = new HeadlinesFragment(feed, article);
+						HeadlinesFragment hf = new HeadlinesFragment();
+						hf.initialize(feed, article);
 						hf.setSearchQuery(searchQuery);
 
-						ArticlePager af = new ArticlePager(article != null ? hf.getArticleById(article.id) : new Article(), feed);
+						ArticlePager af = new ArticlePager();
+						af.initialize(article != null ? hf.getArticleById(article.id) : new Article(), feed);
 						af.setSearchQuery(searchQuery);
 
 						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
@@ -238,7 +240,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						FragmentTransaction ft = getSupportFragmentManager()
 								.beginTransaction();
 
-						ArticlePager af = new ArticlePager(fArticle, fFeed);
+						ArticlePager af = new ArticlePager();
+						af.initialize(fArticle, fFeed);
 
 						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 						ft.commit();

@@ -52,8 +52,11 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 				int articleId = i.getIntExtra("article", 0);
 				String searchQuery = i.getStringExtra("searchQuery");
 				
-				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);				
-				OfflineArticlePager af = new OfflineArticlePager(articleId, feedId, isCat);
+				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
+				hf.initialize(feedId, isCat);
+				
+				OfflineArticlePager af = new OfflineArticlePager();
+				af.initialize(articleId, feedId, isCat);
 
 				hf.setActiveArticleId(articleId);
 				

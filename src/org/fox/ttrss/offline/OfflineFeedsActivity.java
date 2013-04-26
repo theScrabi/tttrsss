@@ -68,14 +68,20 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				boolean isCat = intent.getBooleanExtra("isCat", false);
 				
 				if (articleId != -10000) {
-					ft.replace(R.id.feeds_fragment, new OfflineArticlePager(articleId, feedId, isCat), FRAG_ARTICLE);
+					OfflineArticlePager oap = new OfflineArticlePager();
+					oap.initialize(articleId, feedId, isCat);
+					ft.replace(R.id.feeds_fragment, oap, FRAG_ARTICLE);
 				} else {
 					if (feedId != -10000) {
-						ft.replace(R.id.feeds_fragment, new OfflineHeadlinesFragment(feedId, isCat), FRAG_HEADLINES);
+						OfflineHeadlinesFragment ohf = new OfflineHeadlinesFragment();
+						ohf.initialize(feedId, isCat);
+						ft.replace(R.id.feeds_fragment, ohf, FRAG_HEADLINES);
 					}
 
 					if (catId != -10000) {
-						ft.replace(R.id.feeds_fragment, new OfflineFeedsFragment(catId), FRAG_FEEDS);
+						OfflineFeedsFragment off = new OfflineFeedsFragment();
+						off.initialize(catId);
+						ft.replace(R.id.feeds_fragment, off, FRAG_FEEDS);
 					}
 				}
 				
@@ -187,7 +193,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
-				OfflineFeedsFragment ff = new OfflineFeedsFragment(catId);
+				OfflineFeedsFragment ff = new OfflineFeedsFragment();
+				ff.initialize(catId);
 
 				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 				ft.addToBackStack(null);
@@ -234,7 +241,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 						FragmentTransaction ft = getSupportFragmentManager()
 								.beginTransaction();
 						
-						OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment(feedId, isCat);
+						OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
+						hf.initialize(feedId, isCat);
 						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 						
 						ft.commit();

@@ -70,13 +70,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 	};
 	
-	public OfflineHeadlinesFragment(int feedId, boolean isCat) {
+	public void initialize(int feedId, boolean isCat) {
 		m_feedId = feedId;
 		m_feedIsCat = isCat;
-	}
-
-	public OfflineHeadlinesFragment() {
-		//
 	}
 	
 	@Override

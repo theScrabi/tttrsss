@@ -72,7 +72,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				if (article != null) {
 					Article original = GlobalState.getInstance().m_loadedArticles.findById(article.id);
 					
-					ArticlePager ap = new ArticlePager(original != null ? original : article, feed);
+					ArticlePager ap = new ArticlePager();
+					ap.initialize(original != null ? original : article, feed);
+					
 					ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
 					
 					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
@@ -80,14 +82,16 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					setTitle(feed.title);
 				} else {
 					if (feed != null) {
-						HeadlinesFragment hf = new HeadlinesFragment(feed);
+						HeadlinesFragment hf = new HeadlinesFragment();
+						hf.initialize(feed);
 						ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
 						
 						setTitle(feed.title);
 					}
 					
 					if (cat != null) {
-						FeedsFragment ff = new FeedsFragment(cat);
+						FeedsFragment ff = new FeedsFragment();
+						ff.initialize(cat);
 						ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 						
 						setTitle(cat.title);
@@ -214,7 +218,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					FragmentTransaction ft = getSupportFragmentManager()
 							.beginTransaction();
 
-					HeadlinesFragment hf = new HeadlinesFragment(fFeed);
+					HeadlinesFragment hf = new HeadlinesFragment();
+					hf.initialize(fFeed);
 					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 					
 					ft.commit();
@@ -246,7 +251,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
-				FeedsFragment ff = new FeedsFragment(cat);
+				FeedsFragment ff = new FeedsFragment();
+				ff.initialize(cat);
 				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 
 				ft.addToBackStack(null);

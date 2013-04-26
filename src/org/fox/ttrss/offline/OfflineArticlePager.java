@@ -86,7 +86,10 @@ public class OfflineArticlePager extends Fragment {
 					getView().setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
 				}
 				
-				return new OfflineArticleFragment(m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)));
+				OfflineArticleFragment oaf = new OfflineArticleFragment();
+				oaf.initialize(m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID)));
+				
+				return oaf;
 			} 
 			
 			return null; 
@@ -116,13 +119,7 @@ public class OfflineArticlePager extends Fragment {
 		}
 	}
 	
-	public OfflineArticlePager() {
-		super();
-	}
-	
-	public OfflineArticlePager(int articleId, int feedId, boolean isCat) {
-		super();
-
+	public void initialize(int articleId, int feedId, boolean isCat) {
 		m_feedId = feedId;
 		m_isCat = isCat;
 		m_articleId = articleId;

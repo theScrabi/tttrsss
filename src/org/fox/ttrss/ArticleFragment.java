@@ -48,14 +48,8 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	private Article m_article;
 	private OnlineActivity m_activity;
 	private GestureDetector m_detector;
-	
-	public ArticleFragment() {
-		super();
-	}
-	
-	public ArticleFragment(Article article) {
-		super();
-		
+
+	public void initialize(Article article) {
 		m_article = article;
 	}
 	
