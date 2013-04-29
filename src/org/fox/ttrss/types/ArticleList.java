@@ -44,6 +44,14 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 		readFromParcel(in);
 	}
 	
+	public boolean containsId(int id) {
+		for (Article a : this) {
+			if (a.id == id)
+				return true;
+		}
+		return false;
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {

@@ -11,6 +11,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -48,8 +49,9 @@ public class HeadlinesRequest extends ApiRequest {
 						if (m_articles.get(m_articles.size()-1).id == -1)
 							m_articles.remove(m_articles.size()-1); // remove previous placeholder
 					
-					for (Article f : articles) 
-						m_articles.add(f);
+					for (Article f : articles)
+						if (!m_articles.containsId(f.id))
+							m_articles.add(f);
 
 					if (articles.size() == HEADLINES_REQUEST_SIZE) {
 						Article placeholder = new Article(-1);
