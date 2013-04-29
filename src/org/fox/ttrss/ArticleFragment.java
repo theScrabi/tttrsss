@@ -109,7 +109,6 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					titleStr = m_article.title;
 				
 				
-				title.setTypeface(null, m_article.unread ? Typeface.BOLD : Typeface.NORMAL);
 				title.setText(Html.fromHtml(titleStr));
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
