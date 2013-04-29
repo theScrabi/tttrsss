@@ -326,7 +326,11 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 		}
 		
-		Collections.sort(m_cats, cmp);
+		try {
+			Collections.sort(m_cats, cmp);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 		try {
 			m_adapter.notifyDataSetChanged();
 		} catch (NullPointerException e) {
