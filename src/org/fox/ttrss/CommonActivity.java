@@ -29,6 +29,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 
 	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
+	private String m_theme;
 
 	protected SharedPreferences m_prefs;
 
@@ -85,6 +86,18 @@ public class CommonActivity extends SherlockFragmentActivity {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+	
+		if (!m_theme.equals(m_prefs.getString("theme", "THEME_DARK"))) {
+			Log.d(TAG, "theme changed, restarting");
+			
+			finish();
+			startActivity(getIntent());
+		}
+	}
+
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 
@@ -96,7 +109,13 @@ public class CommonActivity extends SherlockFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-
+		
+		if (savedInstanceState != null) {
+			m_theme = savedInstanceState.getString("theme");
+		} else {		
+			m_theme = m_prefs.getString("theme", "THEME_DARK");
+		}
+		
 		initDatabase();
 		
 		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
@@ -104,6 +123,13 @@ public class CommonActivity extends SherlockFragmentActivity {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle out) {
+		super.onSaveInstanceState(out);
+		
+		out.putString("theme", m_theme);
 	}
 	
 	public boolean isSmallScreen() {
