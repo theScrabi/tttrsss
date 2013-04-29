@@ -10,7 +10,7 @@
         <item name="articleBackground">@android:color/transparent</item>
         <item name="headlineSelectedBackground">#fff7d5</item>
         <item name="headlineSelectedBackgroundSolid">#fff7d5</item>
-        <item name="headlineUnreadBackground">#ffffff</item>
+        <item name="headlineUnreadBackground">#fafafa</item>
         <item name="headlineNormalBackground">#f0f0f0</item>
         <item name="feedsSelectedBackground">#96C5FF</item>
         <item name="feedsSelectedBackgroundSolid">#96C5FF</item>
@@ -33,6 +33,7 @@
         <item name="headlinesBackgroundSolid">@color/headlines_sepia</item>
         <item name="headlineSelectedBackground">@color/headline_row_selected_sepia</item>
         <item name="headlineSelectedBackgroundSolid">@color/headlines_sepia</item>
+        <item name="headlineUnreadBackground">#F2EAE8</item>
         <item name="feedsSelectedBackground">@color/headline_row_selected_sepia</item>
         <item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_sepia</item>
         <item name="articleBackground">@color/headlines_sepia</item>
