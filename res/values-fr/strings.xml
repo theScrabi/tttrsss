@@ -59,7 +59,7 @@
     <string name="no_headlines_to_display">Aucun titre à afficher</string>
     <string name="browse_cats_like_feeds">Parcourir les catégories comme les flux</string>
     <string name="browse_cats_like_feeds_summary">Utilisez le menu contexte des catégories pour redéfinir ce paramètre.</string>
-    <string name="headlines_mark_as_read">Marqué comme lu</string>
+    <string name="headlines_mark_as_read">Marquer comme lu</string>
     <string name="error_unknown">Erreur: Erreur inconnue (voir journal)</string>
     <string name="error_http_unauthorized">Erreur: 401 non-authorisé</string>
     <string name="error_http_forbidden">Erreur: 403 interdit</string>
