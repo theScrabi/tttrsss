@@ -17,8 +17,10 @@
     <attr name="feedlistSelectedTextColor" format="reference|color" />
     <attr name="headlineTextColor" format="reference|color" />
     <attr name="headlineUnreadTextColor" format="reference|color" />
-    <attr name="headlineSelectedTextColor" format="reference|color" />
+    <attr name="headlineSelectedTextColor" format="reference|color" />    
     <attr name="headlineExcerptTextColor" format="reference|color" />
+    <attr name="headlineSecondaryTextColor" format="reference|color" />
+    <attr name="headlineSelectedSecondaryTextColor" format="reference|color" />
     <attr name="headlineSelectedExcerptTextColor" format="reference|color" />
     <attr name="headlineTitleHighScoreUnreadTextColor" format="reference|color" />
     <attr name="linkColor" format="reference|color" />

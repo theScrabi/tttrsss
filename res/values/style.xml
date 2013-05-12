@@ -20,6 +20,8 @@
         <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
         <item name="headlineSelectedTextColor">@android:color/primary_text_light</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
+        <item name="headlineSecondaryTextColor">#909090</item>
+    	<item name="headlineSelectedSecondaryTextColor">#606060</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
         <item name="linkColor">#5858F8</item>
@@ -62,6 +64,8 @@
         <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedTextColor">@android:color/black</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineSecondaryTextColor">#909090</item>
+        <item name="headlineSelectedSecondaryTextColor">#404040</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="linkColor">#5858F8</item>
@@ -83,6 +87,7 @@
         <item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_gray</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="actionBarStyle">@style/ActionBarDarkGray</item>        
     </style>
