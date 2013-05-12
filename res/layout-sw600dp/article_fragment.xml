@@ -56,8 +56,7 @@
                     android:singleLine="true"
                     android:text="{Author}"
                     android:textColor="?headlineExcerptTextColor"
-                    android:textSize="13sp"
-                    android:textStyle="italic" />
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -71,6 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
                     android:ellipsize="end"
+                    android:textStyle="italic" 
                     android:singleLine="true"
                     android:text="{TAGS}"
                     android:textColor="?headlineExcerptTextColor"
