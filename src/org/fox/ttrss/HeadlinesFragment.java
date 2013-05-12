@@ -240,7 +240,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		} else {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 			Article article = getArticleAtPosition(info.position);
-			menu.setHeaderTitle(article.title);
+			menu.setHeaderTitle(Html.fromHtml(article.title));
 			menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
 		
