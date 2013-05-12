@@ -32,7 +32,7 @@
             android:singleLine="false"
             android:text="{Title...}"
             android:textColor="?headlineTextColor"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -56,7 +56,7 @@
             android:singleLine="true"
             android:text="{Feed title...}"
             android:textColor="?headlineSecondaryTextColor"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textStyle="italic" />
 
         <TextView
@@ -67,7 +67,7 @@
             android:gravity="right|center_vertical"
             android:text="Jan 01"
             android:textColor="?headlineSecondaryTextColor"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textStyle="italic" />
 
     </LinearLayout>
@@ -81,7 +81,7 @@
         android:paddingTop="6dp"
         android:text="{Content excerpt...}"
         android:textColor="?headlineExcerptTextColor"
-        android:textSize="13sp" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,7 +101,7 @@
             android:singleLine="true"
             android:text="{Author}"
             android:textColor="?headlineSecondaryTextColor"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/marked"
