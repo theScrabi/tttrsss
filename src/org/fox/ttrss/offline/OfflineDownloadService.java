@@ -393,7 +393,7 @@ public class OfflineDownloadService extends Service {
 						stmtInsert.bindLong(index++, article.feed_id);
 						stmtInsert.bindString(index++, tagsString); // comma-separated tags
 						stmtInsert.bindString(index++, article.content);
-						stmtInsert.bindString(index++, article.author);
+						stmtInsert.bindString(index++, article.author != null ? article.author : "");
 						
 						if (m_downloadImages) {
 							Document doc = Jsoup.parse(article.content);
