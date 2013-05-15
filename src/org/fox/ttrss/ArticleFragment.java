@@ -212,6 +212,8 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
 
+			    cssOverride += " table { width : 100%; }";
+			    
 				String articleContent = m_article.content != null ? m_article.content : "";
 				
 				Document doc = Jsoup.parse(articleContent);
