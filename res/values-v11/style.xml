@@ -6,10 +6,10 @@
 		<item name="unreadCounterColor">#0000ff</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
-		<item name="articleBackground">#ffffff</item>
+		<item name="articleBackground">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">@drawable/headline_row_selected_light</item>
 		<item name="headlineSelectedBackgroundSolid">@color/headline_row_selected_light</item>
-		<item name="headlineUnreadBackground">#fafafa</item>
+		<item name="headlineUnreadBackground">#f0f0f0</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">@drawable/headline_row_selected_light</item>
 		<item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_light</item>
