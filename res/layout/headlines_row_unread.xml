@@ -66,7 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:gravity="right|center_vertical"
-            android:paddingRight="12dp"
             android:text="Jan 01"
             android:textColor="?headlineSecondaryTextColor"
             android:textSize="13sp"

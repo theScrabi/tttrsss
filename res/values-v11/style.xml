@@ -9,7 +9,7 @@
 		<item name="articleBackground">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">@drawable/headline_row_selected_light</item>
 		<item name="headlineSelectedBackgroundSolid">@color/headline_row_selected_light</item>
-		<item name="headlineUnreadBackground">#f0f0f0</item>
+		<item name="headlineUnreadBackground">@drawable/headline_row_unread_light</item>
 		<item name="headlineNormalBackground">@android:color/transparent</item>
 		<item name="feedsSelectedBackground">@drawable/headline_row_selected_light</item>
 		<item name="feedsSelectedBackgroundSolid">@color/headline_row_selected_light</item>
@@ -32,7 +32,7 @@
 		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
 		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
-		<item name="headlineUnreadBackground">#F2EAE8</item>
+		<item name="headlineUnreadBackground">@drawable/headline_row_unread_sepia</item> <!-- #F2EAE8 -->
 		<item name="headlineSelectedBackground">@drawable/headline_row_selected_sepia</item>
 		<item name="headlineSelectedBackgroundSolid">@color/headline_row_selected_sepia</item>
 		<item name="feedsSelectedBackground">@drawable/headline_row_selected_sepia</item>
