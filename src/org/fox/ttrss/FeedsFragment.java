@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -345,7 +346,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 							}
 
 							GetIconsTask git = new GetIconsTask(baseUrl);
-							git.execute(m_feeds);
+							
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+								git.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, m_feeds);
+							else
+								git.execute(m_feeds);
 							
 							m_feedIconsChecked = true;
 						}
