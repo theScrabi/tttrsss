@@ -152,10 +152,10 @@ public class OnlineActivity extends CommonActivity {
 
 		if (canUseProgress()) {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
-		} else {
-			requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		}
-		
+
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
 		setProgressBarVisibility(false);
 		setProgressBarIndeterminateVisibility(false);
 
