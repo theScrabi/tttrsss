@@ -7,6 +7,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -118,7 +119,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 		
 		initDatabase();
 		
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
+		m_compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
