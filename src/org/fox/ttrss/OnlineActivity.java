@@ -749,55 +749,35 @@ public class OnlineActivity extends CommonActivity {
 				
 				int count = hf.getUnreadArticles().size();
 				
+				boolean confirm = m_prefs.getBoolean("confirm_headlines_catchup", true);
+				
 				if (count > 0) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(
-							OnlineActivity.this)
-							.setMessage(getString(R.string.mark_num_headlines_as_read, count))
-							.setPositiveButton(R.string.catchup,
-									new Dialog.OnClickListener() {
-										public void onClick(DialogInterface dialog,
-												int which) {
+					if (confirm) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								OnlineActivity.this)
+								.setMessage(getString(R.string.mark_num_headlines_as_read, count))
+								.setPositiveButton(R.string.catchup,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
 	
-											ArticleList articles = hf.getUnreadArticles();
-	
-											for (Article a : articles)
-												a.unread = false;
-	
-											ApiRequest req = new ApiRequest(getApplicationContext()) {
-												protected void onPostExecute(JsonElement result) {
-													if (hf.isAdded()) {
-														hf.refresh(false);
-													}
-												}
-											};
-	
-											final String articleIds = articlesToIdString(articles);
-	
-											@SuppressWarnings("serial")
-											HashMap<String, String> map = new HashMap<String, String>() {
-												{
-													put("sid", getSessionId());
-													put("op", "updateArticle");
-													put("article_ids", articleIds);
-													put("mode", "0");
-													put("field", "2");
-												}
-											};
-											req.execute(map);
-											
-											
-										}
-									})
-							.setNegativeButton(R.string.dialog_cancel,
-									new Dialog.OnClickListener() {
-										public void onClick(DialogInterface dialog,
-												int which) {
-	
-										}
-									});
-	
-					AlertDialog dlg = builder.create();
-					dlg.show();
+												catchupVisibleArticles();											
+												
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+		
+											}
+										});
+		
+						AlertDialog dlg = builder.create();
+						dlg.show();
+					} else {
+						catchupVisibleArticles();
+					}
 				}
 			}
 			return true;
@@ -1020,6 +1000,39 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 	
+	protected void catchupVisibleArticles() {
+		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+		
+		if (hf != null) {
+			ArticleList articles = hf.getUnreadArticles();
+			
+			for (Article a : articles)
+				a.unread = false;
+	
+			ApiRequest req = new ApiRequest(getApplicationContext()) {
+				protected void onPostExecute(JsonElement result) {
+					if (hf.isAdded()) {
+						hf.refresh(false);
+					}
+				}
+			};
+	
+			final String articleIds = articlesToIdString(articles);
+	
+			@SuppressWarnings("serial")
+			HashMap<String, String> map = new HashMap<String, String>() {
+				{
+					put("sid", getSessionId());
+					put("op", "updateArticle");
+					put("article_ids", articleIds);
+					put("mode", "0");
+					put("field", "2");
+				}
+			};
+			req.execute(map);
+		}
+	}
+
 	public void editArticleNote(final Article article) {
 		String note = "";
 		

@@ -129,6 +129,12 @@
             android:defaultValue="false"
             android:key="full_screen_mode"
             android:title="@string/prefs_fullscreen_mode" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="confirm_headlines_catchup"
+            android:title="@string/prefs_confirm_headlines_catchup" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference
