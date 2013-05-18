@@ -33,9 +33,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		setContentView(R.layout.headlines);
 		
-		if (!isCompatMode()) {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 		

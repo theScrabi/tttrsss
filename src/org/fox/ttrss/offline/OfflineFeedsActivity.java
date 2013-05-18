@@ -45,7 +45,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			
-			if (!isCompatMode() && m_actionbarUpEnabled) {
+			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 			
@@ -55,10 +55,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			if (intent.getIntExtra("feed", -10000) != -10000 || intent.getIntExtra("category", -10000) != -10000 ||
 					intent.getIntExtra("article", -10000) != -10000) {
 				
-				if (!isCompatMode()) {
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					m_actionbarUpEnabled = true;
-				}
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				m_actionbarUpEnabled = true;
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 

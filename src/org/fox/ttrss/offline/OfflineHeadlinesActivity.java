@@ -33,9 +33,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 		setContentView(R.layout.headlines);
 		
-		if (!isCompatMode()) {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
 		

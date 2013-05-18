@@ -58,10 +58,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
 				intent.getParcelableExtra("article") != null) {
 			
-				if (!isCompatMode()) {
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					m_actionbarUpEnabled = true;
-				}
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				m_actionbarUpEnabled = true;
 				
 				Feed feed = (Feed) intent.getParcelableExtra("feed");
 				FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
@@ -127,7 +125,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				container.setWeightSum(3f);
 			}
 
-			if (!isCompatMode() && m_actionbarUpEnabled) {
+			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
