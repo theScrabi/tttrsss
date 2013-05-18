@@ -3,6 +3,8 @@ package org.fox.ttrss.offline;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
+import com.actionbarsherlock.view.MenuItem;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 
 public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
@@ -91,6 +94,19 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			overridePendingTransition(0, R.anim.right_slide_out);
+			return true;
+		default:
+			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
 	public void onArticleSelected(int articleId, boolean open) {
 		SQLiteStatement stmt = getWritableDb().compileStatement(
 				"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
@@ -141,5 +157,11 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	@Override
 	public void onArticleSelected(int articleId) {
 		onArticleSelected(articleId, true);		
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(0, R.anim.right_slide_out);
 	}
 }

@@ -24,6 +24,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private boolean m_actionbarUpEnabled = false;
+	private int m_actionbarRevertDepth = 0;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -44,6 +45,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (savedInstanceState != null) {
 			
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
+			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			
 			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -127,6 +129,18 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (m_actionbarRevertDepth > 0) {
+				
+				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
+				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
+				
+				onBackPressed();
+			} else {
+				finish();				
+			}
+			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			initMenu();
@@ -143,6 +157,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		super.onSaveInstanceState(out);
 
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
+		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		
 		GlobalState.getInstance().save(out);
 	}
@@ -179,7 +194,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	}
 	
 	public void onCatSelected(int catId, boolean openAsFeed) {
+		OfflineFeedCategoriesFragment fc = (OfflineFeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
 		if (openAsFeed) {
+			if (fc != null) {
+				fc.setSelectedFeedId(catId);
+			}
+
 			onFeedSelected(catId, true, true);
 		} else {
 			if (isSmallScreen()) {
@@ -188,6 +209,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 				startActivityForResult(intent, 0);		
 			} else {
+				if (fc != null) {
+					fc.setSelectedFeedId(-1);
+				}
+				
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
@@ -196,6 +221,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 				ft.addToBackStack(null);
+
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				m_actionbarUpEnabled = true;
+				m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
 				
 				ft.commit();
 			}
@@ -303,7 +332,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				intent.putExtra("isCat", hf.getFeedIsCat());
 				intent.putExtra("article", articleId);
 		 	   
-				startActivityForResult(intent, 0);	
+				startActivityForResult(intent, 0);
+
+				overridePendingTransition(R.anim.right_slide_in, 0);
 			}			
 		} else {
 			refresh();

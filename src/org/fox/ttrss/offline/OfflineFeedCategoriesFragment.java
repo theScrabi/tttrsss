@@ -197,8 +197,8 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 					m_activity.onCatSelected(feedId);
 				}
 				
-				if (!m_activity.isSmallScreen())
-					m_selectedCatId = feedId;
+				/* if (!m_activity.isSmallScreen())
+					m_selectedCatId = feedId; */
 				
 				m_adapter.notifyDataSetChanged();
 			}

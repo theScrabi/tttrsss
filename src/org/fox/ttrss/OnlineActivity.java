@@ -621,9 +621,9 @@ public class OnlineActivity extends CommonActivity {
 		final ArticlePager ap = (ArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		/* case android.R.id.home:
 			finish();
-			return true;
+			return true; */
 		case R.id.subscribe_to_feed:
 			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
 			startActivityForResult(subscribe, 0);

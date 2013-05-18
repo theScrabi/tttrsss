@@ -457,8 +457,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				}
 			}
 			
-			if (!m_activity.isSmallScreen())
-				m_selectedCat = cat;
+			//if (!m_activity.isSmallScreen())
+			//	m_selectedCat = cat;
 			
 			m_adapter.notifyDataSetChanged();
 		}
