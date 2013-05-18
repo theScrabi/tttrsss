@@ -120,6 +120,15 @@
             android:clickable="true"            
             android:src="@drawable/ic_rss_bw" />
 
+        <ImageButton
+            android:id="@+id/article_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="@null"
+            android:paddingLeft="6dp"
+            android:paddingTop="6dp"
+            android:src="@drawable/ic_mailbox_collapsed_holo_light" />
     </LinearLayout>
 
 </LinearLayout>

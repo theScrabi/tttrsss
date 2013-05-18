@@ -166,6 +166,13 @@ public class CommonActivity extends SherlockFragmentActivity {
 		toast.show();
 	}
 
+	public boolean isDarkTheme() {
+		String defaultTheme = "THEME_DARK";
+		
+		return (m_prefs.getString("theme", defaultTheme).equals("THEME_DARK")) ||
+				m_prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY");
+	}
+	
 	protected void setAppTheme(SharedPreferences prefs) {
 		String defaultTheme = "THEME_DARK";
 		
