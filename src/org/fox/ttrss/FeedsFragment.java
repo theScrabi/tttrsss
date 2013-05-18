@@ -34,6 +34,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -528,6 +530,20 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 					icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 				}
 				
+			}
+			
+			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
+			
+			if (ib != null) {
+				if (m_activity.isDarkTheme())
+					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
+				
+				ib.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						getActivity().openContextMenu(v);
+					}
+				});								
 			}
 
 			return v;
