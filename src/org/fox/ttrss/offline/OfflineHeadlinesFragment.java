@@ -284,7 +284,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		if (m_activity.isSmallScreen() || m_activity.isPortrait())
+		if (m_activity.isSmallScreen())
 			view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 		
 		getActivity().setProgressBarIndeterminateVisibility(false);
