@@ -92,7 +92,7 @@ public class WidgetUpdateService extends Service {
 	   									}
 	   								
 	   									view.setViewVisibility(R.id.progress, View.GONE);
-	   									view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	   									view.setTextViewText(R.id.counter, "?");
 	   									manager.updateAppWidget(thisWidget, view);
 	   								}
 	   							};
@@ -112,7 +112,7 @@ public class WidgetUpdateService extends Service {
 						// Toast: login failed
 						
 	   			    	view.setViewVisibility(R.id.progress, View.GONE);
-	   			    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	   			    	view.setTextViewText(R.id.counter, "?");
 	   			        manager.updateAppWidget(thisWidget, view);  					
 	   				};
 	   			};
