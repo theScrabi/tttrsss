@@ -45,87 +45,95 @@ public class WidgetUpdateService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
     	final RemoteViews view = new RemoteViews(getPackageName(), R.layout.widget_small);
-
-    	view.setTextViewText(R.id.counter, String.valueOf(""));
-    	view.setViewVisibility(R.id.progress, View.VISIBLE);
     	
     	final ComponentName thisWidget = new ComponentName(this, SmallWidgetProvider.class);
     	final AppWidgetManager manager = AppWidgetManager.getInstance(this);
-    	
-        manager.updateAppWidget(thisWidget, view);
-        
-        final SharedPreferences m_prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-   	
-   		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
-    			
-    			// Toast: need configure
-    			
-   		} else {
 
-   			ApiRequest ar = new ApiRequest(getApplicationContext()) {
-   				@SuppressWarnings({ "unchecked", "serial" })
-				@Override
-   				protected void onPostExecute(JsonElement result) {
-   					if (result != null) {
-   						JsonObject content = result.getAsJsonObject();
-   						
-   						if (content != null) {
-   							final String sessionId = content.get("session_id").getAsString();
-   						
-   							ApiRequest aru = new ApiRequest(getApplicationContext()) {
-   								@Override
-   								protected void onPostExecute(JsonElement result) {
-   									if (result != null) {
-   										JsonObject content = result.getAsJsonObject();
-   										
-   										if (content != null) {
-   											int unread = content.get("unread").getAsInt();
-   											
-   											view.setViewVisibility(R.id.progress, View.GONE);
-   											view.setTextViewText(R.id.counter, String.valueOf(unread));
-   											manager.updateAppWidget(thisWidget, view);
-   											
-   											return;
-   										}   										
-   									}
-   								
-   									view.setViewVisibility(R.id.progress, View.GONE);
-   									view.setTextViewText(R.id.counter, getString(R.string.app_name));
-   									manager.updateAppWidget(thisWidget, view);
-   								}
-   							};
+    	try {
+        	view.setTextViewText(R.id.counter, String.valueOf(""));
+        	view.setViewVisibility(R.id.progress, View.VISIBLE);
 
-   				   			HashMap<String, String> umap = new HashMap<String, String>() {
-   				   				{
-   				   					put("op", "getUnread");
-   				   					put("sid", sessionId);
-   				   				}
-   				   			};
-
-   							aru.execute(umap);
-   							return;
-   						}
-   					}
-   					
-					// Toast: login failed
-					
-   			    	view.setViewVisibility(R.id.progress, View.GONE);
-   			    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
-   			        manager.updateAppWidget(thisWidget, view);  					
-   				};
-   			};
-
-   			HashMap<String, String> map = new HashMap<String, String>() {
-   				{
-   					put("op", "login");
-   					put("user", m_prefs.getString("login", "").trim());
-   					put("password", m_prefs.getString("password", "").trim());
-   				}
-   			};
-    			
-   			ar.execute(map);
-   		}
-    	
+	        manager.updateAppWidget(thisWidget, view);
+	        
+	        final SharedPreferences m_prefs = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
+	   	
+	   		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
+	    			
+	    			// Toast: need configure
+	    			
+	   		} else {
+	
+	   			ApiRequest ar = new ApiRequest(getApplicationContext()) {
+	   				@SuppressWarnings({ "unchecked", "serial" })
+					@Override
+	   				protected void onPostExecute(JsonElement result) {
+	   					if (result != null) {
+	   						JsonObject content = result.getAsJsonObject();
+	   						
+	   						if (content != null) {
+	   							final String sessionId = content.get("session_id").getAsString();
+	   						
+	   							ApiRequest aru = new ApiRequest(getApplicationContext()) {
+	   								@Override
+	   								protected void onPostExecute(JsonElement result) {
+	   									if (result != null) {
+	   										JsonObject content = result.getAsJsonObject();
+	   										
+	   										if (content != null) {
+	   											int unread = content.get("unread").getAsInt();
+	   											
+	   											view.setViewVisibility(R.id.progress, View.GONE);
+	   											view.setTextViewText(R.id.counter, String.valueOf(unread));
+	   											manager.updateAppWidget(thisWidget, view);
+	   											
+	   											return;
+	   										}   										
+	   									}
+	   								
+	   									view.setViewVisibility(R.id.progress, View.GONE);
+	   									view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	   									manager.updateAppWidget(thisWidget, view);
+	   								}
+	   							};
+	
+	   				   			HashMap<String, String> umap = new HashMap<String, String>() {
+	   				   				{
+	   				   					put("op", "getUnread");
+	   				   					put("sid", sessionId);
+	   				   				}
+	   				   			};
+	
+	   							aru.execute(umap);
+	   							return;
+	   						}
+	   					}
+	   					
+						// Toast: login failed
+						
+	   			    	view.setViewVisibility(R.id.progress, View.GONE);
+	   			    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	   			        manager.updateAppWidget(thisWidget, view);  					
+	   				};
+	   			};
+	
+	   			HashMap<String, String> map = new HashMap<String, String>() {
+	   				{
+	   					put("op", "login");
+	   					put("user", m_prefs.getString("login", "").trim());
+	   					put("password", m_prefs.getString("password", "").trim());
+	   				}
+	   			};
+	    			
+	   			ar.execute(map);
+	   		}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		
+	    	view.setViewVisibility(R.id.progress, View.GONE);
+	    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	        manager.updateAppWidget(thisWidget, view);  					
+	
+    	}
     }
 }
