@@ -3,6 +3,8 @@
 
     <item android:drawable="@color/ics_cyan"/>
     
+    <item android:drawable="@drawable/shadow"/>
+    
     <item><bitmap
     	xmlns:android="http://schemas.android.com/apk/res/android"
     	android:src="@drawable/arrowhead_dark"

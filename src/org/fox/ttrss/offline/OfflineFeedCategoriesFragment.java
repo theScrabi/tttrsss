@@ -15,6 +15,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -195,8 +197,8 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 					m_activity.onCatSelected(feedId);
 				}
 				
-				if (!m_activity.isSmallScreen())
-					m_selectedCatId = feedId;
+				/* if (!m_activity.isSmallScreen())
+					m_selectedCatId = feedId; */
 				
 				m_adapter.notifyDataSetChanged();
 			}
@@ -282,6 +284,21 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 			if (icon != null) {
 				icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 			}
+			
+			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
+			
+			if (ib != null) {
+				if (m_activity.isDarkTheme())
+					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
+				
+				ib.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						getActivity().openContextMenu(v);
+					}
+				});								
+			}
+
 
 			return v;
 		} 

@@ -169,9 +169,9 @@ public class OfflineActivity extends CommonActivity {
 				.findFragmentByTag(FRAG_ARTICLE);
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
+		/* case android.R.id.home:
 			finish();
-			return true;
+			return true; */
 		case R.id.go_online:
 			switchOnline();
 			return true;	

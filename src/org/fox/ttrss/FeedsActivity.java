@@ -34,6 +34,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected long m_lastRefresh = 0;
 	
 	private boolean m_actionbarUpEnabled = false;
+	private int m_actionbarRevertDepth = 0;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -58,10 +59,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
 				intent.getParcelableExtra("article") != null) {
 			
-				if (!isCompatMode()) {
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					m_actionbarUpEnabled = true;
-				}
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				m_actionbarUpEnabled = true;
 				
 				Feed feed = (Feed) intent.getParcelableExtra("feed");
 				FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
@@ -120,6 +119,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 		} else { // savedInstanceState != null
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
+			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 
 			if (!isSmallScreen()) {
 				// temporary hack because FeedsActivity doesn't track whether active feed is open
@@ -127,7 +127,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				container.setWeightSum(3f);
 			}
 
-			if (!isCompatMode() && m_actionbarUpEnabled) {
+			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
@@ -237,7 +237,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 	
 	public void onCatSelected(FeedCategory cat, boolean openAsFeed) {
-
+		FeedCategoriesFragment fc = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
+		
 		if (!openAsFeed) {
 			
 			if (isSmallScreen()) {
@@ -248,6 +249,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				startActivityForResult(intent, 0);
 				
 			} else {
+				if (fc != null) {
+					fc.setSelectedCategory(null);
+				}
+
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
@@ -257,8 +262,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 				ft.addToBackStack(null);
 				ft.commit();
+				
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				m_actionbarUpEnabled = true;
+				m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
 			}
 		} else {
+			
+			if (fc != null) {
+				fc.setSelectedCategory(cat);
+			}
+
 			Feed feed = new Feed(cat.id, cat.title, true);
 			onFeedSelected(feed);
 		}
@@ -271,6 +285,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (m_actionbarRevertDepth > 0) {
+				
+				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
+				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
+				
+				onBackPressed();
+			} else {
+				finish();				
+			}
+			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			initMenu();
@@ -299,6 +325,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		super.onSaveInstanceState(out);	
 		
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
+		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		
 		GlobalState.getInstance().save(out);
 	}
