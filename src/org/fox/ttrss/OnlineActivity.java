@@ -12,12 +12,15 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
+import org.fox.ttrss.widget.SmallWidgetProvider;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -303,9 +306,17 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	@Override
+	public void onStop() {
+		super.onStop();
+		
+		Intent initialUpdateIntent = new Intent(SmallWidgetProvider.FORCE_UPDATE_ACTION);
+		sendBroadcast(initialUpdateIntent);
+	}
+	
+	@Override
 	public void onPause() {
 		super.onPause();
-
+		
 		unregisterReceiver(m_broadcastReceiver);
 	}
 	
