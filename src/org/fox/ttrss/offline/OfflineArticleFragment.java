@@ -1,5 +1,7 @@
 package org.fox.ttrss.offline;
 
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -125,9 +127,11 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					@Override
 					public void onClick(View v) {
 						try {
-							Intent intent = new Intent(Intent.ACTION_VIEW, 
-									Uri.parse(link.trim()));
-								startActivity(intent);
+							URL url = new URL(link.trim());
+							String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+								url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+							startActivity(intent);
 						} catch (Exception e) {
 							e.printStackTrace();
 							m_activity.toast(R.string.error_other_error);
