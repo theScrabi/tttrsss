@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 
 public class DashClock extends DashClockExtension {
   
-	private static final String TAG = "TTRSS-DC";
+	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
 	
@@ -86,7 +86,7 @@ public class DashClock extends DashClockExtension {
 											updatedData.status(String.valueOf(m_unreadCount));
 						
 											updatedData.expandedTitle(m_unreadCount + " unread articles");
-											updatedData.expandedBody(getString(R.string.app_name));
+											//updatedData.expandedBody(getString(R.string.app_name));
 						
 											updatedData.clickIntent(new Intent().setClassName("org.fox.ttrss",
 													"org.fox.ttrss.OnlineActivity"));
@@ -98,7 +98,7 @@ public class DashClock extends DashClockExtension {
 									}
 								}
 
-								Log.d(TAG, "unread count is: " + m_unreadCount);
+								//Log.d(TAG, "unread count is: " + m_unreadCount);
 							}
 						};
 
