@@ -334,7 +334,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 
 						if (author != null) {
 							if (m_article.author != null && m_article.author.length() > 0) {
-								author.setText(m_article.author);				
+								author.setText(getString(R.string.author_formatted, m_article.author));				
 							} else {
 								author.setVisibility(View.GONE);
 							}

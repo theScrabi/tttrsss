@@ -197,4 +197,5 @@
     <string name="pref_headlines_mark_read_scroll_long">Headlines will be marked read when scrolling past them</string>
     <string name="mark_num_headlines_as_read">Mark %1$d article(s) as read?</string>
     <string name="prefs_confirm_headlines_catchup">Confirm marking articles as read</string>
+    <string name="author_formatted">by %1$s</string>
 </resources>

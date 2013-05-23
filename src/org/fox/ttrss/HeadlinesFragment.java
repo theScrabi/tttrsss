@@ -680,7 +680,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			TextView author = (TextView)v.findViewById(R.id.author);
 			
 			if (author != null) {
-				author.setText(articleAuthor);
+				author.setText(getString(R.string.author_formatted, articleAuthor));
 			}
 			
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
