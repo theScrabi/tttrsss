@@ -2,6 +2,7 @@ package org.fox.ttrss.offline;
 
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -264,7 +265,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			
 			if (dv != null) {
 				Date d = new Date(m_cursor.getInt(m_cursor.getColumnIndex("updated")) * 1000L);
-				SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
+				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
 			}
 			

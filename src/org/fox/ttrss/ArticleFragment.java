@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -306,7 +307,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 						
 						if (dv != null) {
 							Date d = new Date(m_article.updated * 1000L);
-							SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm");
+							DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 							dv.setText(df.format(d));
 						}
 						
