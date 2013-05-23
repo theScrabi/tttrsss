@@ -38,7 +38,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="0"
         android:gravity="right"
-        android:paddingRight="8dip"
+        android:paddingRight="12dp"
         android:text="{123}"
         android:textColor="?feedlistSelectedTextColor"
         android:textSize="13sp"
