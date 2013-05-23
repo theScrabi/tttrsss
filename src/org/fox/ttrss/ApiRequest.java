@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -62,6 +63,15 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
 		m_lastError = ApiError.NO_ERROR;
 		
+	}
+	
+	@SuppressLint("NewApi")
+	@SuppressWarnings("unchecked")
+	public void execute(HashMap<String,String> map) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			super.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, map);
+		else
+			super.execute(map);
 	}
 	
 	protected int getErrorMessage() {
