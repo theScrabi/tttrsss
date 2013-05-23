@@ -40,7 +40,7 @@
         android:gravity="right"
         android:paddingRight="8dip"
         android:text="{123}"
-        android:textColor="?unreadCounterColor"
+        android:textColor="?feedlistSelectedTextColor"
         android:textSize="13sp"
         android:textStyle="bold" />
 
