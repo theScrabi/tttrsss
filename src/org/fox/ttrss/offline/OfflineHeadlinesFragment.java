@@ -532,8 +532,14 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			if (ta != null) {
 				int authorIndex = article.getColumnIndex("author");
-				if (authorIndex >= 0)
-					ta.setText(article.getString(authorIndex));
+				if (authorIndex >= 0) {
+					String author = article.getString(authorIndex);
+					
+					if (author != null && author.length() > 0)
+						ta.setText(getString(R.string.author_formatted, author));
+					else
+						ta.setText("");
+				}
 			}
 
 			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);

@@ -3,7 +3,7 @@
     android:id="@+id/feeds_row"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="?feedsSelectedBackgroundSolid"
+    android:background="?feedsSelectedBackground"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:orientation="horizontal"
