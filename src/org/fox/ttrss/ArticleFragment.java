@@ -97,9 +97,14 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 
 		final View view = inflater.inflate(R.layout.article_fragment, container, false);
 
-		View content = view.findViewById(R.id.content);
+		WebView content = (WebView) view.findViewById(R.id.content);
 		
 		if (content != null) content.setVisibility(View.INVISIBLE);
+		
+	    // prevent flicker in ics
+	    if (android.os.Build.VERSION.SDK_INT >= 11) {
+	    	content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+	    }
 		
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -205,11 +210,6 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 							TypedValue tv = new TypedValue();				
 						    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 						    
-						    // prevent flicker in ics
-						    if (android.os.Build.VERSION.SDK_INT >= 11) {
-						    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-						    }
-
 							if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
 								cssOverride = "body { background : transparent; color : #e0e0e0}";
 							} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
