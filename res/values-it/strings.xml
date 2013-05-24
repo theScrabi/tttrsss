@@ -190,4 +190,12 @@
     <string name="article_img_share">Condividi immagine</string>
     <string name="requires_api5">Richiede versione 1.7.6</string>
     <string name="labels">Etichette</string>
+    <string name="article_img_view_caption">Visualizza didascalia</string>
+    <string name="light_theme_is_not_supported_on_honeycomb">La tema Chiara non è supportata su Honeycomb</string>
+    <string name="pref_headlines_mark_read_scroll">Segna come letto quando si scorre</string>
+    <string name="pref_headlines_mark_read_scroll_long">Gli articoli verranno segnati come letti quando si scorre oltre</string>
+    <string name="mark_num_headlines_as_read">Segni %1$d articolo/i come letti?</string>
+    <string name="prefs_confirm_headlines_catchup">Confermi la marcatura degli articoli come letti</string>
+    <string name="author_formatted">di %1$s</string>
+    <string name="n_unread_articles">%1$d articoli non letti</string>
 </resources>
