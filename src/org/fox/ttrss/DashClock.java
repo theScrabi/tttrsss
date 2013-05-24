@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
@@ -53,7 +52,6 @@ public class DashClock extends DashClockExtension {
 			super(context);
 		}
 
-		@SuppressWarnings("unchecked")
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {
@@ -61,7 +59,7 @@ public class DashClock extends DashClockExtension {
 					if (content != null) {
 						m_sessionId = content.get("session_id").getAsString();
 
-						Log.d(TAG, "Authenticated!");
+						// Log.d(TAG, "Authenticated!");
 						
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {
@@ -85,7 +83,7 @@ public class DashClock extends DashClockExtension {
 											updatedData.icon(R.drawable.dashclock);
 											updatedData.status(String.valueOf(m_unreadCount));
 						
-											updatedData.expandedTitle(m_unreadCount + " unread articles");
+											updatedData.expandedTitle(getString(R.string.n_unread_articles, m_unreadCount));
 											//updatedData.expandedBody(getString(R.string.app_name));
 						
 											updatedData.clickIntent(new Intent().setClassName("org.fox.ttrss",
