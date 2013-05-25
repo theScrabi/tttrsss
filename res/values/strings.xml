@@ -198,4 +198,5 @@
     <string name="mark_num_headlines_as_read">Mark %1$d article(s) as read?</string>
     <string name="prefs_confirm_headlines_catchup">Confirm marking articles as read</string>
     <string name="author_formatted">by %1$s</string>
+    <string name="n_unread_articles">%1$d unread articles</string>
 </resources>
