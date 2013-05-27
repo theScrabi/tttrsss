@@ -670,7 +670,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					
 					if (excerpt.length() > 200)
 						excerpt = excerpt.substring(0, 200) + "...";
+
+					int fontSize = -1;
 					
+					switch (Integer.parseInt(m_prefs.getString("headlines_font_size", "0"))) {
+					case 0:
+						fontSize = 13;
+						break;
+					case 1:
+						fontSize = 16;
+						break;
+					case 2:
+						fontSize = 18;
+						break;		
+					}
+					
+					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
 					te.setText(excerpt);
 				}
 			}       	

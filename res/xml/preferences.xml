@@ -97,11 +97,18 @@
             android:key="oldest_first"
             android:summary="@string/requires_api5"
             android:title="@string/offline_oldest_first" />
-        <CheckBoxPreference android:key="headlines_mark_read_scroll"
-            android:title="@string/pref_headlines_mark_read_scroll"
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="headlines_mark_read_scroll"
             android:summary="@string/pref_headlines_mark_read_scroll_long"
-            android:defaultValue="false"/>
+            android:title="@string/pref_headlines_mark_read_scroll" />
 
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_font_size_names"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="headlines_font_size"
+            android:title="@string/pref_headline_font_size" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <ListPreference
@@ -129,12 +136,10 @@
             android:defaultValue="false"
             android:key="full_screen_mode"
             android:title="@string/prefs_fullscreen_mode" />
-        
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="confirm_headlines_catchup"
             android:title="@string/prefs_confirm_headlines_catchup" />
-        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference
