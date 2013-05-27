@@ -21,9 +21,10 @@
     	<item name="headlineSelectedSecondaryTextColor">#606060</item>
     	<item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
-    	<item name="linkColor">#30B0E0</item>
+    	<item name="linkColor">#4684ff</item>
     	<item name="loadingBackground">@android:color/white</item>
-    	<item name="unreadCounterBackground">@drawable/counter_background</item>
+    	<item name="unreadCounterBackground">@drawable/counter_background</item>    	    	
+    	<item name="unreadSelectedCounterBackground">@drawable/counter_background_selected_light</item>
 	</style>
 
 	<style name="SepiaTheme" parent="LightTheme">
@@ -36,6 +37,7 @@
 		<item name="feedsSelectedBackground">@drawable/headline_row_selected_sepia</item>
 		<item name="articleBackground">@drawable/paper_sepia</item>
 		<item name="unreadCounterBackground">@drawable/counter_background_sepia</item>
+		<item name="unreadSelectedCounterBackground">@drawable/counter_background_sepia</item>
 		<item name="feedlistTextColor">#35281C</item>
 		<item name="linkColor">#C46262</item>
         <!--  <item name="android:actionBarStyle">@style/ActionBarSepia</item> -->
@@ -66,6 +68,7 @@
         <item name="linkColor">@color/ics_cyan</item>
         <item name="loadingBackground">@android:color/black</item>
         <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
+        <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
 	</style>
 	
 	<style name="DarkGrayTheme" parent="DarkTheme">
