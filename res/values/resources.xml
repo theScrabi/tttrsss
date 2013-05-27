@@ -13,4 +13,7 @@
 	<color name="headline_row_unread_gray">#383c42</color>
 	<color name="headline_row_unread_light">#f0f0f0</color>
 	<color name="headline_row_unread_sepia">#F2EAE8</color>
+	<color name="unread_counter_background">#88b0f0</color>
+	<color name="unread_counter_background_dark">#303030</color>
+	<color name="unread_counter_background_sepia">#C46262</color>
 </resources>

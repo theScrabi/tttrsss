@@ -23,4 +23,5 @@
     <attr name="headlineTitleHighScoreUnreadTextColor" format="reference|color" />
     <attr name="linkColor" format="reference|color" />
     <attr name="loadingBackground" format="reference|color" />
+    <attr name="unreadCounterBackground" format="reference|color" />    
 </resources>

@@ -3,7 +3,7 @@
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
-		<item name="unreadCounterColor">#0000ff</item>
+		<item name="unreadCounterColor">#ffffff</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
 		<item name="articleBackground">@android:color/transparent</item>
@@ -23,6 +23,7 @@
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
     	<item name="linkColor">#30B0E0</item>
     	<item name="loadingBackground">@android:color/white</item>
+    	<item name="unreadCounterBackground">@drawable/counter_background</item>
 	</style>
 
 	<style name="SepiaTheme" parent="LightTheme">
@@ -34,21 +35,17 @@
 		<item name="headlineSelectedBackground">@drawable/headline_row_selected_sepia</item>
 		<item name="feedsSelectedBackground">@drawable/headline_row_selected_sepia</item>
 		<item name="articleBackground">@drawable/paper_sepia</item>
-		<item name="unreadCounterColor">#C46262</item>
+		<item name="unreadCounterBackground">@drawable/counter_background_sepia</item>
 		<item name="feedlistTextColor">#35281C</item>
 		<item name="linkColor">#C46262</item>
         <!--  <item name="android:actionBarStyle">@style/ActionBarSepia</item> -->
 	</style>
 	
-	<!--  <style name="ActionBarSepia" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-    	<item name="android:background">#351d11</item>
-	</style> -->
-	
 	<style name="DarkTheme" parent="Theme.Sherlock">
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
-		<item name="unreadCounterColor">@color/ics_cyan</item>
+		<item name="unreadCounterColor">#ffffff</item>
 		<item name="headlinesBackground">@drawable/headlines_dark</item>
 		<item name="headlinesBackgroundSolid">@drawable/headlines_dark</item>
 		<item name="articleBackground">@android:color/black</item>
@@ -68,13 +65,13 @@
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="linkColor">@color/ics_cyan</item>
         <item name="loadingBackground">@android:color/black</item>
+        <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
 	</style>
 	
 	<style name="DarkGrayTheme" parent="DarkTheme">
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
-		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>
-		<item name="unreadCounterColor">#a0a0a0</item>
+		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		
 		<item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
 		<item name="headlinesBackgroundSolid">@color/feeds_dark_gray</item>
 		<item name="articleBackground">@color/feeds_dark_gray</item>
@@ -87,6 +84,7 @@
         <item name="actionBarStyle">@style/ActionBarDarkGray</item>
         <item name="android:actionBarStyle">@style/ActionBarDarkGray</item>
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
+        
 	</style>
 	
 	<style name="ActionBarDarkGray" parent="Widget.Sherlock.ActionBar.Solid">
