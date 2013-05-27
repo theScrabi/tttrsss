@@ -8,11 +8,9 @@
     <attr name="headlinesBackgroundSolid" format="reference|color" />
     <attr name="articleBackground" format="reference|color" />
     <attr name="headlineSelectedBackground" format="reference|color" />
-    <attr name="headlineSelectedBackgroundSolid" format="reference|color" />
     <attr name="headlineUnreadBackground" format="reference|color" />
     <attr name="headlineNormalBackground" format="reference|color" />
     <attr name="feedsSelectedBackground" format="reference|color" />
-    <attr name="feedsSelectedBackgroundSolid" format="reference|color" />
     <attr name="feedlistTextColor" format="reference|color" />
     <attr name="feedlistSelectedTextColor" format="reference|color" />
     <attr name="headlineTextColor" format="reference|color" />
