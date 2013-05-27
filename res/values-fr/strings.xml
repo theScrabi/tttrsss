@@ -48,7 +48,7 @@
     <string name="context_selection_toggle_published">Basculer Publié</string>
     <string name="context_selection_toggle_unread">Basculer Non lu</string>
     <string name="article_set_unread">Marquer Non lu</string>
-    <string name="article_mark_read_above">Marquer comme lu jusqu'ici</string>
+    <string name="article_mark_read_above">Marquer comme lu jusqu\'ici</string>
     <string name="http_login_summary">Optionnel. Remplissez ceci si votre installation tt-rss est protégée par une authentification HTTP Basique.</string>
     <string name="login_summary">Votre identifiant tt-rss. Inutile en mode utilisateur unique.</string>
     <string name="ttrss_url_summary">L\'URL de votre répertoire d\'installation tt-rss, ex: http://site.com/tt-rss/</string>
