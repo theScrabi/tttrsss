@@ -27,6 +27,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	private boolean m_actionbarUpEnabled = false;
 	private int m_actionbarRevertDepth = 0;
 	private SlidingMenu m_slidingMenu;
+	private boolean m_feedIsSelected = false;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -39,13 +40,18 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.headlines);		
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null && 
+				findViewById(R.id.sw600dp_port_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		if (isSmallScreen()) {
+		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
 			m_slidingMenu = new SlidingMenu(this);
-				
+			
+			if (findViewById(R.id.sw600dp_port_anchor) != null) {
+				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
+			}
+			
 			m_slidingMenu.setMode(SlidingMenu.LEFT);
 			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
@@ -68,6 +74,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
+			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
+			
+			if (!m_feedIsSelected && m_slidingMenu != null)
+				m_slidingMenu.showMenu();
 			
 			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -148,6 +158,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
 		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
+		out.putBoolean("feedIsSelected", m_feedIsSelected);
+		
+		//if (m_slidingMenu != null )
+		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
 		
 		GlobalState.getInstance().save(out);
 	}
@@ -222,7 +236,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (open) {
 			if (!isSmallScreen()) {
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				container.setWeightSum(3f);
+				if (container != null) {
+					container.setWeightSum(3f);
+				}
 			}
 			
 			new Handler().postDelayed(new Runnable() {
@@ -236,7 +252,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 					
 					ft.commit();
-					
+
+					m_feedIsSelected = true;
+
 					if (m_slidingMenu != null) { 
 						m_slidingMenu.showContent();
 						getSupportActionBar().setDisplayHomeAsUpEnabled(true);

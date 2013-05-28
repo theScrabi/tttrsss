@@ -7,6 +7,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -151,7 +152,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 	    return width < height;
 	}
 
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "ServiceCast" })
 	@SuppressWarnings("deprecation")
 	public void copyToClipboard(String str) {
 		if (android.os.Build.VERSION.SDK_INT < 11) {				
@@ -185,5 +186,20 @@ public class CommonActivity extends SherlockFragmentActivity {
 		} else {
 			setTheme(R.style.LightTheme);
 		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	protected int getScreenWidthInPixel() {
+	    Display display = getWindowManager().getDefaultDisplay();
+
+	    if (android.os.Build.VERSION.SDK_INT >= 13) {
+	        Point size = new Point();
+	        display.getSize(size);
+	        int width = size.x;
+	        return width;       
+	    } else {
+	        return display.getWidth();
+	    }
 	}
 }

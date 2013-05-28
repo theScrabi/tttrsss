@@ -37,6 +37,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	private boolean m_actionbarUpEnabled = false;
 	private int m_actionbarRevertDepth = 0;
 	private SlidingMenu m_slidingMenu;
+	private boolean m_feedIsSelected = false;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -49,18 +50,23 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines);		
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null && 
+				findViewById(R.id.sw600dp_port_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		if (isSmallScreen()) {
+		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
 			m_slidingMenu = new SlidingMenu(this);
-				
+			
+			if (findViewById(R.id.sw600dp_port_anchor) != null) {
+				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
+			}
+			
 			m_slidingMenu.setMode(SlidingMenu.LEFT);
 			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-			m_slidingMenu.setSlidingEnabled(true);
 			m_slidingMenu.setMenu(R.layout.feeds);
+			m_slidingMenu.setSlidingEnabled(true);
 			m_slidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
 					
 				@Override
@@ -94,14 +100,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		} else { // savedInstanceState != null
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
+			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
 
-			if (m_slidingMenu != null && savedInstanceState.getBoolean("slidingMenuVisible"))
+			if (m_slidingMenu != null && m_feedIsSelected == false)
 				m_slidingMenu.showMenu();
 			
 			if (!isSmallScreen()) {
 				// temporary hack because FeedsActivity doesn't track whether active feed is open
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				container.setWeightSum(3f);
+				
+				if (container != null)
+					container.setWeightSum(3f);
 			}
 
 			if (m_actionbarUpEnabled) {
@@ -109,10 +118,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 		}
 		
-		if (!isCompatMode() && !isSmallScreen()) {
+		/* if (!isCompatMode() && !isSmallScreen()) {
 			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
 			((ViewGroup)findViewById(R.id.feeds_fragment)).setLayoutTransition(new LayoutTransition());
-		}
+		} */
 
 	}
 	
@@ -156,11 +165,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			if (!isCompatMode() && !isSmallScreen()) {
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				float wSum = container.getWeightSum();
-				if (wSum <= 2.0f) {
-					ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
-					anim.setDuration(200);
-					anim.start();
+				if (container != null) {
+					float wSum = container.getWeightSum();
+					if (wSum <= 2.0f) {
+						ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
+						anim.setDuration(200);
+						anim.start();
+					}
 				}
 			}
 
@@ -177,6 +188,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 					
 					ft.commit();
+
+					m_feedIsSelected = true;
 					
 					if (m_slidingMenu != null) { 
 						m_slidingMenu.showContent();
@@ -284,9 +297,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
 		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
+		out.putBoolean("feedIsSelected", m_feedIsSelected);
 		
-		if (m_slidingMenu != null )
-			out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
+		//if (m_slidingMenu != null )
+		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
 		
 		GlobalState.getInstance().save(out);
 	}
