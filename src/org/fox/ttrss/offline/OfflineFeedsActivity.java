@@ -89,15 +89,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		}
 		
 		setLoadingStatus(R.string.blank, false);
-		//findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
 
-		/* if (!isSmallScreen()) {
-			LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-			container.setWeightSum(3f);
-		} */
-		
 		if (!isCompatMode() && !isSmallScreen()) {
 			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
 			((ViewGroup)findViewById(R.id.feeds_fragment)).setLayoutTransition(new LayoutTransition());
@@ -164,7 +158,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (m_menu != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-			//OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
 			if (m_slidingMenu != null) {
@@ -172,17 +165,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !m_slidingMenu.isMenuShowing());
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
-				//m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());				
 			}
-			
-			/* m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
-			
-			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
-
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded()); */
-			//m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && getSelectedArticleCount() == 0);
-			//m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && getSelectedArticleCount() != 0);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -208,31 +192,24 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 			onFeedSelected(catId, true, true);
 		} else {
-			/* if (isSmallScreen()) {
-				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);		
-				intent.putExtra("category", catId);
+			if (fc != null) {
+				fc.setSelectedFeedId(-1);
+			}
+			
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
 
-				startActivityForResult(intent, 0);		
-			} else { */
-				if (fc != null) {
-					fc.setSelectedFeedId(-1);
-				}
-				
-				FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
+			OfflineFeedsFragment ff = new OfflineFeedsFragment();
+			ff.initialize(catId);
 
-				OfflineFeedsFragment ff = new OfflineFeedsFragment();
-				ff.initialize(catId);
+			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+			ft.addToBackStack(null);
 
-				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-				ft.addToBackStack(null);
-
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-				m_actionbarUpEnabled = true;
-				m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
-				
-				ft.commit();
-			//}
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			m_actionbarUpEnabled = true;
+			m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
+			
+			ft.commit();
 		}
 	}
 	
@@ -243,54 +220,31 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onFeedSelected(final int feedId, final boolean isCat, boolean open) {
 		
 		if (open) {
-			/* if (isSmallScreen()) {
-				
-				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);		
-				intent.putExtra("feed", feedId);
-				intent.putExtra("isCat", isCat);
-		 	   
-				startActivityForResult(intent, 0);		
-				
-			} else { */
-				/* if (!isCompatMode()) {
-					LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-					float wSum = container.getWeightSum();
-					if (wSum <= 2.0f) {
-						ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
-						anim.setDuration(200);
-						anim.start();
+			if (!isSmallScreen()) {
+				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+				container.setWeightSum(3f);
+			}
+			
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					FragmentTransaction ft = getSupportFragmentManager()
+							.beginTransaction();
+					
+					OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
+					hf.initialize(feedId, isCat);
+					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+					
+					ft.commit();
+					
+					if (m_slidingMenu != null) { 
+						m_slidingMenu.showContent();
+						getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+						m_actionbarUpEnabled = true;
 					}
-				} */
-				
-				// ^ no idea why the animation hangs half the time :(
-				
-				if (!isSmallScreen()) {
-					LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-					container.setWeightSum(3f);
-				}
-				
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						FragmentTransaction ft = getSupportFragmentManager()
-								.beginTransaction();
-						
-						OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
-						hf.initialize(feedId, isCat);
-						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-						
-						ft.commit();
-						
-						if (m_slidingMenu != null) { 
-							m_slidingMenu.showContent();
-							getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-							m_actionbarUpEnabled = true;
-						}
 
-					}
-				}, 10);
-				
-			//}
+				}
+			}, 10);
 		}		
 	}
 
@@ -326,30 +280,17 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		initMenu();
 		
 		if (open) {
-			/* if (isSmallScreen()) {
-
-				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-								
-				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);		
-				intent.putExtra("feed", hf.getFeedId());
-				intent.putExtra("isCat", hf.getFeedIsCat());
-				intent.putExtra("article", articleId);
-		 	   
-				startActivityForResult(intent, 0);		
+			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			} else { */
+			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);		
+			intent.putExtra("feed", hf.getFeedId());
+			intent.putExtra("isCat", hf.getFeedIsCat());
+			intent.putExtra("article", articleId);
+	 	   
+			startActivityForResult(intent, 0);
 
-				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-				
-				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);		
-				intent.putExtra("feed", hf.getFeedId());
-				intent.putExtra("isCat", hf.getFeedIsCat());
-				intent.putExtra("article", articleId);
-		 	   
-				startActivityForResult(intent, 0);
-
-				overridePendingTransition(R.anim.right_slide_in, 0);
-			//}			
+			overridePendingTransition(R.anim.right_slide_in, 0);
+			
 		} else {
 			refresh();
 		}

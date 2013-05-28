@@ -141,10 +141,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
-			
-			//m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.getSelectedArticleCount() == 0);
-			//m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.getSelectedArticleCount() != 0);
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && hf.isVisible());
 			
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

@@ -77,51 +77,20 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (savedInstanceState == null) {
 			if (m_slidingMenu != null)
 				m_slidingMenu.showMenu();
-			
-			/* if (intent.getParcelableExtra("article") != null) {
-			
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-				m_actionbarUpEnabled = true;
-				
-				Feed feed = (Feed) intent.getParcelableExtra("feed");
-				FeedCategory cat = (FeedCategory) intent.getParcelableExtra("category");
-				Article article = (Article) intent.getParcelableExtra("article");
-	
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-	
-				if (article != null) {
-					Article original = GlobalState.getInstance().m_loadedArticles.findById(article.id);
-					
-					ArticlePager ap = new ArticlePager();
-					ap.initialize(original != null ? original : article, feed);
-					
-					ft.replace(R.id.feeds_fragment, ap, FRAG_ARTICLE);
-					
-					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
-					
-					setTitle(feed.title);
-				}
-	
-				ft.commit();
 
-			} else { */
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				
-				if (m_prefs.getBoolean("enable_cats", false)) {
-					ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
-				} else {
-					ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
-				}
+			if (m_prefs.getBoolean("enable_cats", false)) {
+				ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
+			} else {
+				ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
+			}
+
+			ft.commit();
 				
-				/* if (!isSmallScreen()) {
-					ft.replace(R.id.headlines_fragment, new HeadlinesFragment(new Feed(-3, "Fresh articles", false)));
-				} */
-				
-				ft.commit();
-				
-				AppRater.appLaunched(this);
-				checkTrial(true);
-			//}
+			AppRater.appLaunched(this);
+			checkTrial(true);
+
 		} else { // savedInstanceState != null
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
@@ -154,7 +123,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (m_menu != null && getSessionId() != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-			//ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
 			if (m_slidingMenu != null) {
@@ -162,31 +130,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !m_slidingMenu.isMenuShowing());
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
-				//m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
 				
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
 			}
-			
-			/* if (isSmallScreen()) {
-				m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
-			} else {
-				m_menu.findItem(R.id.update_headlines).setVisible(false);
-			} */
-			
-			/* if (af != null) {
-				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
-					if (!isCompatMode()) {
-						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-					}
-					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
-				} else {
-					if (!isCompatMode()) {
-						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-					}
-					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
-				}
-			} */
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -253,32 +200,24 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		if (!openAsFeed) {
 			
-			if (false && isSmallScreen()) {
-			
-				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-				intent.putExtra("category", cat);
-		 	   
-				startActivityForResult(intent, 0);
-				
-			} else {
-				if (fc != null) {
-					fc.setSelectedCategory(null);
-				}
-
-				FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
-
-				FeedsFragment ff = new FeedsFragment();
-				ff.initialize(cat);
-				ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-
-				ft.addToBackStack(null);
-				ft.commit();
-				
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-				m_actionbarUpEnabled = true;
-				m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
+			if (fc != null) {
+				fc.setSelectedCategory(null);
 			}
+
+			FragmentTransaction ft = getSupportFragmentManager()
+					.beginTransaction();
+
+			FeedsFragment ff = new FeedsFragment();
+			ff.initialize(cat);
+			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
+
+			ft.addToBackStack(null);
+			ft.commit();
+			
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			m_actionbarUpEnabled = true;
+			m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
+
 		} else {
 			
 			if (fc != null) {
@@ -364,26 +303,15 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	public void openFeedArticles(Feed feed) {
-		/* if (isSmallScreen()) {
-			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-			
-			GlobalState.getInstance().m_activeFeed = feed;
-			GlobalState.getInstance().m_loadedArticles.clear();
-
-			intent.putExtra("feed", feed);
-			intent.putExtra("article", new Article());
-			startActivityForResult(intent, 0);
-		} else { */
-			GlobalState.getInstance().m_loadedArticles.clear();
-			
-			Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
-			intent.putExtra("feed", feed);
-			intent.putExtra("article", (Article)null);
-			intent.putExtra("searchQuery", (String)null);
-	 	   
-			startActivityForResult(intent, HEADLINES_REQUEST);
-			overridePendingTransition(R.anim.right_slide_in, 0);
-		//}
+		GlobalState.getInstance().m_loadedArticles.clear();
+		
+		Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
+		intent.putExtra("feed", feed);
+		intent.putExtra("article", (Article)null);
+		intent.putExtra("searchQuery", (String)null);
+ 	   
+		startActivityForResult(intent, HEADLINES_REQUEST);
+		overridePendingTransition(R.anim.right_slide_in, 0);
 	}
 	
 	public void onArticleSelected(Article article, boolean open) {
@@ -395,27 +323,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (open) {
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
-			/* if (isSmallScreen()) {
+			Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
+			intent.putExtra("feed", hf.getFeed());
+			intent.putExtra("article", article);
+			intent.putExtra("searchQuery", hf.getSearchQuery());
+	 	   
+			startActivityForResult(intent, HEADLINES_REQUEST);
+			overridePendingTransition(R.anim.right_slide_in, 0);
 
-				//GlobalState.getInstance().m_loadedArticles.clear();
-				
-				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-				intent.putExtra("feed", hf.getFeed());
-				intent.putExtra("article", article);
-				intent.putExtra("searchQuery", hf.getSearchQuery());
-		 	   
-				startActivityForResult(intent, 0);
-				
-				
-			} else { */
-				Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
-				intent.putExtra("feed", hf.getFeed());
-				intent.putExtra("article", article);
-				intent.putExtra("searchQuery", hf.getSearchQuery());
-		 	   
-				startActivityForResult(intent, HEADLINES_REQUEST);
-				overridePendingTransition(R.anim.right_slide_in, 0);
-			//}
 		} else {
 			initMenu();
 		}
