@@ -173,9 +173,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
 				//m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
-				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
-				
-				m_menu.findItem(R.id.update_headlines).setVisible(false);
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());				
 			}
 			
 			/* m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
