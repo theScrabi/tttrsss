@@ -297,7 +297,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	@Override
 	public void onBackPressed() {
-		if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
+		if (m_actionbarRevertDepth > 0) {
+			
+			m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
+			m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+			getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
+			
+			onBackPressed();
+		} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
 			m_slidingMenu.showMenu();
 		} else {
 			super.onBackPressed();
@@ -308,18 +315,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if (m_actionbarRevertDepth > 0) {
-				
-				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
-				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
-				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
-				
-				onBackPressed();
-			} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
-				m_slidingMenu.showMenu();
-			} else {
-				finish();				
-			}
+			onBackPressed();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
