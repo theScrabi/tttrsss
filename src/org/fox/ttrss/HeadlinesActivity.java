@@ -31,7 +31,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines);
+		setContentView(R.layout.headlines_articles);
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
@@ -142,7 +142,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && hf != null && hf.isAdded());			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && hf != null && hf.isAdded() && hf.isVisible());			
 			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

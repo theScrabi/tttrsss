@@ -9,6 +9,7 @@ import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.AppRater;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.view.ViewGroup;
 import android.animation.LayoutTransition;
@@ -35,6 +36,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	private boolean m_actionbarUpEnabled = false;
 	private int m_actionbarRevertDepth = 0;
+	private SlidingMenu m_slidingMenu;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -46,18 +48,38 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.feeds);
+		setContentView(R.layout.headlines);
 		
-		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
-
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		Intent intent = getIntent();
-		
+		if (isSmallScreen()) {
+			m_slidingMenu = new SlidingMenu(this);
+				
+			m_slidingMenu.setMode(SlidingMenu.LEFT);
+			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+			m_slidingMenu.setSlidingEnabled(true);
+			m_slidingMenu.setMenu(R.layout.feeds);
+			m_slidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+					
+				@Override
+				public void onOpened() {
+					if (m_actionbarRevertDepth == 0) {
+						m_actionbarUpEnabled = false;
+						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+						initMenu();
+					}
+				}
+			});
+		}
+
 		if (savedInstanceState == null) {
+			if (m_slidingMenu != null)
+				m_slidingMenu.showMenu();
 			
-			if (intent.getParcelableExtra("feed") != null || intent.getParcelableExtra("category") != null || 
-				intent.getParcelableExtra("article") != null) {
+			/* if (intent.getParcelableExtra("article") != null) {
 			
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 				m_actionbarUpEnabled = true;
@@ -79,27 +101,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ap.setSearchQuery(intent.getStringExtra("searchQuery"));
 					
 					setTitle(feed.title);
-				} else {
-					if (feed != null) {
-						HeadlinesFragment hf = new HeadlinesFragment();
-						hf.initialize(feed);
-						ft.replace(R.id.feeds_fragment, hf, FRAG_HEADLINES);
-						
-						setTitle(feed.title);
-					}
-					
-					if (cat != null) {
-						FeedsFragment ff = new FeedsFragment();
-						ff.initialize(cat);
-						ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-						
-						setTitle(cat.title);
-					}
 				}
 	
 				ft.commit();
 
-			} else  {
+			} else { */
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				
 				if (m_prefs.getBoolean("enable_cats", false)) {
@@ -116,11 +122,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				
 				AppRater.appLaunched(this);
 				checkTrial(true);
-			}
+			//}
 		} else { // savedInstanceState != null
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 
+			if (m_slidingMenu != null && savedInstanceState.getBoolean("slidingMenuVisible"))
+				m_slidingMenu.showMenu();
+			
 			if (!isSmallScreen()) {
 				// temporary hack because FeedsActivity doesn't track whether active feed is open
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
@@ -146,22 +155,27 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (m_menu != null && getSessionId() != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			//ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
-			
-			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
-
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
-						
-			if (isSmallScreen()) {
-				m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
+			if (m_slidingMenu != null) {
+				m_menu.setGroupVisible(R.id.menu_group_feeds, m_slidingMenu.isMenuShowing());
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !m_slidingMenu.isMenuShowing());
 			} else {
+				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
+				//m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+				
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
 			}
 			
-			if (af != null) {
+			/* if (isSmallScreen()) {
+				m_menu.findItem(R.id.update_headlines).setVisible(hf != null && hf.isAdded());
+			} else {
+				m_menu.findItem(R.id.update_headlines).setVisible(false);
+			} */
+			
+			/* if (af != null) {
 				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
 					if (!isCompatMode()) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -173,7 +187,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					}
 					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
 				}
-			}
+			} */
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -188,19 +202,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onFeedSelected(Feed feed) {
 		GlobalState.getInstance().m_loadedArticles.clear();
 
-		if (isSmallScreen()) {
-			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
-			intent.putExtra("feed", feed);
-
-			startActivityForResult(intent, 0);
-		} else {
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 
 			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
 			ft.commit();
 
-			if (!isCompatMode()) {
+			if (!isCompatMode() && !isSmallScreen()) {
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
 				float wSum = container.getWeightSum();
 				if (wSum <= 2.0f) {
@@ -223,6 +231,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 					
 					ft.commit();
+					
+					if (m_slidingMenu != null) { 
+						m_slidingMenu.showContent();
+						getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+						m_actionbarUpEnabled = true;
+					}
 				}
 			}, 10);
 			
@@ -233,7 +247,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_lastRefresh = date.getTime();
 				refresh(false);
 			}
-		}
 	}
 	
 	public void onCatSelected(FeedCategory cat, boolean openAsFeed) {
@@ -241,7 +254,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		if (!openAsFeed) {
 			
-			if (isSmallScreen()) {
+			if (false && isSmallScreen()) {
 			
 				Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
 				intent.putExtra("category", cat);
@@ -283,6 +296,15 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 	
 	@Override
+	public void onBackPressed() {
+		if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
+			m_slidingMenu.showMenu();
+		} else {
+			super.onBackPressed();
+		}
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -293,6 +315,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
 				
 				onBackPressed();
+			} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
+				m_slidingMenu.showMenu();
 			} else {
 				finish();				
 			}
@@ -314,7 +338,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	protected void loginSuccess(boolean refresh) {
 		setLoadingStatus(R.string.blank, false);
-		findViewById(R.id.loading_container).setVisibility(View.GONE);
+		//findViewById(R.id.loading_container).setVisibility(View.GONE);
 		initMenu();
 		
 		if (refresh) refresh();
@@ -326,6 +350,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
 		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
+		
+		if (m_slidingMenu != null )
+			out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
 		
 		GlobalState.getInstance().save(out);
 	}
@@ -342,7 +369,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	public void openFeedArticles(Feed feed) {
-		if (isSmallScreen()) {
+		/* if (isSmallScreen()) {
 			Intent intent = new Intent(FeedsActivity.this, FeedsActivity.class);
 			
 			GlobalState.getInstance().m_activeFeed = feed;
@@ -351,7 +378,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("feed", feed);
 			intent.putExtra("article", new Article());
 			startActivityForResult(intent, 0);
-		} else {
+		} else { */
 			GlobalState.getInstance().m_loadedArticles.clear();
 			
 			Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
@@ -361,7 +388,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	 	   
 			startActivityForResult(intent, HEADLINES_REQUEST);
 			overridePendingTransition(R.anim.right_slide_in, 0);
-		}
+		//}
 	}
 	
 	public void onArticleSelected(Article article, boolean open) {
@@ -373,7 +400,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (open) {
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
-			if (isSmallScreen()) {
+			/* if (isSmallScreen()) {
 
 				//GlobalState.getInstance().m_loadedArticles.clear();
 				
@@ -385,7 +412,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				startActivityForResult(intent, 0);
 				
 				
-			} else {
+			} else { */
 				Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
 				intent.putExtra("feed", hf.getFeed());
 				intent.putExtra("article", article);
@@ -393,7 +420,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		 	   
 				startActivityForResult(intent, HEADLINES_REQUEST);
 				overridePendingTransition(R.anim.right_slide_in, 0);
-			}
+			//}
 		} else {
 			initMenu();
 		}

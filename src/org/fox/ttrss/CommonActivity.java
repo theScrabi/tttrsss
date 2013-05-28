@@ -56,7 +56,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 			tv.setText(status);
 		}
 		
-		findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
+		//findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
 		
 		setProgressBarIndeterminateVisibility(showProgress);
 	}
