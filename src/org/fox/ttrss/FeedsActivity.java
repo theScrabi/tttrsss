@@ -103,19 +103,24 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
 
-			if (m_slidingMenu != null && m_feedIsSelected == false)
+			if (m_slidingMenu != null && m_feedIsSelected == false) {
 				m_slidingMenu.showMenu();
-			
+			} else if (m_slidingMenu != null) {
+				m_actionbarUpEnabled = true;
+			} else {
+				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+			}
+
+			if (m_actionbarUpEnabled) {
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			}
+
 			if (!isSmallScreen()) {
 				// temporary hack because FeedsActivity doesn't track whether active feed is open
 				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
 				
 				if (container != null)
 					container.setWeightSum(3f);
-			}
-
-			if (m_actionbarUpEnabled) {
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
 		

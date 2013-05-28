@@ -77,8 +77,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
 			
-			if (!m_feedIsSelected && m_slidingMenu != null)
+			if (m_slidingMenu != null && m_feedIsSelected == false) {
 				m_slidingMenu.showMenu();
+			} else if (m_slidingMenu != null) {
+				m_actionbarUpEnabled = true;
+			} else {
+				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+			}
 			
 			if (m_actionbarUpEnabled) {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
