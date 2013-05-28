@@ -1,17 +1,39 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:paddingLeft="5dp" >
 
-    <ListView android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/headlines"></ListView>
-    <LinearLayout android:id="@+id/loading_container" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/loading_message" android:layout_height="wrap_content" ></TextView>
+    <ListView
+        android:id="@+id/headlines"
+        android:layout_width="match_parent"
+        android:layoutAnimation="@anim/layout_headline"
+        android:layout_height="match_parent" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/loading_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/loading_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+        </TextView>
     </LinearLayout>
-         <TextView android:id="@+id/no_headlines"
-     	android:visibility="invisible"    	
-    	android:layout_gravity="center" 
-    	android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/no_headlines"></TextView>
-        
-    </FrameLayout>
+
+    <TextView
+        android:id="@+id/no_headlines"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_headlines"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="invisible" >
+    </TextView>
+
+</FrameLayout>

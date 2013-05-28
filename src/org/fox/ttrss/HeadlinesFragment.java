@@ -34,6 +34,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -267,6 +272,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		ListView list = (ListView)view.findViewById(R.id.headlines);		
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
+		
+		/* if (!m_activity.isCompatMode()) {
+			AnimationSet set = new AnimationSet(true);
+	
+		    Animation animation = new AlphaAnimation(0.0f, 1.0f);
+		    animation.setDuration(500);
+		    set.addAnimation(animation);
+	
+		    animation = new TranslateAnimation(
+		        Animation.RELATIVE_TO_SELF, 50.0f,Animation.RELATIVE_TO_SELF, 0.0f,
+		        Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f
+		    );
+		    animation.setDuration(1000);
+		    set.addAnimation(animation);
+	
+		    LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
+	
+		    list.setLayoutAnimation(controller);
+		} */
+		
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		list.setOnScrollListener(this);
