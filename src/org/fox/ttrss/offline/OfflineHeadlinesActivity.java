@@ -34,7 +34,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines);
+		setContentView(R.layout.headlines_articles);
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		

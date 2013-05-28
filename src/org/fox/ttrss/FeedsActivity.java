@@ -48,8 +48,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines);
-		
+		setContentView(R.layout.headlines);		
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);

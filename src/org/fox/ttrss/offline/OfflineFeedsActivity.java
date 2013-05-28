@@ -4,6 +4,7 @@ import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
@@ -25,6 +26,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	
 	private boolean m_actionbarUpEnabled = false;
 	private int m_actionbarRevertDepth = 0;
+	private SlidingMenu m_slidingMenu;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -36,12 +38,32 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.feeds);
-		
-		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+		setContentView(R.layout.headlines);		
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
-		
+
+		if (isSmallScreen()) {
+			m_slidingMenu = new SlidingMenu(this);
+				
+			m_slidingMenu.setMode(SlidingMenu.LEFT);
+			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+			m_slidingMenu.setSlidingEnabled(true);
+			m_slidingMenu.setMenu(R.layout.feeds);
+			m_slidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+					
+				@Override
+				public void onOpened() {
+					if (m_actionbarRevertDepth == 0) {
+						m_actionbarUpEnabled = false;
+						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+						initMenu();
+					}
+				}
+			});
+		}
+
 		if (savedInstanceState != null) {
 			
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
@@ -52,55 +74,22 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			}
 			
 		} else {
-			Intent intent = getIntent();
+			if (m_slidingMenu != null)
+				m_slidingMenu.showMenu();
 			
-			if (intent.getIntExtra("feed", -10000) != -10000 || intent.getIntExtra("category", -10000) != -10000 ||
-					intent.getIntExtra("article", -10000) != -10000) {
-				
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-				m_actionbarUpEnabled = true;
-				
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-				int feedId = intent.getIntExtra("feed", -10000);
-				int catId = intent.getIntExtra("category", -10000);
-				int articleId = intent.getIntExtra("article", -10000);
-				boolean isCat = intent.getBooleanExtra("isCat", false);
-				
-				if (articleId != -10000) {
-					OfflineArticlePager oap = new OfflineArticlePager();
-					oap.initialize(articleId, feedId, isCat);
-					ft.replace(R.id.feeds_fragment, oap, FRAG_ARTICLE);
-				} else {
-					if (feedId != -10000) {
-						OfflineHeadlinesFragment ohf = new OfflineHeadlinesFragment();
-						ohf.initialize(feedId, isCat);
-						ft.replace(R.id.feeds_fragment, ohf, FRAG_HEADLINES);
-					}
-
-					if (catId != -10000) {
-						OfflineFeedsFragment off = new OfflineFeedsFragment();
-						off.initialize(catId);
-						ft.replace(R.id.feeds_fragment, off, FRAG_FEEDS);
-					}
-				}
-				
-				ft.commit();
-			} else {			
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-				if (m_prefs.getBoolean("enable_cats", false)) {
-					ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);				
-				} else {
-					ft.replace(R.id.feeds_fragment, new OfflineFeedsFragment(), FRAG_FEEDS);
-				}	
-			
-				ft.commit();
-			}
+			if (m_prefs.getBoolean("enable_cats", false)) {
+				ft.replace(R.id.feeds_fragment, new OfflineFeedCategoriesFragment(), FRAG_CATS);				
+			} else {
+				ft.replace(R.id.feeds_fragment, new OfflineFeedsFragment(), FRAG_FEEDS);
+			}	
+		
+			ft.commit();
 		}
 		
 		setLoadingStatus(R.string.blank, false);
-		findViewById(R.id.loading_container).setVisibility(View.GONE);
+		//findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
 
@@ -117,7 +106,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 	public void openFeedArticles(int feedId, boolean isCat) {
 		if (isSmallScreen()) {
-			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);
+			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);
 			
 			intent.putExtra("feed", feedId);
 			intent.putExtra("isCat", isCat);
@@ -127,19 +116,26 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	}
 	
 	@Override
+	public void onBackPressed() {
+		if (m_actionbarRevertDepth > 0) {
+			
+			m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
+			m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+			getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
+			
+			onBackPressed();
+		} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
+			m_slidingMenu.showMenu();
+		} else {
+			super.onBackPressed();
+		}
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if (m_actionbarRevertDepth > 0) {
-				
-				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
-				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
-				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
-				
-				onBackPressed();
-			} else {
-				finish();				
-			}
+			onBackPressed();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
@@ -168,14 +164,25 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (m_menu != null) {
 			Fragment ff = getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
-			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+			//OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+
+			if (m_slidingMenu != null) {
+				m_menu.setGroupVisible(R.id.menu_group_feeds, m_slidingMenu.isMenuShowing());
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !m_slidingMenu.isMenuShowing());
+			} else {
+				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
+				//m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+				
+				m_menu.findItem(R.id.update_headlines).setVisible(false);
+			}
 			
-			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
+			/* m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null && af.isAdded());
 
-			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded()); */
 			//m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && getSelectedArticleCount() == 0);
 			//m_menu.setGroupVisible(R.id.menu_group_headlines_selection, hf != null && hf.isAdded() && getSelectedArticleCount() != 0);
 			
@@ -203,12 +210,12 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 			onFeedSelected(catId, true, true);
 		} else {
-			if (isSmallScreen()) {
+			/* if (isSmallScreen()) {
 				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);		
 				intent.putExtra("category", catId);
 
 				startActivityForResult(intent, 0);		
-			} else {
+			} else { */
 				if (fc != null) {
 					fc.setSelectedFeedId(-1);
 				}
@@ -227,7 +234,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
 				
 				ft.commit();
-			}
+			//}
 		}
 	}
 	
@@ -238,7 +245,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onFeedSelected(final int feedId, final boolean isCat, boolean open) {
 		
 		if (open) {
-			if (isSmallScreen()) {
+			/* if (isSmallScreen()) {
 				
 				Intent intent = new Intent(OfflineFeedsActivity.this, OfflineFeedsActivity.class);		
 				intent.putExtra("feed", feedId);
@@ -246,7 +253,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		 	   
 				startActivityForResult(intent, 0);		
 				
-			} else {
+			} else { */
 				/* if (!isCompatMode()) {
 					LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
 					float wSum = container.getWeightSum();
@@ -259,8 +266,10 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				
 				// ^ no idea why the animation hangs half the time :(
 				
-				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				container.setWeightSum(3f);
+				if (!isSmallScreen()) {
+					LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
+					container.setWeightSum(3f);
+				}
 				
 				new Handler().postDelayed(new Runnable() {
 					@Override
@@ -273,10 +282,17 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 						
 						ft.commit();
+						
+						if (m_slidingMenu != null) { 
+							m_slidingMenu.showContent();
+							getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+							m_actionbarUpEnabled = true;
+						}
+
 					}
 				}, 10);
 				
-			}
+			//}
 		}		
 	}
 
@@ -312,7 +328,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		initMenu();
 		
 		if (open) {
-			if (isSmallScreen()) {
+			/* if (isSmallScreen()) {
 
 				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 								
@@ -323,7 +339,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		 	   
 				startActivityForResult(intent, 0);		
 			
-			} else {
+			} else { */
 
 				OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
@@ -335,7 +351,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				startActivityForResult(intent, 0);
 
 				overridePendingTransition(R.anim.right_slide_in, 0);
-			}			
+			//}			
 		} else {
 			refresh();
 		}
