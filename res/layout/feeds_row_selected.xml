@@ -27,6 +27,8 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:paddingLeft="6dip"
+        android:singleLine="true"
+        android:ellipsize="end"        
         android:text="{FEED}"
         android:textColor="?feedlistSelectedTextColor"
         android:textSize="18dip" />
