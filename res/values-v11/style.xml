@@ -48,8 +48,8 @@
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
 		<item name="unreadCounterColor">#ffffff</item>
-		<item name="headlinesBackground">@drawable/headlines_dark</item>
-		<item name="headlinesBackgroundSolid">@drawable/headlines_dark</item>
+		<item name="headlinesBackground">@android:color/black</item>
+		<item name="headlinesBackgroundSolid">@android:color/black</item>
 		<item name="articleBackground">@android:color/black</item>
 		<item name="headlineSelectedBackground">@drawable/headline_row_selected_dark</item>
 		<item name="headlineUnreadBackground">#202020</item>
