@@ -63,6 +63,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				public void onOpened() {
 					if (m_actionbarRevertDepth == 0) {
 						m_actionbarUpEnabled = false;
+						m_feedIsSelected = false;
 						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 						initMenu();
 					}

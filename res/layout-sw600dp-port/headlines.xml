@@ -27,7 +27,6 @@
 
     <FrameLayout
         android:id="@+id/headlines_fragment"
-        android:background="?smallScreenBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>

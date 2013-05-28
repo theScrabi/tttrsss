@@ -73,6 +73,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				public void onOpened() {
 					if (m_actionbarRevertDepth == 0) {
 						m_actionbarUpEnabled = false;
+						m_feedIsSelected = false;
 						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 						initMenu();
 					}
