@@ -129,11 +129,15 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onBackPressed() {
 		if (m_actionbarRevertDepth > 0) {
 			
-			m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
-			m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
-			getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
+			if (m_feedIsSelected && m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
+				m_slidingMenu.showMenu();
+			} else {			
+				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
+				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
+				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
 			
-			onBackPressed();
+				onBackPressed();
+			}
 		} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
 			m_slidingMenu.showMenu();
 		} else {
@@ -145,7 +149,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			onBackPressed();
+			if (m_actionbarUpEnabled)
+				onBackPressed();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
