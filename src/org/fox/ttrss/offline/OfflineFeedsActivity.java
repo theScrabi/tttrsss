@@ -272,29 +272,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 						getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 						m_actionbarUpEnabled = true;
 					}
-
 				}
 			}, 10);
 		}		
-	}
-
-	public void catchupFeed(int feedId, boolean isCat) {
-		if (isCat) {
-			SQLiteStatement stmt = getWritableDb().compileStatement(
-					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+
-						BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
-			stmt.bindLong(1, feedId);
-			stmt.execute();
-			stmt.close();
-		} else {
-			SQLiteStatement stmt = getWritableDb().compileStatement(
-					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
-			stmt.bindLong(1, feedId);
-			stmt.execute();
-			stmt.close();			
-		}
-		
-		refresh();
 	}
 
 	@Override

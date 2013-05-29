@@ -1,6 +1,7 @@
 package org.fox.ttrss.offline;
 
 import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
@@ -246,23 +247,42 @@ public class OfflineActivity extends CommonActivity {
 			return true;
 		case R.id.headlines_mark_as_read:
 			if (ohf != null) {
-				int feedId = ohf.getFeedId();
-				boolean isCat = ohf.getFeedIsCat();
+				final int feedId = ohf.getFeedId();
+				final boolean isCat = ohf.getFeedIsCat();
 				
-				SQLiteStatement stmt = null;
+				int count = getUnreadArticleCount(feedId, isCat);
+				boolean confirm = m_prefs.getBoolean("confirm_headlines_catchup", true);
 				
-				if (isCat) {
-					stmt = getWritableDb().compileStatement(
-							"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
-				} else {
-					stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
+				if (count > 0) {
+					if (confirm) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								OfflineActivity.this)
+								.setMessage(getString(R.string.mark_num_headlines_as_read, count))
+								.setPositiveButton(R.string.catchup,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+	
+												catchupFeed(feedId, isCat);											
+												
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+		
+											}
+										});
+		
+						AlertDialog dlg = builder.create();
+						dlg.show();					
+					
+						
+					} else {
+						catchupFeed(feedId, isCat);
+					}				
 				}
-				stmt.bindLong(1, feedId);
-				stmt.execute();
-				stmt.close();
-				
-				refresh();
 			}
 			return true;
 		case R.id.share_article:
@@ -384,7 +404,6 @@ public class OfflineActivity extends CommonActivity {
 		}
 	}
 
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
@@ -601,6 +620,29 @@ public class OfflineActivity extends CommonActivity {
 		return selected;
 	}
 
+	protected int getUnreadArticleCount(int feedId, boolean isCat) {
+		
+		Cursor c;
+		
+		if (isCat) {
+			c = getReadableDb().query("articles",
+				new String[] { "COUNT(*)" }, "unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)", 
+				new String[] { String.valueOf(feedId) },
+				null, null, null);
+		} else {
+			c = getReadableDb().query("articles",
+				new String[] { "COUNT(*)" }, "unread = 1 AND feed_id = ?", 
+				new String[] { String.valueOf(feedId) }, 
+				null, null, null);
+		}
+		
+		c.moveToFirst();
+		int selected = c.getInt(0);
+		c.close();
+
+		return selected;
+	}
+	
 	protected void deselectAllArticles() {
 		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		refresh();
@@ -630,5 +672,25 @@ public class OfflineActivity extends CommonActivity {
 		
 		initMenu();		
 	}
+
+	public void catchupFeed(int feedId, boolean isCat) {
+		if (isCat) {
+			SQLiteStatement stmt = getWritableDb().compileStatement(
+					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+
+						BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+			stmt.bindLong(1, feedId);
+			stmt.execute();
+			stmt.close();
+		} else {
+			SQLiteStatement stmt = getWritableDb().compileStatement(
+					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
+			stmt.bindLong(1, feedId);
+			stmt.execute();
+			stmt.close();			
+		}
+		
+		refresh();
+	}
+
 
 }

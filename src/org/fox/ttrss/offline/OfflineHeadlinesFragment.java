@@ -251,6 +251,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		}
 
 		refresh();
+		
+		m_activity.initMenu();
 	}
 	
 	public void refresh() {
