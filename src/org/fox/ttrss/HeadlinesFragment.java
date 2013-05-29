@@ -693,8 +693,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				} else {
 					String excerpt = Jsoup.parse(articleContent).text(); 
 					
-					if (excerpt.length() > 200)
-						excerpt = excerpt.substring(0, 200) + "...";
+					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
+						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
 
 					int fontSize = -1;
 					

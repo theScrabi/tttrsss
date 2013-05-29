@@ -25,6 +25,8 @@ public class CommonActivity extends SherlockFragmentActivity {
 	public final static String FRAG_ARTICLE = "article";
 	public final static String FRAG_FEEDS = "feeds";
 	public final static String FRAG_CATS = "cats";
+
+	public static final int EXCERPT_MAX_SIZE = 200;
 	
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
