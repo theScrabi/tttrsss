@@ -78,18 +78,22 @@ public class WidgetUpdateService extends Service {
 	   								@Override
 	   								protected void onPostExecute(JsonElement result) {
 	   									if (result != null) {
-	   										JsonObject content = result.getAsJsonObject();
-	   										
-	   										if (content != null) {
-	   											int unread = content.get("unread").getAsInt();
-	   											
-	   											view.setViewVisibility(R.id.progress, View.GONE);
-	   											view.setTextViewText(R.id.counter, String.valueOf(unread));
-	   											manager.updateAppWidget(thisWidget, view);
-	   											
-	   											return;
-	   										}   										
-	   									}
+	   										try {
+		   										JsonObject content = result.getAsJsonObject();
+		   										
+		   										if (content != null) {
+		   											int unread = content.get("unread").getAsInt();
+		   											
+		   											view.setViewVisibility(R.id.progress, View.GONE);
+		   											view.setTextViewText(R.id.counter, String.valueOf(unread));
+		   											manager.updateAppWidget(thisWidget, view);
+		   											
+		   											return;
+		   										}
+	   										} catch (Exception e) {
+	   											e.printStackTrace();
+	   										}
+	   									}	   										
 	   								
 	   									view.setViewVisibility(R.id.progress, View.GONE);
 	   									view.setTextViewText(R.id.counter, "?");
