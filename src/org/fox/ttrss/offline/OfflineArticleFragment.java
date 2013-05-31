@@ -175,7 +175,10 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 				
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(true);
-				ws.setBuiltInZoomControls(false);
+				ws.setBuiltInZoomControls(true);
+				
+				if (!m_activity.isCompatMode())
+					ws.setDisplayZoomControls(false);
 				
 				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 

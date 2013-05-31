@@ -95,256 +95,245 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			m_article = savedInstanceState.getParcelable("article");
 		}
 
-		final View view = inflater.inflate(R.layout.article_fragment, container, false);
-
-		WebView content = (WebView) view.findViewById(R.id.content);
+		View view = inflater.inflate(R.layout.article_fragment, container, false);
 		
-		if (content != null) content.setVisibility(View.INVISIBLE);
-		
-	    // prevent flicker in ics
-	    if (android.os.Build.VERSION.SDK_INT >= 11) {
-	    	content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-	    }
-		
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (isAdded()) {
+		if (m_article != null) {
+			
+			TextView title = (TextView)view.findViewById(R.id.title);
+			
+			if (title != null) {
 				
-					if (m_article != null) {
-						
-						TextView title = (TextView)view.findViewById(R.id.title);
-						
-						if (title != null) {
-							
-							String titleStr;
-							
-							if (m_article.title.length() > 200)
-								titleStr = m_article.title.substring(0, 200) + "...";
-							else
-								titleStr = m_article.title;
-							
-							
-							title.setText(Html.fromHtml(titleStr));
-							//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-							title.setOnClickListener(new OnClickListener() {					
-								@Override
-								public void onClick(View v) {
-									try {
-										URL url = new URL(m_article.link.trim());
-										String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-											url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-										Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-										startActivity(intent);
-									} catch (Exception e) {
-										e.printStackTrace();
-										m_activity.toast(R.string.error_other_error);
-									}
-								}
-							});
-							
-							registerForContextMenu(title); 
+				String titleStr;
+				
+				if (m_article.title.length() > 200)
+					titleStr = m_article.title.substring(0, 200) + "...";
+				else
+					titleStr = m_article.title;
+				
+				
+				title.setText(Html.fromHtml(titleStr));
+				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+				title.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							URL url = new URL(m_article.link.trim());
+							String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+								url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+							startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+							m_activity.toast(R.string.error_other_error);
 						}
-						
-						TextView comments = (TextView)view.findViewById(R.id.comments);
-						
-						if (comments != null) {
-							if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
-								String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
-								comments.setText(commentsTitle);
-								//comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-								comments.setOnClickListener(new OnClickListener() {					
-									@Override
-									public void onClick(View v) {
-										try {
-											URL url = new URL((m_article.comments_link != null && m_article.comments_link.length() > 0) ?
-												m_article.comments_link : m_article.link);
-											String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-													url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-											Intent intent = new Intent(Intent.ACTION_VIEW, 
-													Uri.parse(uri));
-												startActivity(intent);
-										} catch (Exception e) {
-											e.printStackTrace();
-											m_activity.toast(R.string.error_other_error);
-										}
-									}
-								});
-								
-							} else {
-								comments.setVisibility(View.GONE);					
-							}
-						}
-						
-						WebView web = (WebView)view.findViewById(R.id.content);
-						
-						if (web != null) {
-							registerForContextMenu(web);
-							
-							web.setWebChromeClient(new WebChromeClient() {					
-								@Override
-				                public void onProgressChanged(WebView view, int progress) {
-				                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
-				                	if (progress == 100) {
-				                		m_activity.setProgressBarVisibility(false);
-				                	}
-				                }
-							});
-							
-							web.setOnTouchListener(new View.OnTouchListener() {
-								@Override
-								public boolean onTouch(View v, MotionEvent event) {
-									return m_detector.onTouchEvent(event);
-								}
-							});
-							
-							String content;
-							String cssOverride = "";
-							
-							WebSettings ws = web.getSettings();
-							ws.setSupportZoom(true);
-							ws.setBuiltInZoomControls(false);
-
-							web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-
-							TypedValue tv = new TypedValue();				
-						    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
-						    
-							if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
-								cssOverride = "body { background : transparent; color : #e0e0e0}";
-							} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
-								cssOverride = "body { background : transparent; color : #e0e0e0}";
-							} else {
-								cssOverride = "body { background : transparent; }";
-							}
-							web.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-							
-							String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
-						    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
-
-						    cssOverride += " table { width : 100%; }";
-						    
-							String articleContent = m_article.content != null ? m_article.content : "";
-							
-							Document doc = Jsoup.parse(articleContent);
-							
-							if (doc != null) {
-								// thanks webview for crashing on <video> tag
-								Elements videos = doc.select("video");
-								
-								for (Element video : videos)
-									video.remove();
-								
-								articleContent = doc.toString();
-							}
-							
-							String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justify;" : "";
-							
-							switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
-							case 0:
-								cssOverride += "body { "+align+" font-size : 14px; } ";
-								break;
-							case 1:
-								cssOverride += "body { "+align+" font-size : 18px; } ";
-								break;
-							case 2:
-								cssOverride += "body { "+align+" font-size : 21px; } ";
-								break;		
-							}
-							
-							content = 
-								"<html>" +
-								"<head>" +
-								"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-								"<style type=\"text/css\">" +
-								"body { padding : 0px; margin : 0px; }" +
-								cssOverride +
-								/* "img { max-width : 98%; height : auto; }" + */
-								"</style>" +
-								"</head>" +
-								"<body>" + articleContent;
-							
-							if (m_article.attachments != null && m_article.attachments.size() != 0) {
-								String flatContent = articleContent.replaceAll("[\r\n]", "");
-								boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
-								
-								for (Attachment a : m_article.attachments) {
-									if (a.content_type != null && a.content_url != null) {							
-										try {
-											if (a.content_type.indexOf("image") != -1 && 
-													(!hasImages || m_article.always_display_attachments)) {
-												
-												URL url = new URL(a.content_url.trim());
-												String strUrl = url.toString().trim();
-
-												content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
-											}
-
-										} catch (MalformedURLException e) {
-											//
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-									}					
-								}
-							}
-							
-							content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
-								
+					}
+				});
+				
+				registerForContextMenu(title); 
+			}
+			
+			TextView comments = (TextView)view.findViewById(R.id.comments);
+			
+			if (comments != null) {
+				if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
+					String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
+					comments.setText(commentsTitle);
+					//comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+					comments.setOnClickListener(new OnClickListener() {					
+						@Override
+						public void onClick(View v) {
 							try {
-								web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
-							} catch (RuntimeException e) {					
+								URL url = new URL((m_article.comments_link != null && m_article.comments_link.length() > 0) ?
+									m_article.comments_link : m_article.link);
+								String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+										url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+								Intent intent = new Intent(Intent.ACTION_VIEW, 
+										Uri.parse(uri));
+									startActivity(intent);
+							} catch (Exception e) {
 								e.printStackTrace();
-							}
-							
-							if (m_activity.isSmallScreen())
-								web.setOnTouchListener(m_gestureListener);
-							
-							web.setVisibility(View.VISIBLE);
-						}
-						
-						TextView dv = (TextView)view.findViewById(R.id.date);
-						
-						if (dv != null) {
-							Date d = new Date(m_article.updated * 1000L);
-							DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
-							dv.setText(df.format(d));
-						}
-						
-						TextView tagv = (TextView)view.findViewById(R.id.tags);
-									
-						if (tagv != null) {
-							if (m_article.feed_title != null) {
-								tagv.setText(m_article.feed_title);
-							} else if (m_article.tags != null) {
-								String tagsStr = "";
-							
-								for (String tag : m_article.tags)
-									tagsStr += tag + ", ";
-								
-								tagsStr = tagsStr.replaceAll(", $", "");
-							
-								tagv.setText(tagsStr);
-							} else {
-								tagv.setVisibility(View.GONE);
+								m_activity.toast(R.string.error_other_error);
 							}
 						}
-						
-						TextView author = (TextView)view.findViewById(R.id.author);
-
-						if (author != null) {
-							if (m_article.author != null && m_article.author.length() > 0) {
-								author.setText(getString(R.string.author_formatted, m_article.author));				
-							} else {
-								author.setVisibility(View.GONE);
-							}
-						}
-					} 
+					});
 					
+				} else {
+					comments.setVisibility(View.GONE);					
 				}
 			}
-		}, 50);
-		
+			
+			WebView web = (WebView)view.findViewById(R.id.content);
+			
+			if (web != null) {
+				registerForContextMenu(web);
+
+			    // prevent flicker in ics
+			    if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    }
+
+				web.setWebChromeClient(new WebChromeClient() {					
+					@Override
+	                public void onProgressChanged(WebView view, int progress) {
+	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
+	                	if (progress == 100) {
+	                		m_activity.setProgressBarVisibility(false);
+	                	}
+	                }
+				});
+				
+				web.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						return m_detector.onTouchEvent(event);
+					}
+				});
+				
+				String content;
+				String cssOverride = "";
+				
+				WebSettings ws = web.getSettings();
+				ws.setSupportZoom(true);
+				ws.setBuiltInZoomControls(true);
+				
+				if (!m_activity.isCompatMode())
+					ws.setDisplayZoomControls(false);
+
+				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+
+				TypedValue tv = new TypedValue();				
+			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
+			    
+				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+					cssOverride = "body { background : transparent; color : #e0e0e0}";
+				} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
+					cssOverride = "body { background : transparent; color : #e0e0e0}";
+				} else {
+					cssOverride = "body { background : transparent; }";
+				}
+				web.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+				
+				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
+			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
+
+			    cssOverride += " table { width : 100%; }";
+			    
+				String articleContent = m_article.content != null ? m_article.content : "";
+				
+				Document doc = Jsoup.parse(articleContent);
+				
+				if (doc != null) {
+					// thanks webview for crashing on <video> tag
+					Elements videos = doc.select("video");
+					
+					for (Element video : videos)
+						video.remove();
+					
+					articleContent = doc.toString();
+				}
+				
+				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justify;" : "";
+				
+				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
+				case 0:
+					cssOverride += "body { "+align+" font-size : 14px; } ";
+					break;
+				case 1:
+					cssOverride += "body { "+align+" font-size : 18px; } ";
+					break;
+				case 2:
+					cssOverride += "body { "+align+" font-size : 21px; } ";
+					break;		
+				}
+				
+				content = 
+					"<html>" +
+					"<head>" +
+					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+					"<style type=\"text/css\">" +
+					"body { padding : 0px; margin : 0px; }" +
+					cssOverride +
+					/* "img { max-width : 98%; height : auto; }" + */
+					"</style>" +
+					"</head>" +
+					"<body>" + articleContent;
+				
+				if (m_article.attachments != null && m_article.attachments.size() != 0) {
+					String flatContent = articleContent.replaceAll("[\r\n]", "");
+					boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
+					
+					for (Attachment a : m_article.attachments) {
+						if (a.content_type != null && a.content_url != null) {							
+							try {
+								if (a.content_type.indexOf("image") != -1 && 
+										(!hasImages || m_article.always_display_attachments)) {
+									
+									URL url = new URL(a.content_url.trim());
+									String strUrl = url.toString().trim();
+
+									content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
+								}
+
+							} catch (MalformedURLException e) {
+								//
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}					
+					}
+				}
+				
+				content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
+					
+				try {
+					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+				} catch (RuntimeException e) {					
+					e.printStackTrace();
+				}
+				
+				if (m_activity.isSmallScreen())
+					web.setOnTouchListener(m_gestureListener);
+				
+				web.setVisibility(View.VISIBLE);
+			}
+			
+			TextView dv = (TextView)view.findViewById(R.id.date);
+			
+			if (dv != null) {
+				Date d = new Date(m_article.updated * 1000L);
+				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
+				dv.setText(df.format(d));
+			}
+			
+			TextView tagv = (TextView)view.findViewById(R.id.tags);
+						
+			if (tagv != null) {
+				if (m_article.feed_title != null) {
+					tagv.setText(m_article.feed_title);
+				} else if (m_article.tags != null) {
+					String tagsStr = "";
+				
+					for (String tag : m_article.tags)
+						tagsStr += tag + ", ";
+					
+					tagsStr = tagsStr.replaceAll(", $", "");
+				
+					tagv.setText(tagsStr);
+				} else {
+					tagv.setVisibility(View.GONE);
+				}
+			}
+			
+			TextView author = (TextView)view.findViewById(R.id.author);
+
+			if (author != null) {
+				if (m_article.author != null && m_article.author.length() > 0) {
+					author.setText(getString(R.string.author_formatted, m_article.author));				
+				} else {
+					author.setVisibility(View.GONE);
+				}
+			}
+		} 
 		
 		return view;    	
 	}
