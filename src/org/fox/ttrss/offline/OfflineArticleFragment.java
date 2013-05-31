@@ -373,46 +373,9 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 		return false;
 	}
 
-	private void onLeftSideTapped() {
-		OfflineArticlePager ap = (OfflineArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
-		
-		if (ap != null && ap.isAdded()) {
-			ap.selectArticle(false);
-		}
-	}
-	
-	private void onRightSideTapped() {
-		OfflineArticlePager ap = (OfflineArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
-		
-		if (ap != null && ap.isAdded()) {
-			ap.selectArticle(true);
-		}
-	}
-	
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		
-		int width = getView().getWidth();		
-		int x = Math.round(e.getX());
-		
-		if (x <= width/15) {
-			onLeftSideTapped();
-			return true;
-		} else if (x >= width-(width/15)) {
-			onRightSideTapped();
-			return true;
-		} /* else if (!m_activity.isCompatMode()) {
-			ActionBar bar = m_activity.getSupportActionBar();
-			
-			if (bar.isShowing()) {
-				bar.hide();
-			} else {
-				bar.show();
-			}
-		} */
-		
+		// TODO Auto-generated method stub
 		return false;
 	}
-
-
 }

@@ -423,44 +423,9 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 		return false;
 	}
 
-	private void onLeftSideTapped() {
-		ArticlePager ap = (ArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
-		
-		if (ap != null && ap.isAdded()) {
-			ap.selectArticle(false);
-		}
-	}
-	
-	private void onRightSideTapped() {
-		ArticlePager ap = (ArticlePager) m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE);
-		
-		if (ap != null && ap.isAdded()) {
-			ap.selectArticle(true);
-		}
-	}
-	
 	@Override
-	public boolean onSingleTapConfirmed(MotionEvent e) {
-
-		int width = getView().getWidth();		
-		int x = Math.round(e.getX());
-		
-		if (x <= width/15) {
-			onLeftSideTapped();
-			return true;
-		} else if (x >= width-(width/15)) {
-			onRightSideTapped();
-			return true;
-		} /* else if (!m_activity.isCompatMode()) {
-			ActionBar bar = m_activity.getSupportActionBar();
-			
-			if (bar.isShowing()) {
-				bar.hide();
-			} else {
-				bar.show();
-			}
-		} */
+	public boolean onSingleTapConfirmed(MotionEvent arg0) {
+		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
