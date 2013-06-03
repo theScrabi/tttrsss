@@ -256,13 +256,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public void refresh() {
-		if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
-		
-		m_cursor = createCursor();
-		
-		if (m_cursor != null) {
-			m_adapter.changeCursor(m_cursor);
-			m_adapter.notifyDataSetChanged();
+		try {
+			if (!isAdded()) return;
+			
+			if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
+			
+			m_cursor = createCursor();
+			
+			if (m_cursor != null && m_adapter != null) {
+				m_adapter.changeCursor(m_cursor);
+				m_adapter.notifyDataSetChanged();
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 	}
 	
