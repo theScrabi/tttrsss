@@ -201,7 +201,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			hf.setActiveArticle(article);
+			if (hf != null) {
+				hf.setActiveArticle(article);
+			}
 		}
 
 		GlobalState.getInstance().m_activeArticle = article;
