@@ -282,7 +282,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
-
 		m_activity.setProgressBarVisibility(true);
 		
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;

@@ -362,7 +362,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean append) {
-		if (m_activity != null) {
+		if (m_activity != null && m_feed != null) {
 			m_refreshInProgress = true;
 
 			m_activity.setProgressBarVisibility(true);
