@@ -179,6 +179,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	@Override
 	public void onArticleSelected(Article article, boolean open) {
 		
+		if (article == null) return;
+		
 		if (article.unread) {
 			article.unread = false;
 			saveArticleUnread(article);

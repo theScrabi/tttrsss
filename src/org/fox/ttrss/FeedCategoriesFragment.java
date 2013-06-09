@@ -11,6 +11,7 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -48,29 +49,32 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	private FeedCategory m_selectedCat;
 	private FeedsActivity m_activity;
 
+	@SuppressLint("DefaultLocale")
 	class CatUnreadComparator implements Comparator<FeedCategory> {
 		@Override
 		public int compare(FeedCategory a, FeedCategory b) {
 			if (a.unread != b.unread)
 					return b.unread - a.unread;
 				else
-					return a.title.compareTo(b.title);
+					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			}
 	}
 	
 
+	@SuppressLint("DefaultLocale")
 	class CatTitleComparator implements Comparator<FeedCategory> {
 
 		@Override
 		public int compare(FeedCategory a, FeedCategory b) {
 			if (a.id >= 0 && b.id >= 0)
-				return a.title.compareTo(b.title);
+				return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			else
 				return a.id - b.id;
 		}
 		
 	}
 
+	@SuppressLint("DefaultLocale")
 	class CatOrderComparator implements Comparator<FeedCategory> {
 
 		@Override
@@ -79,7 +83,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				if (a.order_id != 0 && b.order_id != 0)
 					return a.order_id - b.order_id;
 				else
-					return a.title.compareTo(b.title);
+					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			else
 				return a.id - b.id;
 		}

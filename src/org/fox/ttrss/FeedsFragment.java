@@ -17,6 +17,7 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedList;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -69,6 +70,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_activeCategory = cat;
 	}
 	
+	@SuppressLint("DefaultLocale")
 	class FeedUnreadComparator implements Comparator<Feed> {
 
 		@Override
@@ -76,37 +78,39 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			if (a.unread != b.unread)
 					return b.unread - a.unread;
 				else
-					return a.title.compareTo(b.title);
+					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			}
 		
 	}
 	
 
+	@SuppressLint("DefaultLocale")
 	class FeedTitleComparator implements Comparator<Feed> {
 
 		@Override
 		public int compare(Feed a, Feed b) {
 			if (a.is_cat && b.is_cat)
-				return a.title.compareTo(b.title);
+				return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			else if (a.is_cat && !b.is_cat)
 				return -1;
 			else if (!a.is_cat && b.is_cat)
 				return 1;
 			else if (a.id >= 0 && b.id >= 0)
-				return a.title.compareTo(b.title);
+				return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			else
 				return a.id - b.id;			
 		}
 		
 	}
 
+	@SuppressLint("DefaultLocale")
 	class FeedOrderComparator implements Comparator<Feed> {
 
 		@Override
 		public int compare(Feed a, Feed b) {			
 			if (a.id >= 0 && b.id >= 0)
 				if (a.is_cat && b.is_cat)
-					return a.title.compareTo(b.title);
+					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 				else if (a.is_cat && !b.is_cat)
 					return -1;
 				else if (!a.is_cat && b.is_cat) 
@@ -114,7 +118,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				else if (a.order_id != 0 && b.order_id != 0)
 					return a.order_id - b.order_id;
 				else
-					return a.title.compareTo(b.title);
+					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 			else
 				return a.id - b.id;
 		}
