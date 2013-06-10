@@ -70,7 +70,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		
 		m_cursor = createCursor();
 		
-		if (m_cursor != null) {
+		if (m_cursor != null && m_adapter != null) {
 			m_adapter.changeCursor(m_cursor);
 			m_adapter.notifyDataSetChanged();
 		}
