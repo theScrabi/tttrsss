@@ -1,14 +1,12 @@
 package org.fox.ttrss.offline;
 
+import org.fox.ttrss.ArticlePager;
 import org.fox.ttrss.CommonActivity;
-import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
-
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -20,16 +18,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.KeyEvent;
-
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
+
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -39,6 +43,8 @@ public class OfflineActivity extends CommonActivity {
 	
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
+
+	private String m_lastImageHitTestUrl;
 
 	@SuppressLint("NewApi")
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
@@ -70,6 +76,90 @@ public class OfflineActivity extends CommonActivity {
 		}
 	};
 
+	@Override
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo(); */
+
+		final OfflineArticlePager ap = (OfflineArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+		
+		switch (item.getItemId()) {
+		case R.id.article_img_open:
+			if (getLastContentImageHitTestUrl() != null) {
+				try {
+					Intent intent = new Intent(Intent.ACTION_VIEW, 
+							Uri.parse(getLastContentImageHitTestUrl()));
+					startActivity(intent);
+				} catch (Exception e) {
+					e.printStackTrace();
+					toast(R.string.error_other_error);
+				}
+			}			
+			return true;
+		case R.id.article_img_share:
+			if (getLastContentImageHitTestUrl() != null) {
+				Intent intent = new Intent(Intent.ACTION_SEND);
+
+				intent.setType("image/png");
+				intent.putExtra(Intent.EXTRA_SUBJECT, getLastContentImageHitTestUrl());
+				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
+
+				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
+			}
+			return true;
+		case R.id.article_img_view_caption:
+			if (getLastContentImageHitTestUrl() != null) {
+
+				String content = "";
+				
+				Cursor article = getArticleById(ap.getSelectedArticleId());
+				
+				if (article != null) {
+					content = article.getString(article.getColumnIndex("content"));
+					article.close();
+				}
+				
+                // Android doesn't give us an easy way to access title tags;
+                // we'll use Jsoup on the body text to grab the title text
+                // from the first image tag with this url. This will show
+                // the wrong text if an image is used multiple times.
+                Document doc = Jsoup.parse(content);
+                Elements es = doc.getElementsByAttributeValue("src", getLastContentImageHitTestUrl());
+                if (es.size() > 0){
+                    if (es.get(0).hasAttr("title")){
+                        Dialog dia = new Dialog(this);
+                        if (es.get(0).hasAttr("alt")){
+                            dia.setTitle(es.get(0).attr("alt"));
+                        } else {
+                            dia.setTitle(es.get(0).attr("title"));
+                        }
+                        TextView titleText = new TextView(this);
+                        
+                        if (android.os.Build.VERSION.SDK_INT >= 16) {
+                        	titleText.setPaddingRelative(24, 24, 24, 24);
+                        } else {
+                        	titleText.setPadding(24, 24, 24, 24);
+                        }
+                        
+                        titleText.setTextSize(16);
+                        titleText.setText(es.get(0).attr("title"));
+                        dia.setContentView(titleText);
+                        dia.show();
+                    } else {
+                        toast(R.string.no_caption_to_display);
+                    }
+                } else {
+                    toast(R.string.no_caption_to_display);
+                }
+            }
+            return true;
+		default:
+			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+			return super.onContextItemSelected(item);
+		}
+		
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -692,5 +782,11 @@ public class OfflineActivity extends CommonActivity {
 		refresh();
 	}
 
-
+	public void setLastContentImageHitTestUrl(String url) {
+		m_lastImageHitTestUrl = url;		
+	}
+	
+	public String getLastContentImageHitTestUrl() {
+		return m_lastImageHitTestUrl;
+	}
 }

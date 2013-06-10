@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
+import android.webkit.WebView.HitTestResult;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -84,8 +85,30 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
-		menu.setHeaderTitle(m_cursor.getString(m_cursor.getColumnIndex("title")));
+		//getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+		//menu.setHeaderTitle(m_cursor.getString(m_cursor.getColumnIndex("title")));
+		
+		String title = m_cursor.getString(m_cursor.getColumnIndex("title"));
+		
+		if (v.getId() == R.id.content) {
+			HitTestResult result = ((WebView)v).getHitTestResult();
+
+			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+				menu.setHeaderTitle(result.getExtra());
+				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+				
+				/* FIXME I have no idea how to do this correctly ;( */
+				
+				m_activity.setLastContentImageHitTestUrl(result.getExtra());
+				
+			} else {
+				menu.setHeaderTitle(title);
+				getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+			}
+		} else {
+			menu.setHeaderTitle(title);
+			getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);	
 		
@@ -152,6 +175,8 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
+				
+				registerForContextMenu(web);
 				
 				web.setWebChromeClient(new WebChromeClient() {					
 					@Override
@@ -342,9 +367,8 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			}
 			
 			@Override
-			public void onLongPress(MotionEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void onLongPress(MotionEvent e) {			
+				m_activity.openContextMenu(getView());		
 			}
 			
 			@Override
