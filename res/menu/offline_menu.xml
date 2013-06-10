@@ -3,11 +3,10 @@
     <group android:id="@+id/menu_group_feeds" >
         <item
             android:id="@+id/go_online"
-            android:showAsAction="ifRoom|withText"
             android:icon="@drawable/ic_cloud_light"
+            android:showAsAction="ifRoom|withText"
             android:title="@string/go_online"
             android:visible="false"/>
-
         <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_list_light"
@@ -31,8 +30,13 @@
             android:icon="@drawable/ic_select_all_light"
             android:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
+        <item
+            android:id="@+id/headlines_view_mode"
+            android:showAsAction=""
+            android:title="@string/headlines_view_mode"/>
     </group>
-    <!--  <group android:id="@+id/menu_group_headlines_selection" >
+    <!--
+    <group android:id="@+id/menu_group_headlines_selection" >
         <item
             android:id="@+id/selection_toggle_unread"
             android:showAsAction="ifRoom"
@@ -51,7 +55,8 @@
             android:id="@+id/selection_select_none"
             android:showAsAction=""
             android:title="@string/selection_select_none"/>
-    </group> -->
+    </group>
+    -->
     <group android:id="@+id/menu_group_article" >
         <item
             android:id="@+id/toggle_marked"

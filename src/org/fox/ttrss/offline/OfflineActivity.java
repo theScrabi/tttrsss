@@ -1,6 +1,5 @@
 package org.fox.ttrss.offline;
 
-import org.fox.ttrss.ArticlePager;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
@@ -307,6 +306,67 @@ public class OfflineActivity extends CommonActivity {
 		case R.id.preferences:
 			Intent intent = new Intent(this, PreferencesActivity.class);
 			startActivityForResult(intent, 0);
+			return true;
+		case R.id.headlines_view_mode:
+			if (ohf != null) {
+				Dialog dialog = new Dialog(this);
+				
+				String viewMode = getViewMode();
+				
+				//Log.d(TAG, "viewMode:" + getViewMode());
+
+				int selectedIndex = 0;
+				
+				if (viewMode.equals("all_articles")) {
+					selectedIndex = 0;
+				} else if (viewMode.equals("marked")) {
+					selectedIndex = 1;
+				} else if (viewMode.equals("published")) {
+					selectedIndex = 2;
+				} else if (viewMode.equals("unread")) {
+					selectedIndex = 3;
+				}
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.headlines_set_view_mode)
+						.setSingleChoiceItems(
+								new String[] {
+										/* getString(R.string.headlines_adaptive), */
+										getString(R.string.headlines_all_articles),
+										getString(R.string.headlines_starred),
+										getString(R.string.headlines_published),
+										getString(R.string.headlines_unread) },
+								selectedIndex, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										/* case 0:
+											setViewMode("adaptive");
+											break; */
+										case 0:
+											setViewMode("all_articles");
+											break;
+										case 1:
+											setViewMode("marked");
+											break;
+										case 2:
+											setViewMode("published");
+											break;
+										case 3:
+											setViewMode("unread");
+											break;
+										}
+										dialog.cancel();
+
+										refresh();
+									}
+								});
+
+				dialog = builder.create();
+				dialog.show();
+
+			}
 			return true;
 		case R.id.headlines_select:
 			if (ohf != null) {
@@ -789,4 +849,15 @@ public class OfflineActivity extends CommonActivity {
 	public String getLastContentImageHitTestUrl() {
 		return m_lastImageHitTestUrl;
 	}
+
+	public void setViewMode(String viewMode) {
+		SharedPreferences.Editor editor = m_prefs.edit();
+		editor.putString("offline_view_mode", viewMode);
+		editor.commit();
+	}
+	
+	public String getViewMode() {		
+		return m_prefs.getString("offline_view_mode", "adaptive");
+	}
+
 }
