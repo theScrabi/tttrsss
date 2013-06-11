@@ -35,7 +35,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
@@ -140,9 +140,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		if (m_menu != null && getSessionId() != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 
-			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			//HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && hf != null && hf.isAdded() && hf.isVisible());			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());			
 			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

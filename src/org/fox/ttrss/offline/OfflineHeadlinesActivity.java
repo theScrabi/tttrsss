@@ -38,7 +38,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		setSmallScreen(findViewById(R.id.headlines_fragment) == null); 
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
 		
 		if (isPortrait()) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
@@ -135,13 +135,13 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	@Override
 	protected void initMenu() {
 		super.initMenu();
-
+		
 		if (m_menu != null) {
 			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
 
-			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+			//OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && hf != null && hf.isAdded() && hf.isVisible());			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());			
 			
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

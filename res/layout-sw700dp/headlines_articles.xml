@@ -4,6 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <FrameLayout
+        android:id="@+id/sw600dp_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/loading_container"
         android:layout_width="match_parent"
