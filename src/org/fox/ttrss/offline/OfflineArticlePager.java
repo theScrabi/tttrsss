@@ -50,6 +50,20 @@ public class OfflineArticlePager extends Fragment {
 			feedClause = "feed_id = ?";
 		}
 		
+		String viewMode = m_activity.getViewMode();
+		
+		if ("adaptive".equals(viewMode)) {
+			// TODO: implement adaptive			
+		} else if ("marked".equals(viewMode)) {
+			feedClause += "AND (marked = 1)";
+		} else if ("published".equals(viewMode)) {
+			feedClause += "AND (published = 1)";
+		} else if ("unread".equals(viewMode)) {
+			feedClause += "AND (unread = 1)";
+		} else { // all_articles
+			//
+		}
+		
 		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
 		
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
