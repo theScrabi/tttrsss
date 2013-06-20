@@ -188,4 +188,14 @@
     <string name="article_img_open">Bild öffnen</string>
     <string name="article_img_share">Bild teilen</string>
     <string name="requires_api5">Benötigt Version 1.7.6</string>
+    <string name="labels">Labels</string>
+    <string name="article_img_view_caption">Bildunterschrift zeigen</string>
+    <string name="light_theme_is_not_supported_on_honeycomb">Helle Oberfläche wird auf Honeycomb nicht unterstützt</string>
+    <string name="pref_headlines_mark_read_scroll">Beim scrollen als gelesen markieren</string>
+    <string name="pref_headlines_mark_read_scroll_long">Überschriften werden beim Vorbeiscrollen als gelesen markiert</string>
+    <string name="mark_num_headlines_as_read">%1$d Artikel als gelesen markieren?</string>
+    <string name="prefs_confirm_headlines_catchup">Nachfragen, bevor Artikel als gelesen markiert werden</string>
+    <string name="author_formatted">von %1$s</string>
+    <string name="n_unread_articles">%1$d ungelesene Artikel</string>
+    <string name="pref_headline_font_size">Schriftgröße Überschriften</string>
 </resources>
