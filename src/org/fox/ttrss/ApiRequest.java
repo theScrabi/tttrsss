@@ -59,7 +59,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
 		
-		m_api = m_prefs.getString("ttrss_url", null).trim();
+		m_api = m_prefs.getString("ttrss_url", "").trim();
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
 		m_lastError = ApiError.NO_ERROR;
 		
