@@ -133,6 +133,8 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 		if (m_cursor.isFirst()) {
 			
 			TextView title = (TextView)view.findViewById(R.id.title);
+
+			final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 			
 			if (title != null) {
 				
@@ -142,8 +144,6 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title")).substring(0, 200) + "...";
 				else
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
-				
-				final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 				
 				title.setText(titleStr);
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -281,7 +281,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					"<body>" + articleContent + "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
-					web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+					web.loadDataWithBaseURL(link, content, "text/html", "utf-8", null);
 				} catch (RuntimeException e) {					
 					e.printStackTrace();
 				}
