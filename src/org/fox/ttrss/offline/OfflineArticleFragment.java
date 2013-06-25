@@ -1,5 +1,6 @@
 package org.fox.ttrss.offline;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
@@ -281,7 +282,16 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					"<body>" + articleContent + "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
-					web.loadDataWithBaseURL(link, content, "text/html", "utf-8", null);
+					String baseUrl = null;
+					
+					try {
+						URL url = new URL(link);
+						baseUrl = url.getProtocol() + "://" + url.getHost();
+					} catch (MalformedURLException e) {
+						//
+					}
+					
+					web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
 				} catch (RuntimeException e) {					
 					e.printStackTrace();
 				}

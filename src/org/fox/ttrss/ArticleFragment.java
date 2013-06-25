@@ -286,7 +286,16 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
-					web.loadDataWithBaseURL(m_article.link, content, "text/html", "utf-8", null);
+					String baseUrl = null;
+					
+					try {
+						URL url = new URL(m_article.link);
+						baseUrl = url.getProtocol() + "://" + url.getHost();
+					} catch (MalformedURLException e) {
+						//
+					}
+					
+					web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
 				} catch (RuntimeException e) {					
 					e.printStackTrace();
 				}
