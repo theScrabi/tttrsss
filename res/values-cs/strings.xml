@@ -186,4 +186,16 @@
   <string name="headlines_unread">Nepřečtené</string>
   <string name="subscribe_to_feed">Přidat zdroj</string>
   <string name="labels">Štítky</string>
+  <string name="prefs_confirm_headlines_catchup">Potvrdit označení článků jako přečtených</string>
+  <string name="article_img_open">Otevřít obrázek</string>
+  <string name="n_unread_articles">%1$d nepřečtených článků</string>
+  <string name="pref_headline_font_size">Velikost textu nadpisu</string>
+  <string name="requires_api5">Vyžaduje verzi 1.7.6</string>
+  <string name="pref_headlines_mark_read_scroll_long">Nadpisy budou při posunu označeny jako přečtené</string>
+  <string name="no_caption_to_display">Bez popisky</string>
+  <string name="article_img_view_caption">Zobrazit popisku</string>
+  <string name="light_theme_is_not_supported_on_honeycomb">Světlé téma není na Honeycombu podporováno</string>
+  <string name="mark_num_headlines_as_read">Označit %1$d článků jako přečtené?</string>
+  <string name="pref_headlines_mark_read_scroll">Při posunu označit jako přečtené</string>
+  <string name="article_img_share">Sdílet obrázek</string>
 </resources>
