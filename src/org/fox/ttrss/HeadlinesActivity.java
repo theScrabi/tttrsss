@@ -150,7 +150,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			
 			if (af != null) {
 				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
-					if (!isCompatMode()) {
+					if (!isCompatMode() && (isSmallScreen() || !isPortrait())) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 					}
 					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
