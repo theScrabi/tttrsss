@@ -198,4 +198,6 @@
     <string name="mark_num_headlines_as_read">Marquer %1$d article(s) comme lu(s) ?</string>
     <string name="prefs_confirm_headlines_catchup">Confirmer marquer comme lu</string>
     <string name="author_formatted">par %1$s</string>
+    <string name="n_unread_articles">%1$d articles non lus</string>
+    <string name="pref_headline_font_size">Taille du texte des titres</string>
 </resources>
