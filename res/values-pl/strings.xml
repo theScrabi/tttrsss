@@ -147,7 +147,7 @@
     <string name="notify_article_note_set">Komentarz do artykułu zapisany</string>
     <string name="update_headlines">Odśwież</string>
     <string name="attachment_share">Udostępnij</string>
-    <string name="error_network_unavailable">Błąd: sieć jest niedostępna/string>
+    <string name="error_network_unavailable">Błąd: sieć jest niedostępna</string>
     <string name="category_browse_headlines">Przeglądaj nagłówki</string>
     <string name="pref_default_view_mode">Domyślny widok kanału</string>
     <string name="pref_default_view_mode_long">Który sposób prezentacji kanału otwierać domyślnie na smartfonach</string>
