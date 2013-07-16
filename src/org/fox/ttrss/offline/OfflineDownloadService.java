@@ -125,7 +125,7 @@ public class OfflineDownloadService extends Service {
 	private boolean isCacheServiceRunning() {
 	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if ("org.fox.ttrss.ImageCacheService".equals(service.service.getClassName())) {
+	        if ("org.fox.ttrss.util.ImageCacheService".equals(service.service.getClassName())) {
 	            return true;
 	        }
 	    }
