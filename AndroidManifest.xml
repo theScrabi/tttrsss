@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.fox.ttrss"
-    android:versionCode="191"
-    android:versionName="1.8.11" >
+    android:versionCode="192"
+    android:versionName="1.8.12" >
 
     <uses-sdk
         android:minSdkVersion="8"

@@ -297,15 +297,19 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				
 				if (m_enableFeedIcons) {
 					
-					File storage = Environment.getExternalStorageDirectory();
-					
-					File iconFile = new File(storage.getAbsolutePath() + ICON_PATH + cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)) + ".ico");
-					if (iconFile.exists()) {
-						Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
-						if (bmpOrig != null) {
-							icon.setImageBitmap(bmpOrig);
+					try {
+						File storage = Environment.getExternalStorageDirectory();
+						
+						File iconFile = new File(storage.getAbsolutePath() + ICON_PATH + cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)) + ".ico");
+						if (iconFile.exists()) {
+							Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
+							if (bmpOrig != null) {
+								icon.setImageBitmap(bmpOrig);
+							}
+						} else {
+							icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 						}
-					} else {
+					} catch (NullPointerException e) {
 						icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 					}
 					

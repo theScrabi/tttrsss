@@ -517,15 +517,19 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				
 				if (m_enableFeedIcons) {
 					
-					File storage = m_activity.getExternalCacheDir();
-					
-					File iconFile = new  File(storage.getAbsolutePath() + ICON_PATH + feed.id + ".ico");
-					if (iconFile.exists()) {
-						Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
-						if (bmpOrig != null) {
-							icon.setImageBitmap(bmpOrig);
+					try {
+						File storage = m_activity.getExternalCacheDir();
+						
+						File iconFile = new  File(storage.getAbsolutePath() + ICON_PATH + feed.id + ".ico");
+						if (iconFile.exists()) {
+							Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
+							if (bmpOrig != null) {
+								icon.setImageBitmap(bmpOrig);
+							}
+						} else {
+							icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 						}
-					} else {
+					} catch (NullPointerException e) {
 						icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
 					}
 					
