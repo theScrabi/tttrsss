@@ -119,6 +119,7 @@ public class ImageCacheService extends IntentService {
 	        URL url = new URL(urlString);
 	        URLConnection urlConnection = url.openConnection();
 	        urlConnection.setConnectTimeout(250);
+	        urlConnection.setReadTimeout(15*1000);
 	        return urlConnection.getInputStream();
 	    } catch (Exception ex) {
 	        return null;
