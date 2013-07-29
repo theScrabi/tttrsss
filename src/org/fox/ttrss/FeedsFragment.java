@@ -345,7 +345,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 							String baseUrl = "";
 							
 							if (!iconsStr.contains("://")) {
-								baseUrl = m_prefs.getString("ttrss_url", "") + "/" + iconsStr;									
+								baseUrl = m_prefs.getString("ttrss_url", "").trim() + "/" + iconsStr;									
 							} else {
 								baseUrl = iconsStr;
 							}
@@ -589,7 +589,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		private String m_baseUrl;
 		
 		public GetIconsTask(String baseUrl) {
-			m_baseUrl = baseUrl;
+			m_baseUrl = baseUrl.trim();
 		}
 
 		@Override
