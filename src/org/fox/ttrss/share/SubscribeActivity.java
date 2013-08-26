@@ -224,8 +224,7 @@ public class SubscribeActivity extends CommonShareActivity {
 						final List<FeedCategory> cats = new Gson().fromJson(content, listType);
 						
 						m_cats.clear();
-						m_cats.add(new FeedCategory(0, "Uncategorized", 0));
-						
+												
 						for (FeedCategory c : cats) {
 							if (c.id > 0)
 								m_cats.add(c);							
@@ -233,8 +232,10 @@ public class SubscribeActivity extends CommonShareActivity {
 						
 						sortCats();
 						
-						m_adapter.notifyDataSetChanged();
+						m_cats.add(0, new FeedCategory(0, "Uncategorized", 0));
 						
+						m_adapter.notifyDataSetChanged();
+												
 						toast(R.string.category_list_updated);
 					}
 				}
