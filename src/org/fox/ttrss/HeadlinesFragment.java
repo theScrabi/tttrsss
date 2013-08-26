@@ -371,6 +371,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				append = false;
 			}
 
+			// new stuff may appear on top, scroll back to show it
+			if (!append) {
+				if (getView() != null) {
+					Log.d(TAG, "scroll hack");
+					ListView list = (ListView)getView().findViewById(R.id.headlines);
+					list.smoothScrollToPosition(0);
+				}
+			}
+			
 			final boolean fappend = append;
 			final String sessionId = m_activity.getSessionId();
 			final boolean isCat = m_feed.is_cat;
