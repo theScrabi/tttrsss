@@ -175,10 +175,12 @@ public class ArticlePager extends Fragment {
 						}
 					}
 					
-					if (m_article.id == 0 || m_articles.indexOf(m_article) == -1) {
-						if (m_articles.size() > 0) {
-							m_article = m_articles.get(0);
-							m_listener.onArticleSelected(m_article, false);
+					if (m_article != null) {
+						if (m_article.id == 0 || m_articles.indexOf(m_article) == -1) {
+							if (m_articles.size() > 0) {
+								m_article = m_articles.get(0);
+								m_listener.onArticleSelected(m_article, false);
+							}
 						}
 					}
 					
