@@ -65,6 +65,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private Article m_activeArticle;
 	private String m_searchQuery = "";
 	private boolean m_refreshInProgress = false;
+	private boolean m_autoCatchupDisabled = false;
 	
 	private SharedPreferences m_prefs;
 	
@@ -376,7 +377,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				if (getView() != null) {
 					Log.d(TAG, "scroll hack");
 					ListView list = (ListView)getView().findViewById(R.id.headlines);
+					m_autoCatchupDisabled = true;
 					list.smoothScrollToPosition(0);
+					m_autoCatchupDisabled = false;
 				}
 			}
 			
@@ -878,7 +881,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			refresh(true);
 		}
 
-		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0) {
+		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0 && !m_autoCatchupDisabled) {
 			Article a = m_articles.get(firstVisibleItem - 1);
 
 			if (a != null && a.unread) {
