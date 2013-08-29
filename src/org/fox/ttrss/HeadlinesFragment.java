@@ -378,7 +378,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					Log.d(TAG, "scroll hack");
 					ListView list = (ListView)getView().findViewById(R.id.headlines);
 					m_autoCatchupDisabled = true;
-					list.smoothScrollToPosition(0);
+					list.setSelection(0);
 					m_autoCatchupDisabled = false;
 				}
 			}
