@@ -201,11 +201,28 @@ public class ArticlePager extends Fragment {
 		int skip = 0;
 		
 		if (append) {
+			// adaptive, all_articles, marked, published, unread
+			String viewMode = m_activity.getViewMode();
+			int numUnread = 0;
+			int numAll = m_articles.size();
+			
 			for (Article a : m_articles) {
-				if (a.unread) ++skip;
+				if (a.unread) ++numUnread;
 			}
 			
-			if (skip == 0) skip = m_articles.size();
+			if ("marked".equals(viewMode)) {
+				skip = numAll;
+			} else if ("published".equals(viewMode)) {
+				skip = numAll;
+			} else if ("unread".equals(viewMode)) {
+				skip = numUnread;					
+			} else if (m_searchQuery != null && m_searchQuery.length() > 0) {
+				skip = numAll;
+			} else if ("adaptive".equals(viewMode)) {
+				skip = numUnread > 0 ? numUnread : numAll;
+			} else {
+				skip = numAll;
+			}
 		}
 		
 		final int fskip = skip;
