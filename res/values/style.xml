@@ -24,7 +24,7 @@
     	<item name="linkColor">#4684ff</item>
     	<item name="loadingBackground">@android:color/white</item>
     	<item name="unreadCounterBackground">@drawable/counter_background</item>    	    	
-    	<item name="unreadSelectedCounterBackground">@drawable/counter_background</item>
+    	<item name="unreadSelectedCounterBackground">@drawable/counter_background_selected_light</item>
 	</style>
 
 	<style name="SepiaTheme" parent="LightTheme">
