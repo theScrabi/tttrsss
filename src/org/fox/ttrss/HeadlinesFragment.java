@@ -795,13 +795,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 			
-			ImageButton ib = (ImageButton) v.findViewById(R.id.article_menu_button);
+			ImageView iv = (ImageView) v.findViewById(R.id.article_menu_button);
 			
-			if (ib != null) {
-				if (m_activity.isDarkTheme())
-					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
+			if (iv != null) {
+				//if (m_activity.isDarkTheme())
+				//	ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
 				
-				ib.setOnClickListener(new OnClickListener() {					
+				iv.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {
 						getActivity().openContextMenu(v);

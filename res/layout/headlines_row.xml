@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="3dp"
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
-    android:paddingTop="3dp" >
+    android:paddingTop="3dp"
+    tools:ignore="HardcodedText" >
 
     <LinearLayout
         android:id="@+id/inner_row"
@@ -14,7 +16,10 @@
         android:layout_height="match_parent"
         android:background="?headlineNormalBackground"
         android:orientation="vertical"
-        android:padding="6dp" >
+        android:paddingBottom="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp" >
 
         <LinearLayout
             android:id="@+id/linearLayout6"
@@ -117,17 +122,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:clickable="true"
+                android:paddingRight="6dp"
                 android:src="@drawable/ic_rss_bw" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/article_menu_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:background="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="6dp"
-                android:src="@drawable/ic_mailbox_collapsed_holo_light" />
+                android:src="@drawable/ic_action_overflow" />
         </LinearLayout>
     </LinearLayout>
 
