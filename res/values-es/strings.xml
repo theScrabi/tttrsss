@@ -178,7 +178,7 @@
     <string name="error_feed_already_exists_">Error: la fuente ya existe.</string>
     <string name="error_invalid_url">Error: URL inválida.</string>
     <string name="error_url_is_an_html_page_no_feeds_found">Error: la URL es de una página HTML, no se han encontrado fuentes.</string>
-    <string name="error_url_contains_multiple_feeds">Error: la URLáaaaaa contiene múltiples fuentes</string>
+    <string name="error_url_contains_multiple_feeds">Error: la URL contiene múltiples fuentes</string>
     <string name="error_could_not_download_url">Error: no se pudo descargar la URL</string>
     <string name="headlines_view_mode">Definir modo de vista</string>
     <string name="headlines_set_view_mode">Definir modo de vista</string>
