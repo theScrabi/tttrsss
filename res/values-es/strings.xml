@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="login_in_progress">Iniciando sesión...</string>
+    <string name="login_in_progress">Iniciando sesión…</string>
     <string name="app_name">Tiny Tiny RSS</string>
     <string name="login_need_configure">Por favor, configure primero la aplicación.</string>
     <string name="login_ready">Listo para iniciar sesión.</string>
@@ -21,7 +21,7 @@
     <string name="connection">Conexión</string>
     <string name="headline_context_multiple">Artículos seleccionados</string>
     <string name="http_authentication">Autenticación HTTP</string>
-    <string name="loading_message">Cargando, espere por favor...</string>
+    <string name="loading_message">Cargando, espere por favor…</string>
     <string name="menu_unread_feeds">Mostrar fuentes sin leer</string>
     <string name="menu_all_feeds">Mostrar todas las fuentes</string>
     <string name="update_feeds">Actualizar</string>
@@ -87,17 +87,17 @@
     <string name="dialog_offline_go">Entrar en modo offline</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_offline_switch_prompt">¿Descargar artículos sin leer y entrar a modo offline?</string>
-    <string name="notify_downloading_articles">Descargando artículos (%1$d)...</string>
-    <string name="notify_downloading_init">Iniciando descarga...</string>
-    <string name="notify_downloading_feeds">Descargando fuentes...</string>
-    <string name="notify_uploading_sending_data">Enviando datos al servidor...</string>
+    <string name="notify_downloading_articles">Descargando artículos (%1$d)…</string>
+    <string name="notify_downloading_init">Iniciando descarga…</string>
+    <string name="notify_downloading_feeds">Descargando fuentes…</string>
+    <string name="notify_uploading_sending_data">Enviando datos al servidor…</string>
     <string name="notify_downloading_title">Preparando modo offline</string>
     <string name="notify_uploading_title">Sincronizando datos offline</string>
     <string name="offline_sync_success">Sincronización de datos offline completa</string>
     <string name="offline_mode">Modo offline</string>
     <string name="offline_image_cache_enabled">Guardar imágenes en caché</string>
     <string name="offline_image_cache_enabled_summary">Descargar imágenes a la tarjeta SD. Esto podría prolongar significativamente la espera para entrar al modo offline.</string>
-    <string name="notify_downloading_images">Descargando imágenes (%1$d)...</string>
+    <string name="notify_downloading_images">Descargando imágenes (%1$d)…</string>
     <string name="article_set_labels">Definir marcadores</string>
     <string name="search">Buscar</string>
     <string name="cancel">Cancelar</string>
