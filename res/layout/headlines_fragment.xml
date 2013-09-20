@@ -10,6 +10,7 @@
         android:layoutAnimation="@anim/layout_headline"
         android:dividerHeight="0dp"
         android:divider="@null"
+        android:paddingTop="3dp"
         android:layout_height="match_parent" >
     </ListView>
 

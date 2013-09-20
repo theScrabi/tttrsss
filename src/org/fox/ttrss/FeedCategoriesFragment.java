@@ -13,7 +13,10 @@ import org.fox.ttrss.types.FeedCategoryList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -125,9 +128,36 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			return true;
 		case R.id.catchup_category:
 			if (true) {
-				FeedCategory cat = getCategoryAtPosition(info.position);
+				final FeedCategory cat = getCategoryAtPosition(info.position);
 				if (cat != null) {
-					m_activity.catchupFeed(new Feed(cat.id, cat.title, true));
+										
+					if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								m_activity)
+								.setMessage(getString(R.string.context_confirm_catchup, cat.title))
+								.setPositiveButton(R.string.catchup,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+	
+												m_activity.catchupFeed(new Feed(cat.id, cat.title, true));											
+												
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+		
+											}
+										});
+		
+						AlertDialog dlg = builder.create();
+						dlg.show();						
+					} else {
+						m_activity.catchupFeed(new Feed(cat.id, cat.title, true));
+					}
+
 				}
 			}
 			return true;
@@ -415,9 +445,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {
-				if (m_activity.isDarkTheme())
-					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
-				
 				ib.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {

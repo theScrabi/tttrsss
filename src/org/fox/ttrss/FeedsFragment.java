@@ -19,7 +19,10 @@ import org.fox.ttrss.types.FeedList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
@@ -156,9 +159,35 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			return true;
 		case R.id.catchup_feed:
 			if (true) {
-				Feed feed = getFeedAtPosition(info.position);
+				final Feed feed = getFeedAtPosition(info.position);
+				
 				if (feed != null) {
-					m_activity.catchupFeed(feed);
+					if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								m_activity)
+								.setMessage(getString(R.string.context_confirm_catchup, feed.title))
+								.setPositiveButton(R.string.catchup,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+	
+												m_activity.catchupFeed(feed);											
+												
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+													int which) {
+		
+											}
+										});
+		
+						AlertDialog dlg = builder.create();
+						dlg.show();						
+					} else {
+						m_activity.catchupFeed(feed);
+					}
 				}
 			}
 			return true;
@@ -542,9 +571,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {
-				if (m_activity.isDarkTheme())
-					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
-				
 				ib.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {

@@ -645,11 +645,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				});
 			}
 			
-			ImageButton ib = (ImageButton) v.findViewById(R.id.article_menu_button);
+			ImageView ib = (ImageView) v.findViewById(R.id.article_menu_button);
 			
 			if (ib != null) {
-				if (m_activity.isDarkTheme())
-					ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
+				//if (m_activity.isDarkTheme())
+				//	ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
 				
 				ib.setOnClickListener(new OnClickListener() {					
 					@Override

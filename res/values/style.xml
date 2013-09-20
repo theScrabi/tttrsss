@@ -53,7 +53,7 @@
 		<item name="articleBackground">@android:color/black</item>
 		<item name="headlineSelectedBackground">@color/ics_cyan</item>
 		<item name="headlineUnreadBackground">#202020</item>
-		<item name="headlineNormalBackground">#101010</item>
+		<item name="headlineNormalBackground">#151515</item>
 		<item name="feedsSelectedBackground">@color/ics_cyan</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="feedlistSelectedTextColor">@android:color/black</item>

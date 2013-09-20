@@ -58,9 +58,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:background="@null"
-        android:paddingLeft="6dp"
-        android:paddingTop="6dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_mailbox_collapsed_holo_light" />
+        android:src="@drawable/ic_action_overflow" />
 
 </LinearLayout>
