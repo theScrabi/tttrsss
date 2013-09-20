@@ -56,7 +56,7 @@
     <string name="enable_cats">Habilitar categorías de fuentes</string>
     <string name="no_feeds_to_display">Ninguna fuente para mostrar</string>
     <string name="no_headlines_to_display">Ningún titular para mostrar</string>
-    <string name="no_caption_to display">Ninguna leyenda para mostrar</string>
+    <string name="no_caption_to_display">Ninguna leyenda para mostrar</string>
     <string name="browse_cats_like_feeds">Ver categorías como si fuesen fuentes</string>
     <string name="browse_cats_like_feeds_summary">Use el menú contextual de categoría para reemplazar esta preferencia</string>
     <string name="headlines_mark_as_read">Marcar como leído</string>
