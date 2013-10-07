@@ -380,6 +380,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_autoCatchupDisabled = true;
 					list.setSelection(0);
 					m_autoCatchupDisabled = false;
+					list.setEmptyView(null);
+					m_adapter.clear();
+					m_adapter.notifyDataSetChanged();
 				}
 			}
 			
