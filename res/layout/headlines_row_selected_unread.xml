@@ -89,8 +89,7 @@
             <CheckBox
                 android:id="@+id/selected"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="-6dp"
+                android:layout_height="wrap_content"                
                 android:layout_weight="0"
                 android:focusable="false" />
 
