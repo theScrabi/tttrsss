@@ -173,6 +173,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 		String defaultTheme = "THEME_DARK";
 		
 		return (m_prefs.getString("theme", defaultTheme).equals("THEME_DARK")) ||
+				m_prefs.getString("theme", defaultTheme).equals("THEME_SYSTEM") ||
 				m_prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY");
 	}
 	
@@ -181,6 +182,8 @@ public class CommonActivity extends SherlockFragmentActivity {
 		
 		if (prefs.getString("theme", defaultTheme).equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
+		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SYSTEM")) {
+			setTheme(R.style.SystemTheme);
 		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SEPIA")) {
 			setTheme(R.style.SepiaTheme);
 		} else if (prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY")) {

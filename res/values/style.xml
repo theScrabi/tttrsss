@@ -7,9 +7,9 @@
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
 		<item name="articleBackground">@android:color/transparent</item>
-		<item name="headlineSelectedBackground">#88b0f0</item>
-		<item name="headlineUnreadBackground">#ffffff</item>
-		<item name="headlineNormalBackground">#f0f0f0</item>
+		<item name="headlineSelectedBackground">@drawable/headline_row_selected</item>
+		<item name="headlineUnreadBackground">@drawable/headline_row_unread</item>
+		<item name="headlineNormalBackground">@drawable/headline_row</item>
 		<item name="feedsSelectedBackground">#88b0f0</item>
 		<item name="feedlistTextColor">@android:color/primary_text_light</item>
 		<item name="feedlistSelectedTextColor">#ffffff</item>
@@ -32,8 +32,9 @@
 		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
 		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
-		<item name="headlineUnreadBackground">#f2eae8</item> <!-- #F2EAE8 -->
-		<item name="headlineSelectedBackground">#E5B0A0</item>
+		<item name="headlineUnreadBackground">@drawable/headline_row_unread_sepia</item> <!-- #F2EAE8 -->
+		<item name="headlineNormalBackground">@drawable/headline_row_sepia</item>
+		<item name="headlineSelectedBackground">@drawable/headline_row_selected_sepia</item> <!-- #E5B0A0 -->
 		<item name="feedsSelectedBackground">#E5B0A0</item>
 		<item name="articleBackground">@drawable/paper_sepia</item>
 		<item name="unreadCounterBackground">@drawable/counter_background_sepia</item>
@@ -70,7 +71,35 @@
         <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
         <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
 	</style>
-	
+
+	<style name="SystemTheme" parent="Theme.Sherlock.DeviceDefault">
+	    <item name="smallScreenBackground">@android:color/transparent</item>
+		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
+		<item name="feedlistBackground">@android:color/transparent</item>
+		<item name="unreadCounterColor">#ffffff</item>
+		<item name="headlinesBackground">@android:color/black</item>
+		<item name="headlinesBackgroundSolid">@android:color/black</item>
+		<item name="articleBackground">@android:color/black</item>
+		<item name="headlineSelectedBackground">@color/ics_cyan</item>
+		<item name="headlineUnreadBackground">#202020</item>
+		<item name="headlineNormalBackground">#151515</item>
+		<item name="feedsSelectedBackground">@color/ics_cyan</item>
+        <item name="feedlistTextColor">@android:color/primary_text_dark</item>
+        <item name="feedlistSelectedTextColor">@android:color/black</item>
+        <item name="headlineTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
+        <item name="headlineSelectedTextColor">@android:color/white</item>
+        <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
+        <item name="headlineSecondaryTextColor">#909090</item>
+        <item name="headlineSelectedSecondaryTextColor">#404040</item>
+        <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
+        <item name="linkColor">@color/ics_cyan</item>
+        <item name="loadingBackground">@android:color/black</item>
+        <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
+        <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
+	</style>
+		
 	<style name="DarkGrayTheme" parent="DarkTheme">
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
@@ -93,7 +122,7 @@
 	<style name="ActionBarDarkGray" parent="Widget.Sherlock.ActionBar.Solid">
     	<item name="android:background">#232527</item>
 	</style>
-	
+
 	<style name="DarkDialogTheme" parent="android:Theme.Dialog">
     </style>
 	
