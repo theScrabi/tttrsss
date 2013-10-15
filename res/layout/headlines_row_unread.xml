@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:clickable="true"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="6dp"
                 android:src="@drawable/ic_unpublished" />
 
             <ImageView
