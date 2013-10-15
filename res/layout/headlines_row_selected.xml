@@ -14,7 +14,10 @@
         android:layout_height="match_parent"
         android:background="?headlineSelectedBackground"
         android:orientation="vertical"
-        android:paddingTop="6dp" android:paddingLeft="6dp" android:paddingRight="6dp" android:paddingBottom="2dp" >
+        android:paddingBottom="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp" >
 
         <LinearLayout
             android:id="@+id/linearLayout6"
@@ -106,26 +109,27 @@
                 android:id="@+id/marked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
                 android:layout_weight="0"
                 android:clickable="true"
-                android:paddingRight="8dp"
                 android:src="@drawable/ic_star_empty" />
 
             <ImageView
                 android:id="@+id/published"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="0"
                 android:clickable="true"
-                android:paddingRight="8dp"
-                android:src="@drawable/ic_published" />
+                android:src="@drawable/ic_unpublished" />
 
             <ImageView
                 android:id="@+id/article_menu_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:paddingLeft="8dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
                 android:src="@drawable/ic_action_overflow" />
         </LinearLayout>
     </LinearLayout>
