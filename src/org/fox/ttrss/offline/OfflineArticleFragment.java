@@ -215,10 +215,12 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			    if (android.os.Build.VERSION.SDK_INT >= 11) {
 			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			    }
+			    
+			    String theme = m_prefs.getString("theme", "THEME_DARK");
 
-				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+				if ("THEME_DARK".equals(theme) || "THEME_SYSTEM".equals(theme)) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
-				} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
+				} else if ("THEME_DARK_GRAY".equals(theme)) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
 				} else {
 					cssOverride = "body { background : transparent; }";

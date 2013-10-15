@@ -204,9 +204,11 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				TypedValue tv = new TypedValue();				
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 			    
-				if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK")) {
+			    String theme = m_prefs.getString("theme", "THEME_DARK"); 
+			    
+				if ("THEME_DARK".equals(theme) || "THEME_SYSTEM".equals(theme)) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
-				} else if (m_prefs.getString("theme", "THEME_DARK").equals("THEME_DARK_GRAY")) {
+				} else if ("THEME_DARK_GRAY".equals(theme)) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
 				} else {
 					cssOverride = "body { background : transparent; }";
