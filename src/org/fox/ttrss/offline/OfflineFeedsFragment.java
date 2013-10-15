@@ -307,14 +307,14 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 								icon.setImageBitmap(bmpOrig);
 							}
 						} else {
-							icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+							icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 						}
 					} catch (NullPointerException e) {
-						icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+						icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 					}
 					
 				} else {
-					icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+					icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 				}
 				
 			}

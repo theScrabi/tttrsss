@@ -18,7 +18,7 @@
         android:layout_height="20dp"
         android:layout_weight="0"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_rss_bw" />
+        android:src="@drawable/ic_unpublished" />
 
     <TextView
         android:id="@+id/title"
@@ -57,6 +57,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:background="@null"
         android:src="@drawable/ic_action_overflow" />
 

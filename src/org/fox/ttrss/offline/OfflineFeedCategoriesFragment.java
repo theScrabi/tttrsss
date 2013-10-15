@@ -282,7 +282,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 			ImageView icon = (ImageView)v.findViewById(R.id.icon);
 			
 			if (icon != null) {
-				icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+				icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 			}
 			
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);

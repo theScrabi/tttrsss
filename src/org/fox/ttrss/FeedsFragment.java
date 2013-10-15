@@ -556,14 +556,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 								icon.setImageBitmap(bmpOrig);
 							}
 						} else {
-							icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+							icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 						}
 					} catch (NullPointerException e) {
-						icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+						icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 					}
 					
 				} else {
-					icon.setImageResource(feed.unread > 0 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+					icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 				}
 				
 			}

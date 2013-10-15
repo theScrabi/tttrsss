@@ -525,7 +525,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			ImageView marked = (ImageView)v.findViewById(R.id.marked);
 			
 			if (marked != null) {
-				marked.setImageResource(article.getInt(article.getColumnIndex("marked")) == 1 ? android.R.drawable.star_on : android.R.drawable.star_off);
+				marked.setImageResource(article.getInt(article.getColumnIndex("marked")) == 1 ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
 				
 				marked.setOnClickListener(new OnClickListener() {
 					
@@ -546,7 +546,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			ImageView published = (ImageView)v.findViewById(R.id.published);
 			
 			if (published != null) {
-				published.setImageResource(article.getInt(article.getColumnIndex("published")) == 1 ? R.drawable.ic_rss : R.drawable.ic_rss_bw);
+				published.setImageResource(article.getInt(article.getColumnIndex("published")) == 1 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 				
 				published.setOnClickListener(new OnClickListener() {
 					
