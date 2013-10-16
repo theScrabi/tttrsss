@@ -1,97 +1,105 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="?articleBackground"
-    android:orientation="vertical"
     android:padding="5sp" >
 
-    <org.fox.ttrss.TitleWebView
-        android:id="@+id/content"
+    <org.fox.ttrss.util.NoChildFocusScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
-        
-            <LinearLayout
-        android:id="@+id/article_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:paddingBottom="2dp" >
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="4dp"
-            android:text="My simple headline"
-            android:textColor="?linkColor"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="right"
-            android:singleLine="true"
-            android:text="by Author"
-            android:textColor="?headlineSecondaryTextColor"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="24 comments"
-            android:textColor="?linkColor"
-            android:textSize="12sp" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="0"
-            android:background="?ttrssHorizontalDivider"
-            android:paddingTop="2dip" />
+        android:fillViewport="false" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="4dp"
-            android:layout_weight="1" >
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/tags"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/article_header"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="Example Feed"
-                android:textColor="?headlineSecondaryTextColor"
-                android:textSize="12sp" />
+                android:orientation="vertical"
+                android:paddingBottom="2dp" >
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="right"
-                android:text="Jan 01, 12:00"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?headlineSecondaryTextColor"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="4dp"
+                    android:text="My simple headline"
+                    android:textColor="?linkColor"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="by Author"
+                    android:textColor="?headlineSecondaryTextColor"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="24 comments"
+                    android:textColor="?linkColor"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_weight="0"
+                    android:background="?ttrssHorizontalDivider"
+                    android:paddingTop="2dip" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="4dp" >
+
+                    <TextView
+                        android:id="@+id/tags"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="Example Feed"
+                        android:textColor="?headlineSecondaryTextColor"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:gravity="right"
+                        android:text="Jan 01, 12:00"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="?headlineSecondaryTextColor"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <WebView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
-    </LinearLayout>
-        
+    </org.fox.ttrss.util.NoChildFocusScrollView>
 
-        </org.fox.ttrss.TitleWebView>
 
-</LinearLayout>
+</RelativeLayout>

@@ -211,7 +211,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 			    
 			    // prevent flicker in ics
-			    if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
 			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			    }
 			    
@@ -280,7 +280,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride +
 					"</style>" +
 					"</head>" +
-					"<body>" + articleContent + "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
+					"<body>" + articleContent + "</body></html>";
 					
 				try {
 					String baseUrl = null;
