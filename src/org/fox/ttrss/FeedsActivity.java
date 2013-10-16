@@ -72,7 +72,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					if (m_actionbarRevertDepth == 0) {
 						m_actionbarUpEnabled = false;
 						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-						refresh();
+						refresh(false);
 					}
 					
 					m_feedIsSelected = false;
@@ -285,6 +285,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			refresh();
 			return true;
 		case R.id.update_feeds:
+			m_pullToRefreshAttacher.setRefreshing(true);
 			refresh();
 			return true;
 		default:

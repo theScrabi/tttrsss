@@ -1583,8 +1583,6 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected void refresh(boolean includeHeadlines) {
-		m_pullToRefreshAttacher.setRefreshing(true);
-		
 		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
 		if (cf != null) {
