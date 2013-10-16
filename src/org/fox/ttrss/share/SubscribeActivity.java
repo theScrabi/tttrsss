@@ -8,10 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.ApiRequest.ApiError;
+import org.fox.ttrss.R;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
-import org.fox.ttrss.R;
 
 import android.content.Context;
 import android.os.Bundle;

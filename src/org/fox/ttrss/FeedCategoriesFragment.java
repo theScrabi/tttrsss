@@ -254,7 +254,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		m_activity.setProgressBarIndeterminateVisibility(showProgress);
 	} */
 	
-	@SuppressWarnings("unchecked")
 	public void refresh(boolean background) {
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
 		

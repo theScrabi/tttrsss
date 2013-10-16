@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.google.gson.JsonElement;
-import com.viewpagerindicator.TitlePageIndicator;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 public class ArticlePager extends Fragment {
@@ -141,7 +140,7 @@ public class ArticlePager extends Fragment {
 		return view;
 	}
 	
-	@SuppressWarnings({ "unchecked", "serial" }) 
+	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
 		m_activity.setLoadingStatus(R.string.blank, true);
 

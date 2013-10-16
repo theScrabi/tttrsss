@@ -7,7 +7,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
@@ -39,8 +38,8 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
-import android.webkit.WebView.HitTestResult;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
 
 public class OfflineArticleFragment extends Fragment implements GestureDetector.OnDoubleTapListener {

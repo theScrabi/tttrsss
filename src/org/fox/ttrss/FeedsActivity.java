@@ -9,12 +9,6 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.util.AppRater;
 
-import com.actionbarsherlock.view.MenuItem;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
-
-import android.view.ViewGroup;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -25,8 +19,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
+
+import com.actionbarsherlock.view.MenuItem;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -40,8 +36,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	private int m_actionbarRevertDepth = 0;
 	private SlidingMenu m_slidingMenu;
 	private boolean m_feedIsSelected = false;
-	
-	protected PullToRefreshAttacher m_pullToRefreshAttacher;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -58,8 +52,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				findViewById(R.id.sw600dp_port_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
-
-		m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 		
 		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
 			m_slidingMenu = new SlidingMenu(this);

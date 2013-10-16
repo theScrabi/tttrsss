@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 
 public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
-	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;

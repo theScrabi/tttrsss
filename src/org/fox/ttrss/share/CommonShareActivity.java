@@ -54,7 +54,7 @@ public abstract class CommonShareActivity extends CommonActivity {
 
 	protected abstract void onLoggingIn(int requestId);
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings({ "serial" })
 	public void login(int requestId) {
 
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
@@ -105,7 +105,6 @@ public abstract class CommonShareActivity extends CommonActivity {
 			m_requestId = requestId;
 		}
 
-		@SuppressWarnings("unchecked")
 		protected void onPostExecute(JsonElement result) {
 			if (result != null) {
 				try {

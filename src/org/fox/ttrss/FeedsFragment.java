@@ -319,7 +319,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings({ "serial" })
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
 		
@@ -364,7 +364,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	} */
 	
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings({ "serial" })
 	public void getFeedIcons() {
 		
 		ApiRequest req = new ApiRequest(getActivity().getApplicationContext()) {
