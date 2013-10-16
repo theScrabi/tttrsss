@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -162,9 +161,9 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			
 			if (web != null) {
 				registerForContextMenu(web);
-				
+
 			    // prevent flicker in ics
-			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
+			    if (android.os.Build.VERSION.SDK_INT >= 11) {
 			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			    }
 
@@ -281,7 +280,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					}
 				}
 				
-				content += "</body></html>";
+				content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></body></html>";
 					
 				try {
 					String baseUrl = null;
