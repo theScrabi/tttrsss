@@ -129,8 +129,9 @@ public class ArticlePager extends Fragment {
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
-					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 5) {
+					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 15) {
 						Log.d(TAG, "loading more articles...");
+						m_activity.m_pullToRefreshAttacher.setRefreshing(true);
 						refresh(true);
 					}
 				}
@@ -161,6 +162,7 @@ public class ArticlePager extends Fragment {
 				if (isDetached()) return;
 				
 				m_activity.setProgressBarVisibility(false);
+				m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
 				super.onPostExecute(result);
 				
