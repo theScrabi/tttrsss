@@ -164,7 +164,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				registerForContextMenu(web);
 				
 			    // prevent flicker in ics
-			    if (android.os.Build.VERSION.SDK_INT >= 11 && android.os.Build.VERSION.SDK_INT < 14) {
+			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
 			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			    }
 

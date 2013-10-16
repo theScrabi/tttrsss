@@ -162,6 +162,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="webview_hardware_accel"
+            android:summary="@string/accel_webview_summary"
+            android:title="@string/accel_webview_title" />
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="transport_debugging"
             android:title="@string/transport_debugging" />

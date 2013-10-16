@@ -202,4 +202,6 @@
     <string name="pref_headline_font_size">Headline text size</string>
     <string name="context_confirm_catchup">Mark all articles in %1$s as read?</string>
     <string name="theme_system">Device Default</string>
+    <string name="accel_webview_summary">Disable if you see flicker or visual glitches.</string>
+    <string name="accel_webview_title">Accelerate web views</string>
 </resources>
