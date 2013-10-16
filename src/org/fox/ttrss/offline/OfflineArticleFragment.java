@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -224,7 +225,8 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 				} else {
 					cssOverride = "body { background : transparent; }";
 				}
-				web.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+				// seriously?
+				web.setBackgroundColor(Color.argb(1, 0, 0, 0));
 				
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";

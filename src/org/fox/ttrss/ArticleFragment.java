@@ -18,6 +18,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -209,7 +210,9 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				} else {
 					cssOverride = "body { background : transparent; }";
 				}
-				web.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+				
+				// seriously?
+				web.setBackgroundColor(Color.argb(1, 0, 0, 0));
 				
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
