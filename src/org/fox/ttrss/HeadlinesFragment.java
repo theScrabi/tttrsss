@@ -388,7 +388,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			final String sessionId = m_activity.getSessionId();
 			final boolean isCat = m_feed.is_cat;
 			
-			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed) {
 				@Override
 				protected void onProgressUpdate(Integer... progress) {
 					m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));

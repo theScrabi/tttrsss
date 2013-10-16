@@ -150,7 +150,7 @@ public class ArticlePager extends Fragment {
 			append = false;
 		}
 		
-		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity) {
+		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed) {
 			@Override
 			protected void onProgressUpdate(Integer... progress) {
 				m_activity.setProgress(progress[0] / progress[1] * 10000);
