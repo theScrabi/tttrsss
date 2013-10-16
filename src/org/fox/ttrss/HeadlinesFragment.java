@@ -409,7 +409,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_activity.setProgressBarVisibility(false);
 					
 					super.onPostExecute(result);	
-					
+
+					if (isAdded()) {
+						m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+					}
+
 					if (result != null) {
 						m_refreshInProgress = false;
 						
@@ -418,10 +422,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
-						
-						if (isAdded()) {
-							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-						}
 						
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {

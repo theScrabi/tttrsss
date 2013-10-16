@@ -442,6 +442,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 			
 			m_activity.setProgressBarVisibility(false);
+			m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
 			if (result != null) {
 				try {			
@@ -468,10 +469,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						
 						if (m_enableFeedIcons && !m_feedIconsChecked &&	Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
 							getFeedIcons();
-						
-						if (isAdded()) {
-							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-						}
 						
 						return;
 					}

@@ -296,6 +296,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (isDetached()) return;
 			
 			m_activity.setProgressBarVisibility(false);
+			m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
 			if (getView() != null) {
 				ListView list = (ListView)getView().findViewById(R.id.feeds);
@@ -334,10 +335,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						//m_adapter.notifyDataSetChanged(); (done by sortCats)
 						m_activity.setLoadingStatus(R.string.blank, false);
-						
-						if (isAdded()) {
-							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-						}
 						
 						return;
 					}
