@@ -153,7 +153,7 @@ public class OnlineActivity extends CommonActivity {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
 
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		setProgressBarVisibility(false);
 		setProgressBarIndeterminateVisibility(false);
@@ -1000,6 +1000,7 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.update_headlines:
 			if (hf != null) {
+				m_pullToRefreshAttacher.setRefreshing(true);
 				hf.refresh(false);
 			}
 			return true;
@@ -1582,6 +1583,8 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected void refresh(boolean includeHeadlines) {
+		m_pullToRefreshAttacher.setRefreshing(true);
+		
 		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
 		if (cf != null) {

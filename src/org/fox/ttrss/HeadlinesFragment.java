@@ -13,6 +13,8 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -47,7 +49,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 
-public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
+public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener, OnRefreshListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
 
 	public static final int HEADLINES_REQUEST_SIZE = 30;
@@ -292,6 +294,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		list.setOnScrollListener(this);
 		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
+		
+		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 
 		//if (m_activity.isSmallScreen())
 		//view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
@@ -414,6 +418,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
+						
+						if (isAdded()) {
+							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+						}
+						
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
 							m_activity.login();
@@ -943,6 +952,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public Feed getFeed() {
 		return m_feed;
+	}
+
+	@Override
+	public void onRefreshStarted(View view) {
+		refresh(false);		
 	}
 
 	
