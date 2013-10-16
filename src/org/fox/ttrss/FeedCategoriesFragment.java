@@ -11,6 +11,8 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,7 +46,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener, OnRefreshListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
@@ -207,6 +209,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
 		
+		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+		
 		return view; 
 	}
 	
@@ -258,8 +262,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		final boolean unreadOnly = m_activity.getUnreadOnly();
 		
 		if (sessionId != null) {
-			m_activity.setLoadingStatus(R.string.blank, true);
-			m_activity.setProgressBarVisibility(true);
+			//m_activity.setLoadingStatus(R.string.blank, true);
+			//m_activity.setProgressBarVisibility(true);
 			
 			@SuppressWarnings("serial")
 			HashMap<String,String> map = new HashMap<String,String>() {
@@ -331,6 +335,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						//m_adapter.notifyDataSetChanged(); (done by sortCats)
 						m_activity.setLoadingStatus(R.string.blank, false);
+						
+						if (isAdded()) {
+							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+						}
 						
 						return;
 					}
@@ -502,5 +510,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	
 	public FeedCategory getSelectedCategory() {
 		return m_selectedCat;
+	}
+
+	@Override
+	public void onRefreshStarted(View view) {
+		refresh(false);
 	}	
 }

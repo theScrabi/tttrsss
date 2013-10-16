@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+
 import java.util.Date;
 
 import org.fox.ttrss.types.Article;
@@ -10,6 +11,7 @@ import org.fox.ttrss.util.AppRater;
 
 import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
 
 import android.view.ViewGroup;
 import android.animation.LayoutTransition;
@@ -39,6 +41,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	private SlidingMenu m_slidingMenu;
 	private boolean m_feedIsSelected = false;
 	
+	protected PullToRefreshAttacher m_pullToRefreshAttacher;
+	
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
+		m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
+		
 		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
 			m_slidingMenu = new SlidingMenu(this);
 			

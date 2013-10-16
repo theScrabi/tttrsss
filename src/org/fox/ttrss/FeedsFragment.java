@@ -17,6 +17,8 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedList;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,7 +59,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener, OnRefreshListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -244,6 +246,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
+		Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);
+		
+		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+		
 		return view;    	
 	}
 
@@ -260,6 +266,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 		
 		m_activity = (FeedsActivity)activity;
+				
 	}
 
 	@Override
@@ -315,7 +322,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	@SuppressWarnings({ "unchecked", "serial" })
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
-		m_activity.setProgressBarVisibility(true);
 		
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
@@ -325,7 +331,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
 		if (sessionId != null) {
-			m_activity.setLoadingStatus(R.string.blank, true);
+			//m_activity.setLoadingStatus(R.string.blank, true);
+			//m_activity.setProgressBarVisibility(true);
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
@@ -459,10 +466,13 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						m_activity.setLoadingStatus(R.string.blank, false);
 						//m_adapter.notifyDataSetChanged(); (done by sortFeeds)
 						
-						if (m_enableFeedIcons && !m_feedIconsChecked && 
-								Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
+						if (m_enableFeedIcons && !m_feedIconsChecked &&	Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
 							getFeedIcons();
-
+						
+						if (isAdded()) {
+							m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+						}
+						
 						return;
 					}
 							
@@ -728,6 +738,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	public void setSelectedFeed(Feed feed) {
 		m_selectedFeed = feed;
 		m_adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onRefreshStarted(View view) {
+		refresh(false);
 	}
 
 }
