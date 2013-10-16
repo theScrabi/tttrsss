@@ -43,7 +43,7 @@
                     android:singleLine="true"
                     android:text="by Author"
                     android:textColor="?headlineSecondaryTextColor"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/comments"

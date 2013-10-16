@@ -36,7 +36,7 @@
                 android:singleLine="false"
                 android:text="Sample entry title"
                 android:textColor="?headlineSelectedTextColor"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
