@@ -149,8 +149,6 @@ public class OnlineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-		m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
-
 		if (canUseProgress()) {
 			requestWindowFeature(Window.FEATURE_PROGRESS);
 		}
@@ -169,6 +167,8 @@ public class OnlineActivity extends CommonActivity {
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
 		setContentView(R.layout.login);
+
+		m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
 		if (isOffline) {
 			switchOfflineSuccess();			
