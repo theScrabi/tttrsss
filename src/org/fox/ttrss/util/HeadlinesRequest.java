@@ -40,14 +40,18 @@ public class HeadlinesRequest extends ApiRequest {
 					Type listType = new TypeToken<List<Article>>() {}.getType();
 					final List<Article> articles = new Gson().fromJson(content, listType);
 					
-					while (m_articles.size() > HEADLINES_BUFFER_MAX)
-						m_articles.remove(0);
-					
-					if (m_offset == 0)
+					if (m_offset == 0) {
 						m_articles.clear();
-					else
-						if (m_articles.get(m_articles.size()-1).id == -1)
+					} else {
+						while (m_articles.size() > HEADLINES_BUFFER_MAX) {
+							m_articles.remove(0);
+						}
+
+						if (m_articles.get(m_articles.size()-1).id == -1) {
 							m_articles.remove(m_articles.size()-1); // remove previous placeholder
+						}
+						
+					}
 					
 					for (Article f : articles)
 						if (!m_articles.containsId(f.id))
