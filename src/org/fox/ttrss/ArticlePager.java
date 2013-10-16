@@ -131,7 +131,6 @@ public class ArticlePager extends Fragment {
 					
 					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 15) {
 						Log.d(TAG, "loading more articles...");
-						m_activity.m_pullToRefreshAttacher.setRefreshing(true);
 						refresh(true);
 					}
 				}
@@ -146,6 +145,7 @@ public class ArticlePager extends Fragment {
 		m_activity.setLoadingStatus(R.string.blank, true);
 
 		m_activity.setProgressBarVisibility(true);
+		m_activity.m_pullToRefreshAttacher.setRefreshing(true);
 		
 		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
