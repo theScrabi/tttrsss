@@ -14,8 +14,11 @@
         android:layout_height="match_parent"
         android:background="?headlineUnreadBackground"
         android:orientation="vertical"
-        android:paddingTop="6dp" android:paddingLeft="6dp" android:paddingRight="6dp" android:paddingBottom="2dp" > >
-
+        android:paddingBottom="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp" >
+ 
         <LinearLayout
             android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
@@ -34,6 +37,14 @@
                 android:textColor="?headlineUnreadTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/feed_icon"
+                android:layout_width="16dp"
+        		android:layout_height="16dp"
+        		android:scaleType="fitXY"
+        		android:layout_weight="0" 
+                android:src="@drawable/ic_published" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,7 +96,7 @@
             <CheckBox
                 android:id="@+id/selected"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"                
+                android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:focusable="false" />
 
@@ -105,18 +116,18 @@
                 android:id="@+id/marked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
                 android:layout_weight="0"
                 android:clickable="true"
-                android:layout_marginRight="8dp"
                 android:src="@drawable/ic_star_empty" />
 
             <ImageView
                 android:id="@+id/published"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="0"
                 android:clickable="true"
-                android:layout_marginRight="6dp"
                 android:src="@drawable/ic_unpublished" />
 
             <ImageView

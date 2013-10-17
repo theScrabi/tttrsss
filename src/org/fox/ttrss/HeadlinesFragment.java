@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -71,6 +74,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
+	public boolean m_enableFeedIcons;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
@@ -81,6 +85,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 		
 	};
+	
+	
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
 	}
@@ -288,6 +294,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 		    list.setLayoutAnimation(controller);
 		} */
+		
+		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
@@ -681,6 +689,31 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					
 				} else {
 					ft.setVisibility(View.GONE);
+				}
+				
+			}
+			
+			ImageView feedIcon = (ImageView)v.findViewById(R.id.feed_icon);
+			
+			if (feedIcon != null) {
+				if (!m_activity.isSmallScreen() && m_enableFeedIcons && article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
+					
+					try {
+						File storage = m_activity.getExternalCacheDir();
+						
+						File iconFile = new  File(storage.getAbsolutePath() + FeedsFragment.ICON_PATH + article.feed_id + ".ico");
+						if (iconFile.exists()) {
+							Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
+							if (bmpOrig != null) {
+								feedIcon.setImageBitmap(bmpOrig);
+							}
+						}
+					} catch (NullPointerException e) {
+						
+					}
+					
+				} else {
+					feedIcon.setVisibility(View.GONE);
 				}
 				
 			}

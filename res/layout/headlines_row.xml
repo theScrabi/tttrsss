@@ -35,9 +35,19 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:singleLine="false"
-                android:text="Sample entry title"
+                android:text="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
                 android:textColor="?headlineTextColor"
                 android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/feed_icon"
+                android:layout_width="16dp"
+        		android:layout_height="16dp"
+        		android:scaleType="fitXY"
+                android:layout_weight="0"               
+                
+                android:src="@drawable/ic_published" />
+
         </LinearLayout>
 
         <LinearLayout
