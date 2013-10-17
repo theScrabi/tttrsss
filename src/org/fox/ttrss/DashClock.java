@@ -2,10 +2,13 @@ package org.fox.ttrss;
 
 import java.util.HashMap;
 
+import org.fox.ttrss.util.SimpleLoginManager;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
@@ -29,96 +32,76 @@ public class DashClock extends DashClockExtension {
 	@Override
 	protected void onUpdateData(int reason) {
 		
-		UnreadRequest req = new UnreadRequest(getApplicationContext());
-				
-		@SuppressWarnings("serial")
-		HashMap<String, String> map = new HashMap<String, String>() {
-			{
-				put("op", "login");
-				put("user", m_prefs.getString("login", "").trim());
-				put("password", m_prefs.getString("password", "").trim());
-			}
-		};
+		SimpleLoginManager loginManager = new SimpleLoginManager() {
+			
+			@Override
+			protected void onLoginSuccess(int requestId, String sessionId, int apiLevel) {
+			
+				ApiRequest aru = new ApiRequest(getApplicationContext()) {
+						@Override
+						protected void onPostExecute(JsonElement result) {
+							if (result != null) {
+								try {
+									JsonObject content = result.getAsJsonObject();
+									
+									if (content != null) {
+										int unread = content.get("unread").getAsInt();
 
-		req.execute(map);
-	}
-	
-	protected class UnreadRequest extends ApiRequest {
-		private String m_sessionId;
-		
-		private int m_unreadCount;
-		
-		public UnreadRequest(Context context) {
-			super(context);
-		}
-
-		protected void onPostExecute(JsonElement result) {
-			if (result != null) {
-				try {
-					JsonObject content = result.getAsJsonObject();
-					if (content != null) {
-						m_sessionId = content.get("session_id").getAsString();
-
-						// Log.d(TAG, "Authenticated!");
-						
-						ApiRequest req = new ApiRequest(m_context) {
-							protected void onPostExecute(JsonElement result) {
-								m_unreadCount = 0;
-
-								if (result != null) {
-									try {
-										JsonElement unreadCount = result.getAsJsonObject().get("unread");
-										
-										if (unreadCount != null) {
-											m_unreadCount = unreadCount.getAsInt();
-										} else {
-											m_unreadCount = -1;
-										}
-										
 										ExtensionData updatedData = null; // when null DashClock hides the widget
-										if (m_unreadCount > 0) {
+										
+										if (unread > 0) {
 											updatedData = new ExtensionData();
 											updatedData.visible(true);
 						
 											updatedData.icon(R.drawable.dashclock);
-											updatedData.status(String.valueOf(m_unreadCount));
+											updatedData.status(String.valueOf(unread));
 						
-											updatedData.expandedTitle(getString(R.string.n_unread_articles, m_unreadCount));
+											updatedData.expandedTitle(getString(R.string.n_unread_articles, unread));
 											//updatedData.expandedBody(getString(R.string.app_name));
 						
 											updatedData.clickIntent(new Intent().setClassName("org.fox.ttrss",
 													"org.fox.ttrss.OnlineActivity"));
 										}
+										
 										publishUpdate(updatedData);				
 										
-									} catch (Exception e) {
-										e.printStackTrace();
+										return;
 									}
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
+							}	   										
+						
+						}
+				};
+				
+				final String fSessionId = sessionId;
+				
+				HashMap<String, String> umap = new HashMap<String, String>() {
+		   				{
+		   					put("op", "getUnread");
+		   					put("sid", fSessionId);
+		   				}
+		   			};
 
-								//Log.d(TAG, "unread count is: " + m_unreadCount);
-							}
-						};
-
-						@SuppressWarnings("serial")
-						HashMap<String, String> map = new HashMap<String, String>() {
-							{
-								put("sid", m_sessionId);
-								put("op", "getUnread");
-							}
-						};
-
-						req.execute(map);
-
-						return;
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					aru.execute(umap);
 			}
+			
+			@Override
+			protected void onLoginFailed(int requestId, ApiRequest ar) {
 
-			m_sessionId = null;
-		}
+			}
+			
+			@Override
+			protected void onLoggingIn(int requestId) {
+				
+				
+			}
+		};
+
+		String login = m_prefs.getString("login", "").trim();
+		String password = m_prefs.getString("password", "").trim();
+		
+		loginManager.logIn(getApplicationContext(), 1, login, password);
 	}
 }
