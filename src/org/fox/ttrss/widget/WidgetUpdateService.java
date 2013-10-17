@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.R;
+import org.fox.ttrss.util.SimpleLoginManager;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -64,72 +65,69 @@ public class WidgetUpdateService extends Service {
 	    			
 	   		} else {
 	
-	   			ApiRequest ar = new ApiRequest(getApplicationContext()) {
-	   				@SuppressWarnings({ "unchecked", "serial" })
+	   			SimpleLoginManager loginManager = new SimpleLoginManager() {
+					
 					@Override
-	   				protected void onPostExecute(JsonElement result) {
-	   					if (result != null) {
-	   						JsonObject content = result.getAsJsonObject();
-	   						
-	   						if (content != null) {
-	   							final String sessionId = content.get("session_id").getAsString();
-	   						
-	   							ApiRequest aru = new ApiRequest(getApplicationContext()) {
-	   								@Override
-	   								protected void onPostExecute(JsonElement result) {
-	   									if (result != null) {
-	   										try {
-		   										JsonObject content = result.getAsJsonObject();
-		   										
-		   										if (content != null) {
-		   											int unread = content.get("unread").getAsInt();
-		   											
-		   											view.setViewVisibility(R.id.progress, View.GONE);
-		   											view.setTextViewText(R.id.counter, String.valueOf(unread));
-		   											manager.updateAppWidget(thisWidget, view);
-		   											
-		   											return;
-		   										}
-	   										} catch (Exception e) {
-	   											e.printStackTrace();
-	   										}
-	   									}	   										
-	   								
-	   									view.setViewVisibility(R.id.progress, View.GONE);
-	   									view.setTextViewText(R.id.counter, "?");
-	   									manager.updateAppWidget(thisWidget, view);
-	   								}
-	   							};
-	
-	   				   			HashMap<String, String> umap = new HashMap<String, String>() {
-	   				   				{
-	   				   					put("op", "getUnread");
-	   				   					put("sid", sessionId);
-	   				   				}
-	   				   			};
-	
-	   							aru.execute(umap);
-	   							return;
-	   						}
-	   					}
-	   					
-						// Toast: login failed
+					protected void onLoginSuccess(int requestId, String sessionId, int apiLevel) {
+					
+						ApiRequest aru = new ApiRequest(getApplicationContext()) {
+								@Override
+								protected void onPostExecute(JsonElement result) {
+									if (result != null) {
+										try {
+   										JsonObject content = result.getAsJsonObject();
+   										
+   										if (content != null) {
+   											int unread = content.get("unread").getAsInt();
+   											
+   											view.setViewVisibility(R.id.progress, View.GONE);
+   											view.setTextViewText(R.id.counter, String.valueOf(unread));
+   											manager.updateAppWidget(thisWidget, view);
+   											
+   											return;
+   										}
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+									}	   										
+								
+									view.setViewVisibility(R.id.progress, View.GONE);
+									view.setTextViewText(R.id.counter, "?");
+									manager.updateAppWidget(thisWidget, view);
+								}
+						};
 						
-	   			    	view.setViewVisibility(R.id.progress, View.GONE);
+						final String fSessionId = sessionId;
+						
+						HashMap<String, String> umap = new HashMap<String, String>() {
+				   				{
+				   					put("op", "getUnread");
+				   					put("sid", fSessionId);
+				   				}
+				   			};
+
+							aru.execute(umap);
+					}
+					
+					@Override
+					protected void onLoginFailed(int requestId) {
+						
+						view.setViewVisibility(R.id.progress, View.GONE);
 	   			    	view.setTextViewText(R.id.counter, "?");
-	   			        manager.updateAppWidget(thisWidget, view);  					
-	   				};
-	   			};
-	
-	   			HashMap<String, String> map = new HashMap<String, String>() {
-	   				{
-	   					put("op", "login");
-	   					put("user", m_prefs.getString("login", "").trim());
-	   					put("password", m_prefs.getString("password", "").trim());
-	   				}
-	   			};
-	    			
-	   			ar.execute(map);
+	   			        manager.updateAppWidget(thisWidget, view);
+					}
+					
+					@Override
+					protected void onLoggingIn(int requestId) {
+						
+						
+					}
+				};
+
+				String login = m_prefs.getString("login", "").trim();
+				String password = m_prefs.getString("password", "").trim();
+				
+				loginManager.logIn(getApplicationContext(), 1, login, password);
 	   		}
     	} catch (Exception e) {
     		e.printStackTrace();
