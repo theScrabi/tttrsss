@@ -16,4 +16,7 @@
         android:id="@+id/catchup_category"
         android:title="@string/catchup"/>
     
+ 	<item	
+        android:id="@+id/create_shortcut"
+        android:title="@string/place_shortcut"/>    
 </menu>

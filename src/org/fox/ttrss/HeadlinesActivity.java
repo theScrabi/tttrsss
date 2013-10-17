@@ -47,7 +47,25 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
-				final Feed feed = i.getParcelableExtra("feed");
+				boolean shortcutMode = i.getBooleanExtra("shortcut_mode", false);
+				
+				Log.d(TAG, "is_shortcut_mode: " + shortcutMode);
+				
+				Feed tmpFeed;
+				
+				if (shortcutMode) {
+					int feedId = i.getIntExtra("feed_id", 0);
+					boolean isCat = i.getBooleanExtra("feed_is_cat", false);
+					String feedTitle = i.getStringExtra("feed_title");
+					
+					tmpFeed = new Feed(feedId, feedTitle, isCat);
+					
+				} else {
+					tmpFeed = i.getParcelableExtra("feed");
+				}
+				
+				final Feed feed = tmpFeed;
+				
 				final Article article = i.getParcelableExtra("article");
 				final String searchQuery = i.getStringExtra("searchQuery");
 				

@@ -11,10 +11,13 @@ import org.fox.ttrss.util.AppRater;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.Intent.ShortcutIconResource;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -388,5 +391,28 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (requestCode == HEADLINES_REQUEST) {
 			GlobalState.getInstance().m_activeArticle = null;			
 		}		
+	}
+
+	public void createFeedShortcut(Feed feed) {
+		final Intent shortcutIntent = new Intent(this, HeadlinesActivity.class);
+		shortcutIntent.putExtra("feed_id", feed.id);
+		shortcutIntent.putExtra("feed_is_cat", feed.is_cat);
+		shortcutIntent.putExtra("feed_title", feed.title);
+		shortcutIntent.putExtra("shortcut_mode", true);
+		
+		Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+		
+		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, feed.title);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(this, R.drawable.icon));  
+		intent.putExtra("duplicate", false);
+		
+		sendBroadcast(intent);
+		
+		toast(R.string.shortcut_has_been_placed_on_the_home_screen);
+	}
+	
+	public void createCategoryShortcut(FeedCategory cat) {
+		createFeedShortcut(new Feed(cat.id, cat.title, true));
 	}
 }

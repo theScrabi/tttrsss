@@ -128,6 +128,15 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				}
 			}
 			return true;
+		case R.id.create_shortcut:
+			if (true) {
+				FeedCategory cat = getCategoryAtPosition(info.position);
+				if (cat != null) {
+					m_activity.createCategoryShortcut(cat);
+					//cf.setSelectedCategory(cat);
+				}
+			}
+			return true;
 		case R.id.catchup_category:
 			if (true) {
 				final FeedCategory cat = getCategoryAtPosition(info.position);

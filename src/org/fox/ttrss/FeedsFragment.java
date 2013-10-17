@@ -159,6 +159,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				}
 			}
 			return true;
+		case R.id.create_shortcut:
+			if (true) {
+				Feed feed = getFeedAtPosition(info.position);
+				if (feed != null) {
+					m_activity.createFeedShortcut(feed);
+				}
+			}
+			return true;
 		case R.id.catchup_feed:
 			if (true) {
 				final Feed feed = getFeedAtPosition(info.position);

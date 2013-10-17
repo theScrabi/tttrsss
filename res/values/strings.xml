@@ -204,4 +204,6 @@
     <string name="theme_system">Device Default</string>
     <string name="accel_webview_summary">Disable if you see flicker or visual glitches.</string>
     <string name="accel_webview_title">Accelerate web views</string>
+    <string name="place_shortcut">Place shortcut</string>
+    <string name="shortcut_has_been_placed_on_the_home_screen">Shortcut has been placed on the home screen</string>
 </resources>
