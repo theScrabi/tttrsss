@@ -88,6 +88,21 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (m_slidingMenu != null)
 				m_slidingMenu.showMenu();
 
+			Intent i = getIntent();
+			boolean shortcutMode = i.getBooleanExtra("shortcut_mode", false);
+			
+			Log.d(TAG, "is_shortcut_mode: " + shortcutMode);
+
+			if (shortcutMode) {
+				int feedId = i.getIntExtra("feed_id", 0);
+				boolean isCat = i.getBooleanExtra("feed_is_cat", false);
+				String feedTitle = i.getStringExtra("feed_title");
+				
+				Feed tmpFeed = new Feed(feedId, feedTitle, isCat);
+				
+				onFeedSelected(tmpFeed);
+			}
+			
 			m_pullToRefreshAttacher.setRefreshing(true);
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -394,7 +409,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	public void createFeedShortcut(Feed feed) {
-		final Intent shortcutIntent = new Intent(this, HeadlinesActivity.class);
+		final Intent shortcutIntent = new Intent(this, FeedsActivity.class);
 		shortcutIntent.putExtra("feed_id", feed.id);
 		shortcutIntent.putExtra("feed_is_cat", feed.is_cat);
 		shortcutIntent.putExtra("feed_title", feed.title);
