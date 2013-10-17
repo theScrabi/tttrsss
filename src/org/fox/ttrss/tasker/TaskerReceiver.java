@@ -1,5 +1,6 @@
 package org.fox.ttrss.tasker;
 
+import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
@@ -41,8 +42,8 @@ public class TaskerReceiver extends BroadcastReceiver {
 				}
 				
 				@Override
-				protected void onLoginFailed(int requestId) {
-					Toast toast = Toast.makeText(fContext, "Could not download articles: login failed", Toast.LENGTH_SHORT);
+				protected void onLoginFailed(int requestId, ApiRequest ar) {
+					Toast toast = Toast.makeText(fContext, fContext.getString(ar.getErrorMessage()), Toast.LENGTH_SHORT);
 					toast.show();
 				}
 				

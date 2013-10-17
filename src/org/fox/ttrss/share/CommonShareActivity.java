@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
+import org.fox.ttrss.util.SimpleLoginManager;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -54,7 +55,6 @@ public abstract class CommonShareActivity extends CommonActivity {
 
 	protected abstract void onLoggingIn(int requestId);
 
-	@SuppressWarnings({ "serial" })
 	public void login(int requestId) {
 
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
@@ -80,84 +80,35 @@ public abstract class CommonShareActivity extends CommonActivity {
 			alert.show();
 			
 		} else {
-
-			LoginRequest ar = new LoginRequest(getApplicationContext(), requestId); 
-
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("op", "login");
-					put("user", m_prefs.getString("login", "").trim());
-					put("password", m_prefs.getString("password", "").trim());
+			
+			SimpleLoginManager loginManager = new SimpleLoginManager() {
+				
+				@Override
+				protected void onLoginSuccess(int requestId, String sessionId, int apiLevel) {
+					m_sessionId = sessionId;
+					m_apiLevel = apiLevel;
+					
+					CommonShareActivity.this.onLoggedIn(requestId);					
+				}
+				
+				@Override
+				protected void onLoginFailed(int requestId, ApiRequest ar) {
+					toast(ar.getErrorMessage());
+					setProgressBarIndeterminateVisibility(false);
+				}
+				
+				@Override
+				protected void onLoggingIn(int requestId) {
+					CommonShareActivity.this.onLoggingIn(requestId);					
 				}
 			};
-
-			onLoggingIn(requestId);
 			
-			ar.execute(map);
+			String login = m_prefs.getString("login", "").trim();
+			String password = m_prefs.getString("password", "").trim();
+			
+			loginManager.logIn(this, requestId, login, password);
 		}
 	}	
-	
-	protected class LoginRequest extends ApiRequest {
-		private int m_requestId;
-		
-		public LoginRequest(Context context, int requestId) {
-			super(context);
-			m_requestId = requestId;
-		}
-
-		protected void onPostExecute(JsonElement result) {
-			if (result != null) {
-				try {
-					JsonObject content = result.getAsJsonObject();
-					if (content != null) {
-						m_sessionId = content.get("session_id").getAsString();
-
-						Log.d(TAG, "Authenticated!");
-						
-						ApiRequest req = new ApiRequest(m_context) {
-							protected void onPostExecute(JsonElement result) {
-								m_apiLevel = 0;
-
-								if (result != null) {
-									try {
-										m_apiLevel = result.getAsJsonObject()
-													.get("level").getAsInt();
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-								}
-
-								Log.d(TAG, "Received API level: " + m_apiLevel);
-
-								onLoggedIn(m_requestId);
-							}
-						};
-
-						@SuppressWarnings("serial")
-						HashMap<String, String> map = new HashMap<String, String>() {
-							{
-								put("sid", m_sessionId);
-								put("op", "getApiLevel");
-							}
-						};
-
-						req.execute(map);
-
-						return;
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			m_sessionId = null;
-
-			toast(getErrorMessage());
-			setProgressBarIndeterminateVisibility(false);
-		}
-
-	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

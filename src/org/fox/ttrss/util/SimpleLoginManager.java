@@ -24,7 +24,7 @@ public abstract class SimpleLoginManager {
 			m_context = context;
 			m_requestId = requestId;
 		}
-
+		
 		protected void onPostExecute(JsonElement result) {
 			Log.d(TAG, "onPostExecute");
 			
@@ -34,7 +34,7 @@ public abstract class SimpleLoginManager {
 					if (content != null) {
 						m_sessionId = content.get("session_id").getAsString();
 
-						Log.d(TAG, "Authenticated!");
+						Log.d(TAG, "[SLM] Authenticated!");
 						
 						ApiRequest req = new ApiRequest(m_context) {
 							protected void onPostExecute(JsonElement result) {
@@ -49,7 +49,7 @@ public abstract class SimpleLoginManager {
 									}
 								}
 
-								Log.d(TAG, "Received API level: " + m_apiLevel);
+								Log.d(TAG, "[SLM] Received API level: " + m_apiLevel);
 
 								onLoginSuccess(m_requestId, m_sessionId, m_apiLevel);
 							}
@@ -75,11 +75,11 @@ public abstract class SimpleLoginManager {
 
 			m_sessionId = null;
 
-			onLoginFailed(m_requestId);
+			onLoginFailed(m_requestId, this);
 		}
 
 	}
-	
+
 	public void logIn(Context context, int requestId, final String login, final String password) {
 		LoginRequest ar = new LoginRequest(context, requestId); 
 
@@ -100,6 +100,6 @@ public abstract class SimpleLoginManager {
 
 	protected abstract void onLoginSuccess(int requestId, String sessionId, int apiLevel);
 	
-	protected abstract void onLoginFailed(int requestId);
+	protected abstract void onLoginFailed(int requestId, ApiRequest ar);
 	
 }

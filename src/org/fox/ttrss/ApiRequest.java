@@ -74,7 +74,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			super.execute(map);
 	}
 	
-	protected int getErrorMessage() {
+	public int getErrorMessage() {
 		switch (m_lastError) {
 		case NO_ERROR:
 			return R.string.error_unknown;

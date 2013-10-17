@@ -110,7 +110,7 @@ public class WidgetUpdateService extends Service {
 					}
 					
 					@Override
-					protected void onLoginFailed(int requestId) {
+					protected void onLoginFailed(int requestId, ApiRequest ar) {
 						
 						view.setViewVisibility(R.id.progress, View.GONE);
 	   			    	view.setTextViewText(R.id.counter, "?");
