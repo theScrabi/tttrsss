@@ -60,6 +60,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 					
 					tmpFeed = new Feed(feedId, feedTitle, isCat);
 					
+					GlobalState.getInstance().m_loadedArticles.clear();					
 				} else {
 					tmpFeed = i.getParcelableExtra("feed");
 				}
