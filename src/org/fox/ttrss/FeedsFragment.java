@@ -67,7 +67,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private FeedsActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
-	protected static final String ICON_PATH = "/icons/";
+	private static final String ICON_PATH = "/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	

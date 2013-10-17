@@ -36,14 +36,6 @@
                 android:text="Sample entry title"
                 android:textColor="?attr/headlineSelectedTextColor"
                 android:textSize="18sp" />
-            
-            <ImageView
-                android:id="@+id/feed_icon"
-                android:layout_width="16dp"
-        		android:layout_height="16dp"
-        		android:scaleType="fitXY"
-        		android:layout_weight="0" 
-                android:src="@drawable/ic_published" />
         </LinearLayout>
 
         <LinearLayout
