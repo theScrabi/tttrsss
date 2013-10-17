@@ -4,12 +4,14 @@ import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
+import org.fox.ttrss.offline.OfflineUploadService;
 import org.fox.ttrss.util.SimpleLoginManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,21 +26,41 @@ public class TaskerReceiver extends BroadcastReceiver {
 		final Context fContext = context;
 		
 		if (com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent.getAction())) {
-			Log.d(TAG, "about to download stuff!");
+			
+			final Bundle settings = intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
+			final int actionId = settings != null ? settings.getInt("actionId", -1) : -1;
+			
+			Log.d(TAG, "received action id=" + actionId);
 			
 			SimpleLoginManager loginMgr = new SimpleLoginManager() {
 				
 				@Override
 				protected void onLoginSuccess(int requestId, String sessionId, int apiLevel) {
-					Log.d(TAG, "Got SID=" + sessionId);
-					
-					Intent intent = new Intent(
-							fContext,
-							OfflineDownloadService.class);
-					intent.putExtra("sessionId", sessionId);
-					intent.putExtra("batchMode", true);
 
-					fContext.startService(intent);
+					switch (actionId) {
+					case TaskerSettingsActivity.ACTION_DOWNLOAD:
+						if (true) {
+							Intent intent = new Intent(fContext,
+									OfflineDownloadService.class);
+							intent.putExtra("sessionId", sessionId);
+							intent.putExtra("batchMode", true);
+	
+							fContext.startService(intent);
+						}
+						break;
+					case TaskerSettingsActivity.ACTION_UPLOAD:
+						if (true) {
+							Intent intent = new Intent(fContext,
+									OfflineUploadService.class);
+							intent.putExtra("sessionId", sessionId);
+							intent.putExtra("batchMode", true);
+	
+							fContext.startService(intent);
+						}						
+						break;
+					default:
+						Log.d(TAG, "unknown action id=" + actionId);
+					}					
 				}
 				
 				@Override

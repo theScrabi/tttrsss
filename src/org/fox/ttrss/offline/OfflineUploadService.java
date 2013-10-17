@@ -11,7 +11,9 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -29,6 +31,7 @@ public class OfflineUploadService extends IntentService {
 	private String m_sessionId;
 	private NotificationManager m_nmgr;
 	private boolean m_uploadInProgress = false;
+	private boolean m_batchMode = false;
 	
 	public OfflineUploadService() {
 		super("OfflineUploadService");
@@ -200,10 +203,19 @@ public class OfflineUploadService extends IntentService {
 	private void uploadSuccess() {
 		getWritableDb().execSQL("UPDATE articles SET modified = 0");
 
-        Intent intent = new Intent();
-        intent.setAction(INTENT_ACTION_SUCCESS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        sendBroadcast(intent);
+		if (m_batchMode) {
+			
+			SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = localPrefs.edit();
+			editor.putBoolean("offline_mode_active", false);
+			editor.commit();
+			
+		} else {
+	        Intent intent = new Intent();
+	        intent.setAction(INTENT_ACTION_SUCCESS);
+	        intent.addCategory(Intent.CATEGORY_DEFAULT);
+	        sendBroadcast(intent);
+		}
         
         m_readableDb.close();
         m_writableDb.close();
@@ -257,6 +269,7 @@ public class OfflineUploadService extends IntentService {
 			}
 	
 			m_sessionId = intent.getStringExtra("sessionId");
+			m_batchMode = intent.getBooleanExtra("batchMode", false);
 	
 			if (!m_uploadInProgress) {
 				m_uploadInProgress = true;

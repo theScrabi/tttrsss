@@ -208,4 +208,5 @@
     <string name="shortcut_has_been_placed_on_the_home_screen">Shortcut has been placed on the home screen</string>
     <string name="download_articles_and_go_offline">Download articles and go offline</string>
     <string name="tasker_save_and_close">Save and close</string>
+    <string name="synchronize_read_articles_and_go_online">Synchronize read articles and go online</string>
 </resources>
