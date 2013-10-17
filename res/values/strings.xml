@@ -206,4 +206,6 @@
     <string name="accel_webview_title">Accelerate web views</string>
     <string name="place_shortcut">Place shortcut</string>
     <string name="shortcut_has_been_placed_on_the_home_screen">Shortcut has been placed on the home screen</string>
+    <string name="download_articles_and_go_offline">Download articles and go offline</string>
+    <string name="tasker_save_and_close">Save and close</string>
 </resources>

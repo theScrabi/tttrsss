@@ -55,6 +55,7 @@ public class OfflineDownloadService extends Service {
 	private String m_sessionId;
 	private NotificationManager m_nmgr;
 	
+	private boolean m_batchMode = false;
 	private boolean m_downloadInProgress = false;
 	private boolean m_downloadImages = false;
 	private int m_syncMax;
@@ -139,10 +140,19 @@ public class OfflineDownloadService extends Service {
         if (!isCacheServiceRunning()) {
             m_nmgr.cancel(NOTIFY_DOWNLOADING);
 
-			Intent intent = new Intent();
-			intent.setAction(INTENT_ACTION_SUCCESS);
-			intent.addCategory(Intent.CATEGORY_DEFAULT);
-			sendBroadcast(intent);
+            if (m_batchMode) {
+            	
+            	SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+				SharedPreferences.Editor editor = localPrefs.edit();
+				editor.putBoolean("offline_mode_active", true);
+				editor.commit();
+            	
+            } else {
+            	Intent intent = new Intent();
+            	intent.setAction(INTENT_ACTION_SUCCESS);
+            	intent.addCategory(Intent.CATEGORY_DEFAULT);
+            	sendBroadcast(intent);
+            }
         } else {
         	updateNotification(getString(R.string.notify_downloading_images, 0));
         }
@@ -473,6 +483,7 @@ public class OfflineDownloadService extends Service {
 			}
 			
 			m_sessionId = intent.getStringExtra("sessionId");
+			m_batchMode = intent.getBooleanExtra("batchMode", false);
 		
 			if (!m_downloadInProgress) {
 				if (m_downloadImages) ImageCacheService.cleanupCache(this, false);
