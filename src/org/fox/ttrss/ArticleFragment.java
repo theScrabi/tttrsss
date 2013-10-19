@@ -48,7 +48,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	private Article m_article;
 	private OnlineActivity m_activity;
 	private GestureDetector m_detector;
-
+	
 	public void initialize(Article article) {
 		m_article = article;
 	}
@@ -92,7 +92,9 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			m_article = savedInstanceState.getParcelable("article");
 		}
 
-		View view = inflater.inflate(R.layout.article_fragment, container, false);
+		boolean useTitleWebView = m_prefs.getBoolean("article_compat_view", false);
+		
+		View view = inflater.inflate(useTitleWebView ? R.layout.article_fragment_compat : R.layout.article_fragment, container, false);
 		
 		if (m_article != null) {
 			
@@ -165,8 +167,10 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 				registerForContextMenu(web);
 				
 			    // prevent flicker in ics
-			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
-			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
+			    	if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    		web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    	}
 			    }
 
 				web.setWebChromeClient(new WebChromeClient() {					
@@ -258,6 +262,10 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;
+				
+				if (useTitleWebView) {
+					content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>";
+				}
 				
 				if (m_article.attachments != null && m_article.attachments.size() != 0) {
 					String flatContent = articleContent.replaceAll("[\r\n]", "");

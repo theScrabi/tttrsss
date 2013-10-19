@@ -209,4 +209,6 @@
     <string name="download_articles_and_go_offline">Download articles and go offline</string>
     <string name="tasker_save_and_close">Save and close</string>
     <string name="synchronize_read_articles_and_go_online">Synchronize read articles and go online</string>
+    <string name="prefs_compatible_article_layout">Compatible article layout</string>
+    <string name="prefs_compatible_layout_summary">Enable if you see glitches in article content</string>
 </resources>

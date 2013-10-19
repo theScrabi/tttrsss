@@ -123,7 +123,9 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
-		View view = inflater.inflate(R.layout.article_fragment, container, false);
+		boolean useTitleWebView = m_prefs.getBoolean("article_compat_view", false);
+		
+		View view = inflater.inflate(useTitleWebView ? R.layout.article_fragment_compat : R.layout.article_fragment, container, false);
 
 		m_cursor = m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 
@@ -212,8 +214,10 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 			    
 			    // prevent flicker in ics
-			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
-			    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
+			    	if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    		web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			    	}
 			    }
 			    
 			    String theme = m_prefs.getString("theme", "THEME_DARK");
@@ -282,8 +286,14 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride +
 					"</style>" +
 					"</head>" +
-					"<body>" + articleContent + "</body></html>";
-					
+					"<body>" + articleContent;
+				
+				if (useTitleWebView) {
+					content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>";
+				}
+				
+				content += "</body></html>";
+				
 				try {
 					String baseUrl = null;
 					
