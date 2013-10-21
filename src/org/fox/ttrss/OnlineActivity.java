@@ -559,6 +559,11 @@ public class OnlineActivity extends CommonActivity {
 				}
 			}			
 			return true;
+		case R.id.article_img_copy:
+			if (getLastContentImageHitTestUrl() != null) {
+				copyToClipboard(getLastContentImageHitTestUrl());
+			}			
+			return true;
 		case R.id.article_img_share:
 			if (getLastContentImageHitTestUrl() != null) {
 				Intent intent = new Intent(Intent.ACTION_SEND);
