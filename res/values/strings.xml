@@ -157,8 +157,8 @@
     <string name="prefs_fullscreen_mode">Fullscreen mode</string>
     <string name="reading">Reading</string>
     <string name="theme_dark_gray">Dark gray</string>
-    <string name="offline_articles_to_download">Number of articles to download</string>
-    <string name="offline_articles_to_download_long">Number of articles to download for Offline mode (newest first).</string>
+    <string name="offline_articles_to_download">Amount of articles to download</string>
+    <string name="offline_articles_to_download_long">How many articles to download for offline mode (newest first).</string>
     <string name="pref_headlines_show_content_long">Show content previews in headlines list</string>
     <string name="pref_headlines_show_content">Preview article content</string>
     <string name="api_too_low">This action requires newer version of Tiny Tiny RSS</string>
@@ -189,7 +189,7 @@
     <string name="headlines_unread">Unread</string>
     <string name="article_img_open">Open image</string>
     <string name="article_img_share">Share image</string>
-    <string name="requires_api5">Requires version 1.7.6</string>
+    <string name="requires_api5">Requires tt-rss 1.7.6</string>
     <string name="labels">Labels</string>
     <string name="article_img_view_caption">View Caption</string>
     <string name="light_theme_is_not_supported_on_honeycomb">Light theme is not supported on Honeycomb</string>
