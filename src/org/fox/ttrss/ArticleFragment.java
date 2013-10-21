@@ -215,8 +215,12 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					cssOverride = "body { background : transparent; }";
 				}
 				
-				// seriously?
-				web.setBackgroundColor(Color.argb(1, 0, 0, 0));
+				if (useTitleWebView) {
+					web.setBackgroundColor(Color.TRANSPARENT);
+				} else {
+					// seriously?
+					web.setBackgroundColor(Color.argb(1, 0, 0, 0));
+				}
 				
 				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
 			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
