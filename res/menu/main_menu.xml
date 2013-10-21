@@ -30,7 +30,7 @@
             <item
                 android:id="@+id/update_feeds"
                 android:icon="@drawable/ic_refresh_light"
-                android:showAsAction="ifRoom"
+                android:showAsAction=""
                 android:title="@string/update_feeds"/>
             <item
                 android:id="@+id/logout"
@@ -41,7 +41,7 @@
             <item
                 android:id="@+id/update_headlines"
                 android:icon="@drawable/ic_refresh_light" 
-                android:showAsAction="ifRoom"
+                android:showAsAction=""
                 android:title="@string/update_headlines"/>
             <item
                 android:id="@+id/search"
