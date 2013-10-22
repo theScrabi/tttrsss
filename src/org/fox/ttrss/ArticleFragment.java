@@ -215,7 +215,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					cssOverride = "body { background : transparent; }";
 				}
 				
-				if (useTitleWebView) {
+				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < 11) {
 					web.setBackgroundColor(Color.TRANSPARENT);
 				} else {
 					// seriously?

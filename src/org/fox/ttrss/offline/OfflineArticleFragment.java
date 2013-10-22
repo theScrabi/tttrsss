@@ -230,7 +230,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride = "body { background : transparent; }";
 				}
 
-				if (useTitleWebView) {
+				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < 11) {
 					web.setBackgroundColor(Color.TRANSPARENT);
 				} else {
 					// seriously?
