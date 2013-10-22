@@ -250,7 +250,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 				ft.replace(R.id.article_fragment, new LoadingFragment(), null);
 				
-				ft.commit();
+				ft.commitAllowingStateLoss();
 				
 				final Article fArticle = article;
 				final Feed fFeed = hf.getFeed();
@@ -265,7 +265,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						af.initialize(fArticle, fFeed);
 
 						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
-						ft.commit();
+						ft.commitAllowingStateLoss();
 					}
 				}, 10);				
 			}
