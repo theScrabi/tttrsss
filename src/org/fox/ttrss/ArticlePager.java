@@ -261,6 +261,7 @@ public class ArticlePager extends Fragment {
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 		
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("article", m_article);
 		out.putParcelable("feed", m_feed);
 	}

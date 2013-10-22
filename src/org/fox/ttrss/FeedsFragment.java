@@ -290,6 +290,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("selectedFeed", m_selectedFeed);
 		out.putParcelable("feeds", m_feeds);
 		out.putBoolean("feedIconsChecked", m_feedIconsChecked);

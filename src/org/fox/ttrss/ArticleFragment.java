@@ -369,6 +369,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	public void onSaveInstanceState (Bundle out) {		
 		super.onSaveInstanceState(out);
 
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("article", m_article);
 	}
 

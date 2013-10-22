@@ -499,6 +499,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 		
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("feed", m_feed);
 		//out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);

@@ -32,6 +32,8 @@ public class GlobalState extends Application {
 	}
 	
 	public void save(Bundle out) {
+		
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelableArrayList("gs:loadedArticles", m_loadedArticles);
 		out.putParcelable("gs:activeFeed", m_activeFeed);
 		out.putParcelable("gs:activeArticle", m_activeArticle);

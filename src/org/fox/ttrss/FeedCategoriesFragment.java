@@ -247,6 +247,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
 
+		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("selectedCat", m_selectedCat);
 		out.putParcelable("cats", m_cats);
 	}
