@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 @SuppressWarnings("serial")
 public class ArticleList extends ArrayList<Article> implements Parcelable {
@@ -15,10 +16,7 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(this.size());
-		for (Article article : this) {
-			out.writeParcelable(article, flags);
-		}
+		out.writeList(this);
 	}
 	
 	public Article findById(int id) {
@@ -30,17 +28,12 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 	}
 	
 	public void readFromParcel(Parcel in) {
-		int length = in.readInt();
-		
-		for (int i = 0; i < length; i++) {
-			Article article = in.readParcelable(Article.class.getClassLoader());
-			this.add(article);
-		}
+		in.readList(this, getClass().getClassLoader());
 	}
 	
 	public ArticleList() { }
 	
-	public ArticleList(Parcel in) {
+	public ArticleList(Parcel in) {		
 		readFromParcel(in);
 	}
 	

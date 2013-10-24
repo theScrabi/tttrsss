@@ -18,20 +18,11 @@ public class FeedList extends ArrayList<Feed> implements Parcelable {
 
 		@Override
 		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(this.size());
-			for (Feed feed : this) {
-				out.writeParcelable(feed, flags);
-			}
+			out.writeList(this);
 		}
 		
 		public void readFromParcel(Parcel in) {
-			int length = in.readInt();
-			
-			for (int i = 0; i < length; i++) {
-				Feed feed = in.readParcelable(Feed.class.getClassLoader());
-				this.add(feed);
-			}
-			
+			in.readList(this, getClass().getClassLoader());			
 		}
 				
 		public FeedList(Parcel in) {

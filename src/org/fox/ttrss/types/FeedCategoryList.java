@@ -18,20 +18,11 @@ public class FeedCategoryList extends ArrayList<FeedCategory> implements Parcela
 
 		@Override
 		public void writeToParcel(Parcel out, int flags) {
-			out.writeInt(this.size());
-			for (FeedCategory feed : this) {
-				out.writeParcelable(feed, flags);
-			}
+			out.writeList(this);
 		}
 		
 		public void readFromParcel(Parcel in) {
-			int length = in.readInt();
-			
-			for (int i = 0; i < length; i++) {
-				FeedCategory feed = in.readParcelable(FeedCategory.class.getClassLoader());
-				this.add(feed);
-			}
-			
+			in.readList(this, getClass().getClassLoader());			
 		}
 				
 		public FeedCategoryList(Parcel in) {
