@@ -509,9 +509,12 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		}
 	}
 
-	public void setSelectedCategory(FeedCategory cat) {
+	public void setSelectedCategory(FeedCategory cat) {	
 		m_selectedCat = cat;
-		m_adapter.notifyDataSetChanged();
+		
+		if (m_adapter != null) {
+			m_adapter.notifyDataSetChanged();
+		}
 	}
 	
 	public FeedCategory getSelectedCategory() {
