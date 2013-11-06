@@ -198,4 +198,15 @@
     <string name="author_formatted">von %1$s</string>
     <string name="n_unread_articles">%1$d ungelesene Artikel</string>
     <string name="pref_headline_font_size">Schriftgröße Überschriften</string>
+    <string name="context_confirm_catchup">Alle Artikel in %1$s als gelesen markieren?</string>
+    <string name="theme_system">Voreinstellung des Systems</string>
+    <string name="accel_webview_summary">Deaktivieren, falls es zu Flackern oder anderen sichtbaren Störungen kommt.</string>
+    <string name="accel_webview_title">Webansicht beschleunigen (3.0+)</string>
+    <string name="place_shortcut">Verknüpfung erstellen</string>
+    <string name="shortcut_has_been_placed_on_the_home_screen">Eine Verknüpfung wurde auf dem Startbildschirm erstellt</string>
+    <string name="download_articles_and_go_offline">Artikel herunterladen und offline gehen</string>
+    <string name="tasker_save_and_close">Speichern und schließen</string>
+    <string name="synchronize_read_articles_and_go_online">Gelesene Artikel synchronisieren und online gehen</string>
+    <string name="prefs_compatible_article_layout">Kompatibles Artikel-Layout</string>
+    <string name="prefs_compatible_layout_summary">Aktivieren, falls der Inhalt von Artikeln nicht richtig dargestellt wird</string>
 </resources>
