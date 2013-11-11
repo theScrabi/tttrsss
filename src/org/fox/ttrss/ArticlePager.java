@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ClassloaderWorkaroundFragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -38,7 +39,7 @@ public class ArticlePager extends Fragment {
 	private Feed m_feed;
 	private SharedPreferences m_prefs;
 	
-	private class PagerAdapter extends FragmentStatePagerAdapter {
+	private class PagerAdapter extends ClassloaderWorkaroundFragmentStatePagerAdapter {
 		
 		public PagerAdapter(FragmentManager fm) {
 			super(fm);
