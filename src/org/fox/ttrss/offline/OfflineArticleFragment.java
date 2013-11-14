@@ -282,6 +282,10 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					break;		
 				}
 				
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+					cssOverride += "img { max-width : 99%; }";
+				}
+				
 				content = 
 					"<html>" +
 					"<head>" +
@@ -289,6 +293,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
+					"body { line-height : 120%; }" +
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;

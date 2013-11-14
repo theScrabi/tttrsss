@@ -255,6 +255,10 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					break;		
 				}
 				
+				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+					cssOverride += "img { max-width : 99%; }";
+				}
+				
 				content = 
 					"<html>" +
 					"<head>" +
@@ -262,7 +266,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; }" +
 					cssOverride +
-					/* "img { max-width : 98%; height : auto; }" + */
+					"body { line-height : 120%; }" +
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;
