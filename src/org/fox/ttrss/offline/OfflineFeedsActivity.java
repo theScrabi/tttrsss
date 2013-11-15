@@ -27,6 +27,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	private int m_actionbarRevertDepth = 0;
 	private SlidingMenu m_slidingMenu;
 	private boolean m_feedIsSelected = false;
+	private boolean m_feedWasSelected = false;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -47,9 +48,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
 			m_slidingMenu = new SlidingMenu(this);
 			
-			if (findViewById(R.id.sw600dp_port_anchor) != null) {
+			/* if (findViewById(R.id.sw600dp_port_anchor) != null) {
 				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-			}
+			} */
 			
 			m_slidingMenu.setMode(SlidingMenu.LEFT);
 			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -77,6 +78,11 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
+			m_feedWasSelected = savedInstanceState.getBoolean("feedWasSelected");
+			
+			if (findViewById(R.id.sw600dp_port_anchor) != null && m_feedWasSelected && m_slidingMenu != null) {
+				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
+			}
 			
 			if (m_slidingMenu != null && m_feedIsSelected == false) {
 				m_slidingMenu.showMenu();
@@ -171,6 +177,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
 		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
+		out.putBoolean("feedWasSelected", m_feedWasSelected);
+
 		
 		//if (m_slidingMenu != null )
 		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
@@ -266,8 +274,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 					ft.commit();
 
 					m_feedIsSelected = true;
+					m_feedWasSelected = true;
 
 					if (m_slidingMenu != null) { 
+						if (findViewById(R.id.sw600dp_port_anchor) != null) {
+							m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
+						}
+						
 						m_slidingMenu.showContent();
 						getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 						m_actionbarUpEnabled = true;
