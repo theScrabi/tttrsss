@@ -155,7 +155,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 	@SuppressLint({ "NewApi", "ServiceCast" })
 	@SuppressWarnings("deprecation")
 	public void copyToClipboard(String str) {
-		if (android.os.Build.VERSION.SDK_INT < 11) {				
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {				
 			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(str);
 		} else {
@@ -196,7 +196,7 @@ public class CommonActivity extends SherlockFragmentActivity {
 	protected int getScreenWidthInPixel() {
 	    Display display = getWindowManager().getDefaultDisplay();
 
-	    if (android.os.Build.VERSION.SDK_INT >= 13) {
+	    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2) {
 	        Point size = new Point();
 	        display.getSize(size);
 	        int width = size.x;

@@ -10,10 +10,11 @@ public class PreferencesActivity extends PreferenceActivity {
         
         addPreferencesFromResource(R.xml.preferences);
 
-        boolean compatMode = android.os.Build.VERSION.SDK_INT <= 10;
+        boolean compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
 
         if (compatMode) {
-        	findPreference("dim_status_bar").setEnabled(false);        	
+        	findPreference("dim_status_bar").setEnabled(false);
+        	findPreference("webview_hardware_accel").setEnabled(false);
         }
     }
 

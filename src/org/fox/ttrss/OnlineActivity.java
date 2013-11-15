@@ -594,7 +594,7 @@ public class OnlineActivity extends CommonActivity {
                         }
                         TextView titleText = new TextView(this);
                         
-                        if (android.os.Build.VERSION.SDK_INT >= 16) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                         	titleText.setPaddingRelative(24, 24, 24, 24);
                         } else {
                         	titleText.setPadding(24, 24, 24, 24);
@@ -891,11 +891,9 @@ public class OnlineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.share_article:
-			//if (android.os.Build.VERSION.SDK_INT < 14) {
-				if (ap != null) {
-					shareArticle(ap.getSelectedArticle());
-				}
-			//}
+			if (ap != null) {
+				shareArticle(ap.getSelectedArticle());
+			}
 			return true;
 		case R.id.toggle_marked:
 			if (ap != null & ap.getSelectedArticle() != null) {
@@ -1525,20 +1523,6 @@ public class OnlineActivity extends CommonActivity {
 						R.drawable.ic_read_light);
 				}				
 			}
-			
-			/* if (android.os.Build.VERSION.SDK_INT >= 14) {			
-				ShareActionProvider shareProvider = (ShareActionProvider) m_menu.findItem(R.id.share_article).getActionProvider();
-
-				ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-				
-				if (af != null && af.getSelectedArticle() != null) {
-					shareProvider.setShareIntent(getShareIntent(af.getSelectedArticle()));
-					
-					if (!isSmallScreen()) {
-						m_menu.findItem(R.id.share_article).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-					}
-				}
-			} */
 			
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				

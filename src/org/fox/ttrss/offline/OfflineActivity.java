@@ -139,7 +139,7 @@ public class OfflineActivity extends CommonActivity {
                         }
                         TextView titleText = new TextView(this);
                         
-                        if (android.os.Build.VERSION.SDK_INT >= 16) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                         	titleText.setPaddingRelative(24, 24, 24, 24);
                         } else {
                         	titleText.setPadding(24, 24, 24, 24);

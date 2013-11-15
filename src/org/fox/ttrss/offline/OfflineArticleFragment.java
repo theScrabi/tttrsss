@@ -215,7 +215,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 			    
 			    // prevent flicker in ics
 			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
-			    	if (android.os.Build.VERSION.SDK_INT >= 11) {
+			    	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			    		web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			    	}
 			    }
@@ -230,7 +230,7 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride = "body { background : transparent; }";
 				}
 
-				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < 11) {
+				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 					web.setBackgroundColor(Color.TRANSPARENT);
 				} else {
 					// seriously?

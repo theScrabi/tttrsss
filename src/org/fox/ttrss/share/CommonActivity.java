@@ -29,7 +29,7 @@ public class CommonActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		m_compatMode = android.os.Build.VERSION.SDK_INT <= 10;
+		m_compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
