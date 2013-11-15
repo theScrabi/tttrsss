@@ -107,13 +107,16 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	
 	@Override
 	public void onArticleSelected(int articleId, boolean open) {
-		SQLiteStatement stmt = getWritableDb().compileStatement(
-				"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
-						+ " = ?");
-
-		stmt.bindLong(1, articleId);
-		stmt.execute();
-		stmt.close();
+		
+		if (!open) {
+			SQLiteStatement stmt = getWritableDb().compileStatement(
+					"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
+							+ " = ?");
+		
+			stmt.bindLong(1, articleId);
+			stmt.execute();
+			stmt.close();
+		}
 		
 		if (open) {
 			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);

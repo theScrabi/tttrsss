@@ -170,13 +170,16 @@ public class OfflineArticlePager extends Fragment {
 					}				
 					m_cursor.moveToNext();
 				}
+				
+				Log.d(TAG, "(1)maId=" + m_articleId);
+				m_listener.onArticleSelected(m_articleId, false);
 			}
 		} else {
 			if (m_cursor.moveToFirst()) {
 				m_articleId = m_cursor.getInt(m_cursor.getColumnIndex(BaseColumns._ID));
 				m_listener.onArticleSelected(m_articleId, false);
 				
-				Log.d(TAG, "maId=" + m_articleId);
+				Log.d(TAG, "(2)maId=" + m_articleId);
 			}
 		}
 		

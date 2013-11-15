@@ -279,13 +279,16 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 	@Override
 	public void onArticleSelected(int articleId, boolean open) {
-		SQLiteStatement stmt = getWritableDb().compileStatement(
-				"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
-						+ " = ?");
-
-		stmt.bindLong(1, articleId);
-		stmt.execute();
-		stmt.close();
+		
+		if (!open) {
+			SQLiteStatement stmt = getWritableDb().compileStatement(
+					"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
+							+ " = ?");
+	
+			stmt.bindLong(1, articleId);
+			stmt.execute();
+			stmt.close();
+		}
 		
 		initMenu();
 		
