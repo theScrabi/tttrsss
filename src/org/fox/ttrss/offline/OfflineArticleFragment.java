@@ -275,10 +275,10 @@ public class OfflineArticleFragment extends Fragment implements GestureDetector.
 					cssOverride += "body { "+align+"; font-size : 14px; } ";
 					break;
 				case 1:
-					cssOverride += "body { "+align+"; font-size : 18px; } ";
+					cssOverride += "body { "+align+"; font-size : 16px; } ";
 					break;
 				case 2:
-					cssOverride += "body { "+align+"; font-size : 21px; } ";
+					cssOverride += "body { "+align+"; font-size : 20px; } ";
 					break;		
 				}
 				
