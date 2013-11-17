@@ -1,6 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 	<style name="LightTheme" parent="Theme.Sherlock.Light.DarkActionBar">
-	    <item name="smallScreenBackground">@android:color/transparent</item>
+	    <item name="smallScreenBackground">#eeeeee</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
 		<item name="unreadCounterColor">#ffffff</item>
