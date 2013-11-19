@@ -41,13 +41,12 @@ import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
 
-public class ArticleFragment extends Fragment implements GestureDetector.OnDoubleTapListener {
+public class ArticleFragment extends Fragment  {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
 	private OnlineActivity m_activity;
-	private GestureDetector m_detector;
 	
 	public void initialize(Article article) {
 		m_article = article;
@@ -173,7 +172,7 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 			    	}
 			    }
 
-				web.setWebChromeClient(new WebChromeClient() {					
+			    web.setWebChromeClient(new WebChromeClient() {					
 					@Override
 	                public void onProgressChanged(WebView view, int progress) {
 	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
@@ -181,13 +180,6 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 	                		m_activity.setProgressBarVisibility(false);
 	                	}
 	                }
-				});
-				
-				web.setOnTouchListener(new View.OnTouchListener() {
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						return m_detector.onTouchEvent(event);
-					}
 				});
 				
 				String content;
@@ -385,63 +377,5 @@ public class ArticleFragment extends Fragment implements GestureDetector.OnDoubl
 		m_activity = (OnlineActivity)activity;
 		//m_article = m_onlineServices.getSelectedArticle(); 
 		
-		m_detector = new GestureDetector(m_activity, new GestureDetector.OnGestureListener() {			
-			@Override
-			public boolean onSingleTapUp(MotionEvent e) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public void onShowPress(MotionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-					float distanceY) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public void onLongPress(MotionEvent e) {
-				m_activity.openContextMenu(getView());				
-			}
-			
-			@Override
-			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-					float velocityY) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public boolean onDown(MotionEvent e) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
-		
-		m_detector.setOnDoubleTapListener(this);
-	}
-
-	@Override
-	public boolean onDoubleTap(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }
