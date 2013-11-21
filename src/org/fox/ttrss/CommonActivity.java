@@ -43,6 +43,10 @@ public class CommonActivity extends SherlockFragmentActivity {
 	public boolean getUnreadOnly() {
 		return m_prefs.getBoolean("show_unread_only", true);
 	}
+
+	public static boolean isAmazonDevice() {
+		return android.os.Build.MANUFACTURER.equals("Amazon");
+	}
 	
 	public void setUnreadOnly(boolean unread) {
 		SharedPreferences.Editor editor = m_prefs.edit();
