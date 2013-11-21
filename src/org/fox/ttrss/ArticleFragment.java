@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -29,6 +30,7 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -160,10 +162,30 @@ public class ArticleFragment extends Fragment  {
 				}
 			}
 			
-			WebView web = (WebView)view.findViewById(R.id.content);
+			final WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
-				registerForContextMenu(web);
+				
+				web.setOnLongClickListener(new View.OnLongClickListener() {					
+					@Override
+					public boolean onLongClick(View v) {
+						HitTestResult result = ((WebView)v).getHitTestResult();
+
+						if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+							registerForContextMenu(web);
+							m_activity.openContextMenu(web);
+							unregisterForContextMenu(web);
+							return true;
+						} else {
+							if (m_activity.isCompatMode()) {
+								KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+								shiftPressEvent.dispatch(web);
+							}
+							
+							return false;
+						}
+					}
+				});
 				
 			    // prevent flicker in ics
 			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
@@ -232,10 +254,10 @@ public class ArticleFragment extends Fragment  {
 					
 					articleContent = doc.toString();
 				}
-				
-				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justify;" : "";
-				
-				cssOverride += "body { "+align+" } ";
+
+				if (m_prefs.getBoolean("justify_article_text", true)) {
+					cssOverride += "body { text-align : justify; } ";
+				}
 				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
