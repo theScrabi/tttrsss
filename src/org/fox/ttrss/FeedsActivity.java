@@ -77,6 +77,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 					m_actionbarUpEnabled = true;
 					m_feedIsSelected = true;
+					
+					initMenu();
 				}
 			});
 			

@@ -57,6 +57,19 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 			m_slidingMenu.setSlidingEnabled(true);
 			m_slidingMenu.setMenu(R.layout.feeds);
+			
+			m_slidingMenu.setOnClosedListener(new SlidingMenu.OnClosedListener() {
+				
+				@Override
+				public void onClosed() {
+					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+					m_actionbarUpEnabled = true;
+					m_feedIsSelected = true;
+					
+					initMenu();
+				}
+			});
+			
 			m_slidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
 					
 				@Override
