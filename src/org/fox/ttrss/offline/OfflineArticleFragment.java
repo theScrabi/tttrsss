@@ -262,15 +262,17 @@ public class OfflineArticleFragment extends Fragment {
 				
 				String align = m_prefs.getBoolean("justify_article_text", true) ? "text-align : justified" : "";
 				
+				cssOverride += "body { "+align+" } ";
+				
 				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
 				case 0:
-					cssOverride += "body { "+align+"; font-size : 14px; } ";
+					ws.setDefaultFontSize(13);
 					break;
 				case 1:
-					cssOverride += "body { "+align+"; font-size : 16px; } ";
+					ws.setDefaultFontSize(16);
 					break;
 				case 2:
-					cssOverride += "body { "+align+"; font-size : 20px; } ";
+					ws.setDefaultFontSize(18);
 					break;		
 				}
 				
