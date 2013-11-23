@@ -25,6 +25,8 @@
     	<item name="loadingBackground">@android:color/white</item>
     	<item name="unreadCounterBackground">@drawable/counter_background</item>    	    	
     	<item name="unreadSelectedCounterBackground">@drawable/counter_background_selected_light</item>
+    	<item name="articleNoteTextColor">#9a8c59</item>
+    	<item name="articleNoteBackground">#fff7d5</item>
 	</style>
 
 	<style name="SepiaTheme" parent="LightTheme">
@@ -70,6 +72,8 @@
         <item name="loadingBackground">@android:color/black</item>
         <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
         <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
+    	<item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
+    	<item name="articleNoteBackground">#303030</item>
 	</style>
 
 	<style name="SystemTheme" parent="Theme.Sherlock.DeviceDefault">
@@ -98,6 +102,8 @@
         <item name="loadingBackground">@android:color/black</item>
         <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
         <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
+    	<item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
+    	<item name="articleNoteBackground">#303030</item>
 	</style>
 		
 	<style name="DarkGrayTheme" parent="DarkTheme">
@@ -115,8 +121,7 @@
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="actionBarStyle">@style/ActionBarDarkGray</item>
         <item name="android:actionBarStyle">@style/ActionBarDarkGray</item>
-        <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
-        
+        <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>        
 	</style>
 	
 	<style name="ActionBarDarkGray" parent="Widget.Sherlock.ActionBar.Solid">

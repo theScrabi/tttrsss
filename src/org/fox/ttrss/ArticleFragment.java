@@ -162,6 +162,17 @@ public class ArticleFragment extends Fragment  {
 				}
 			}
 			
+			TextView note = (TextView)view.findViewById(R.id.note);
+			
+			if (note != null) {
+				if (m_article.note != null && !"".equals(m_article.note)) {
+					note.setText(m_article.note);					
+				} else {
+					note.setVisibility(View.GONE);
+				}
+				
+			}
+			
 			final WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {

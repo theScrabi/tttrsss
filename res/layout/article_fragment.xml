@@ -92,12 +92,26 @@
                         android:textColor="?headlineSecondaryTextColor"
                         android:textSize="12sp" />
                 </LinearLayout>
+
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?articleNoteBackground"                
+                android:textColor="?articleNoteTextColor"
+                android:textSize="13sp"
+                android:padding="2dp"
+                android:layout_marginBottom="4dp"
+                android:text="[Article note]" />
 
             <org.fox.ttrss.util.LessBrokenWebView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
     </org.fox.ttrss.util.NoChildFocusScrollView>
 

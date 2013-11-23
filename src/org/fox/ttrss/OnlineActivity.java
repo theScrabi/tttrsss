@@ -1060,8 +1060,12 @@ public class OnlineActivity extends CommonActivity {
 		
 		builder.setPositiveButton(R.string.article_set_note, new Dialog.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
-	        	saveArticleNote(article, topicEdit.getText().toString().trim());
-	        	article.published = true;	        	
+	        	String note = topicEdit.getText().toString().trim();
+	        	
+	        	saveArticleNote(article, note);
+	        	article.published = true;	
+	        	article.note = note;
+	        	
 	        	saveArticlePublished(article);
 	        	
 	        	HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);

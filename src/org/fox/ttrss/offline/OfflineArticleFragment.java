@@ -175,6 +175,12 @@ public class OfflineArticleFragment extends Fragment {
 				comments.setVisibility(View.GONE);
 			}
 			
+			TextView note = (TextView)view.findViewById(R.id.note);
+			
+			if (note != null) {
+				note.setVisibility(View.GONE);
+			}
+			
 			final WebView web = (WebView)view.findViewById(R.id.content);
 			
 			if (web != null) {
