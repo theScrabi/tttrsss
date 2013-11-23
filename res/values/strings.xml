@@ -211,4 +211,5 @@
     <string name="synchronize_read_articles_and_go_online">Synchronize read articles and go online</string>
     <string name="prefs_compatible_article_layout">Compatible article layout</string>
     <string name="prefs_compatible_layout_summary">Enable if you see glitches in article content</string>
+    <string name="font_size_dialog_suffix">sp</string>
 </resources>

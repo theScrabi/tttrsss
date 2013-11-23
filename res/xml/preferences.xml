@@ -103,14 +103,15 @@
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />
 
-        <EditTextPreference
-            android:defaultValue="13"
-            android:key="headlines_font_size_sp"
-            android:inputType="number"
-            android:title="@string/pref_headline_font_size" />
-    </PreferenceCategory>
+         <org.fox.ttrss.util.FontSizeDialogPreference
+			android:defaultValue="13"
+			android:key="headlines_font_size_sp"
+			android:dialogMessage="@string/pref_headline_font_size"
+			android:title="@string/pref_headline_font_size" />
+
+         </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
-        <EditTextPreference
+        <org.fox.ttrss.util.FontSizeDialogPreference
             android:defaultValue="16"
             android:key="article_font_size_sp"
             android:inputType="number"
