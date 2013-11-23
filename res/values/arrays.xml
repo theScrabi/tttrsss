@@ -11,16 +11,6 @@
         <item>THEME_LIGHT</item>
         <item>THEME_SEPIA</item>
     </string-array>
-    <string-array name="pref_font_size_names">
-        <item>@string/font_size_small</item>
-        <item>@string/font_size_medium</item>
-        <item>@string/font_size_large</item>
-    </string-array>
-    <string-array name="pref_font_size_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
     <string-array name="pref_view_mode_names">
         <item>@string/category_browse_headlines</item>
         <item>@string/category_browse_articles</item>

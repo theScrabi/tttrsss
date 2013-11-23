@@ -29,17 +29,14 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
@@ -220,13 +217,7 @@ public class OfflineArticleFragment extends Fragment {
 				String cssOverride = "";
 				
 				WebSettings ws = web.getSettings();
-				ws.setSupportZoom(true);
-				ws.setBuiltInZoomControls(true);
-				
-				if (!m_activity.isCompatMode())
-					ws.setDisplayZoomControls(false);
-				
-				web.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+				ws.setSupportZoom(false);
 
 				TypedValue tv = new TypedValue();				
 			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
@@ -290,30 +281,17 @@ public class OfflineArticleFragment extends Fragment {
 					cssOverride += "body { text-align : justify; } ";
 				}
 				
-				switch (Integer.parseInt(m_prefs.getString("font_size", "0"))) {
-				case 0:
-					ws.setDefaultFontSize(13);
-					break;
-				case 1:
-					ws.setDefaultFontSize(16);
-					break;
-				case 2:
-					ws.setDefaultFontSize(18);
-					break;		
-				}
-				
-				if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-					cssOverride += "img { max-width : 99%; }";
-				}
+				ws.setDefaultFontSize(Integer.parseInt(m_prefs.getString("article_font_size_sp", "16")));
 				
 				content = 
 					"<html>" +
 					"<head>" +
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+					"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
 					"<style type=\"text/css\">" +
-					"body { padding : 0px; margin : 0px; }" +
+					"body { padding : 0px; margin : 0px; line-height : 120%; }" +
 					cssOverride +
-					"body { line-height : 120%; }" +
+					"img { max-width : 100%; width : auto; height : auto; }" +
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;

@@ -103,21 +103,18 @@
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />
 
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/pref_font_size_names"
-            android:entryValues="@array/pref_font_size_values"
-            android:key="headlines_font_size"
+        <EditTextPreference
+            android:defaultValue="13"
+            android:key="headlines_font_size_sp"
+            android:inputType="number"
             android:title="@string/pref_headline_font_size" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/pref_font_size_names"
-            android:entryValues="@array/pref_font_size_values"
-            android:key="font_size"
+        <EditTextPreference
+            android:defaultValue="16"
+            android:key="article_font_size_sp"
+            android:inputType="number"
             android:title="@string/pref_font_size" />
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="justify_article_text"

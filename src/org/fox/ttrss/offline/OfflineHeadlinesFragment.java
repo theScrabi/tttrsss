@@ -568,22 +568,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					
 					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
 						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
-
-					int fontSize = -1;
 					
-					switch (Integer.parseInt(m_prefs.getString("headlines_font_size", "0"))) {
-					case 0:
-						fontSize = 13;
-						break;
-					case 1:
-						fontSize = 16;
-						break;
-					case 2:
-						fontSize = 18;
-						break;		
-					}
-					
-					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13")));
 					te.setText(excerpt);
 				}
 			}       	
