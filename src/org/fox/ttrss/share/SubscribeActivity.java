@@ -13,7 +13,9 @@ import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -67,6 +69,9 @@ public class SubscribeActivity extends CommonShareActivity {
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
 		String urlValue = getIntent().getDataString();
+		
+		if (urlValue == null) 
+			urlValue = getIntent().getStringExtra(Intent.EXTRA_TEXT); 
 		
 		if (savedInstanceState != null) {
 			urlValue = savedInstanceState.getString("url");
