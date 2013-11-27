@@ -256,7 +256,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (!feed.is_cat) {
 			menu.findItem(R.id.browse_feeds).setVisible(false);
 		}
-		
+
+		if (feed.id <= 0) {
+			menu.findItem(R.id.unsubscribe_feed).setVisible(false);
+		}
+
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
 	}
