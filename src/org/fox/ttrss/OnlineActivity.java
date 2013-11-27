@@ -1001,7 +1001,12 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.set_labels:
 			if (ap != null && ap.getSelectedArticle() != null) {
-				editArticleLabels(ap.getSelectedArticle());				
+				if (getApiLevel() != 7) {
+					editArticleLabels(ap.getSelectedArticle());					
+				} else {
+					toast("Sorry, this function is not available on your tt-rss version.");
+				}				
+								
 			}
 			return true;
 		case R.id.update_headlines:
