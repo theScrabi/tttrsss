@@ -108,7 +108,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				Article article = getArticleAtPosition(info.position);
 			
 				if (article != null) {
-					m_activity.editArticleLabels(article);
+					if (m_activity.getApiLevel() != 7) {
+						m_activity.editArticleLabels(article);					
+					} else {
+						m_activity.toast(R.string.server_function_not_available);
+					}				
 				}
 			}
 			return true;
