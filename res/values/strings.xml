@@ -212,4 +212,7 @@
     <string name="prefs_compatible_article_layout">Compatible article layout</string>
     <string name="prefs_compatible_layout_summary">Enable if you see glitches in article content</string>
     <string name="font_size_dialog_suffix">sp</string>
+    <string name="server_function_not_available">Sorry, this function is not available on your tt-rss version.</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="unsubscribe_from_prompt">Unsubscribe from %1$s?</string>
 </resources>

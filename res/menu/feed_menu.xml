@@ -19,5 +19,9 @@
     <item
         android:id="@+id/create_shortcut"
         android:title="@string/place_shortcut"/>
+
+    <item
+     	android:id="@+id/unsubscribe_feed"
+        android:title="@string/unsubscribe"/>
     
 </menu>

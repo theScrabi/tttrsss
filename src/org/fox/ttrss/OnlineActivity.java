@@ -1004,7 +1004,7 @@ public class OnlineActivity extends CommonActivity {
 				if (getApiLevel() != 7) {
 					editArticleLabels(ap.getSelectedArticle());					
 				} else {
-					toast("Sorry, this function is not available on your tt-rss version.");
+					toast(R.string.server_function_not_available);
 				}				
 								
 			}
