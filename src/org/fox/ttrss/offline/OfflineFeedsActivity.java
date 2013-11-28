@@ -215,6 +215,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());				
 			}
 			
+			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
+			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {

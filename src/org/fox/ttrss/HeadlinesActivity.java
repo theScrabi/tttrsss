@@ -39,7 +39,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		if (isPortrait()) {
+		if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		}
 		
@@ -161,7 +161,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 			//HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());
+			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
 			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

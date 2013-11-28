@@ -39,7 +39,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
 		
-		if (isPortrait()) {
+		if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
 		}
 		
@@ -143,7 +143,8 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 			//OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());			
+			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());
+			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
 			
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

@@ -194,6 +194,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
 			}
 			
+			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
+			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {

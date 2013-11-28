@@ -267,6 +267,17 @@ public class OfflineActivity extends CommonActivity {
 		/* case android.R.id.home:
 			finish();
 			return true; */
+		case R.id.headlines_toggle_sidebar:
+			if (true && !isSmallScreen()) {
+				SharedPreferences.Editor editor = m_prefs.edit();
+				editor.putBoolean("headlines_hide_sidebar", !m_prefs.getBoolean("headlines_hide_sidebar", false));
+				editor.commit();
+				
+				if (ohf != null && ohf.isAdded()) {
+					ohf.getView().setVisibility(m_prefs.getBoolean("headlines_hide_sidebar", false) ? View.GONE : View.VISIBLE);
+				}
+			}
+			return true;
 		case R.id.go_online:
 			switchOnline();
 			return true;	

@@ -65,6 +65,10 @@
                 android:showAsAction=""
                 android:title="@string/headlines_view_mode"/>
             
+            <item
+                android:id="@+id/headlines_toggle_sidebar"
+                android:showAsAction=""
+                android:title="@string/toggle_sidebar"/>
             
             <!--
                   <item

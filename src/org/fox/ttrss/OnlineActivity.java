@@ -18,6 +18,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,11 +37,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -641,6 +644,19 @@ public class OnlineActivity extends CommonActivity {
 		/* case android.R.id.home:
 			finish();
 			return true; */
+		case R.id.headlines_toggle_sidebar:
+			if (true && !isSmallScreen()) {
+				View v = findViewById(R.id.headlines_fragment); 
+				
+				if (v != null) {
+					SharedPreferences.Editor editor = m_prefs.edit();
+					editor.putBoolean("headlines_hide_sidebar", !m_prefs.getBoolean("headlines_hide_sidebar", false));
+					editor.commit();
+
+					v.setVisibility(m_prefs.getBoolean("headlines_hide_sidebar", false) ? View.GONE : View.VISIBLE);
+				}
+			}
+			return true;
 		case R.id.subscribe_to_feed:
 			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
 			startActivityForResult(subscribe, 0);

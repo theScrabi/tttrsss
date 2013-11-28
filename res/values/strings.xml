@@ -215,4 +215,5 @@
     <string name="server_function_not_available">Sorry, this function is not available on your tt-rss version.</string>
     <string name="unsubscribe">Unsubscribe</string>
     <string name="unsubscribe_from_prompt">Unsubscribe from %1$s?</string>
+    <string name="toggle_sidebar">Toggle sidebar</string>
 </resources>
