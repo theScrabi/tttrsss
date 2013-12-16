@@ -69,7 +69,7 @@
     <string name="error_parse_error">Errore: parsing del JSON fallito</string>
     <string name="error_io_error">Errore: I/O failure (server non raggiungibile?)</string>
     <string name="error_other_error">Errore: errore sconosciuto (Vedi log)</string>
-    <string name="error_api_disabled">Errore: si prega di abilitare l\'accesso esterno all'API nelle impostazioni avanzate di tt-rss</string>
+    <string name="error_api_disabled">Errore: si prega di abilitare l\'accesso esterno all\'API nelle impostazioni avanzate di tt-rss</string>
     <string name="error_api_unknown">Errore: errore API sconosciuto (Vedi log)</string>
     <string name="error_api_incorrect_usage">Errore: uso API scorretto</string>
     <string name="error_login_failed">Errore: nome utente o password errati</string>
@@ -122,7 +122,7 @@
     <string name="close_feed">Chiudi feed</string>
     <string name="close_article">Chiudi articolo</string>
     <string name="dialog_open_preferences">Impostazioni</string>
-    <string name="dialog_need_configure_prompt">Compila le informazioni per l'accesso al server tt-rss:URL, login, e password.</string>
+    <string name="dialog_need_configure_prompt">Compila le informazioni per l\'accesso al server tt-rss:URL, login, e password.</string>
     <string name="notify_article_marked">Articolo reso speciale</string>
     <string name="notify_article_unmarked">Articolo reso non-speciale</string>
     <string name="notify_article_published">Articolo publicato</string>
