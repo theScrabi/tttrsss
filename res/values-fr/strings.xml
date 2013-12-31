@@ -207,7 +207,7 @@
     <string name="accel_webview_title">Utiliser l\'accélération web (3.0+)</string>
     <string name="place_shortcut">Faire un raccourci</string>
     <string name="shortcut_has_been_placed_on_the_home_screen">Un raccourci a été placé sur votre écran d\'accueil</string>
-    <string name="download_articles_and_go_offline">Télécharger les articles non lus et passer hors connexion</string>
+    <string name="download_articles_and_go_offline">Télécharger les articles et passer hors connexion</string>
     <string name="tasker_save_and_close">Sauver et fermer</string>
     <string name="synchronize_read_articles_and_go_online">Synchroniser les articles lus et passer en connexion</string>
     <string name="prefs_compatible_article_layout">Mise en page compatible</string>
