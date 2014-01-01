@@ -157,7 +157,7 @@
     <string name="prefs_fullscreen_mode">Mode plein écran</string>
     <string name="reading">Lecture</string>
     <string name="theme_dark_gray">Gris sombre</string>
-    <string name="offline_articles_to_download">Nombre d\'articles à télécharger</string>
+    <string name="offline_articles_to_download">Quantité d\'articles à télécharger</string>
     <string name="offline_articles_to_download_long">Combien d\'articles à télécharger pour la lecture Hors Ligne. (les plus récents)</string>
     <string name="pref_headlines_show_content_long">Afficher un aperçu du contenu dans les titres</string>
     <string name="pref_headlines_show_content">Afficher un aperçu</string>
@@ -200,4 +200,22 @@
     <string name="author_formatted">par %1$s</string>
     <string name="n_unread_articles">%1$d articles non lus</string>
     <string name="pref_headline_font_size">Taille du texte des titres</string>
+
+    <string name="context_confirm_catchup">Marquer tous les articles de %1$s comme lus ?</string>
+    <string name="theme_system">Réglage système</string>
+    <string name="accel_webview_summary">Désactivez si vous voyez des défauts visuels ou des clignotements.</string>
+    <string name="accel_webview_title">Utiliser l\'accélération web (3.0+)</string>
+    <string name="place_shortcut">Faire un raccourci</string>
+    <string name="shortcut_has_been_placed_on_the_home_screen">Un raccourci a été placé sur votre écran d\'accueil</string>
+    <string name="download_articles_and_go_offline">Télécharger les articles et passer hors connexion</string>
+    <string name="tasker_save_and_close">Sauver et fermer</string>
+    <string name="synchronize_read_articles_and_go_online">Synchroniser les articles lus et passer en connexion</string>
+    <string name="prefs_compatible_article_layout">Mise en page compatible</string>
+    <string name="prefs_compatible_layout_summary">Activez si vous voyez des erreurs de mise en page dans le contenu des articles</string>
+    <string name="font_size_dialog_suffix">sp</string>
+    <string name="server_function_not_available">Désolé, cette fonction n\'est pas disponible pour votre version de tt-rss.</string>
+    <string name="unsubscribe">Se désabonner</string>
+    <string name="unsubscribe_from_prompt">Se désabonner de %1$s ?</string>
+    <string name="toggle_sidebar">Barre latérale</string>
+
 </resources>
