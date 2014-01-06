@@ -211,4 +211,9 @@
     <string name="synchronize_read_articles_and_go_online">既読記事を同期してオフラインにする</string>
     <string name="prefs_compatible_article_layout">記事レイアウトの互換表示</string>
     <string name="prefs_compatible_layout_summary">記事表示が崩れる場合は有効にしてください。</string>
+    <string name="font_size_dialog_suffix">sp</string>
+    <string name="server_function_not_available">接続中のtt-rssサーバのバージョンではこの機能を使用できません。</string>
+    <string name="unsubscribe">購読解除</string>
+    <string name="unsubscribe_from_prompt">%1$s の購読を解除しますか？</string>
+    <string name="toggle_sidebar">サイドバーの表示/非表示</string>
 </resources>
