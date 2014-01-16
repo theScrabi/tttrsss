@@ -19,6 +19,10 @@
             android:showAsAction=""
             android:title="@string/share_article"/>
         <item
+            android:id="@+id/headlines_article_link_open"
+            android:showAsAction=""
+            android:title="@string/open_article_in_web_browser"/>
+        <item
             android:id="@+id/headlines_article_link_copy"
             android:showAsAction=""
             android:title="@string/article_link_copy"/>

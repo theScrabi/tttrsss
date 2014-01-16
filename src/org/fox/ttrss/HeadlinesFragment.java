@@ -17,11 +17,13 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefres
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -132,6 +134,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 				if (article != null) {
 					m_activity.copyToClipboard(article.link);
+				}
+			}
+			return true;
+		case R.id.headlines_article_link_open:
+			if (true) {
+				Article article = getArticleAtPosition(info.position);
+			
+				if (article != null) {
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(article.link));
+					startActivity(browserIntent);
+
+					if (article.unread) {
+						article.unread = false;
+						m_activity.saveArticleUnread(article);
+					}
 				}
 			}
 			return true;

@@ -216,4 +216,5 @@
     <string name="unsubscribe">Unsubscribe</string>
     <string name="unsubscribe_from_prompt">Unsubscribe from %1$s?</string>
     <string name="toggle_sidebar">Toggle sidebar</string>
+    <string name="open_article_in_web_browser">Open in web browser</string>
 </resources>
