@@ -74,6 +74,11 @@ public class OnlineActivity extends CommonActivity {
 
 	protected PullToRefreshAttacher m_pullToRefreshAttacher;
 
+	protected abstract class OnLoginFinishedListener {
+		public abstract void OnLoginSuccess();
+		public abstract void OnLoginFailed();
+	};
+	
 	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context content, Intent intent) {
@@ -406,10 +411,14 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	public void login() {
-		login(false);
+		login(false, null);
 	}
-	
+
 	public void login(boolean refresh) {
+		login(refresh, null);
+	}
+
+	public void login(boolean refresh, OnLoginFinishedListener listener) {
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
 
 			setLoadingStatus(R.string.login_need_configure, false);
@@ -437,7 +446,7 @@ public class OnlineActivity extends CommonActivity {
 		} else {
 			setLoadingStatus(R.string.login_in_progress, true);
 			
-			LoginRequest ar = new LoginRequest(getApplicationContext(), refresh);
+			LoginRequest ar = new LoginRequest(getApplicationContext(), refresh, listener);
 
 			HashMap<String, String> map = new HashMap<String, String>() {
 				{
@@ -1635,12 +1644,14 @@ public class OnlineActivity extends CommonActivity {
 		refresh(true);
 	}
 	
-	private class LoginRequest extends ApiRequest {
+	protected class LoginRequest extends ApiRequest {
 		boolean m_refreshAfterLogin = false;
+		OnLoginFinishedListener m_listener;
 		
-		public LoginRequest(Context context, boolean refresh) {
+		public LoginRequest(Context context, boolean refresh, OnLoginFinishedListener listener) {
 			super(context);
 			m_refreshAfterLogin = refresh;
+			m_listener = listener;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -1662,7 +1673,11 @@ public class OnlineActivity extends CommonActivity {
 							setApiLevel(apiLevel.getAsInt());
 							Log.d(TAG, "Received API level: " + getApiLevel());
 							
-							loginSuccess(m_refreshAfterLogin);
+							if (m_listener != null) {
+								m_listener.OnLoginSuccess();
+							} else {
+								loginSuccess(m_refreshAfterLogin);
+							}
 							
 						} else {
 
@@ -1680,7 +1695,13 @@ public class OnlineActivity extends CommonActivity {
 										// Unknown method means old tt-rss, in that case we assume API 0 and continue
 										
 										setLoadingStatus(getErrorMessage(), false);
-										loginFailure();
+										
+										if (m_listener != null) {
+											m_listener.OnLoginFailed();
+										} else {
+											loginFailure();
+										}
+										
 										return;
 									}
 	

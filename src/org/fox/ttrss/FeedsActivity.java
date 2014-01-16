@@ -50,7 +50,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		setAppTheme(m_prefs);
-
+		
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines);		
@@ -104,19 +104,40 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			if (m_slidingMenu != null)
 				m_slidingMenu.showMenu();
 
-			Intent i = getIntent();
+			final Intent i = getIntent();
 			boolean shortcutMode = i.getBooleanExtra("shortcut_mode", false);
 			
 			Log.d(TAG, "is_shortcut_mode: " + shortcutMode);
 
 			if (shortcutMode) {
-				int feedId = i.getIntExtra("feed_id", 0);
-				boolean isCat = i.getBooleanExtra("feed_is_cat", false);
-				String feedTitle = i.getStringExtra("feed_title");
+				LoginRequest lr = new LoginRequest(this, false, new OnLoginFinishedListener() {
+					
+					@Override
+					public void OnLoginSuccess() {
+						int feedId = i.getIntExtra("feed_id", 0);
+						boolean isCat = i.getBooleanExtra("feed_is_cat", false);
+						String feedTitle = i.getStringExtra("feed_title");
+						
+						Feed tmpFeed = new Feed(feedId, feedTitle, isCat);
+						
+						onFeedSelected(tmpFeed);
+					}
+					
+					@Override
+					public void OnLoginFailed() {
+						login();						
+					}
+				});
 				
-				Feed tmpFeed = new Feed(feedId, feedTitle, isCat);
-				
-				onFeedSelected(tmpFeed);
+				HashMap<String, String> map = new HashMap<String, String>() {
+					{
+						put("op", "login");
+						put("user", m_prefs.getString("login", "").trim());
+						put("password", m_prefs.getString("password", "").trim());
+					}
+				};
+
+				lr.execute(map);
 			}
 			
 			m_pullToRefreshAttacher.setRefreshing(true);

@@ -321,7 +321,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
 		}
-
+		
 		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			if (m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE) == null) {
 				refresh(false);
@@ -429,7 +429,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
-							m_activity.login();
+							m_activity.login(true);
 						} else {
 							m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
