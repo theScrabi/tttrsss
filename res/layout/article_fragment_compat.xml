@@ -26,21 +26,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingBottom="4dp"
+            android:fontFamily="sans-serif-condensed"
             android:text="My simple headline"
             android:textColor="?linkColor"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="right"
-            android:singleLine="true"
-            android:text="by Author"
-            android:textColor="?headlineSecondaryTextColor"
-            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/comments"
@@ -49,17 +38,9 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text="24 comments"
+            android:fontFamily="sans-serif-light"
             android:textColor="?linkColor"
             android:textSize="12sp" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="0"
-            android:background="?ttrssHorizontalDivider"
-            android:paddingTop="2dip" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,6 +56,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="Example Feed"
+                android:fontFamily="sans-serif-light"
                 android:textColor="?headlineSecondaryTextColor"
                 android:textSize="12sp" />
 
@@ -85,6 +67,7 @@
                 android:layout_weight="0.5"
                 android:gravity="right"
                 android:text="Jan 01, 12:00"
+                android:fontFamily="sans-serif-light"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="?headlineSecondaryTextColor"
                 android:textSize="12sp" />

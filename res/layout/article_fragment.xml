@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:background="?articleBackground"
     android:padding="5sp" >
 
@@ -28,46 +28,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingTop="4dp"
+                    android:fontFamily="sans-serif-condensed"
                     android:paddingBottom="4dp"
-                    android:text="My simple headline"
+                    android:text="My simple headline"                    
                     android:textColor="?linkColor"
                     android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:singleLine="true"
-                    android:text="by Author"
-                    android:textColor="?headlineSecondaryTextColor"
-                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:fontFamily="sans-serif-light"
                     android:text="24 comments"
                     android:textColor="?linkColor"
                     android:textSize="12sp" />
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="0"
-                    android:background="?ttrssHorizontalDivider"
-                    android:paddingTop="2dip" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1"                    
+                    android:paddingTop="4dp"
                     android:paddingBottom="4dp" >
 
                     <TextView
@@ -77,6 +59,7 @@
                         android:layout_weight="0.5"
                         android:ellipsize="end"
                         android:singleLine="true"
+                        android:fontFamily="sans-serif-light"
                         android:text="Example Feed"
                         android:textColor="?headlineSecondaryTextColor"
                         android:textSize="12sp" />
@@ -87,10 +70,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="right"
+                        android:fontFamily="sans-serif-light"
                         android:text="Jan 01, 12:00"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?headlineSecondaryTextColor"
                         android:textSize="12sp" />
+
                 </LinearLayout>
 
             </LinearLayout>

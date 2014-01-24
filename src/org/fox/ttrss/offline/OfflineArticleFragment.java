@@ -327,29 +327,42 @@ public class OfflineArticleFragment extends Fragment {
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
 			}
-			
-			TextView tagv = (TextView)view.findViewById(R.id.tags);
-						
-			if (tagv != null) {
-				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
 
-				if (feedTitleIndex != -1 && m_isCat) {
-					tagv.setText(m_cursor.getString(feedTitleIndex));
-				} else {				
-					String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
-					tagv.setText(tagsStr);
-				}
-			}	
-			
 			TextView author = (TextView)view.findViewById(R.id.author);
 
+			boolean hasAuthor = false;
+			
 			if (author != null) {
 				int authorIndex = m_cursor.getColumnIndex("author");
 				if (authorIndex >= 0)
 					author.setText(m_cursor.getString(authorIndex));
 				else
 					author.setVisibility(View.GONE);
+				
+				hasAuthor = true;
 			}
+
+			TextView tagv = (TextView)view.findViewById(R.id.tags);
+						
+			if (tagv != null) {
+				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
+
+				if (feedTitleIndex != -1 /* && m_isCat */) {
+					String fTitle = m_cursor.getString(feedTitleIndex);
+					
+					int authorIndex = m_cursor.getColumnIndex("author");
+					
+					if (!hasAuthor && authorIndex >= 0) {
+						fTitle += " (" + getString(R.string.author_formatted, m_cursor.getString(authorIndex)) + ")";
+					}
+					
+					tagv.setText(fTitle);
+				} else {				
+					String tagsStr = m_cursor.getString(m_cursor.getColumnIndex("tags"));
+					tagv.setText(tagsStr);
+				}
+			}	
+			
 		} 
 		
 		return view;    	

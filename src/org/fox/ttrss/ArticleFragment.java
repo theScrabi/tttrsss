@@ -333,12 +333,31 @@ public class ArticleFragment extends Fragment  {
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
 			}
+
+			TextView author = (TextView)view.findViewById(R.id.author);
+
+			boolean hasAuthor = false;
 			
+			if (author != null) {
+				if (m_article.author != null && m_article.author.length() > 0) {
+					author.setText(getString(R.string.author_formatted, m_article.author));				
+				} else {
+					author.setVisibility(View.GONE);
+				}
+				hasAuthor = true;
+			}
+
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
 				if (m_article.feed_title != null) {
-					tagv.setText(m_article.feed_title);
+					String fTitle = m_article.feed_title;
+					
+					if (!hasAuthor && m_article.author != null && m_article.author.length() > 0) {
+						fTitle += " (" + getString(R.string.author_formatted, m_article.author) + ")";						
+					}
+					
+					tagv.setText(fTitle);
 				} else if (m_article.tags != null) {
 					String tagsStr = "";
 				
@@ -353,15 +372,6 @@ public class ArticleFragment extends Fragment  {
 				}
 			}
 			
-			TextView author = (TextView)view.findViewById(R.id.author);
-
-			if (author != null) {
-				if (m_article.author != null && m_article.author.length() > 0) {
-					author.setText(getString(R.string.author_formatted, m_article.author));				
-				} else {
-					author.setVisibility(View.GONE);
-				}
-			}
 		} 
 		
 		return view;    	

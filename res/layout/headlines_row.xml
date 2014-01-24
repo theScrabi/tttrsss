@@ -36,6 +36,7 @@
                 android:gravity="center_vertical"
                 android:singleLine="false"
                 android:text="Sample entry title"
+                android:fontFamily="sans-serif-condensed"
                 android:textColor="?headlineTextColor"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -58,6 +59,7 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="Example Feed"
+                android:fontFamily="sans-serif-light"
                 android:textColor="?headlineSecondaryTextColor"
                 android:textSize="12sp" />
 
@@ -68,6 +70,7 @@
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
                 android:text="Jan 01, 12:00"
+                android:fontFamily="sans-serif-light"
                 android:textColor="?headlineSecondaryTextColor"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -102,6 +105,8 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="by Author"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="italic"
                 android:textColor="?headlineSecondaryTextColor"
                 android:textSize="12sp" />
 
