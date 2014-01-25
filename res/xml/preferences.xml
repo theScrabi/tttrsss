@@ -103,6 +103,12 @@
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_condensed_fonts"
+            android:summary="Use condensed fonts for headline titles and a few other UI elements."
+            android:title="Enable condensed fonts" />
+        
          <org.fox.ttrss.util.FontSizeDialogPreference
 			android:defaultValue="13"
 			android:key="headlines_font_size_sp"

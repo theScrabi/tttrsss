@@ -8,6 +8,7 @@ import java.util.TimeZone;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
+import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 
 import android.app.Activity;
@@ -17,6 +18,7 @@ import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -493,9 +495,21 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
-				tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+				
 				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 
+				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.getInt(article.getColumnIndex("unread")) == 1 ? Typeface.BOLD : Typeface.NORMAL);
+					
+					if (tf != null && !tf.equals(tt.getTypeface())) {
+						tt.setTypeface(tf);
+					}
+					
+					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
+				} else {
+					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));	
+				}
+				
 				int scoreIndex = article.getColumnIndex("score");
 				if (scoreIndex >= 0)
 					adjustTitleTextView(article.getInt(scoreIndex), tt, position);

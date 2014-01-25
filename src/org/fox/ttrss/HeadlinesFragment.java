@@ -11,6 +11,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
+import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
@@ -21,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -688,9 +690,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
-			if (tt != null) {
-				tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+			if (tt != null) {				
 				tt.setText(Html.fromHtml(article.title));
+				
+				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.unread ? Typeface.BOLD : Typeface.NORMAL);
+					
+					if (tf != null && !tf.equals(tt.getTypeface())) {
+						tt.setTypeface(tf);
+					}
+					
+					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
+				} else {
+					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+				}
+				
 				adjustTitleTextView(article.score, tt, position);
 			}
 

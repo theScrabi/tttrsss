@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
+import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -140,14 +142,25 @@ public class OfflineArticleFragment extends Fragment {
 			
 			if (title != null) {
 				
+				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", Typeface.NORMAL);
+					
+					if (tf != null && !tf.equals(title.getTypeface())) {
+						title.setTypeface(tf);
+					}
+					
+					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 5));
+				} else {
+					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
+				}
+				
 				String titleStr;
 				
 				if (m_cursor.getString(m_cursor.getColumnIndex("title")).length() > 200)
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title")).substring(0, 200) + "...";
 				else
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
-				
-				title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
+								
 				title.setText(titleStr);
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					

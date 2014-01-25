@@ -14,7 +14,11 @@ public class PreferencesActivity extends PreferenceActivity {
 
         if (compatMode) {
         	findPreference("dim_status_bar").setEnabled(false);
-        	findPreference("webview_hardware_accel").setEnabled(false);
+        	findPreference("webview_hardware_accel").setEnabled(false);        	
+        }
+        
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        	findPreference("enable_condensed_fonts").setEnabled(false);
         }
     }
 
