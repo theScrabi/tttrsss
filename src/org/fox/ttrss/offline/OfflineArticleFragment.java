@@ -131,6 +131,8 @@ public class OfflineArticleFragment extends Fragment {
 		m_cursor.moveToFirst();
 		
 		if (m_cursor.isFirst()) {
+			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
+			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
 			TextView title = (TextView)view.findViewById(R.id.title);
 
@@ -145,6 +147,7 @@ public class OfflineArticleFragment extends Fragment {
 				else
 					titleStr = m_cursor.getString(m_cursor.getColumnIndex("title"));
 				
+				title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
 				title.setText(titleStr);
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
@@ -281,7 +284,7 @@ public class OfflineArticleFragment extends Fragment {
 					cssOverride += "body { text-align : justify; } ";
 				}
 				
-				ws.setDefaultFontSize(Integer.parseInt(m_prefs.getString("article_font_size_sp", "16")));
+				ws.setDefaultFontSize(articleFontSize);
 				
 				content = 
 					"<html>" +
@@ -323,6 +326,8 @@ public class OfflineArticleFragment extends Fragment {
 			TextView dv = (TextView)view.findViewById(R.id.date);
 			
 			if (dv != null) {
+				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+				
 				Date d = new Date(m_cursor.getInt(m_cursor.getColumnIndex("updated")) * 1000L);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
@@ -333,6 +338,8 @@ public class OfflineArticleFragment extends Fragment {
 			boolean hasAuthor = false;
 			
 			if (author != null) {
+				author.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+				
 				int authorIndex = m_cursor.getColumnIndex("author");
 				if (authorIndex >= 0)
 					author.setText(m_cursor.getString(authorIndex));
@@ -345,6 +352,8 @@ public class OfflineArticleFragment extends Fragment {
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
+				tagv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+
 				int feedTitleIndex = m_cursor.getColumnIndex("feed_title");
 
 				if (feedTitleIndex != -1 /* && m_isCat */) {

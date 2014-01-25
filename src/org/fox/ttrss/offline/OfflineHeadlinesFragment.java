@@ -462,6 +462,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			Cursor article = (Cursor)getItem(position);
 			final int articleId = article.getInt(0);
 			
+			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
+			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
+			
 			if (v == null) {
 				int layoutId = R.layout.headlines_row;
 				
@@ -490,6 +493,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView tt = (TextView)v.findViewById(R.id.title);
 
 			if (tt != null) {
+				tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
 				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 
 				int scoreIndex = article.getColumnIndex("score");
@@ -508,6 +512,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					feedTitle = feedTitle.substring(0, 20) + "...";
 				
 				if (feedTitle.length() > 0) {
+					ft.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 					ft.setText(feedTitle);					
 				} else {
 					ft.setVisibility(View.GONE);
@@ -569,7 +574,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
 						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
 					
-					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13")));
+					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					te.setText(excerpt);
 				}
 			}       	
@@ -581,7 +586,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				if (authorIndex >= 0) {
 					String author = article.getString(authorIndex);
 					
-					if (author != null && author.length() > 0)
+					ta.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);					
+					
+					if (author != null && author.length() > 0) 
 						ta.setText(getString(R.string.author_formatted, author));
 					else
 						ta.setText("");
@@ -597,6 +604,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView dv = (TextView) v.findViewById(R.id.date);
 			
 			if (dv != null) {
+				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+				
 				Date d = new Date((long)article.getInt(article.getColumnIndex("updated")) * 1000);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				df.setTimeZone(TimeZone.getDefault());

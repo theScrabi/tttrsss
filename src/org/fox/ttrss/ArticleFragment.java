@@ -94,8 +94,11 @@ public class ArticleFragment extends Fragment  {
 		
 		if (m_article != null) {
 			
-			TextView title = (TextView)view.findViewById(R.id.title);
+			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
+			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
+			TextView title = (TextView)view.findViewById(R.id.title);
+						
 			if (title != null) {
 				
 				String titleStr;
@@ -104,8 +107,8 @@ public class ArticleFragment extends Fragment  {
 					titleStr = m_article.title.substring(0, 200) + "...";
 				else
 					titleStr = m_article.title;
-				
-				
+								
+				title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
 				title.setText(Html.fromHtml(titleStr));
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 				title.setOnClickListener(new OnClickListener() {					
@@ -131,6 +134,8 @@ public class ArticleFragment extends Fragment  {
 			
 			if (comments != null) {
 				if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
+					comments.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+					
 					String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
 					comments.setText(commentsTitle);
 					//comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -161,6 +166,7 @@ public class ArticleFragment extends Fragment  {
 			
 			if (note != null) {
 				if (m_article.note != null && !"".equals(m_article.note)) {
+					note.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
 					note.setText(m_article.note);					
 				} else {
 					note.setVisibility(View.GONE);
@@ -259,7 +265,7 @@ public class ArticleFragment extends Fragment  {
 					cssOverride += "body { text-align : justify; } ";
 				}
 				
-				ws.setDefaultFontSize(Integer.parseInt(m_prefs.getString("article_font_size_sp", "16")));
+				ws.setDefaultFontSize(articleFontSize);
 				
 				content = 
 					"<html>" +
@@ -329,6 +335,8 @@ public class ArticleFragment extends Fragment  {
 			TextView dv = (TextView)view.findViewById(R.id.date);
 			
 			if (dv != null) {
+				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+				
 				Date d = new Date(m_article.updated * 1000L);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				dv.setText(df.format(d));
@@ -339,6 +347,8 @@ public class ArticleFragment extends Fragment  {
 			boolean hasAuthor = false;
 			
 			if (author != null) {
+				author.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+				
 				if (m_article.author != null && m_article.author.length() > 0) {
 					author.setText(getString(R.string.author_formatted, m_article.author));				
 				} else {
@@ -350,6 +360,8 @@ public class ArticleFragment extends Fragment  {
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
+				tagv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+				
 				if (m_article.feed_title != null) {
 					String fTitle = m_article.feed_title;
 					
