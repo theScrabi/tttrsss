@@ -78,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="3dp"
+            android:lineSpacingExtra="2sp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             android:textColor="?headlineSelectedExcerptTextColor"
             android:textSize="13sp" />

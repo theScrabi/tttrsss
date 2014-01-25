@@ -96,6 +96,28 @@ public class ArticleFragment extends Fragment  {
 		
 		if (m_article != null) {
 			
+			if (!useTitleWebView) {
+				View scroll = view.findViewById(R.id.article_scrollview);
+
+				if (scroll != null) {
+					final float scale = getResources().getDisplayMetrics().density;
+					
+					if (m_activity.isSmallScreen()) {
+						scroll.setPadding((int)(8 * scale + 0.5f),
+								(int)(5 * scale + 0.5f),
+								(int)(8 * scale + 0.5f),
+								0);
+					} else {
+						scroll.setPadding((int)(25 * scale + 0.5f),
+								(int)(10 * scale + 0.5f),
+								(int)(25 * scale + 0.5f),
+								0);
+
+					}
+					
+				}
+			}
+			
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
 			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
@@ -286,7 +308,7 @@ public class ArticleFragment extends Fragment  {
 					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
 					"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
 					"<style type=\"text/css\">" +
-					"body { padding : 0px; margin : 0px; line-height : 120%; }" +
+					"body { padding : 0px; margin : 0px; line-height : 130%; }" +
 					"img { max-width : 100%; width : auto; height : auto; }" +
 					cssOverride +
 					"</style>" +
