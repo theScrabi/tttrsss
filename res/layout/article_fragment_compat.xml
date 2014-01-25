@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingBottom="4dp"
-            android:fontFamily="sans-serif-condensed"
             android:text="My simple headline"
             android:textColor="?linkColor"
             android:textSize="18sp" />

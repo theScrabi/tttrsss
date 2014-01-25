@@ -36,7 +36,6 @@
                 android:gravity="center_vertical"
                 android:singleLine="false"
                 android:text="Sample entry title"
-                android:fontFamily="sans-serif-condensed"
                 android:textColor="?headlineTextColor"
                 android:textSize="18sp" />
         </LinearLayout>

@@ -34,7 +34,6 @@
                 android:gravity="center_vertical"
                 android:singleLine="false"
                 android:text="Sample entry title"
-                android:fontFamily="sans-serif-condensed"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
