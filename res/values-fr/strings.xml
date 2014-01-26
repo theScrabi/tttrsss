@@ -217,5 +217,5 @@
     <string name="unsubscribe">Se désabonner</string>
     <string name="unsubscribe_from_prompt">Se désabonner de %1$s ?</string>
     <string name="toggle_sidebar">Barre latérale</string>
-
+	<string name="open_article_in_web_browser">Ouvrir dans le navigateur</string>
 </resources>
