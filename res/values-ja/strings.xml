@@ -216,4 +216,5 @@
     <string name="unsubscribe">購読解除</string>
     <string name="unsubscribe_from_prompt">%1$s の購読を解除しますか？</string>
     <string name="toggle_sidebar">サイドバーの表示/非表示</string>
+    <string name="open_article_in_web_browser">Webブラウザで開く</string>
 </resources>
