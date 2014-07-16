@@ -106,16 +106,16 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enable_condensed_fonts"
-            android:summary="Use condensed fonts for headline titles and a few other UI elements."
-            android:title="Enable condensed fonts" />
-        
-         <org.fox.ttrss.util.FontSizeDialogPreference
-			android:defaultValue="13"
-			android:key="headlines_font_size_sp"
-			android:dialogMessage="@string/pref_headline_font_size"
-			android:title="@string/pref_headline_font_size" />
+            android:summary="@string/pref_headlines_use_condensed_fonts_long"
+            android:title="@string/pref_headlines_use_condensed_fonts" />
 
-         </PreferenceCategory>
+        <org.fox.ttrss.util.FontSizeDialogPreference
+            android:defaultValue="13"
+            android:key="headlines_font_size_sp"
+            android:dialogMessage="@string/pref_headline_font_size"
+            android:title="@string/pref_headline_font_size" />
+
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <org.fox.ttrss.util.FontSizeDialogPreference
             android:defaultValue="16"
