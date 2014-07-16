@@ -211,4 +211,10 @@
     <string name="prefs_compatible_layout_summary">Aktivieren, falls der Inhalt von Artikeln nicht richtig dargestellt wird</string>
     <string name="pref_headlines_use_condensed_fonts">Schmale Schriftart benutzen</string>
     <string name="pref_headlines_use_condensed_fonts_long">Benutzt einen schmaleren Schriftstil für Überschriften und einige andere Elemente.</string>
+    <string name="font_size_dialog_suffix">sp</string>
+    <string name="server_function_not_available">Diese Funktion ist für deine Version von tt-rss leider nicht verfügbar.</string>
+    <string name="unsubscribe">Nicht mehr abonnieren</string>
+    <string name="unsubscribe_from_prompt">Feed %1$s wirklich abbestellen?</string>
+    <string name="toggle_sidebar">Seitenleiste umschalten</string>
+    <string name="open_article_in_web_browser">In Webbrowser öffnen</string>
 </resources>
