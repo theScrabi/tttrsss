@@ -217,4 +217,6 @@
     <string name="unsubscribe_from_prompt">Unsubscribe from %1$s?</string>
     <string name="toggle_sidebar">Toggle sidebar</string>
     <string name="open_article_in_web_browser">Open in web browser</string>
+    <string name="pref_headlines_use_condensed_fonts">Enable condensed fonts</string>
+    <string name="pref_headlines_use_condensed_fonts_long">Use condensed fonts for headline titles and a few other UI elements.</string>
 </resources>
