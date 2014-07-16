@@ -209,4 +209,6 @@
     <string name="synchronize_read_articles_and_go_online">Gelesene Artikel synchronisieren und online gehen</string>
     <string name="prefs_compatible_article_layout">Kompatibles Artikel-Layout</string>
     <string name="prefs_compatible_layout_summary">Aktivieren, falls der Inhalt von Artikeln nicht richtig dargestellt wird</string>
+    <string name="pref_headlines_use_condensed_fonts">Schmale Schriftart benutzen</string>
+    <string name="pref_headlines_use_condensed_fonts_long">Benutzt einen schmaleren Schriftstil für Überschriften und einige andere Elemente.</string>
 </resources>
