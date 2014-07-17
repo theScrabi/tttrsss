@@ -143,11 +143,23 @@ public class SubscribeActivity extends CommonShareActivity {
 				if (m_lastError != ApiError.NO_ERROR) {
 					toast(getErrorMessage());
 				} else {
-					try {					
-						switch (m_apiStatusCode) {
+					try {
+						int rc = -1;
+						
+						try {
+							rc = result.getAsJsonObject().get("status").getAsJsonObject().get("code").getAsInt();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						switch (rc) {
+						case -1:
+							toast(R.string.error_api_unknown);
+							//finish();
+							break;
 						case 0:
 							toast(R.string.error_feed_already_exists_);
-							finish();
+							//finish();
 							break;
 						case 1:
 							toast(R.string.subscribed_to_feed);
