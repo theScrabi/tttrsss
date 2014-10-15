@@ -1,10 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-	    <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
+    
+    <style name="LightThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="statusBarHintColor">#6482AF</item>
-        	    
 	    <item name="smallScreenBackground">#eeeeee</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
@@ -35,12 +32,11 @@
         <item name="android:actionBarStyle">@style/ActionBar.Light</item>    	
 	</style>
 
-	<style name="SepiaTheme" parent="LightTheme">
-	    <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
+    <style name="LightTheme" parent="LightThemeBase">
+    </style>
+    
+	<style name="SepiaThemeBase" parent="LightTheme">
         <item name="statusBarHintColor">#7F3F3F</item>
-	    
 	    <item name="smallScreenBackground">@drawable/paper_sepia</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
@@ -57,12 +53,11 @@
         <item name="android:actionBarStyle">@style/ActionBar.Sepia</item>
 	</style>
 	
-	<style name="HoloTheme" parent="Theme.AppCompat">
-	    <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
+	<style name="SepiaTheme" parent="SepiaThemeBase">
+	</style>
+	    
+	<style name="HoloThemeBase" parent="Theme.AppCompat">
         <item name="statusBarHintColor">@android:color/black</item>
-	    	    
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
@@ -92,12 +87,11 @@
     	<item name="articleNoteBackground">#303030</item>
 	</style>
 
-	<style name="DarkTheme" parent="HoloTheme">
-	    <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
+	<style name="HoloTheme" parent="HoloThemeBase">
+	</style>
+		
+	<style name="DarkThemeBase" parent="HoloTheme">
         <item name="statusBarHintColor">#394A63</item>
-	    
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		
@@ -115,6 +109,9 @@
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>        
 	</style>
 
+	<style name="DarkTheme" parent="DarkThemeBase">
+	</style>
+		
 	<style name="ActionBar.Light" parent="Widget.AppCompat.ActionBar.Solid">
     	<item name="android:background">#6482AF</item>
     	<item name="android:titleTextStyle">@style/ActionBarText.Light</item>
