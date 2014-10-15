@@ -176,10 +176,7 @@ public class OnlineActivity extends CommonActivity {
 		if (isOffline) {
 			switchOfflineSuccess();			
 		} else {
-			
-			if (!isAmazonDevice()) {
-				checkTrial(false);
-			}
+			checkTrial(false);
 			
 			/* if (getIntent().getExtras() != null) {
 				Intent i = getIntent();
@@ -1261,19 +1258,15 @@ public class OnlineActivity extends CommonActivity {
 
 		initMenu();
 		
-		if (!isAmazonDevice()) {
-			List<PackageInfo> pkgs = getPackageManager()
-					.getInstalledPackages(0);
-	
-			for (PackageInfo p : pkgs) {
-				if ("org.fox.ttrss.key".equals(p.packageName)) {
-					Log.d(TAG, "license apk found");
-					menu.findItem(R.id.donate).setVisible(false);
-					break;
-				}
+		List<PackageInfo> pkgs = getPackageManager()
+				.getInstalledPackages(0);
+
+		for (PackageInfo p : pkgs) {
+			if ("org.fox.ttrss.key".equals(p.packageName)) {
+				Log.d(TAG, "license apk found");
+				menu.findItem(R.id.donate).setVisible(false);
+				break;
 			}
-		} else {
-			menu.findItem(R.id.donate).setVisible(false);
 		}
 		
 		return true;

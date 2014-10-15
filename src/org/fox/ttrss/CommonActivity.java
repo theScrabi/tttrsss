@@ -50,10 +50,6 @@ public class CommonActivity extends ActionBarActivity {
 		return m_prefs.getBoolean("show_unread_only", true);
 	}
 
-	public static boolean isAmazonDevice() {
-		return android.os.Build.MANUFACTURER.equals("Amazon");
-	}
-	
 	public void setUnreadOnly(boolean unread) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("show_unread_only", unread);
