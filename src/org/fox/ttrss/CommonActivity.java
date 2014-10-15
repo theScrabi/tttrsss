@@ -154,9 +154,6 @@ public class CommonActivity extends ActionBarActivity {
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
-		ImageLoader.getInstance().init(config);
-		
 		super.onCreate(savedInstanceState);
 	}
 

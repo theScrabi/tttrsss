@@ -51,6 +51,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -173,6 +175,10 @@ public class OnlineActivity extends CommonActivity {
 		
 		setStatusBarTint();
 
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+		ImageLoader.getInstance().init(config);
+		ImageLoader.getInstance().clearDiskCache();
+		
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
 		if (isOffline) {
