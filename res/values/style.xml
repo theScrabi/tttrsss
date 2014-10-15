@@ -111,7 +111,7 @@
     </style>
 		
 	<style name="ActionBar.DarkGray" parent="Widget.AppCompat.ActionBar.Solid">
-    	<item name="android:background">#232527</item>
+    	<item name="android:background">#394A63</item>
 	</style>
 
 	<style name="DarkDialogTheme" parent="android:Theme.Dialog">
