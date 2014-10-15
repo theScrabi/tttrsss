@@ -1,13 +1,21 @@
 package org.fox.ttrss;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.fox.ttrss.util.DatabaseHelper;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -44,6 +52,19 @@ public class CommonActivity extends ActionBarActivity {
 
 	protected SharedPreferences m_prefs;
 
+	/* protected void enableHttpCaching() {
+	   // enable resource caching
+	   if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            try {
+            	File httpCacheDir = new File(getApplicationContext().getCacheDir(), "http");
+            	long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+            	HttpResponseCache.install(httpCacheDir, httpCacheSize);
+            } catch (IOException e) {
+            	e.printStackTrace();
+            }        
+        }
+	} */
+	
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
@@ -128,10 +149,13 @@ public class CommonActivity extends ActionBarActivity {
 		}
 		
 		initDatabase();
-		
+				
 		m_compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
 
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
+		
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+		ImageLoader.getInstance().init(config);
 		
 		super.onCreate(savedInstanceState);
 	}
@@ -225,5 +249,4 @@ public class CommonActivity extends ActionBarActivity {
 	        return display.getWidth();
 	    }
 	}
-	
 }

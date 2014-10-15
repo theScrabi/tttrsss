@@ -1,5 +1,10 @@
 package org.fox.ttrss;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -24,10 +29,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.net.http.HttpResponseCache;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -57,6 +66,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
@@ -781,98 +794,92 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});
 			}
-			
-			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			String articleContent = article.content != null ? article.content : "";
 
-			/* if (m_prefs.getBoolean("headlines_full_content", false)) {
-				final WebView content = (WebView)v.findViewById(R.id.content);
-				
-				if (content != null) {
-				
-					Document doc = Jsoup.parse(articleContent);
-					
-					if (doc != null) {
-						// thanks webview for crashing on <video> tag
-						Elements videos = doc.select("video");
-						
-						for (Element video : videos)
-							video.remove();
-						
-						articleContent = doc.toString();
-					}
-					
-					content.setVisibility(View.VISIBLE);
-					if (te != null) te.setVisibility(View.GONE);
-					
-					String baseUrl = null;
-					
-					try {
-						URL url = new URL(article.link);
-						baseUrl = url.getProtocol() + "://" + url.getHost();
-					} catch (MalformedURLException e) {
-						//
-					}
-					
-					TypedValue tv = new TypedValue();				
-				    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
-					
-				    String cssOverride = "";
-				    String theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT); 
-				    
-				    if (CommonActivity.THEME_HOLO.equals(theme)) {
-						cssOverride = "body { background : transparent; color : #e0e0e0}";
-					} else if (CommonActivity.THEME_DARK.equals(theme)) {
-						cssOverride = "body { background : transparent; color : #e0e0e0}";
-					} else {
-						cssOverride = "body { background : transparent; }";
-					}
-				   		   
-					content.setBackgroundColor(Color.TRANSPARENT);
-				    
-					String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
-					
-					if (m_prefs.getBoolean("justify_article_text", true)) {
-						cssOverride += "body { text-align : justify; } ";
-					}
-					
-					articleContent = "<html>" +
-									"<head>" +
-									"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-									"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
-									"<style type=\"text/css\">" +
-									"body { padding : 0px; margin : 0px; line-height : 130%; }" +
-									cssOverride +
-									"img { max-width : 100%; max-height : "+m_maxImageSize+"px; width : auto; height : auto; }" +
-									"table { width : 100%; }" +
-									"a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}" + 
-									"</style>" +
-									"</head>" +
-									"<body>" + articleContent + "</body></html>";
-					
-					WebSettings ws = content.getSettings();
-					ws.setSupportZoom(false);
-					ws.setDefaultFontSize(headlineFontSize);
+			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
-					content.loadDataWithBaseURL(baseUrl, articleContent, "text/html", "utf-8", null);
-				}
+			if (te != null) {
+				if (!m_prefs.getBoolean("headlines_show_content", true)) {
+					te.setVisibility(View.GONE);
+				} else {
+					String excerpt = Jsoup.parse(articleContent).text(); 
 					
-			} else { */
-				if (te != null) {
-					if (!m_prefs.getBoolean("headlines_show_content", true)) {
-						te.setVisibility(View.GONE);
-					} else {
-						String excerpt = Jsoup.parse(articleContent).text(); 
-						
-						if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
-							excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
-						
-						te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
-						te.setText(excerpt);
-					}
+					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
+						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
+					
+					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
+					te.setText(excerpt);
 				}
-			// }
+			}
+
+			final ImageView flavorImage = (ImageView) v.findViewById(R.id.flavor_image);
+			
+			if (flavorImage != null && m_prefs.getBoolean("headlines_show_content", true)) {
+				flavorImage.setVisibility(View.GONE);
+				
+				Document doc = Jsoup.parse(articleContent);
+				
+				if (doc != null) {
+					Element img = doc.select("img").first();
+
+					if (img != null) {
+						URL imgUri;
+						try {
+							imgUri = new URL(img.attr("src"));
+							
+							flavorImage.setTag(imgUri);
+							
+							DisplayImageOptions options = new DisplayImageOptions.Builder().
+									cacheInMemory(true).
+									cacheOnDisk(true).
+									build();
+							
+							ImageLoader.getInstance().displayImage(imgUri.toString(), flavorImage, options, new ImageLoadingListener() {
+
+								@Override
+								public void onLoadingCancelled(String arg0,
+										View arg1) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onLoadingComplete(String arg0,
+										View arg1, Bitmap arg2) {
+									// TODO Auto-generated method stub
+									
+									flavorImage.setVisibility(View.VISIBLE);
+								}
+
+								@Override
+								public void onLoadingFailed(String arg0,
+										View arg1, FailReason arg2) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onLoadingStarted(String arg0,
+										View arg1) {
+									// TODO Auto-generated method stub
+									
+								}
+								
+							});
+							
+							//new DownloadFlavorImagesTask().execute(flavorImage);
+
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+					
+				}
+				
+			}
 			
 			String articleAuthor = article.author != null ? article.author : "";
 			
@@ -1081,5 +1088,61 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public Feed getFeed() {
 		return m_feed;
 	}
-	
+
+	/* class DownloadFlavorImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
+		   ImageView imageView = null;
+		   @Override
+		   protected Bitmap doInBackground(ImageView... imageViews) {
+		      this.imageView = imageViews[0];
+		      return download((URL)imageView.getTag());
+		   }
+
+		   @Override
+		   protected void onPostExecute(Bitmap result) {
+			  if (result != null) {
+				  imageView.setImageBitmap(result);
+				  imageView.setVisibility(View.VISIBLE);
+			  }
+		   }
+
+		   private Bitmap download(URL url) {
+			   try {
+				   HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				
+				   conn.setDoInput(true); 
+				   conn.setUseCaches(true);
+				   conn.connect();
+				   
+				   ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				   
+				   byte[] buf = new byte[256];
+				   int read = 0;
+
+				   while ((read = conn.getInputStream().read(buf)) >= 0) {
+					   bos.write(buf, 0, read);
+				   }
+				   
+				   final BitmapFactory.Options options = new BitmapFactory.Options();
+
+				   byte[] bitmap = bos.toByteArray();
+				   
+				   options.inJustDecodeBounds = true;
+				   BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length, options);
+				   options.inJustDecodeBounds = false;
+				   
+				   int inSampleSize = CommonActivity.calculateInSampleSize(options, 128, 128);
+				   
+				   Bitmap decodedBitmap = BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length, options);
+				   
+			       return decodedBitmap;
+			    } catch (OutOfMemoryError e) {
+			    	Log.d(TAG, "OOM while trying to decode headline flavor image. :(");
+			    	e.printStackTrace();
+				} catch (IOException e) {
+					//
+				}
+			   
+		       return null;
+		   }
+	} */
 }
