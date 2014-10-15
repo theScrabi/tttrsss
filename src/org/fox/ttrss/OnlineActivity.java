@@ -17,7 +17,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.*;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
