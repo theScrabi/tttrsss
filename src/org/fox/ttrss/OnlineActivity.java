@@ -170,6 +170,8 @@ public class OnlineActivity extends CommonActivity {
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
 		setContentView(R.layout.login);
+		
+		setStatusBarTint();
 
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 

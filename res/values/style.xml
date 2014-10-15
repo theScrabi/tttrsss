@@ -1,5 +1,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 	<style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	    <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="statusBarHintColor">#6482AF</item>
+        	    
 	    <item name="smallScreenBackground">#eeeeee</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
@@ -31,6 +36,11 @@
 	</style>
 
 	<style name="SepiaTheme" parent="LightTheme">
+	    <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="statusBarHintColor">#7F3F3F</item>
+	    
 	    <item name="smallScreenBackground">@drawable/paper_sepia</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
@@ -48,6 +58,11 @@
 	</style>
 	
 	<style name="HoloTheme" parent="Theme.AppCompat">
+	    <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="statusBarHintColor">@android:color/black</item>
+	    	    
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
@@ -78,6 +93,11 @@
 	</style>
 
 	<style name="DarkTheme" parent="HoloTheme">
+	    <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="statusBarHintColor">#394A63</item>
+	    
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		

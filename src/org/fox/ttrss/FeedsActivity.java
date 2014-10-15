@@ -20,11 +20,15 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.google.gson.JsonElement;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -50,7 +54,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines);		
+		setContentView(R.layout.headlines);
+
+		setStatusBarTint();
+		
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null && 
 				findViewById(R.id.sw600dp_port_anchor) == null);
 				

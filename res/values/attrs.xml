@@ -27,4 +27,5 @@
     <attr name="unreadSelectedCounterBackground" format="reference|color" />
     <attr name="articleNoteBackground" format="reference|color" />
     <attr name="articleNoteTextColor" format="reference|color" />
+    <attr name="statusBarHintColor" format="reference|color" />
 </resources>

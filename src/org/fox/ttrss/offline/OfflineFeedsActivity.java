@@ -39,7 +39,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.headlines);		
+		setContentView(R.layout.headlines);
+		
+		setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null && 
 				findViewById(R.id.sw600dp_port_anchor) == null);
 		

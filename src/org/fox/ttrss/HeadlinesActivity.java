@@ -34,6 +34,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
+		setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
 		
 		GlobalState.getInstance().load(savedInstanceState);

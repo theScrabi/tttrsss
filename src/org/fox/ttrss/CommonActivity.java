@@ -2,6 +2,8 @@ package org.fox.ttrss;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
@@ -131,6 +134,21 @@ public class CommonActivity extends ActionBarActivity {
 		Log.d(TAG, "m_compatMode=" + m_compatMode);
 		
 		super.onCreate(savedInstanceState);
+	}
+
+	public void setStatusBarTint() {
+		if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT) {
+			SystemBarTintManager tintManager = new SystemBarTintManager(this);
+		    // enable status bar tint
+		    tintManager.setStatusBarTintEnabled(true);
+		    // enable navigation bar tint
+		    tintManager.setNavigationBarTintEnabled(true);
+		    
+		    TypedValue tv = new TypedValue();
+		    getTheme().resolveAttribute(R.attr.statusBarHintColor, tv, true);
+		    
+		    tintManager.setStatusBarTintColor(tv.data);
+		}
 	}
 	
 	@Override

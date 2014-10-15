@@ -36,6 +36,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
+		setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
 		
 		if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
