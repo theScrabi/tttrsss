@@ -1,5 +1,7 @@
 package org.fox.ttrss;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.Html.ImageGetter;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -39,6 +42,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -75,6 +80,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
+	private int m_maxImageSize = 0;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
@@ -288,6 +294,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 		}
 
+		DisplayMetrics metrics = new DisplayMetrics();
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		m_maxImageSize = (int) (128 * metrics.density + 0.5);
+
+		Log.d(TAG, "maxImageSize=" + m_maxImageSize);
+		
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
@@ -794,7 +806,50 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					te.setText(excerpt);
 				}
-			}       	
+			}
+			
+			WebView content = (WebView)v.findViewById(R.id.content);
+			
+			if (content != null) {
+				
+				content.setVisibility(View.VISIBLE);
+				if (te != null) te.setVisibility(View.GONE);
+				
+				String baseUrl = null;
+				
+				try {
+					URL url = new URL(article.link);
+					baseUrl = url.getProtocol() + "://" + url.getHost();
+				} catch (MalformedURLException e) {
+					//
+				}
+				
+				TypedValue tv = new TypedValue();				
+			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
+				
+				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
+				
+				articleContent = "<html>" +
+								"<head>" +
+								"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+								"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
+								"<style type=\"text/css\">" +
+								"body { padding : 0px; margin : 0px; line-height : 130%; }" +
+								"img { max-width : 100%; max-height : "+m_maxImageSize+"px; width : auto; height : auto; }" +
+								"table { width : 100%; }" +
+								"a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}" + 
+								"</style>" +
+								"</head>" +
+								"<body>" + articleContent + "</body></html>";
+				
+				WebSettings ws = content.getSettings();
+				ws.setSupportZoom(false);
+				ws.setDefaultFontSize(headlineFontSize);
+				
+				content.loadDataWithBaseURL(baseUrl, articleContent, "text/html", "utf-8", null);
+
+				
+			}
 			
 			String articleAuthor = article.author != null ? article.author : "";
 			
