@@ -11,8 +11,6 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +22,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,13 +45,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener, OnRefreshListener {
+public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
 	private FeedCategory m_selectedCat;
 	private FeedsActivity m_activity;
+	private SwipeRefreshLayout m_swipeLayout;
 
 	@SuppressLint("DefaultLocale")
 	class CatUnreadComparator implements Comparator<FeedCategory> {
@@ -212,13 +212,30 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		View view = inflater.inflate(R.layout.cats_fragment, container, false);
 		
+		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
+		
+	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				refresh(false);
+			}
+		});
+
+	    if (!m_activity.isCompatMode()) {
+	    	m_swipeLayout.setColorScheme(android.R.color.holo_green_dark, 
+	    		android.R.color.holo_red_dark, 
+	            android.R.color.holo_blue_dark, 
+	            android.R.color.holo_orange_dark);
+	    }
+
+		
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
 		
-		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 		
 		return view; 
 	}
@@ -265,6 +282,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	} */
 	
 	public void refresh(boolean background) {
+		m_swipeLayout.setRefreshing(true);
+		
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
 		
 		final String sessionId = m_activity.getSessionId();
@@ -306,7 +325,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (isDetached()) return;
 			
 			m_activity.setProgressBarVisibility(false);
-			m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+			m_swipeLayout.setRefreshing(false);
 
 			if (getView() != null) {
 				ListView list = (ListView)getView().findViewById(R.id.feeds);
@@ -521,8 +540,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		return m_selectedCat;
 	}
 
-	@Override
+	/* @Override
 	public void onRefreshStarted(View view) {
 		refresh(false);
-	}	
+	} */
 }

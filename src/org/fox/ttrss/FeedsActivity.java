@@ -137,7 +137,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				lr.execute(map);
 			}
 			
-			m_pullToRefreshAttacher.setRefreshing(true);
+			//m_pullToRefreshAttacher.setRefreshing(true);
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 							
@@ -226,7 +226,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	public void onFeedSelected(Feed feed) {
 		GlobalState.getInstance().m_loadedArticles.clear();
-		m_pullToRefreshAttacher.setRefreshing(true);
+		//m_pullToRefreshAttacher.setRefreshing(true);
 
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
@@ -288,7 +288,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onCatSelected(FeedCategory cat, boolean openAsFeed) {
 		FeedCategoriesFragment fc = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
-		m_pullToRefreshAttacher.setRefreshing(true);
+		//m_pullToRefreshAttacher.setRefreshing(true);
 		
 		if (!openAsFeed) {
 			
@@ -358,7 +358,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			refresh();
 			return true;
 		case R.id.update_feeds:
-			m_pullToRefreshAttacher.setRefreshing(true);
+			//m_pullToRefreshAttacher.setRefreshing(true);
 			refresh();
 			return true;
 		default:

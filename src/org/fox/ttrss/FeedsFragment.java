@@ -17,8 +17,6 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedList;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,6 +34,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -59,7 +58,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener, OnRefreshListener {
+public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -70,6 +69,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private static final String ICON_PATH = "/icons/";
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
+	private SwipeRefreshLayout m_swipeLayout;
 	
 	public void initialize(FeedCategory cat) {
 		m_activeCategory = cat;
@@ -277,6 +277,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
 		
+		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
+		
+	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				refresh(false);
+			}
+		});
+
+	    if (!m_activity.isCompatMode()) {
+	    	m_swipeLayout.setColorScheme(android.R.color.holo_green_dark, 
+	    		android.R.color.holo_red_dark, 
+	            android.R.color.holo_blue_dark, 
+	            android.R.color.holo_orange_dark);
+	    }
+	    
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
@@ -287,9 +303,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
-		Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);
-		
-		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+		//Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);		
+		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 		
 		return view;    	
 	}
@@ -364,6 +379,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	@SuppressWarnings({ "serial" })
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
+		
+		m_swipeLayout.setRefreshing(true);
 		
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
@@ -484,8 +501,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 			
 			m_activity.setProgressBarVisibility(false);
-			m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-
+			//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+			m_swipeLayout.setRefreshing(false);
+			
 			if (result != null) {
 				try {			
 					JsonArray content = result.getAsJsonArray();
@@ -782,9 +800,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		}
 	}
 
-	@Override
+	/* @Override
 	public void onRefreshStarted(View view) {
 		refresh(false);
-	}
+	} */
 
 }

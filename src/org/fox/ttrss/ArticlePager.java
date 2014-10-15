@@ -146,7 +146,7 @@ public class ArticlePager extends Fragment {
 		m_activity.setLoadingStatus(R.string.blank, true);
 
 		m_activity.setProgressBarVisibility(true);
-		m_activity.m_pullToRefreshAttacher.setRefreshing(true);
+		//m_activity.m_pullToRefreshAttacher.setRefreshing(true);
 		
 		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
@@ -163,7 +163,7 @@ public class ArticlePager extends Fragment {
 				if (isDetached()) return;
 				
 				m_activity.setProgressBarVisibility(false);
-				m_activity.m_pullToRefreshAttacher.setRefreshComplete();
+				//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
 				super.onPostExecute(result);
 				

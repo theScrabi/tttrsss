@@ -14,8 +14,6 @@ import org.fox.ttrss.util.HeadlinesRequest;
 import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Log;
@@ -53,7 +52,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 
-public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener, OnRefreshListener {
+public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
 
 	public static final int HEADLINES_REQUEST_SIZE = 30;
@@ -75,6 +74,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
+	private SwipeRefreshLayout m_swipeLayout;
 	
 	private ImageGetter m_dummyGetter = new ImageGetter() {
 
@@ -290,6 +290,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
+		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
+		
+	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				refresh(false);
+			}
+		});
+
+	    if (!m_activity.isCompatMode()) {
+	    	m_swipeLayout.setColorScheme(android.R.color.holo_green_dark, 
+	    		android.R.color.holo_red_dark, 
+	            android.R.color.holo_blue_dark, 
+	            android.R.color.holo_orange_dark);
+	    }
+
+		
 		ListView list = (ListView)view.findViewById(R.id.headlines);		
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 		
@@ -318,7 +335,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 		
-		m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 
 		//if (m_activity.isSmallScreen())
 		//view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
@@ -387,6 +404,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_activity != null && m_feed != null) {
 			m_refreshInProgress = true;
 
+			m_swipeLayout.setRefreshing(true);
 			m_activity.setProgressBarVisibility(true);
 			
 			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
@@ -434,8 +452,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					super.onPostExecute(result);	
 
 					if (isAdded()) {
-						m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-					}
+						m_swipeLayout.setRefreshing(false);
+					} 
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -986,10 +1004,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		return m_feed;
 	}
 
-	@Override
+	/* @Override
 	public void onRefreshStarted(View view) {
 		refresh(false);		
-	}
+	} */
 
 	
 }

@@ -4,15 +4,21 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ListView
-        android:id="@+id/headlines"
-        android:layout_width="match_parent"
-        android:layoutAnimation="@anim/layout_headline"
-        android:dividerHeight="0dp"
-        android:divider="@null"
-        android:paddingTop="3dp"
-        android:layout_height="match_parent" >
-    </ListView>
+    <android.support.v4.widget.SwipeRefreshLayout 
+    	android:id="@+id/headlines_swipe_container"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent" >
+    
+	   <ListView
+	       android:id="@+id/headlines"
+	       android:layout_width="match_parent"
+	       android:layoutAnimation="@anim/layout_headline"
+	       android:dividerHeight="0dp"
+	       android:divider="@null"
+	       android:paddingTop="3dp"
+	       android:layout_height="match_parent" >
+	   </ListView>
+	</android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/loading_container"

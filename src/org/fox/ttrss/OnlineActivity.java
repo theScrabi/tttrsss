@@ -17,7 +17,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.*;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -53,7 +52,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -69,7 +67,7 @@ public class OnlineActivity extends CommonActivity {
 
 	private String m_lastImageHitTestUrl;
 
-	protected PullToRefreshAttacher m_pullToRefreshAttacher;
+	//protected PullToRefreshAttacher m_pullToRefreshAttacher;
 
 	protected abstract class OnLoginFinishedListener {
 		public abstract void OnLoginSuccess();
@@ -173,7 +171,7 @@ public class OnlineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-		m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
+		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
 		if (isOffline) {
 			switchOfflineSuccess();			
@@ -1036,7 +1034,7 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.update_headlines:
 			if (hf != null) {
-				m_pullToRefreshAttacher.setRefreshing(true);
+				//m_pullToRefreshAttacher.setRefreshing(true);
 				hf.refresh(false);
 			}
 			return true;
