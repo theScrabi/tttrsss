@@ -125,7 +125,7 @@ public class CommonActivity extends ActionBarActivity {
 		if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
 		} else {		
-			m_theme = m_prefs.getString("theme", "THEME_DARK");
+			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
 		
 		initDatabase();

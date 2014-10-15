@@ -53,7 +53,7 @@
         android:key="category_look_and_feel"
         android:title="@string/look_and_feel" >
         <ListPreference
-            android:defaultValue="THEME_DARK"
+            android:defaultValue="THEME_LIGHT"
             android:entries="@array/pref_theme_names"
             android:entryValues="@array/pref_theme_values"
             android:key="theme"
