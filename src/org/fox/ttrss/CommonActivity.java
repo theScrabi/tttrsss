@@ -8,15 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
-public class CommonActivity extends SherlockFragmentActivity {
+public class CommonActivity extends ActionBarActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	public final static String FRAG_HEADLINES = "headlines";
@@ -184,8 +183,6 @@ public class CommonActivity extends SherlockFragmentActivity {
 		
 		if (prefs.getString("theme", defaultTheme).equals("THEME_DARK")) {
 			setTheme(R.style.DarkTheme);
-		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SYSTEM")) {
-			setTheme(R.style.SystemTheme);
 		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SEPIA")) {
 			setTheme(R.style.SepiaTheme);
 		} else if (prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY")) {

@@ -17,8 +17,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshAttacher;
-import android.animation.ObjectAnimator;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,20 +36,18 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -124,7 +121,7 @@ public class OnlineActivity extends CommonActivity {
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
-			MenuInflater inflater = getSupportMenuInflater();
+			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.headlines_action_menu, menu);
 			
 			return true;
@@ -1259,7 +1256,7 @@ public class OnlineActivity extends CommonActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 
 		m_menu = menu;
@@ -1572,7 +1569,7 @@ public class OnlineActivity extends CommonActivity {
 				
 			if (hf != null) {
 				if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
-					m_headlinesActionMode = startActionMode(m_headlinesActionModeCallback);
+					m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
 				} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
 					m_headlinesActionMode.finish();
 				}
@@ -1580,38 +1577,41 @@ public class OnlineActivity extends CommonActivity {
 
 			if (!isCompatMode()) {
 				SearchView searchView = (SearchView) search.getActionView();
-				searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-					private String query = "";
-					
-					@Override
-					public boolean onQueryTextSubmit(String query) {
-						HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
-								.findFragmentByTag(FRAG_HEADLINES);
+				
+				if (searchView != null) { 				
+					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+						private String query = "";
 						
-						if (frag != null) {
-							frag.setSearchQuery(query);
-							this.query = query;
-						}
-						
-						return false;
-					}
-					
-					@Override
-					public boolean onQueryTextChange(String newText) {
-						if (newText.equals("") && !newText.equals(this.query)) {
+						@Override
+						public boolean onQueryTextSubmit(String query) {
 							HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
 									.findFragmentByTag(FRAG_HEADLINES);
 							
 							if (frag != null) {
-								frag.setSearchQuery(newText);
-								this.query = newText;
+								frag.setSearchQuery(query);
+								this.query = query;
 							}
+							
+							return false;
 						}
 						
-						return false;
-					}
-				});
-			}
+						@Override
+						public boolean onQueryTextChange(String newText) {
+							if (newText.equals("") && !newText.equals(this.query)) {
+								HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
+										.findFragmentByTag(FRAG_HEADLINES);
+								
+								if (frag != null) {
+									frag.setSearchQuery(newText);
+									this.query = newText;
+								}
+							}
+							
+							return false;
+						}
+					});
+				}
+			} 
 		}		
 	}
 	

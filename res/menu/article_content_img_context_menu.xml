@@ -1,26 +1,26 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ugh="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/article_img_open"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="@string/article_img_open"/>
     <item
         android:id="@+id/article_img_copy"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="@string/article_link_copy"/>
     <item
         android:id="@+id/article_img_share"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="@string/article_img_share"/>
     <item
         android:id="@+id/article_img_view_caption"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="@string/article_img_view_caption"/>
 
     <!--
           <item
         android:id="@+id/article_img_save"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="Save image to file"/>
     -->
 

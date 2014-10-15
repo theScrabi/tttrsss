@@ -3,6 +3,8 @@ package org.fox.ttrss.offline;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -14,11 +16,9 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
-import com.actionbarsherlock.view.MenuItem;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class OfflineFeedsActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();

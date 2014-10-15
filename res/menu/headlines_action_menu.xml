@@ -1,21 +1,21 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ugh="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/selection_toggle_unread"
-        android:showAsAction="ifRoom"
+        ugh:showAsAction="ifRoom"
         android:icon="@drawable/ic_unread_light"
         android:title="@string/selection_toggle_unread"/>
 
     <item
         android:id="@+id/selection_toggle_marked"
         android:icon="@drawable/ic_unimportant_light"
-        android:showAsAction="ifRoom"
+        ugh:showAsAction="ifRoom"
         android:title="@string/selection_toggle_marked"/>
 
     <item
         android:id="@+id/selection_toggle_published"
         android:icon="@drawable/ic_menu_unpublished_light"
-        android:showAsAction="ifRoom"
+        ugh:showAsAction="ifRoom"
         android:title="@string/selection_toggle_published"/>
 
 </menu>

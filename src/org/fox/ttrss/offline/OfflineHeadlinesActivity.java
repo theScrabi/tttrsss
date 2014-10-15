@@ -3,8 +3,6 @@ package org.fox.ttrss.offline;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 
-import com.actionbarsherlock.view.MenuItem;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +14,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {

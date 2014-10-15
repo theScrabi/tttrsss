@@ -12,20 +12,17 @@ import org.fox.ttrss.util.AppRater;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 
-import com.actionbarsherlock.view.MenuItem;
 import com.google.gson.JsonElement;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 

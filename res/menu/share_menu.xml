@@ -1,9 +1,9 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ugh="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/preferences"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction=""
+        ugh:showAsAction=""
         android:title="@string/preferences"/>
 
 </menu>
