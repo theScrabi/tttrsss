@@ -219,7 +219,7 @@
     <string name="open_article_in_web_browser">Open in web browser</string>
     <string name="pref_headlines_use_condensed_fonts">Enable condensed fonts</string>
     <string name="pref_headlines_use_condensed_fonts_long">Use condensed fonts for headline titles and a few other UI elements.</string>
-    <string name="pref_headlines_full_content_long">Show full article content in headlines. May perform badly on old/slower devices.</string>
+    <string name="pref_headlines_full_content_long">Show full article content in headlines. Resource intensive, can cause UI lag on some devices.</string>
     <string name="pref_headlines_full_content">Show full content</string>
     
 </resources>
