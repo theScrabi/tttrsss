@@ -786,7 +786,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			String articleContent = article.content != null ? article.content : "";
 
-			if (m_prefs.getBoolean("headlines_full_content", false)) {
+			/* if (m_prefs.getBoolean("headlines_full_content", false)) {
 				final WebView content = (WebView)v.findViewById(R.id.content);
 				
 				if (content != null) {
@@ -858,7 +858,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					content.loadDataWithBaseURL(baseUrl, articleContent, "text/html", "utf-8", null);
 				}
 					
-			} else {
+			} else { */
 				if (te != null) {
 					if (!m_prefs.getBoolean("headlines_show_content", true)) {
 						te.setVisibility(View.GONE);
@@ -872,7 +872,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						te.setText(excerpt);
 					}
 				}
-			}
+			// }
 			
 			String articleAuthor = article.author != null ? article.author : "";
 			
