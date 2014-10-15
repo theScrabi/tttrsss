@@ -824,11 +824,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
 					
 				    String cssOverride = "";
-				    String theme = m_prefs.getString("theme", "THEME_DARK"); 
+				    String theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT); 
 				    
-				    if ("THEME_DARK".equals(theme) || "THEME_SYSTEM".equals(theme)) {
+				    if (CommonActivity.THEME_HOLO.equals(theme)) {
 						cssOverride = "body { background : transparent; color : #e0e0e0}";
-					} else if ("THEME_DARK_GRAY".equals(theme)) {
+					} else if (CommonActivity.THEME_DARK.equals(theme)) {
 						cssOverride = "body { background : transparent; color : #e0e0e0}";
 					} else {
 						cssOverride = "body { background : transparent; }";

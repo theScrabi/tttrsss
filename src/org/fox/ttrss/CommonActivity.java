@@ -24,6 +24,12 @@ public class CommonActivity extends ActionBarActivity {
 	public final static String FRAG_FEEDS = "feeds";
 	public final static String FRAG_CATS = "cats";
 
+	public final static String THEME_DARK = "THEME_DARK";
+	public final static String THEME_LIGHT = "THEME_LIGHT";
+	public final static String THEME_SEPIA = "THEME_SEPIA";
+	public final static String THEME_HOLO = "THEME_HOLO";
+	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
+	
 	public static final int EXCERPT_MAX_SIZE = 200;
 	
 	private SQLiteDatabase m_readableDb;
@@ -95,7 +101,7 @@ public class CommonActivity extends ActionBarActivity {
 	public void onResume() {
 		super.onResume();
 	
-		if (!m_theme.equals(m_prefs.getString("theme", "THEME_DARK"))) {
+		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
 			Log.d(TAG, "theme changed, restarting");
 			
 			finish();
@@ -172,22 +178,20 @@ public class CommonActivity extends ActionBarActivity {
 	}
 
 	public boolean isDarkTheme() {
-		String defaultTheme = "THEME_DARK";
+		String theme = m_prefs.getString("theme", THEME_DEFAULT);
 		
-		return (m_prefs.getString("theme", defaultTheme).equals("THEME_DARK")) ||
-				m_prefs.getString("theme", defaultTheme).equals("THEME_SYSTEM") ||
-				m_prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY");
+		return theme.equals(THEME_DARK) || theme.equals(THEME_HOLO);
 	}
 	
 	protected void setAppTheme(SharedPreferences prefs) {
-		String defaultTheme = "THEME_DARK";
+		String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		
-		if (prefs.getString("theme", defaultTheme).equals("THEME_DARK")) {
+		if (theme.equals(THEME_DARK)) {
 			setTheme(R.style.DarkTheme);
-		} else if (prefs.getString("theme", defaultTheme).equals("THEME_SEPIA")) {
+		} else if (theme.equals(THEME_SEPIA)) {
 			setTheme(R.style.SepiaTheme);
-		} else if (prefs.getString("theme", defaultTheme).equals("THEME_DARK_GRAY")) {
-			setTheme(R.style.DarkGrayTheme);
+		} else if (theme.equals(THEME_HOLO)) {
+			setTheme(R.style.HoloTheme);
 		} else {
 			setTheme(R.style.LightTheme);
 		}
