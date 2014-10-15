@@ -15,12 +15,16 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -37,6 +41,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +49,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -81,16 +87,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private OnlineActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
 	private int m_maxImageSize = 0;
-	
-	private ImageGetter m_dummyGetter = new ImageGetter() {
 
-		@SuppressWarnings("deprecation")
-		@Override
-		public Drawable getDrawable(String source) {
-			return new BitmapDrawable();
-		}
-		
-	};
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
 	}
@@ -277,7 +274,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 		
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
-		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
+		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1); 
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
@@ -794,61 +791,92 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			String articleContent = article.content != null ? article.content : "";
 
-			if (te != null) {
-				if (!m_prefs.getBoolean("headlines_show_content", true)) {
-					te.setVisibility(View.GONE);
-				} else {
-					String excerpt = Jsoup.parse(articleContent).text(); 
+			if (m_prefs.getBoolean("headlines_full_content", false)) {
+				final WebView content = (WebView)v.findViewById(R.id.content);
+				
+				if (content != null) {
+				
+					Document doc = Jsoup.parse(articleContent);
 					
-					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
-						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
+					if (doc != null) {
+						// thanks webview for crashing on <video> tag
+						Elements videos = doc.select("video");
+						
+						for (Element video : videos)
+							video.remove();
+						
+						articleContent = doc.toString();
+					}
 					
-					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
-					te.setText(excerpt);
+					content.setVisibility(View.VISIBLE);
+					if (te != null) te.setVisibility(View.GONE);
+					
+					String baseUrl = null;
+					
+					try {
+						URL url = new URL(article.link);
+						baseUrl = url.getProtocol() + "://" + url.getHost();
+					} catch (MalformedURLException e) {
+						//
+					}
+					
+					TypedValue tv = new TypedValue();				
+				    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
+					
+				    String cssOverride = "";
+				    String theme = m_prefs.getString("theme", "THEME_DARK"); 
+				    
+				    if ("THEME_DARK".equals(theme) || "THEME_SYSTEM".equals(theme)) {
+						cssOverride = "body { background : transparent; color : #e0e0e0}";
+					} else if ("THEME_DARK_GRAY".equals(theme)) {
+						cssOverride = "body { background : transparent; color : #e0e0e0}";
+					} else {
+						cssOverride = "body { background : transparent; }";
+					}
+				   		   
+					content.setBackgroundColor(Color.TRANSPARENT);
+				    
+					String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
+					
+					if (m_prefs.getBoolean("justify_article_text", true)) {
+						cssOverride += "body { text-align : justify; } ";
+					}
+					
+					articleContent = "<html>" +
+									"<head>" +
+									"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+									"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
+									"<style type=\"text/css\">" +
+									"body { padding : 0px; margin : 0px; line-height : 130%; }" +
+									cssOverride +
+									"img { max-width : 100%; max-height : "+m_maxImageSize+"px; width : auto; height : auto; }" +
+									"table { width : 100%; }" +
+									"a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}" + 
+									"</style>" +
+									"</head>" +
+									"<body>" + articleContent + "</body></html>";
+					
+					WebSettings ws = content.getSettings();
+					ws.setSupportZoom(false);
+					ws.setDefaultFontSize(headlineFontSize);
+					
+					content.loadDataWithBaseURL(baseUrl, articleContent, "text/html", "utf-8", null);
 				}
-			}
-			
-			WebView content = (WebView)v.findViewById(R.id.content);
-			
-			if (content != null) {
-				
-				content.setVisibility(View.VISIBLE);
-				if (te != null) te.setVisibility(View.GONE);
-				
-				String baseUrl = null;
-				
-				try {
-					URL url = new URL(article.link);
-					baseUrl = url.getProtocol() + "://" + url.getHost();
-				} catch (MalformedURLException e) {
-					//
+					
+			} else {
+				if (te != null) {
+					if (!m_prefs.getBoolean("headlines_show_content", true)) {
+						te.setVisibility(View.GONE);
+					} else {
+						String excerpt = Jsoup.parse(articleContent).text(); 
+						
+						if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
+							excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
+						
+						te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
+						te.setText(excerpt);
+					}
 				}
-				
-				TypedValue tv = new TypedValue();				
-			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
-				
-				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
-				
-				articleContent = "<html>" +
-								"<head>" +
-								"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-								"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
-								"<style type=\"text/css\">" +
-								"body { padding : 0px; margin : 0px; line-height : 130%; }" +
-								"img { max-width : 100%; max-height : "+m_maxImageSize+"px; width : auto; height : auto; }" +
-								"table { width : 100%; }" +
-								"a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}" + 
-								"</style>" +
-								"</head>" +
-								"<body>" + articleContent + "</body></html>";
-				
-				WebSettings ws = content.getSettings();
-				ws.setSupportZoom(false);
-				ws.setDefaultFontSize(headlineFontSize);
-				
-				content.loadDataWithBaseURL(baseUrl, articleContent, "text/html", "utf-8", null);
-
-				
 			}
 			
 			String articleAuthor = article.author != null ? article.author : "";
