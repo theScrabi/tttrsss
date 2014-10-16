@@ -855,7 +855,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									View arg1, Bitmap arg2) {
 								// TODO Auto-generated method stub
 								
-								flavorImage.setVisibility(View.VISIBLE);
+								if (arg2.getWidth() > 128 && arg2.getHeight() > 128)								
+									flavorImage.setVisibility(View.VISIBLE);
 							}
 
 							@Override
