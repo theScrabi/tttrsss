@@ -247,6 +247,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		try {
 			if (!isAdded()) return;
 			
+			m_swipeLayout.setRefreshing(true);
+			
 			if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
 			
 			m_cursor = createCursor();
@@ -255,6 +257,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				m_adapter.changeCursor(m_cursor);
 				m_adapter.notifyDataSetChanged();
 			}
+			
+			m_swipeLayout.setRefreshing(false);
+			
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
