@@ -1,13 +1,17 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 16
+    compileSdkVersion 19
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "com.twofortyfouram.locale.api"
         minSdkVersion 3
         targetSdkVersion 17
+    }
+
+    lintOptions {
+         abortOnError false
     }
 
     buildTypes {

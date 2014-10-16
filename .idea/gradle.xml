@@ -8,7 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/orgfoxttrss" />
+            <option value="$PROJECT_DIR$/org.fox.ttrss" />
             <option value="$PROJECT_DIR$/taskerlocaleapi" />
           </set>
         </option>
