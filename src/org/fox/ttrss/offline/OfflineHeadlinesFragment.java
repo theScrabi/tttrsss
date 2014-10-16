@@ -26,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Log;
@@ -62,16 +63,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	private OfflineHeadlinesEventListener m_listener;
 	private OfflineActivity m_activity;
-	
-	private ImageGetter m_dummyGetter = new ImageGetter() {
-
-		@SuppressWarnings("deprecation")
-		@Override
-		public Drawable getDrawable(String source) {
-			return new BitmapDrawable();
-		}
-		
-	};
+	private SwipeRefreshLayout m_swipeLayout;
 	
 	public void initialize(int feedId, boolean isCat) {
 		m_feedId = feedId;
@@ -283,6 +275,22 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
+		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
+		
+	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				refresh();
+			}
+		});
+
+	    if (!m_activity.isCompatMode()) {
+	    	m_swipeLayout.setColorScheme(android.R.color.holo_green_dark, 
+	    		android.R.color.holo_red_dark, 
+	            android.R.color.holo_blue_dark, 
+	            android.R.color.holo_orange_dark);
+	    }
+		
 		m_cursor = createCursor();
 		
 		ListView list = (ListView)view.findViewById(R.id.headlines);		
