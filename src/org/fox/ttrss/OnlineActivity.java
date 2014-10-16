@@ -1040,7 +1040,7 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.update_headlines:
 			if (hf != null) {
 				//m_pullToRefreshAttacher.setRefreshing(true);
-				hf.refresh(false);
+				hf.refresh(false, true);
 			}
 			return true;
 		default:

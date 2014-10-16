@@ -1,10 +1,5 @@
 package org.fox.ttrss;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -22,7 +17,6 @@ import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,13 +24,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.net.http.HttpResponseCache;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -52,8 +42,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -312,7 +300,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				refresh(false);
+				refresh(false, true);
 			}
 		});
 
@@ -416,8 +404,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	}
 
-	@SuppressWarnings({ "serial" })
 	public void refresh(boolean append) {
+		refresh(append, false);	
+	}
+	
+	@SuppressWarnings({ "serial" })
+	public void refresh(boolean append, boolean userInitiated) {
 		if (m_activity != null && m_feed != null) {
 			m_refreshInProgress = true;
 
@@ -523,6 +515,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			final int fskip = skip;
 			
+			final boolean allowForceUpdate = m_activity.getApiLevel() >= 9 && 
+					!m_feed.is_cat && m_feed.id > 0 && !append && userInitiated &&  
+					skip == 0;
+
+			Log.d(TAG, "allowForceUpdate=" + allowForceUpdate + " userInitiated=" + userInitiated);
+					
+					
 			req.setOffset(skip);
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
@@ -540,12 +539,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("order_by", m_prefs.getBoolean("oldest_first", false) ? "date_reverse" : "");
 					
 					if (isCat) put("is_cat", "true");
+
+					if (allowForceUpdate) {					
+						put("force_update", "true");
+					}
 					
 					if (m_searchQuery != null && m_searchQuery.length() != 0) {
 						put("search", m_searchQuery);
 						put("search_mode", "");
 						put("match_on", "both");
 					}
+					
 				}			 
 			};
 	
@@ -824,56 +828,53 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					Element img = doc.select("img").first();
 
 					if (img != null) {
-						URL imgUri;
-						try {
-							imgUri = new URL(img.attr("src"));
-							
-							flavorImage.setTag(imgUri);
-							
-							DisplayImageOptions options = new DisplayImageOptions.Builder().
-									cacheInMemory(true).
-									cacheOnDisk(true).
-									build();
-							
-							ImageLoader.getInstance().displayImage(imgUri.toString(), flavorImage, options, new ImageLoadingListener() {
+						String imgSrc = img.attr("src");
+						
+						// retarded schema-less urls
+						if (imgSrc.indexOf("//") == 0)
+							imgSrc = "http:" + imgSrc;
+						
+						flavorImage.setTag(imgSrc);
+						
+						DisplayImageOptions options = new DisplayImageOptions.Builder().
+								cacheInMemory(true).
+								cacheOnDisk(true).
+								build();
+						
+						ImageLoader.getInstance().displayImage(imgSrc, flavorImage, options, new ImageLoadingListener() {
 
-								@Override
-								public void onLoadingCancelled(String arg0,
-										View arg1) {
-									// TODO Auto-generated method stub
-									
-								}
-
-								@Override
-								public void onLoadingComplete(String arg0,
-										View arg1, Bitmap arg2) {
-									// TODO Auto-generated method stub
-									
-									flavorImage.setVisibility(View.VISIBLE);
-								}
-
-								@Override
-								public void onLoadingFailed(String arg0,
-										View arg1, FailReason arg2) {
-									// TODO Auto-generated method stub
-									
-								}
-
-								@Override
-								public void onLoadingStarted(String arg0,
-										View arg1) {
-									// TODO Auto-generated method stub
-									
-								}
+							@Override
+							public void onLoadingCancelled(String arg0,
+									View arg1) {
+								// TODO Auto-generated method stub
 								
-							});
-							
-							//new DownloadFlavorImagesTask().execute(flavorImage);
+							}
 
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+							@Override
+							public void onLoadingComplete(String arg0,
+									View arg1, Bitmap arg2) {
+								// TODO Auto-generated method stub
+								
+								flavorImage.setVisibility(View.VISIBLE);
+							}
+
+							@Override
+							public void onLoadingFailed(String arg0,
+									View arg1, FailReason arg2) {
+								// TODO Auto-generated method stub
+								
+							}
+
+							@Override
+							public void onLoadingStarted(String arg0,
+									View arg1) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+						});
+						
+						//new DownloadFlavorImagesTask().execute(flavorImage);
 						
 					}
 					
