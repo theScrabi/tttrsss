@@ -3,25 +3,21 @@
     <style name="LightTheme" parent="LightThemeBase">
 	    <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
     </style>
 
    	<style name="SepiaTheme" parent="SepiaThemeBase">
 	    <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
 	</style>
 
 	<style name="HoloTheme" parent="HoloThemeBase">
 	    <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
 	</style>
 		
 	<style name="DarkTheme" parent="DarkThemeBase">
 	    <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:fitsSystemWindows">true</item>
 	</style>
 
 </resources>
