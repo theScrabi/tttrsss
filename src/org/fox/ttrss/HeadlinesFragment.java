@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -855,8 +856,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									View arg1, Bitmap arg2) {
 								// TODO Auto-generated method stub
 								
-								if (arg2.getWidth() > 128 && arg2.getHeight() > 128)								
+								if (!isAdded()) return;
+								
+								if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
+									
+									if (!m_activity.isCompatMode()) {
+										ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImage, "alpha", 0f, 1f);
+										anim.setDuration(500);
+										anim.start();
+									}
+									
 									flavorImage.setVisibility(View.VISIBLE);
+								}
 							}
 
 							@Override
