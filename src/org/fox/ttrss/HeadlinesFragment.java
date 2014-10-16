@@ -648,6 +648,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	} */
 	
+	static class HeadlineViewHolder {
+		public TextView titleView;
+		public TextView feedTitleView;
+		public ImageView markedView;
+		public ImageView publishedView;
+		public TextView excerptView;
+		public ImageView flavorImageView;
+		public TextView authorView;
+		public TextView dateView;
+		public CheckBox selectionBoxView;
+		public ImageView menuButtonView;
+		
+	}
+	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
 		
@@ -697,8 +711,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			View v = convertView;
-
+			
 			final Article article = items.get(position);
+			HeadlineViewHolder holder;
 			
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
@@ -723,55 +738,71 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
+
+				holder = new HeadlineViewHolder();
+				holder.titleView = (TextView)v.findViewById(R.id.title);
+
+				holder.feedTitleView = (TextView)v.findViewById(R.id.feed_title);
+				holder.markedView = (ImageView)v.findViewById(R.id.marked);
+				holder.publishedView = (ImageView)v.findViewById(R.id.published);
+				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
+				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+				holder.authorView = (TextView)v.findViewById(R.id.author);
+				holder.dateView = (TextView) v.findViewById(R.id.date);
+				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
+				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
+				
+				
+				v.setTag(holder);
 				
 				// http://code.google.com/p/android/issues/detail?id=3414
 				((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+			} else {
+				holder = (HeadlineViewHolder) v.getTag();
 			}
-
-			TextView tt = (TextView)v.findViewById(R.id.title);
-
-			if (tt != null) {				
-				tt.setText(Html.fromHtml(article.title));
+			
+			if (holder.titleView != null) {				
+				holder.titleView.setText(Html.fromHtml(article.title));
 				
 				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
 					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.unread ? Typeface.BOLD : Typeface.NORMAL);
 					
-					if (tf != null && !tf.equals(tt.getTypeface())) {
-						tt.setTypeface(tf);
+					if (tf != null && !tf.equals(holder.titleView.getTypeface())) {
+						holder.titleView.setTypeface(tf);
 					}
 					
-					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
+					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
 				} else {
-					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
 				}
 				
-				adjustTitleTextView(article.score, tt, position);
+				adjustTitleTextView(article.score, holder.titleView, position);
 			}
 
-			TextView ft = (TextView)v.findViewById(R.id.feed_title);
 			
-			if (ft != null) {				
+			
+			if (holder.feedTitleView != null) {				
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
 					
 					/* if (article.feed_title.length() > 20)
 						ft.setText(article.feed_title.substring(0, 20) + "...");
 					else */
 					
-					ft.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
-					ft.setText(article.feed_title);
+					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+					holder.feedTitleView.setText(article.feed_title);
 					
 				} else {
-					ft.setVisibility(View.GONE);
+					holder.feedTitleView.setVisibility(View.GONE);
 				}
 				
 			}
 			
-			ImageView marked = (ImageView)v.findViewById(R.id.marked);
 			
-			if (marked != null) {
-				marked.setImageResource(article.marked ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
+			
+			if (holder.markedView != null) {
+				holder.markedView.setImageResource(article.marked ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
 				
-				marked.setOnClickListener(new OnClickListener() {
+				holder.markedView.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
@@ -783,12 +814,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 			
-			ImageView published = (ImageView)v.findViewById(R.id.published);
 			
-			if (published != null) {
-				published.setImageResource(article.published ? R.drawable.ic_published : R.drawable.ic_unpublished);
+			
+			if (holder.publishedView != null) {
+				holder.publishedView.setImageResource(article.published ? R.drawable.ic_published : R.drawable.ic_unpublished);
 				
-				published.setOnClickListener(new OnClickListener() {
+				holder.publishedView.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
@@ -802,31 +833,29 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			String articleContent = article.content != null ? article.content : "";
 
-			TextView te = (TextView)v.findViewById(R.id.excerpt);
-
-			if (te != null) {
+			if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
-					te.setVisibility(View.GONE);
+					holder.excerptView.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(articleContent).text(); 
 					
 					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
 						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
 					
-					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
-					te.setText(excerpt);
+					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
+					holder.excerptView.setText(excerpt);
 				}
 			}
 
-			final ImageView flavorImage = (ImageView) v.findViewById(R.id.flavor_image);
 			
-			if (flavorImage != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
-				flavorImage.setVisibility(View.GONE);
+			
+			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
+				holder.flavorImageView.setVisibility(View.GONE);
 				
 				Document doc = Jsoup.parse(articleContent);
 				
-				if (doc != null) {
 					Element img = doc.select("img").first();
+					if (doc != null) {
 
 					if (img != null) {
 						String imgSrc = img.attr("src");
@@ -835,14 +864,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (imgSrc.indexOf("//") == 0)
 							imgSrc = "http:" + imgSrc;
 						
-						flavorImage.setTag(imgSrc);
-						
 						DisplayImageOptions options = new DisplayImageOptions.Builder().
 								cacheInMemory(true).
 								cacheOnDisk(true).
 								build();
 						
-						ImageLoader.getInstance().displayImage(imgSrc, flavorImage, options, new ImageLoadingListener() {
+						final ImageView flavorImageView = holder.flavorImageView;
+						
+						ImageLoader.getInstance().displayImage(imgSrc, holder.flavorImageView, options, new ImageLoadingListener() {
 
 							@Override
 							public void onLoadingCancelled(String arg0,
@@ -859,14 +888,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								if (!isAdded()) return;
 								
 								if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
-									
-									if (!m_activity.isCompatMode()) {
-										ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImage, "alpha", 0f, 1f);
-										anim.setDuration(500);
-										anim.start();
+									if (arg0 != null && !arg0.equals(arg1.getTag())) {
+										if (!m_activity.isCompatMode() && flavorImageView.getVisibility() != View.VISIBLE) {
+											ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
+											anim.setDuration(500);
+											anim.start();
+										}
 									}
 									
-									flavorImage.setVisibility(View.VISIBLE);
+									flavorImageView.setTag(arg0);
+									flavorImageView.setVisibility(View.VISIBLE);
 								}
 							}
 
@@ -874,7 +905,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							public void onLoadingFailed(String arg0,
 									View arg1, FailReason arg2) {
 								// TODO Auto-generated method stub
-								
 							}
 
 							@Override
@@ -885,9 +915,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							}
 							
 						});
-						
-						//new DownloadFlavorImagesTask().execute(flavorImage);
-						
 					}
 					
 				}
@@ -896,40 +923,30 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			String articleAuthor = article.author != null ? article.author : "";
 			
-			TextView author = (TextView)v.findViewById(R.id.author);
 			
-			if (author != null) {
-				author.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+			if (holder.authorView != null) {
+				holder.authorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 
 				if (articleAuthor.length() > 0) {
-					author.setText(getString(R.string.author_formatted, articleAuthor));
+					holder.authorView.setText(getString(R.string.author_formatted, articleAuthor));
 				} else {
-					author.setText("");
+					holder.authorView.setText("");
 				}
 			}
-			
-			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
-			
-			if (separator != null && m_onlineServices.isSmallScreen()) {
-				separator.setVisibility(View.GONE);
-			} */
-			
-			TextView dv = (TextView) v.findViewById(R.id.date);
-			
-			if (dv != null) {
-				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+					
+			if (holder.dateView != null) {
+				holder.dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 				
 				Date d = new Date((long)article.updated * 1000);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				df.setTimeZone(TimeZone.getDefault());
-				dv.setText(df.format(d));
+				holder.dateView.setText(df.format(d));
 			}
 			
-			CheckBox cb = (CheckBox) v.findViewById(R.id.selected);
 
-			if (cb != null) {
-				cb.setChecked(m_selectedArticles.contains(article));
-				cb.setOnClickListener(new OnClickListener() {
+			if (holder.selectionBoxView != null) {
+				holder.selectionBoxView.setChecked(m_selectedArticles.contains(article));
+				holder.selectionBoxView.setOnClickListener(new OnClickListener() {
 					
 					@Override
 					public void onClick(View view) {
@@ -948,14 +965,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});
 			}
-			
-			ImageView iv = (ImageView) v.findViewById(R.id.article_menu_button);
-			
-			if (iv != null) {
+
+			if (holder.menuButtonView != null) {
 				//if (m_activity.isDarkTheme())
 				//	ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
 				
-				iv.setOnClickListener(new OnClickListener() {					
+				holder.menuButtonView.setOnClickListener(new OnClickListener() {					
 					@Override
 					public void onClick(View v) {
 						getActivity().openContextMenu(v);
