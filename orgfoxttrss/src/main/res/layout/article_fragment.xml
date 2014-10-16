@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/article_fragment"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="?articleBackground">
+
+    <org.fox.ttrss.util.NoChildFocusScrollView
+        android:id="@+id/article_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="false" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/article_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="6dp" >
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="4dp"
+                    android:text="My simple headline"                    
+                    android:textColor="?linkColor"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-light"
+                    android:paddingTop="4dp"
+                    android:text="24 comments"
+                    android:textColor="?linkColor"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"                    
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" >
+
+                    <TextView
+                        android:id="@+id/tags"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="middle"
+                        android:singleLine="true"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Example Feed"
+                        android:textColor="?headlineSecondaryTextColor"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Jan 01, 12:00"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="?headlineSecondaryTextColor"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?articleNoteBackground"                
+                android:textColor="?articleNoteTextColor"
+                android:textSize="13sp"
+                android:padding="2dp"
+                android:layout_marginBottom="6dp"
+                android:text="[Article note]" />
+
+            <org.fox.ttrss.util.LessBrokenWebView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </org.fox.ttrss.util.NoChildFocusScrollView>
+
+
+</RelativeLayout>

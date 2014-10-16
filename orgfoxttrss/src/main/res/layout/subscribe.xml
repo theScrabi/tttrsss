@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dp" >
+
+    <EditText
+        android:id="@+id/feed_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:ems="10"
+        android:hint="@string/feed_url"
+        android:inputType="textUri"
+        android:maxLines="3" >
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/category_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/feed_url"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/feed_url" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/category_spinner"
+        android:layout_alignRight="@+id/category_spinner"
+        android:layout_below="@+id/category_spinner" >
+
+        <Button
+            android:id="@+id/cats_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Update categories" />
+
+        <Button
+            android:id="@+id/subscribe_button"
+		    android:layout_width="wrap_content"
+		    android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:text="@string/subscribe_to_feed" />
+    </LinearLayout>
+
+</RelativeLayout>
