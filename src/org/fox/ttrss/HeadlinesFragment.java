@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
@@ -659,6 +660,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public TextView dateView;
 		public CheckBox selectionBoxView;
 		public ImageView menuButtonView;
+		public ViewGroup flavorImageHolder;
 		
 	}
 	
@@ -751,7 +753,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.dateView = (TextView) v.findViewById(R.id.date);
 				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
 				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
-				
+				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
 				
 				v.setTag(holder);
 				
@@ -852,6 +854,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
 				holder.flavorImageView.setVisibility(View.GONE);
 				
+				holder.flavorImageView.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse((String)v.getTag()));
+							
+							startActivity(intent);
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						
+					}
+				});
+				
 				Document doc = Jsoup.parse(articleContent);
 				
 					Element img = doc.select("img").first();
@@ -917,8 +934,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						});
 					}
 					
-				}
-				
+				}				
+			} else if (holder.flavorImageHolder != null) {
+				holder.flavorImageHolder.setVisibility(View.GONE);
 			}
 			
 			String articleAuthor = article.author != null ? article.author : "";
