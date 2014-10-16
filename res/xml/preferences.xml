@@ -92,6 +92,11 @@
             android:key="headlines_show_content"
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="headlines_show_flavor_image"
+            android:title="@string/prefs_headlines_show_flavor_image" />
         
         <!--  <CheckBoxPreference
             android:defaultValue="false"

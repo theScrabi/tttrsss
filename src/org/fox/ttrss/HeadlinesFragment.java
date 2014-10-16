@@ -819,7 +819,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			final ImageView flavorImage = (ImageView) v.findViewById(R.id.flavor_image);
 			
-			if (flavorImage != null && m_prefs.getBoolean("headlines_show_content", true)) {
+			if (flavorImage != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
 				flavorImage.setVisibility(View.GONE);
 				
 				Document doc = Jsoup.parse(articleContent);

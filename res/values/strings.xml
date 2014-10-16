@@ -221,5 +221,6 @@
     <string name="pref_headlines_use_condensed_fonts_long">Use condensed fonts for headline titles and a few other UI elements.</string>
     <string name="pref_headlines_full_content_long">Show full article content in headlines. Resource intensive, can cause UI lag on some devices.</string>
     <string name="pref_headlines_full_content">Show full content</string>
+    <string name="prefs_headlines_show_flavor_image">Show article image</string>
     
 </resources>
