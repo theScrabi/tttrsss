@@ -379,8 +379,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	@SuppressWarnings({ "serial" })
 	public void refresh(boolean background) {
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
-		
-		m_swipeLayout.setRefreshing(true);
+
+        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 		
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
@@ -502,7 +502,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			
 			m_activity.setProgressBarVisibility(false);
 			//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
-			m_swipeLayout.setRefreshing(false);
+            if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 			
 			if (result != null) {
 				try {			

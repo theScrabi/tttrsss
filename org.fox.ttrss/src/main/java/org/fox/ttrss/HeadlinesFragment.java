@@ -298,7 +298,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
 
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
-		
+
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
@@ -415,7 +415,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_activity != null && m_feed != null) {
 			m_refreshInProgress = true;
 
-			m_swipeLayout.setRefreshing(true);
+			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 			m_activity.setProgressBarVisibility(true);
 			
 			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
@@ -463,7 +463,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					super.onPostExecute(result);	
 
 					if (isAdded()) {
-						m_swipeLayout.setRefreshing(false);
+                        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 					} 
 
 					if (result != null) {

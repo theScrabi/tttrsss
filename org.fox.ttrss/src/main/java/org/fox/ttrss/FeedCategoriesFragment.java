@@ -282,7 +282,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	} */
 	
 	public void refresh(boolean background) {
-		m_swipeLayout.setRefreshing(true);
+        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 		
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
 		
@@ -325,7 +325,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (isDetached()) return;
 			
 			m_activity.setProgressBarVisibility(false);
-			m_swipeLayout.setRefreshing(false);
+            if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
 			if (getView() != null) {
 				ListView list = (ListView)getView().findViewById(R.id.feeds);
