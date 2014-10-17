@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -163,7 +164,11 @@ public class EnlargingImageView extends android.widget.ImageView {
 					// Try adjusting width to be proportional to height
 					if (resizeWidth) {
 						int newWidth = (int) (desiredAspect * (heightSize - ptop - pbottom)) + pleft + pright;
-						if (/*newWidth <= widthSize &&*/newWidth > 0) {
+
+                        if (newWidth > 0 && widthSize > 0 && newWidth / widthSize > 2)
+                            newWidth = widthSize * 2;
+
+						if (/*newWidth <= widthSize &&*/ newWidth > 0) {
 							widthSize = Math.min(newWidth, mMaxWidthL);
 							heightSize = (int) ((widthSize - pleft - pright) / desiredAspect) + ptop + pbottom;
 						}
@@ -172,7 +177,11 @@ public class EnlargingImageView extends android.widget.ImageView {
 					// Try adjusting height to be proportional to width
 					if (resizeHeight) {
 						int newHeight = (int) ((widthSize - pleft - pright) / desiredAspect) + ptop + pbottom;
-						if (/*newHeight <= heightSize && */newHeight > 0) {
+
+                        if (newHeight > 0 && heightSize > 0 && newHeight / heightSize > 2)
+                            newHeight = heightSize * 2;
+
+						if (/* newHeight <= heightSize && */ newHeight > 0) {
 							heightSize = Math.min(newHeight, mMaxHeightL);
 							widthSize = (int) (desiredAspect * (heightSize - ptop - pbottom)) + pleft + pright;
 						}
