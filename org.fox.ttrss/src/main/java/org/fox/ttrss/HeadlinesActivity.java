@@ -33,9 +33,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		setContentView(R.layout.headlines_articles);
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		setStatusBarTint();
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null); 
+
+        setStatusBarTint();
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
 

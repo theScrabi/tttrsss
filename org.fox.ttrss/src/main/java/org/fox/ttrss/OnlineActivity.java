@@ -172,8 +172,8 @@ public class OnlineActivity extends CommonActivity {
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
 		setContentView(R.layout.login);
-		
-		setStatusBarTint();
+
+        setStatusBarTint();
 
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
 		ImageLoader.getInstance().init(config);

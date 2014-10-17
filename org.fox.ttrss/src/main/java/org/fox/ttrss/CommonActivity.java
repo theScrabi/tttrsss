@@ -25,6 +25,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class CommonActivity extends ActionBarActivity {
 	private boolean m_smallScreenMode = true;
 	private boolean m_compatMode = false;
 	private String m_theme;
+    private boolean m_fullScreen;
 
 	protected SharedPreferences m_prefs;
 
@@ -122,7 +124,9 @@ public class CommonActivity extends ActionBarActivity {
 	public void onResume() {
 		super.onResume();
 	
-		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
+		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT)) ||
+                m_fullScreen != m_prefs.getBoolean("full_screen_mode", false)) {
+
 			Log.d(TAG, "theme changed, restarting");
 			
 			finish();
@@ -145,8 +149,10 @@ public class CommonActivity extends ActionBarActivity {
 		
 		if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
+            m_fullScreen = savedInstanceState.getBoolean("fullscreen");
 		} else {		
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
+            m_fullScreen = m_prefs.getBoolean("full_screen_mode", false);
 		}
 		
 		initDatabase();
@@ -159,13 +165,16 @@ public class CommonActivity extends ActionBarActivity {
 	}
 
 	public void setStatusBarTint() {
-		if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT) {
+		if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT &&
+                !m_prefs.getBoolean("full_screen_mode", false)) {
+
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
 			SystemBarTintManager tintManager = new SystemBarTintManager(this);
 		    // enable status bar tint
 		    tintManager.setStatusBarTintEnabled(true);
-		    // enable navigation bar tint
-		    tintManager.setNavigationBarTintEnabled(true);
-		    
+
 		    TypedValue tv = new TypedValue();
 		    getTheme().resolveAttribute(R.attr.statusBarHintColor, tv, true);
 		    
@@ -178,6 +187,7 @@ public class CommonActivity extends ActionBarActivity {
 		super.onSaveInstanceState(out);
 		
 		out.putString("theme", m_theme);
+        out.putBoolean("fullscreen", m_fullScreen);
 	}
 	
 	public boolean isSmallScreen() {

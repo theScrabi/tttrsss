@@ -56,9 +56,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		setContentView(R.layout.headlines);
 
-		setStatusBarTint();
-		
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null && 
+        setStatusBarTint();
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null &&
 				findViewById(R.id.sw600dp_port_anchor) == null);
 				
 		GlobalState.getInstance().load(savedInstanceState);
