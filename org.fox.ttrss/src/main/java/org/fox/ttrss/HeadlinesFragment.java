@@ -887,7 +887,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									View arg1, Bitmap arg2) {
 								// TODO Auto-generated method stub
 								
-								if (!isAdded()) return;
+								if (!isAdded() || arg2 == null) return;
 								
 								if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
 									if (arg0 != null && !arg0.equals(arg1.getTag())) {
