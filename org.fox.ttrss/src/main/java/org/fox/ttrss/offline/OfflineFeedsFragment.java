@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,6 +44,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private boolean m_enableFeedIcons;
 	private Cursor m_cursor;
 	private OfflineFeedsActivity m_activity;
+    private SwipeRefreshLayout m_swipeLayout;
 	
 	public void initialize(int catId) {
 		m_catId = catId;
@@ -123,6 +125,8 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	public void refresh() {
 		try {
 			if (!isAdded()) return;
+
+            if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 			
 			if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
 			
@@ -131,6 +135,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 			if (m_cursor != null && m_adapter != null) {
 				m_adapter.changeCursor(m_cursor);
 				m_adapter.notifyDataSetChanged();
+                if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -146,7 +151,23 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
-		
+
+        m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
+
+        m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
+        if (!m_activity.isCompatMode()) {
+            m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
+                    android.R.color.holo_red_dark,
+                    android.R.color.holo_blue_dark,
+                    android.R.color.holo_orange_dark);
+        }
+
 		ListView list = (ListView)view.findViewById(R.id.feeds);
 		
 		m_cursor = createCursor();
