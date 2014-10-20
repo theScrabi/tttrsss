@@ -73,13 +73,12 @@
         </LinearLayout>
 
         <FrameLayout
-            android:paddingTop="3dp"
             android:id="@+id/flavorImageHolder"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:padding="10dp" >
 
-			<org.fox.ttrss.util.EnlargingImageView
+            <org.fox.ttrss.util.EnlargingImageView
                 android:id="@+id/flavor_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,8 +86,8 @@
                 android:adjustViewBounds="true"
                 android:background="@drawable/flavor_image_border"
                 android:scaleType="fitCenter"
-				android:cropToPadding="true"
-				android:padding="2dp"
+                android:cropToPadding="true"
+                android:padding="2dp"
                 android:visibility="gone" />
         </FrameLayout>
         
