@@ -15,9 +15,10 @@
     <string name="pref_theme">テーマ</string>
     <string name="pref_theme_long">アプリケーションのテーマ色を変更する</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
-    <string name="theme_dark">ダーク</string>
-    <string name="preferences">設定</string>
     <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="theme_holo">ホロ</string>
+    <string name="preferences">設定</string>
     <string name="connection">接続</string>
     <string name="headline_context_multiple">選択した記事</string>
     <string name="http_authentication">HTTP認証</string>
@@ -156,7 +157,6 @@
     <string name="trial_thanks">フルバージョン。あなたの支援に感謝します！</string>
     <string name="prefs_fullscreen_mode">フルスクリーンモード</string>
     <string name="reading">Reading</string>
-    <string name="theme_dark_gray">ダークグレイ</string>
     <string name="offline_articles_to_download">ダウンロードする記事数</string>
     <string name="offline_articles_to_download_long">オフラインモードにする際にダウンロードする記事数(新しい記事から)</string>
     <string name="pref_headlines_show_content_long">記事内容をヘッドライン一覧に表示する</string>
@@ -217,4 +217,10 @@
     <string name="unsubscribe_from_prompt">%1$s の購読を解除しますか？</string>
     <string name="toggle_sidebar">サイドバーの表示/非表示</string>
     <string name="open_article_in_web_browser">Webブラウザで開く</string>
+    <string name="pref_headlines_use_condensed_fonts">長体フォントを有効にする</string>
+    <string name="pref_headlines_use_condensed_fonts_long">ヘッドラインタイトルとUI部品の一部に長体フォントを使用する。</string>
+    <string name="pref_headlines_full_content_long">ヘッドラインにすべての記事内容を表示する。リソースを消費するので、一部のデバイスでは動作がもたつく可能性があります。</string>
+    <string name="pref_headlines_full_content">すべての内容を表示</string>
+    <string name="prefs_headlines_show_flavor_image">ヘッドラインに画像を表示する</string>
+
 </resources>
