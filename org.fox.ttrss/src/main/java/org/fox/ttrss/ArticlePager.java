@@ -161,7 +161,7 @@ public class ArticlePager extends Fragment {
 			@Override
 			protected void onPostExecute(JsonElement result) {
 				if (isDetached()) return;
-				
+
 				m_activity.setProgressBarVisibility(false);
 				//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
@@ -254,6 +254,8 @@ public class ArticlePager extends Fragment {
 				}
 			}			 
 		};
+
+        Log.d(TAG, "[AP] request more headlines...");
 
 		req.execute(map);
 	}

@@ -237,7 +237,12 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	@Override
 	public void onHeadlinesLoaded(boolean appended) {
 		HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-		
+		ArticlePager ap = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+
+        if (ap != null) {
+            ap.notifyUpdated();
+        }
+
 		if (hf != null) {
 			Article article = hf.getActiveArticle();
 						

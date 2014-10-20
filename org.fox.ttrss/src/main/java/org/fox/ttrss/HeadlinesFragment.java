@@ -554,7 +554,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					
 				}			 
 			};
-	
+
+            Log.d(TAG, "[HP] request more headlines...");
+
 			req.execute(map);
 		}
 	}		
