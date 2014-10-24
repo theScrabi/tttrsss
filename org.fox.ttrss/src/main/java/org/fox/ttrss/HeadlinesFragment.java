@@ -1,23 +1,5 @@
 package org.fox.ttrss;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
-
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.util.HeadlinesRequest;
-import org.fox.ttrss.util.TypefaceCache;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -30,7 +12,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
@@ -60,6 +41,22 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.HeadlinesRequest;
+import org.fox.ttrss.util.TypefaceCache;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.TimeZone;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
@@ -855,7 +852,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
 				holder.flavorImageView.setVisibility(View.GONE);
-				
+                holder.flavorImageHolder.setVisibility(View.GONE);
+
 				Document doc = Jsoup.parse(articleContent);
 				
 					Element img = doc.select("img").first();
@@ -874,6 +872,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								build();
 						
 						final ImageView flavorImageView = holder.flavorImageView;
+                        final ViewGroup flavorImageHolder = holder.flavorImageHolder;
 						
 						ImageLoader.getInstance().displayImage(imgSrc, holder.flavorImageView, options, new ImageLoadingListener() {
 
@@ -901,6 +900,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									}
 									
 									flavorImageView.setTag(arg0);
+                                    flavorImageHolder.setVisibility(View.VISIBLE);
 									flavorImageView.setVisibility(View.VISIBLE);
 								}
 							}
