@@ -422,7 +422,7 @@ public class OfflineActivity extends CommonActivity {
 					if (confirm) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								OfflineActivity.this)
-								.setMessage(getString(R.string.mark_num_headlines_as_read, count))
+								.setMessage(getResources().getQuantityString(R.plurals.mark_num_headlines_as_read, count, count))
 								.setPositiveButton(R.string.catchup,
 										new Dialog.OnClickListener() {
 											public void onClick(DialogInterface dialog,

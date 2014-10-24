@@ -149,7 +149,10 @@
     <string name="prefs_dim_status_bar">Dim status bar</string>
     <string name="prefs_dim_status_bar_long">Dim status bar when reading</string>
     <string name="article_comments">%1$d comments</string>
-    <string name="trial_mode_prompt">Trial mode, %1$d day(s) left.</string>
+    <plurals name="trial_mode_prompt">
+        <item quantity="one">Trial mode, only one day left.</item>
+        <item quantity="other">Trial mode, %1$d days left.</item>
+    </plurals>
     <string name="trial_purchase">Unlock full version</string>
     <string name="trial_expired">Trial expired</string>
     <string name="trial_expired_message">To continue using Tiny Tiny RSS please unlock the full version by purchasing the key.</string>
@@ -195,10 +198,17 @@
     <string name="light_theme_is_not_supported_on_honeycomb">Light theme is not supported on Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Mark read on scroll</string>
     <string name="pref_headlines_mark_read_scroll_long">Headlines will be marked read when scrolling past them</string>
-    <string name="mark_num_headlines_as_read">Mark %1$d article(s) as read?</string>
+    <plurals name="mark_num_headlines_as_read">
+        <item quantity="one">Mark %1$d article as read?</item>
+        <item quantity="other">Mark %1$d articles as read?</item>
+    </plurals>
     <string name="prefs_confirm_headlines_catchup">Confirm marking articles as read</string>
     <string name="author_formatted">by %1$s</string>
-    <string name="n_unread_articles">%1$d unread articles</string>
+    <plurals name="n_unread_articles">
+        <item quantity="zero">No unread articles</item>
+        <item quantity="one">One unread article</item>
+        <item quantity="other">%1$d unread articles</item>
+    </plurals>
     <string name="pref_headline_font_size">Headline text size</string>
     <string name="context_confirm_catchup">Mark all articles in %1$s as read?</string>
     <string name="theme_system">Device Default</string>

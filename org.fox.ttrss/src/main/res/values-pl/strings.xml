@@ -164,7 +164,9 @@
     <string name="prefs_dim_status_bar">Przyciemnij pasek statusu</string>
     <string name="prefs_dim_status_bar_long">Przyciemnij pasek statusu podczas czytania</string>
     <string name="article_comments">%1$d komentarzy</string>
-    <string name="trial_mode_prompt">Tryb wersji testowej, pozostało dni: %1$d.</string>
+    <plurals name="trial_mode_prompt">
+        <item quantity="other">Tryb wersji testowej, pozostało dni: %1$d.</item>
+    </plurals>
     <string name="trial_purchase">Odblokuj pełną wersję</string>
     <string name="trial_expired">Wersja testowa wygasła</string>
     <string name="trial_expired_message">Aby nadal używać Tiny Tiny RSS odblokuj pełną wersję kupując klucz aktywacyjny.</string>
@@ -211,9 +213,13 @@
     <string name="light_theme_is_not_supported_on_honeycomb">Jasny styl nie jest wspierany na Androidzie Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Oznaczaj jako przeczytane podczas przewijania</string>
     <string name="pref_headlines_mark_read_scroll_long">Nagłówki będą oznaczane jako przeczynane podczas przewijania ich listy</string>
-    <string name="mark_num_headlines_as_read">Oznaczyć %1$d artykuł(y) jako przeczytane?</string>
+    <plurals name="mark_num_headlines_as_read">
+        <item quantity="other">Oznaczyć %1$d artykuł(y) jako przeczytane?</item>
+    </plurals>
     <string name="prefs_confirm_headlines_catchup">Potwierdzaj oznaczanie artykułów jako przeczytane</string>
     <string name="author_formatted">przez %1$s</string>
-    <string name="n_unread_articles">%1$d nieprzeczytanych artykułów</string>
+    <plurals name="n_unread_articles">
+        <item quantity="other">%1$d nieprzeczytanych artykułów</item>
+    </plurals>
     <string name="pref_headline_font_size">Rozmiar czcionki nagłówka</string>
 </resources>
