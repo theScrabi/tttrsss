@@ -10,152 +10,164 @@
     card_view:cardBackgroundColor="?headlineSelectedBackground"
     tools:ignore="HardcodedText" >
 
-    <LinearLayout
-        android:id="@+id/inner_row"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="2dp"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingTop="6dp" >
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:baselineAligned="false"
+        android:shrinkColumns="0,1"
+        android:stretchColumns="0,1">
 
-        <LinearLayout
-            android:id="@+id/linearLayout6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" >
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:singleLine="false"
                 android:text="Sample entry title"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:layout_span="2" />
+        </TableRow>
 
-        <LinearLayout
-            android:id="@+id/linearLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="3dp" >
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/feed_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="Example Feed"
-                android:fontFamily="sans-serif-light"
+                android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
                 android:textColor="?headlineSelectedSecondaryTextColor"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:layout_weight="0.5" />
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right|center_vertical"
                 android:fontFamily="sans-serif-light"
-                android:text="Jan 01, 12:00"
+                android:gravity="right|center_vertical"
+                android:singleLine="true"
+                android:ellipsize="none"
+                android:text="Jan 01, 12:00, 1970"
                 android:textColor="?headlineSelectedSecondaryTextColor"
-                android:textSize="12sp" />
-        </LinearLayout>
+                android:textSize="12sp"
+                android:layout_weight="0.5" />
+        </TableRow>
 
-        <FrameLayout
-            android:id="@+id/flavorImageHolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" >
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-            <org.fox.ttrss.util.EnlargingImageView
-                android:id="@+id/flavor_image"
+            <FrameLayout
+                android:id="@+id/flavorImageHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                android:background="@drawable/flavor_image_border"
-                android:scaleType="fitCenter"
-                android:cropToPadding="true"
-                android:padding="2dp"
-                android:visibility="gone" />
-        </FrameLayout>
-        
-        <TextView
-            android:id="@+id/excerpt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="3dp"
-            android:lineSpacingExtra="2sp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            android:textColor="?headlineSelectedExcerptTextColor"
-            android:textSize="13sp" />
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical" >
+                android:padding="10dp"
+                android:layout_span="2">
 
-            <CheckBox
-                android:id="@+id/selected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"                
-                android:layout_weight="0"
-                android:focusable="false" />
+                <org.fox.ttrss.util.EnlargingImageView
+                    android:id="@+id/flavor_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/flavor_image_border"
+                    android:scaleType="fitCenter"
+                    android:cropToPadding="true"
+                    android:padding="2dp"
+                    android:visibility="visible" />
+            </FrameLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/author"
-                android:layout_width="wrap_content"
+                android:id="@+id/excerpt"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:ellipsize="end"
+                android:lineSpacingExtra="2sp"
+                android:paddingTop="3dp"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                android:textColor="?headlineSelectedExcerptTextColor"
+                android:textSize="13sp"
+                android:layout_span="2" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="by Author"
-                android:fontFamily="sans-serif-light"
-                android:textStyle="italic"
-                android:textColor="?headlineSelectedSecondaryTextColor"
-                android:textSize="12sp" />
+                android:layout_span="2">
 
-            <ImageView
-                android:id="@+id/marked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:src="@drawable/ic_star_empty" />
+                <CheckBox
+                    android:id="@+id/selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:focusable="false" />
 
-            <ImageView
-                android:id="@+id/published"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="6dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:src="@drawable/ic_unpublished" />
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="by Author"
+                    android:textColor="?headlineSelectedSecondaryTextColor"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
 
-            <ImageView
-                android:id="@+id/article_menu_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingLeft="6dp"
-                android:paddingRight="6dp"
-                android:src="@drawable/ic_action_overflow" />
-        </LinearLayout>
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/marked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:src="@drawable/ic_star_empty" />
+
+                <ImageView
+                    android:id="@+id/published"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="0"
+                    android:clickable="true"
+                    android:src="@drawable/ic_unpublished" />
+
+                <ImageView
+                    android:id="@+id/article_menu_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:src="@drawable/ic_action_overflow" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
 
 </android.support.v7.widget.CardView>
