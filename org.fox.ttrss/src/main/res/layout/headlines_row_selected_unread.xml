@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="3dp"
-    android:paddingLeft="6dp"
-    android:paddingRight="6dp"
-    android:paddingTop="3dp" >
+    card_view:cardElevation="2dp"
+    card_view:cardBackgroundColor="?headlineSelectedBackground"
+    tools:ignore="HardcodedText" >
 
     <LinearLayout
         android:id="@+id/inner_row"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?headlineSelectedBackground"
         android:orientation="vertical"
         android:paddingBottom="2dp"
         android:paddingLeft="6dp"
@@ -157,4 +158,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</FrameLayout>
+</android.support.v7.widget.CardView>

@@ -9,9 +9,9 @@
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
 		<item name="articleBackground">@android:color/transparent</item>
-		<item name="headlineSelectedBackground">@drawable/headline_row_selected</item>
-		<item name="headlineUnreadBackground">@drawable/headline_row_unread</item>
-		<item name="headlineNormalBackground">@drawable/headline_row</item>
+		<item name="headlineSelectedBackground">#88b0f0</item>
+		<item name="headlineUnreadBackground">@android:color/white</item>
+		<item name="headlineNormalBackground">#f5f5f5</item>
 		<item name="feedsSelectedBackground">#88b0f0</item>
 		<item name="feedlistTextColor">@android:color/primary_text_light</item>
 		<item name="feedlistSelectedTextColor">#ffffff</item>
@@ -41,9 +41,7 @@
 		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
 		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
-		<item name="headlineUnreadBackground">@drawable/headline_row_unread_sepia</item> <!-- #F2EAE8 -->
-		<item name="headlineNormalBackground">@drawable/headline_row_sepia</item>
-		<item name="headlineSelectedBackground">@drawable/headline_row_selected_sepia</item> <!-- #E5B0A0 -->
+		<item name="headlineSelectedBackground">#E5B0A0</item>
 		<item name="feedsSelectedBackground">#E5B0A0</item>
 		<item name="articleBackground">@drawable/paper_sepia</item>
 		<item name="unreadCounterBackground">@drawable/counter_background_sepia</item>
