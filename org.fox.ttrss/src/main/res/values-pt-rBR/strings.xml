@@ -148,7 +148,9 @@
     <string name="prefs_dim_status_bar">Ocultar barra de status</string>
     <string name="prefs_dim_status_bar_long">Ocultar barra de status durante a leitura</string>
     <string name="article_comments">%1$d comentários</string>
-    <string name="trial_mode_prompt">Modo de teste, resta(m) %1$d dia(s).</string>
+    <plurals name="trial_mode_prompt">
+        <item quantity="other">Modo de teste, resta(m) %1$d dia(s).</item>
+    </plurals>
     <string name="trial_purchase">Desbloquear a versão completa</string>
     <string name="trial_expired">Período de teste encerrado</string>
     <string name="trial_expired_message">Para continuar usando o Tiny Tiny RSS por favor desbloqueie a versão completa comprando a chave.</string>
@@ -195,9 +197,13 @@
     <string name="light_theme_is_not_supported_on_honeycomb">Tema claro não é suportado no Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Marcar como lida ao visualizar</string>
     <string name="pref_headlines_mark_read_scroll_long">Títulos serão marcados como lidos ao rodar depois deles</string>
-    <string name="mark_num_headlines_as_read">Marcar %1$d artigo(s) como lido(s)?</string>
+    <plurals name="mark_num_headlines_as_read">
+        <item quantity="other">Marcar %1$d artigo(s) como lido(s)?</item>
+    </plurals>
     <string name="prefs_confirm_headlines_catchup">Confirme marcação de artigos como lidos</string>
     <string name="author_formatted">por %1$s</string>
-    <string name="n_unread_articles">%1$d artigos não lidos</string>
+    <plurals name="n_unread_articles">
+        <item quantity="other">%1$d artigos não lidos</item>
+    </plurals>
     <string name="pref_headline_font_size">Tamanho do texto para os títulos</string>
 </resources>

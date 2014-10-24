@@ -526,10 +526,10 @@ public class OnlineActivity extends CommonActivity {
 				dialog.show();
 				
 			} else {
-				long daysLeft = Math.round((firstStart + (TRIAL_DAYS * 24 * 60 * 60 * 1000) - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+				int daysLeft = Math.round((firstStart + (TRIAL_DAYS * 24 * 60 * 60 * 1000) - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
 				
 				if (notify) {
-					toast(getString(R.string.trial_mode_prompt, Long.valueOf(daysLeft)));
+					toast(getResources().getQuantityString(R.plurals.trial_mode_prompt, daysLeft, daysLeft));
 				}
 			}
 		} else if (notify) {			
@@ -797,7 +797,7 @@ public class OnlineActivity extends CommonActivity {
 					if (confirm) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								OnlineActivity.this)
-								.setMessage(getString(R.string.mark_num_headlines_as_read, count))
+								.setMessage(getResources().getQuantityString(R.plurals.mark_num_headlines_as_read, count, count))
 								.setPositiveButton(R.string.catchup,
 										new Dialog.OnClickListener() {
 											public void onClick(DialogInterface dialog,

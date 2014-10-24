@@ -148,7 +148,10 @@
     <string name="prefs_dim_status_bar">Assombrir la barre de statut</string>
     <string name="prefs_dim_status_bar_long">Assombrir la barre de satut pendant la lecture</string>
     <string name="article_comments">%1$d commentaires</string>
-    <string name="trial_mode_prompt">Mode évaluation, %1$d jour(s) restant(s).</string>
+    <plurals name="trial_mode_prompt">
+        <item quantity="one">Mode évaluation, un seul jour restant.</item>
+        <item quantity="other">Mode évaluation, %1$d jours restants.</item>
+    </plurals>
     <string name="trial_purchase">Débloquer la version complète</string>
     <string name="trial_expired">La période d\'évaluation a expiré</string>
     <string name="trial_expired_message">Pour continuer à utiliser Tiny Tiny RSS merci de débloquer la version complète en achetant la clé.</string>
@@ -195,10 +198,17 @@
     <string name="light_theme_is_not_supported_on_honeycomb">Le thème clair n\'est pas supporté sur Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Automatiquement marquer les articles comme lus</string>
     <string name="pref_headlines_mark_read_scroll_long">Cette option permet de marquer automatiquement les articles comme lus lorsque vous naviguez dans la liste d\'articles.</string>
-    <string name="mark_num_headlines_as_read">Marquer %1$d article(s) comme lu(s) ?</string>
+    <plurals name="mark_num_headlines_as_read">
+        <item quantity="one">Marquer %1$d article comme lu ?</item>
+        <item quantity="other">Marquer %1$d articles comme lus ?</item>
+    </plurals>
     <string name="prefs_confirm_headlines_catchup">Confirmer marquer comme lu</string>
     <string name="author_formatted">par %1$s</string>
-    <string name="n_unread_articles">%1$d articles non lus</string>
+    <plurals name="n_unread_articles">
+        <item quantity="zero">Aucun article non lu</item>
+        <item quantity="one">Un article non lu</item>
+        <item quantity="other">%1$d articles non lus</item>
+    </plurals>
     <string name="pref_headline_font_size">Taille du texte des titres</string>
 
     <string name="context_confirm_catchup">Marquer tous les articles de %1$s comme lus ?</string>

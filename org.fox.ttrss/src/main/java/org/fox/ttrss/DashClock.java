@@ -56,7 +56,7 @@ public class DashClock extends DashClockExtension {
 											updatedData.icon(R.drawable.dashclock);
 											updatedData.status(String.valueOf(unread));
 						
-											updatedData.expandedTitle(getString(R.string.n_unread_articles, unread));
+											updatedData.expandedTitle(getResources().getQuantityString(R.plurals.n_unread_articles, unread, unread));
 											//updatedData.expandedBody(getString(R.string.app_name));
 						
 											updatedData.clickIntent(new Intent().setClassName("org.fox.ttrss",
