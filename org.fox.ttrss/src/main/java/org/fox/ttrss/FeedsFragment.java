@@ -433,7 +433,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				if (result != null) {
 
 					try {
-						JsonElement iconsUrl = result.getAsJsonObject().get("icons_dir");
+						JsonElement iconsUrl = result.getAsJsonObject().get("icons_url");
 
 						if (iconsUrl != null) {
 							String iconsStr = iconsUrl.getAsString();
