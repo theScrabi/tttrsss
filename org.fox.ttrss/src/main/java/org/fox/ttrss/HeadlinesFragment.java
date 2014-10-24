@@ -13,7 +13,6 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
-import org.fox.ttrss.util.RecyclerArrayAdapter;
 import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,8 +33,6 @@ import android.preference.PreferenceManager;
 import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -64,7 +61,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-public class HeadlinesFragment extends Fragment {
+public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
 
 	public static final int HEADLINES_REQUEST_SIZE = 30;
@@ -317,59 +314,34 @@ public class HeadlinesFragment extends Fragment {
 	    }
 
 		
-		final RecyclerView list = (RecyclerView)view.findViewById(R.id.headlines);
-
-        m_adapter = new ArticleListAdapter(m_articles);
-
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+		ListView list = (ListView)view.findViewById(R.id.headlines);		
+		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
+		
+		/* if (!m_activity.isCompatMode()) {
+			AnimationSet set = new AnimationSet(true);
+	
+		    Animation animation = new AlphaAnimation(0.0f, 1.0f);
+		    animation.setDuration(500);
+		    set.addAnimation(animation);
+	
+		    animation = new TranslateAnimation(
+		        Animation.RELATIVE_TO_SELF, 50.0f,Animation.RELATIVE_TO_SELF, 0.0f,
+		        Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f
+		    );
+		    animation.setDuration(1000);
+		    set.addAnimation(animation);
+	
+		    LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
+	
+		    list.setLayoutAnimation(controller);
+		} */
+		
 		list.setAdapter(m_adapter);
+		list.setOnItemClickListener(this);
+		list.setOnScrollListener(this);
+		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
-
-        list.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
-                    Log.d(TAG, "scroll ended!");
-
-                    if (!m_readArticles.isEmpty()) {
-                        m_activity.toggleArticlesUnread(m_readArticles);
-                        m_activity.refresh(false);
-                        m_readArticles.clear();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-                int visibleItemCount = layoutManager.findLastCompletelyVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() + 1;
-
-                Log.d(TAG, "fvI= " + firstVisibleItem + " vIC=" + visibleItemCount);
-
-                if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
-                    refresh(true);
-                }
-
-                if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0 && !m_autoCatchupDisabled) {
-                    Article a = m_articles.get(firstVisibleItem - 1);
-
-                    if (a != null && a.unread) {
-                        a.unread = false;
-                        m_readArticles.add(a);
-                        m_feed.unread--;
-                    }
-                }
-
-            }
-        });
-
+		
 		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 
 		//if (m_activity.isSmallScreen())
@@ -413,7 +385,7 @@ public class HeadlinesFragment extends Fragment {
 		m_listener = (HeadlinesEventListener) activity;
 	}
 
-	/* @Override
+	@Override
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
 		ListView list = (ListView)av;
 		
@@ -432,7 +404,7 @@ public class HeadlinesFragment extends Fragment {
 				m_adapter.notifyDataSetChanged();
 			}
 		}
-	} */
+	}
 
 	public void refresh(boolean append) {
 		refresh(append, false);	
@@ -454,11 +426,11 @@ public class HeadlinesFragment extends Fragment {
 			if (!append) {
 				if (getView() != null) {
 					Log.d(TAG, "scroll hack");
-					RecyclerView list = (RecyclerView) getView().findViewById(R.id.headlines);
+					ListView list = (ListView)getView().findViewById(R.id.headlines);
 					m_autoCatchupDisabled = true;
-					//list.setSelection(0);
+					list.setSelection(0);
 					m_autoCatchupDisabled = false;
-					//list.setEmptyView(null);
+					list.setEmptyView(null);
 					m_adapter.clear();
 					m_adapter.notifyDataSetChanged();
 				}
@@ -478,13 +450,13 @@ public class HeadlinesFragment extends Fragment {
 				protected void onPostExecute(JsonElement result) {
 					if (isDetached()) return;
 					
-					/* if (getView() != null) {
+					if (getView() != null) {
 						ListView list = (ListView)getView().findViewById(R.id.headlines);
 					
 						if (list != null) {
 							list.setEmptyView(getView().findViewById(R.id.no_headlines));
 						}
-					} */
+					}
 					
 					m_activity.setProgressBarVisibility(false);
 					
@@ -679,8 +651,23 @@ public class HeadlinesFragment extends Fragment {
 		}
 	} */
 	
-	private class ArticleListAdapter extends RecyclerArrayAdapter<Article, RecyclerView.ViewHolder> {
-		//private ArrayList<Article> items;
+	static class HeadlineViewHolder {
+		public TextView titleView;
+		public TextView feedTitleView;
+		public ImageView markedView;
+		public ImageView publishedView;
+		public TextView excerptView;
+		public ImageView flavorImageView;
+		public TextView authorView;
+		public TextView dateView;
+		public CheckBox selectionBoxView;
+		public ImageView menuButtonView;
+		public ViewGroup flavorImageHolder;
+		
+	}
+	
+	private class ArticleListAdapter extends ArrayAdapter<Article> {
+		private ArrayList<Article> items;
 		
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
@@ -693,7 +680,7 @@ public class HeadlinesFragment extends Fragment {
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
 
-		/* public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
+		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 
@@ -701,106 +688,15 @@ public class HeadlinesFragment extends Fragment {
 			TypedValue tv = new TypedValue();
 			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
 			titleHighScoreUnreadColor = tv.data;
-		} */
-
-        public class HeadlineViewHolder extends RecyclerView.ViewHolder {
-            public TextView titleView;
-            public TextView feedTitleView;
-            public ImageView markedView;
-            public ImageView publishedView;
-            public TextView excerptView;
-            public ImageView flavorImageView;
-            public TextView authorView;
-            public TextView dateView;
-            public CheckBox selectionBoxView;
-            public ImageView menuButtonView;
-            public ViewGroup flavorImageHolder;
-            public View headlineView;
-
-            public HeadlineViewHolder(View v) {
-                super(v);
-
-                titleView = (TextView)v.findViewById(R.id.title);
-                feedTitleView = (TextView)v.findViewById(R.id.feed_title);
-                markedView = (ImageView)v.findViewById(R.id.marked);
-                publishedView = (ImageView)v.findViewById(R.id.published);
-                excerptView = (TextView)v.findViewById(R.id.excerpt);
-                flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-                authorView = (TextView)v.findViewById(R.id.author);
-                dateView = (TextView) v.findViewById(R.id.date);
-                selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
-                menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
-                flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
-                headlineView = v;
-            }
-        }
-
-
-        // Create new views (invoked by the layout manager)
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
-            /* // create a new view
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.my_text_view, parent, false);
-            // set the view's size, margins, paddings and layout parameters
-            ...
-            ViewHolder vh = new ViewHolder(v);
-            return vh; */
-
-            int layoutId = R.layout.headlines_row;
-
-            switch (viewType) {
-                case VIEW_LOADMORE:
-                    layoutId = R.layout.headlines_row_loadmore;
-                    break;
-                case VIEW_UNREAD:
-                    layoutId = R.layout.headlines_row_unread;
-                    break;
-                case VIEW_SELECTED:
-                    layoutId = R.layout.headlines_row_selected;
-                    break;
-                case VIEW_SELECTED_UNREAD:
-                    layoutId = R.layout.headlines_row_selected_unread;
-                    break;
-            }
-
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(layoutId, parent, false);
-
-            ((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-
-            HeadlineViewHolder vh = new HeadlineViewHolder(v);
-
-            return vh;
-        }
-
-        /* @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            HeadlineViewHolder avh = (HeadlineViewHolder) holder;
-
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
-            //holder.mTextView.setText(mDataset[position]);
-
-        } */
-
-        public ArticleListAdapter(ArrayList<Article> items) {
-            super(items);
-
-            Theme theme = getActivity().getTheme();
-            TypedValue tv = new TypedValue();
-            theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
-            titleHighScoreUnreadColor = tv.data;
-        }
-
+		}
+		
 		public int getViewTypeCount() {
 			return VIEW_COUNT;
 		}
 
 		@Override
 		public int getItemViewType(int position) {
-			Article a = m_items.get(position);
+			Article a = items.get(position);
 			
 			if (a.id == -1) {
 				return VIEW_LOADMORE;
@@ -815,32 +711,61 @@ public class HeadlinesFragment extends Fragment {
 			}			
 		}
 
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
 
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder h, final int position) {
-            HeadlineViewHolder holder = (HeadlineViewHolder) h;
-			final Article article = m_items.get(position);
-
+			View v = convertView;
+			
+			final Article article = items.get(position);
+			HeadlineViewHolder holder;
+			
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
+			
+			if (v == null) {
+				int layoutId = R.layout.headlines_row;
+				
+				switch (getItemViewType(position)) {
+				case VIEW_LOADMORE:
+					layoutId = R.layout.headlines_row_loadmore;
+					break;
+				case VIEW_UNREAD:
+					layoutId = R.layout.headlines_row_unread;
+					break;
+				case VIEW_SELECTED:
+					layoutId = R.layout.headlines_row_selected;
+					break;
+				case VIEW_SELECTED_UNREAD:
+					layoutId = R.layout.headlines_row_selected_unread;
+					break;
+				}
+				
+				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = vi.inflate(layoutId, null);
 
-            holder.headlineView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (article.id >= 0) {
-                        m_listener.onArticleSelected(article);
+				holder = new HeadlineViewHolder();
+				holder.titleView = (TextView)v.findViewById(R.id.title);
 
-                        // only set active article when it makes sense (in HeadlinesActivity)
-                        if (getActivity().findViewById(R.id.article_fragment) != null) {
-                            m_activeArticle = article;
-                        }
-
-                        m_adapter.notifyDataSetChanged();
-                    }
-                }
-            });
-
-            if (holder.titleView != null) {
+				holder.feedTitleView = (TextView)v.findViewById(R.id.feed_title);
+				holder.markedView = (ImageView)v.findViewById(R.id.marked);
+				holder.publishedView = (ImageView)v.findViewById(R.id.published);
+				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
+				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+				holder.authorView = (TextView)v.findViewById(R.id.author);
+				holder.dateView = (TextView) v.findViewById(R.id.date);
+				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
+				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
+				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
+				
+				v.setTag(holder);
+				
+				// http://code.google.com/p/android/issues/detail?id=3414
+				((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+			} else {
+				holder = (HeadlineViewHolder) v.getTag();
+			}
+			
+			if (holder.titleView != null) {				
 				holder.titleView.setText(Html.fromHtml(article.title));
 				
 				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
@@ -1057,6 +982,8 @@ public class HeadlinesFragment extends Fragment {
 					}
 				});								
 			}
+			
+			return v;
 		}
 
 		private void adjustTitleTextView(int score, TextView tv, int position) {
@@ -1140,7 +1067,7 @@ public class HeadlinesFragment extends Fragment {
 		return tmp;
 	}
 
-	/* @Override
+	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
@@ -1166,7 +1093,7 @@ public class HeadlinesFragment extends Fragment {
 				m_readArticles.clear();
 			}
 		}
-	} */
+	}
 
 	public Article getActiveArticle() {
 		return m_activeArticle;

@@ -152,11 +152,11 @@ public class OnlineActivity extends CommonActivity {
 
 		setAppTheme(m_prefs);
 
-        if (canUseProgress()) {
-            requestWindowFeature(Window.FEATURE_PROGRESS);
-        }
+		super.onCreate(savedInstanceState);
 
-        super.onCreate(savedInstanceState);
+		if (canUseProgress()) {
+			requestWindowFeature(Window.FEATURE_PROGRESS);
+		}
 
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
