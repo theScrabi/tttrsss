@@ -338,8 +338,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		list.setOnScrollListener(this);
 		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
-		
-		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
+
+        if (m_activity.isSmallScreen()) {
+            m_activity.setTitle(m_feed.title);
+        }
+
+        //m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 
 		//if (m_activity.isSmallScreen())
 		//view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
@@ -373,7 +377,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		m_activity.initMenu();
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

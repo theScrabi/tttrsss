@@ -1,15 +1,6 @@
 package org.fox.ttrss;
 
 
-import java.util.Date;
-import java.util.HashMap;
-
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.types.FeedCategory;
-import org.fox.ttrss.util.AppRater;
-
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -20,15 +11,20 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.google.gson.JsonElement;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.util.AppRater;
+
+import java.util.Date;
+import java.util.HashMap;
 
 public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -96,8 +92,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 						refresh(false);
 					}
-					
-					m_feedIsSelected = false;
+
+                    setTitle(R.string.app_name);
+
+                    m_feedIsSelected = false;
 					initMenu();
 				}
 			});
