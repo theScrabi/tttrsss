@@ -1,13 +1,8 @@
-<android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    card_view:cardElevation="2dp"
-    card_view:cardBackgroundColor="?articleBackground"
-    tools:ignore="HardcodedText" >
+    android:layout_height="match_parent"
+    android:background="?articleBackground">
 
     <org.fox.ttrss.util.NoChildFocusScrollView
         android:id="@+id/article_scrollview"
@@ -105,4 +100,4 @@
     </org.fox.ttrss.util.NoChildFocusScrollView>
 
 
-</android.support.v7.widget.CardView>
+</RelativeLayout>
