@@ -78,6 +78,12 @@
                 android:paddingBottom="4dp"
                 android:layout_span="2">
 
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/flavorImageLoadingBar" />
+
                 <org.fox.ttrss.util.EnlargingImageView
                     android:id="@+id/flavor_image"
                     android:layout_width="match_parent"

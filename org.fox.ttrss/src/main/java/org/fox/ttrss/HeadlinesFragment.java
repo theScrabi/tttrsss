@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
@@ -43,6 +44,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -666,7 +668,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public CheckBox selectionBoxView;
 		public ImageView menuButtonView;
 		public ViewGroup flavorImageHolder;
-		
+		public ProgressBar flavorImageLoadingBar;
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -759,6 +761,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
 				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
 				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
+                holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
 				
 				v.setTag(holder);
 				
@@ -854,16 +857,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
-			
-			
 			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
-				holder.flavorImageView.setVisibility(View.GONE);
-                holder.flavorImageHolder.setVisibility(View.GONE);
-
 				Document doc = Jsoup.parse(articleContent);
+
+                boolean loadableImageFound = false;
 				
-					Element img = doc.select("img").first();
-					if (doc != null) {
+    			if (doc != null) {
+                    Element img = doc.select("img").first();
 
 					if (img != null) {
 						String imgSrc = img.attr("src");
@@ -878,11 +878,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								.cacheOnDisk(true)
 								.build();
 						
-						final ImageView flavorImageView = holder.flavorImageView;
                         final ViewGroup flavorImageHolder = holder.flavorImageHolder;
+                        final ImageView flavorImageView = holder.flavorImageView;
+                        final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
 
                         ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
+                        flavorImageHolder.setVisibility(View.VISIBLE);
+
+                        final boolean weNeedAnimation =  MemoryCacheUtils.findCachedBitmapsForImageUri(imgSrc, ImageLoader.getInstance().getMemoryCache()).size() == 0;
+
+                        loadableImageFound = true;
 						ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
 
 							@Override
@@ -898,27 +904,29 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								// TODO Auto-generated method stub
 								
 								if (!isAdded() || arg2 == null) return;
-								
+
+                                flavorImageLoadingBar.setVisibility(View.INVISIBLE);
+
 								if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
-									if (arg0 != null && !arg0.equals(arg1.getTag())) {
-										if (!m_activity.isCompatMode() && flavorImageView.getVisibility() != View.VISIBLE) {
-											ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
-											anim.setDuration(500);
-											anim.start();
-										}
-									}
-									
-									flavorImageView.setTag(arg0);
-                                    flavorImageHolder.setVisibility(View.VISIBLE);
-									flavorImageView.setVisibility(View.VISIBLE);
-								}
+                                    if (!m_activity.isCompatMode() && weNeedAnimation) {
+
+                                        ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
+                                        anim.setDuration(200);
+                                        anim.start();
+
+                                    }
+                                    //flavorImageHolder.setVisibility(View.VISIBLE);
+								} else {
+                                    flavorImageHolder.setVisibility(View.GONE);
+                                }
 							}
 
 							@Override
 							public void onLoadingFailed(String arg0,
 									View arg1, FailReason arg2) {
 								// TODO Auto-generated method stub
-							}
+                                flavorImageHolder.setVisibility(View.GONE);
+                            }
 
 							@Override
 							public void onLoadingStarted(String arg0,
@@ -928,10 +936,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							}
 							
 						});
-					}
-					
-				}				
-			} else if (holder.flavorImageHolder != null) {
+                    }
+				}
+
+                if (!loadableImageFound) {
+                    holder.flavorImageHolder.setVisibility(View.GONE);
+                }
+			} else {
 				holder.flavorImageHolder.setVisibility(View.GONE);
 			}
 			
