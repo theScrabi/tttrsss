@@ -75,7 +75,7 @@
                 android:id="@+id/flavorImageHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingBottom="4dp"
                 android:layout_span="2">
 
                 <org.fox.ttrss.util.EnlargingImageView
@@ -84,10 +84,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/flavor_image_border"
                     android:scaleType="fitCenter"
                     android:cropToPadding="true"
-                    android:padding="2dp"
                     android:visibility="visible" />
             </FrameLayout>
         </TableRow>

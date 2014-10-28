@@ -40,6 +40,8 @@ import com.google.gson.JsonElement;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.fox.ttrss.types.Article;
@@ -870,15 +872,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (imgSrc.indexOf("//") == 0)
 							imgSrc = "http:" + imgSrc;
 						
-						DisplayImageOptions options = new DisplayImageOptions.Builder().
-								cacheInMemory(true).
-								cacheOnDisk(true).
-								build();
+						DisplayImageOptions options = new DisplayImageOptions.Builder()
+								.cacheInMemory(true)
+                                .resetViewBeforeLoading(true)
+								.cacheOnDisk(true)
+								.build();
 						
 						final ImageView flavorImageView = holder.flavorImageView;
                         final ViewGroup flavorImageHolder = holder.flavorImageHolder;
-						
-						ImageLoader.getInstance().displayImage(imgSrc, holder.flavorImageView, options, new ImageLoadingListener() {
+
+                        ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+
+						ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
 
 							@Override
 							public void onLoadingCancelled(String arg0,
