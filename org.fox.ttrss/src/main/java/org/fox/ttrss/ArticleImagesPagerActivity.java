@@ -199,6 +199,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         if (m_prefs.getBoolean("full_screen_mode", false)) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getSupportActionBar().hide();
         }
     }
 
