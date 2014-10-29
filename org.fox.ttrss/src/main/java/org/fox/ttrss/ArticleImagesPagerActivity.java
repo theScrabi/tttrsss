@@ -40,7 +40,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
 
-    private class ArticleImagesPagerAdapter extends PagerAdapter implements View.OnClickListener {
+    private class ArticleImagesPagerAdapter extends PagerAdapter {
         private List<String> m_urls;
 
         public ArticleImagesPagerAdapter(List<String> urls) {
@@ -74,7 +74,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
             View view = inflater.inflate(R.layout.article_images_image, null);
 
             ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
-            imgView.setOnClickListener(this);
+            //imgView.setOnClickListener(this);
 
             registerForContextMenu(imgView);
 
@@ -132,7 +132,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
             container.removeView((FrameLayout)object);
         }
 
-        @Override
+        /* @Override
         public void onClick(View view) {
             String url = (String) view.getTag();
 
@@ -147,7 +147,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                 }
 
             }
-        }
+        } */
     }
 
     @Override
