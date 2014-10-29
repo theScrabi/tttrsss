@@ -1,12 +1,5 @@
 package org.fox.ttrss.offline;
 
-import org.fox.ttrss.CommonActivity;
-import org.fox.ttrss.PreferencesActivity;
-import org.fox.ttrss.R;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,6 +25,13 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.PreferencesActivity;
+import org.fox.ttrss.R;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -169,9 +169,9 @@ public class OfflineActivity extends CommonActivity {
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		setAppTheme(m_prefs);
-		
+
 		super.onCreate(savedInstanceState);
-		
+
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 
 		setProgressBarVisibility(false);

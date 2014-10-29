@@ -465,7 +465,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 					
 					m_activity.setProgressBarVisibility(false);
-					
+
 					super.onPostExecute(result);	
 
 					if (isAdded()) {
@@ -670,7 +670,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView menuButtonView;
 		public ViewGroup flavorImageHolder;
 		public ProgressBar flavorImageLoadingBar;
-        public TextView flavorImageMore;
+        public View flavorImageArrow;
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -764,7 +764,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
 				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
-                holder.flavorImageMore = (TextView) v.findViewById(R.id.flavorImageMore);
+                holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
 				
 				v.setTag(holder);
 				
@@ -860,10 +860,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
-            if (holder.flavorImageMore != null) {
-                holder.flavorImageMore.setVisibility(View.GONE);
-            }
-
 			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
 				Document doc = Jsoup.parse(articleContent);
 
@@ -872,7 +868,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     			if (doc != null) {
                     //Element img = doc.select("img").first();
 
-                    Elements imgs = doc.select("img");
+                    final Elements imgs = doc.select("img");
                     Element img = imgs.first();
 
 					if (img != null) {
@@ -887,7 +883,32 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                 .resetViewBeforeLoading(true)
 								.cacheOnDisk(true)
 								.build();
-						
+
+                        holder.flavorImageView.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ArrayList<String> imgsList = new ArrayList<String>();
+
+                                for (Element img : imgs) {
+                                    String imgSrc = img.attr("src");
+
+                                    if (imgSrc.indexOf("//") == 0)
+                                        imgSrc = "http:" + imgSrc;
+
+                                    imgsList.add(imgSrc);
+                                }
+
+                                Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+                                intent.putExtra("urls", imgsList);
+                                intent.putExtra("title", article.title);
+
+                                startActivityForResult(intent, 0);
+                                m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
+
+
+                            }
+                        });
+
                         final ViewGroup flavorImageHolder = holder.flavorImageHolder;
                         final ImageView flavorImageView = holder.flavorImageView;
                         final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
@@ -896,9 +917,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                         flavorImageHolder.setVisibility(View.VISIBLE);
 
-                        if (imgs.size() > 1 && holder.flavorImageMore != null) {
-                            holder.flavorImageMore.setVisibility(View.VISIBLE);
-                            holder.flavorImageMore.setText(getString(R.string.flavor_image_more, imgs.size()-1));
+                        if (imgs.size() > 1 && holder.flavorImageArrow != null) {
+                            holder.flavorImageArrow.setVisibility(View.VISIBLE);
                         }
 
                         final boolean weNeedAnimation =  MemoryCacheUtils.findCachedBitmapsForImageUri(imgSrc, ImageLoader.getInstance().getMemoryCache()).size() == 0;
