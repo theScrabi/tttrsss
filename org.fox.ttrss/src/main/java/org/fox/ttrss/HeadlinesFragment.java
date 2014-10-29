@@ -905,7 +905,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                 intent.putExtra("title", article.title);
 
                                 startActivityForResult(intent, 0);
-                                m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
+                                //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
 
 
                             }
