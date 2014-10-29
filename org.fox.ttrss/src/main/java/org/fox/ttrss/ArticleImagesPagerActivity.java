@@ -1,10 +1,12 @@
 package org.fox.ttrss;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -149,12 +152,17 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // we use that before parent onCreate so let's init locally
+        m_prefs = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
 
         setTheme(R.style.DarkTheme);
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.article_images_pager);
+
+        setStatusBarTint();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -178,6 +186,22 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         UnderlinePageIndicator indicator = (UnderlinePageIndicator)findViewById(R.id.article_images_indicator);
         indicator.setViewPager(pager);
     }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        /* if (isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        } */
+
+        if (m_prefs.getBoolean("full_screen_mode", false)) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -214,6 +238,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return onContextItemSelected(item); // this is really bad :()
     }
+
 
     @Override
     public boolean onContextItemSelected(android.view.MenuItem item) {
