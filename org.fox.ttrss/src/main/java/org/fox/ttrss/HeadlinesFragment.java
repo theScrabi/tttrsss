@@ -54,6 +54,7 @@ import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -669,6 +670,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView menuButtonView;
 		public ViewGroup flavorImageHolder;
 		public ProgressBar flavorImageLoadingBar;
+        public TextView flavorImageMore;
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -762,6 +764,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
 				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
+                holder.flavorImageMore = (TextView) v.findViewById(R.id.flavorImageMore);
 				
 				v.setTag(holder);
 				
@@ -857,13 +860,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
+            if (holder.flavorImageMore != null) {
+                holder.flavorImageMore.setVisibility(View.GONE);
+            }
+
 			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
 				Document doc = Jsoup.parse(articleContent);
 
                 boolean loadableImageFound = false;
 				
     			if (doc != null) {
-                    Element img = doc.select("img").first();
+                    //Element img = doc.select("img").first();
+
+                    Elements imgs = doc.select("img");
+                    Element img = imgs.first();
 
 					if (img != null) {
 						String imgSrc = img.attr("src");
@@ -885,6 +895,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
                         flavorImageHolder.setVisibility(View.VISIBLE);
+
+                        if (imgs.size() > 1 && holder.flavorImageMore != null) {
+                            holder.flavorImageMore.setVisibility(View.VISIBLE);
+                            holder.flavorImageMore.setText(getString(R.string.flavor_image_more, imgs.size()-1));
+                        }
 
                         final boolean weNeedAnimation =  MemoryCacheUtils.findCachedBitmapsForImageUri(imgSrc, ImageLoader.getInstance().getMemoryCache()).size() == 0;
 
@@ -939,10 +954,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     }
 				}
 
-                if (!loadableImageFound) {
+                if (!loadableImageFound && holder.flavorImageHolder != null) {
                     holder.flavorImageHolder.setVisibility(View.GONE);
                 }
-			} else {
+			} else if (holder.flavorImageHolder != null) {
 				holder.flavorImageHolder.setVisibility(View.GONE);
 			}
 			

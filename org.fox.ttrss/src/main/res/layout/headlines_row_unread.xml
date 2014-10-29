@@ -94,6 +94,14 @@
                     android:scaleType="fitCenter"
                     android:cropToPadding="true"
                     android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(5 more)"
+                    android:alpha="0.5"
+                    android:layout_gravity="bottom|right"
+                    android:id="@+id/flavorImageMore" />
             </FrameLayout>
         </TableRow>
 

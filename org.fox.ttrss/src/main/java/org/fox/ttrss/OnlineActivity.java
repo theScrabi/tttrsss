@@ -1,22 +1,5 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-
-import org.fox.ttrss.offline.OfflineActivity;
-import org.fox.ttrss.offline.OfflineDownloadService;
-import org.fox.ttrss.offline.OfflineUploadService;
-import org.fox.ttrss.share.SubscribeActivity;
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.types.Label;
-import org.fox.ttrss.widget.SmallWidgetProvider;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,8 +34,28 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.cache.disc.impl.LimitedAgeDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
+import org.fox.ttrss.offline.OfflineActivity;
+import org.fox.ttrss.offline.OfflineDownloadService;
+import org.fox.ttrss.offline.OfflineUploadService;
+import org.fox.ttrss.share.SubscribeActivity;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.Label;
+import org.fox.ttrss.widget.SmallWidgetProvider;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
 
 public class OnlineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -175,10 +178,16 @@ public class OnlineActivity extends CommonActivity {
 
         setStatusBarTint();
 
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .diskCache(
+                        new LimitedAgeDiscCache(new File(StorageUtils.getCacheDirectory(getApplicationContext()), "article-images"),
+                        2*24*60*60)) // 2 days
+                .build();
 		ImageLoader.getInstance().init(config);
-		ImageLoader.getInstance().clearDiskCache();
-		
+		//ImageLoader.getInstance().clearDiskCache();
+
+
+
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
 		if (isOffline) {
