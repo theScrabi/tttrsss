@@ -239,7 +239,6 @@
     <string name="pref_headlines_full_content">Show full content</string>
     <string name="prefs_headlines_show_flavor_image">Show article image</string>
     <string name="flavor_image_more">(%1$d more)</string>
-    <string name="title_activity_article_images_pager">ArticleImagesPagerActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="error_loading_image">Error loading image.</string>
