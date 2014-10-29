@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<String> m_urls;
+    private ArrayList<String> m_checkedUrls;
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
 
@@ -83,8 +86,6 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                     .displayer(new FadeInBitmapDisplayer(200))
                     .build();
 
-            //ImageAware imageAware = new ImageViewAware(imgView, false);
-
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
             final View errorMessage = view.findViewById(R.id.flavor_image_error);
 
@@ -103,13 +104,6 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                     if (bitmap != null) {
-                        /* if (bitmap.getWidth() < 128 || bitmap.getHeight() < 128) {
-                            view.setVisibility(View.INVISIBLE);
-                            errorMessage.setVisibility(View.VISIBLE);
-                        } else {
-                            view.setTag(s);
-                        } */
-
                         view.setTag(s);
                     }
 
@@ -131,23 +125,58 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((FrameLayout)object);
         }
+    }
 
-        /* @Override
-        public void onClick(View view) {
-            String url = (String) view.getTag();
+    private class ImageCheckTask extends AsyncTask<List<String>, String, Integer> {
+        @Override
+        protected Integer doInBackground(List<String>... urls) {
+            int position = 0;
 
-            if (url != null) {
-                Log.d(TAG, "click to open:" + url);
+            for (String url : urls[0]) {
+                if (!isCancelled()) {
+                    position++;
 
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    //Log.d(TAG, "checking: " + url);
+
+                    DisplayImageOptions options = new DisplayImageOptions.Builder()
+                            .cacheInMemory(true)
+                            .cacheOnDisk(true)
+                            .build();
+
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, options);
+
+                    int progress = (int) ((position / (float)urls[0].size()) * 10000);
+
+                    if (bmp != null && bmp.getWidth() > 128 && bmp.getHeight() > 128) {
+                        publishProgress(url, String.valueOf(progress));
+                    } else {
+                        publishProgress(null, String.valueOf(progress));
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... checkedUrl) {
+
+            if (!isFinishing() && m_adapter != null) {
+                if (checkedUrl[0] != null) {
+                    m_checkedUrls.add(checkedUrl[0]);
+                    m_adapter.notifyDataSetChanged();
                 }
 
+                setProgress(Integer.valueOf(checkedUrl[1]));
+            } else {
+                cancel(true);
             }
-        } */
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            //
+        }
     }
 
     @Override
@@ -155,6 +184,11 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         // we use that before parent onCreate so let's init locally
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
+
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        setProgressBarVisibility(false);
+        setProgressBarIndeterminateVisibility(false);
 
         setAppTheme(m_prefs);
 
@@ -167,18 +201,28 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-            m_urls = getIntent().getStringArrayListExtra("urls");
             m_title = getIntent().getStringExtra("title");
+            m_urls = getIntent().getStringArrayListExtra("urls");
         } else {
             m_urls = savedInstanceState.getStringArrayList("urls");
             m_title = savedInstanceState.getString("title");
         }
 
+        m_checkedUrls = new ArrayList<String>();
+
+        if (m_urls.size() > 1) {
+            ArrayList<String> tmp = new ArrayList<String>(m_urls);
+
+            m_checkedUrls.add(tmp.get(0));
+            tmp.remove(0);
+
+            ImageCheckTask ict = new ImageCheckTask();
+            ict.execute(tmp);
+        }
+
         setTitle(m_title);
 
-        Log.d(TAG, "urls size: " + m_urls.size());
-
-        m_adapter = new ArticleImagesPagerAdapter(m_urls);
+        m_adapter = new ArticleImagesPagerAdapter(m_checkedUrls);
 
         ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
         pager.setAdapter(m_adapter);
