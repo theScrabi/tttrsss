@@ -208,9 +208,10 @@ public class ArticleImagesPagerActivity extends CommonActivity {
             m_title = savedInstanceState.getString("title");
         }
 
-        m_checkedUrls = new ArrayList<String>();
 
         if (m_urls.size() > 1) {
+            m_checkedUrls = new ArrayList<String>();
+
             ArrayList<String> tmp = new ArrayList<String>(m_urls);
 
             m_checkedUrls.add(tmp.get(0));
@@ -218,6 +219,8 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
             ImageCheckTask ict = new ImageCheckTask();
             ict.execute(tmp);
+        } else {
+            m_checkedUrls = new ArrayList<String>(m_urls);
         }
 
         setTitle(m_title);
