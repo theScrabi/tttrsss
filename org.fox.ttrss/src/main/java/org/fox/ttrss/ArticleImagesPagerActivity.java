@@ -62,7 +62,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
+        public Object instantiateItem(ViewGroup container, int position) {
             String url = m_urls.get(position);
 
             Log.d(TAG, "called for URL: " + url);
@@ -103,12 +103,14 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                     if (bitmap != null) {
-                        if (bitmap.getWidth() < 128 || bitmap.getHeight() < 128) {
+                        /* if (bitmap.getWidth() < 128 || bitmap.getHeight() < 128) {
                             view.setVisibility(View.INVISIBLE);
                             errorMessage.setVisibility(View.VISIBLE);
                         } else {
                             view.setTag(s);
-                        }
+                        } */
+
+                        view.setTag(s);
                     }
 
                     progressBar.setVisibility(View.GONE);
