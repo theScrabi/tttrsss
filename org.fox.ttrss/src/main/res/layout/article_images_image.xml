@@ -23,7 +23,8 @@
         android:id="@+id/flavor_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
+        android:scaleType="centerInside"
         android:visibility="visible" />
 </FrameLayout>

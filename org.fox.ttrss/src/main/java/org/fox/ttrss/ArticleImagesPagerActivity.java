@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,11 +30,12 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleImagesPagerActivity extends ActionBarActivity {
+public class ArticleImagesPagerActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<String> m_urls;
     private String m_title;
+    private ArticleImagesPagerAdapter m_adapter;
 
     private class ArticleImagesPagerAdapter extends PagerAdapter implements View.OnClickListener {
         private List<String> m_urls;
@@ -69,6 +72,8 @@ public class ArticleImagesPagerActivity extends ActionBarActivity {
 
             ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
             imgView.setOnClickListener(this);
+
+            registerForContextMenu(imgView);
 
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
@@ -165,15 +170,27 @@ public class ArticleImagesPagerActivity extends ActionBarActivity {
 
         Log.d(TAG, "urls size: " + m_urls.size());
 
-        ArticleImagesPagerAdapter adapter = new ArticleImagesPagerAdapter(m_urls);
+        m_adapter = new ArticleImagesPagerAdapter(m_urls);
 
         ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
-
-        pager.setAdapter(adapter);
+        pager.setAdapter(m_adapter);
 
         UnderlinePageIndicator indicator = (UnderlinePageIndicator)findViewById(R.id.article_images_indicator);
         indicator.setViewPager(pager);
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+        getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+
+        // not supported here yet
+        menu.findItem(R.id.article_img_view_caption).setVisible(false);
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle out) {
@@ -183,22 +200,101 @@ public class ArticleImagesPagerActivity extends ActionBarActivity {
         out.putString("title", m_title);
     }
 
-    /* @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.article_images_pager, menu);
+        getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+
+        // not supported here yet
+        menu.findItem(R.id.article_img_view_caption).setVisible(false);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        return onContextItemSelected(item); // this is really bad :()
+    }
+
+    @Override
+    public boolean onContextItemSelected(android.view.MenuItem item) {
+        ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
+        String url = null;
+
+        if (pager != null) {
+            int currentItem = pager.getCurrentItem();
+            url = m_urls.get(currentItem);
         }
-        return super.onOptionsItemSelected(item);
-    } */
+
+        switch (item.getItemId()) {
+            case R.id.article_img_open:
+                if (url != null) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(url));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        toast(R.string.error_other_error);
+                    }
+                }
+                return true;
+            case R.id.article_img_copy:
+                if (url != null) {
+                    copyToClipboard(url);
+                }
+                return true;
+            case R.id.article_img_share:
+                if (url != null) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+
+                    intent.setType("image/png");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, url);
+                    intent.putExtra(Intent.EXTRA_TEXT, url);
+
+                    startActivity(Intent.createChooser(intent, url));
+                }
+                return true;
+            // TODO: this needs access to article text, I'm afraid
+            /* case R.id.article_img_view_caption:
+                if (url != null) {
+
+                    // Android doesn't give us an easy way to access title tags;
+                    // we'll use Jsoup on the body text to grab the title text
+                    // from the first image tag with this url. This will show
+                    // the wrong text if an image is used multiple times.
+                    Document doc = Jsoup.parse(ap.getSelectedArticle().content);
+                    Elements es = doc.getElementsByAttributeValue("src", url);
+                    if (es.size() > 0) {
+                        if (es.get(0).hasAttr("title")) {
+                            Dialog dia = new Dialog(this);
+                            if (es.get(0).hasAttr("alt")) {
+                                dia.setTitle(es.get(0).attr("alt"));
+                            } else {
+                                dia.setTitle(es.get(0).attr("title"));
+                            }
+                            TextView titleText = new TextView(this);
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                titleText.setPaddingRelative(24, 24, 24, 24);
+                            } else {
+                                titleText.setPadding(24, 24, 24, 24);
+                            }
+
+                            titleText.setTextSize(16);
+                            titleText.setText(es.get(0).attr("title"));
+                            dia.setContentView(titleText);
+                            dia.show();
+                        } else {
+                            toast(R.string.no_caption_to_display);
+                        }
+                    } else {
+                        toast(R.string.no_caption_to_display);
+                    }
+                }
+                return true; */
+            default:
+                Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
+                return super.onContextItemSelected(item);
+        }
+    }
 }
