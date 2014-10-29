@@ -25,8 +25,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -85,12 +83,12 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                     .displayer(new FadeInBitmapDisplayer(200))
                     .build();
 
-            ImageAware imageAware = new ImageViewAware(imgView, false);
+            //ImageAware imageAware = new ImageViewAware(imgView, false);
 
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
             final View errorMessage = view.findViewById(R.id.flavor_image_error);
 
-            ImageLoader.getInstance().displayImage(url, imageAware, options, new ImageLoadingListener() {
+            ImageLoader.getInstance().displayImage(url, imgView, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
 
@@ -156,7 +154,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        setTheme(R.style.DarkTheme);
+        setAppTheme(m_prefs);
 
         super.onCreate(savedInstanceState);
 
@@ -239,7 +237,6 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return onContextItemSelected(item); // this is really bad :()
     }
-
 
     @Override
     public boolean onContextItemSelected(android.view.MenuItem item) {
