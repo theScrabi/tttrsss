@@ -168,11 +168,11 @@ public class OfflineActivity extends CommonActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+
 		setAppTheme(m_prefs);
 
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_PROGRESS);
 
 		setProgressBarVisibility(false);
 		

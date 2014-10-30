@@ -153,13 +153,13 @@ public class OnlineActivity extends CommonActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
+//        if (canUseProgress()) {
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+//        }
+
 		setAppTheme(m_prefs);
 
 		super.onCreate(savedInstanceState);
-
-		if (canUseProgress()) {
-			requestWindowFeature(Window.FEATURE_PROGRESS);
-		}
 
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
