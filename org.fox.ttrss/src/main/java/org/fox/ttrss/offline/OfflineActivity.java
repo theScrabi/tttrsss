@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import org.fox.ttrss.CommonActivity;
@@ -281,7 +280,7 @@ public class OfflineActivity extends CommonActivity {
 			switchOnline();
 			return true;	
 		case R.id.search:
-			if (ohf != null && isCompatMode()) {
+			if (ohf != null) {
 				Dialog dialog = new Dialog(this);
 
 				final EditText edit = new EditText(this);
@@ -622,47 +621,7 @@ public class OfflineActivity extends CommonActivity {
 					article.close();
 				}				
 			}
-
-			if (!isCompatMode()) {
-				MenuItem search = m_menu.findItem(R.id.search);
-				
-				SearchView searchView = (SearchView) search.getActionView();
-				
-				if (searchView != null) {				
-					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-						private String query = "";
-						
-						@Override
-						public boolean onQueryTextSubmit(String query) {
-							OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
-									.findFragmentByTag(FRAG_HEADLINES);
-							
-							if (frag != null) {
-								frag.setSearchQuery(query);
-								this.query = query;
-							}
-							
-							return false;
-						}
-						
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							if (newText.equals("") && !newText.equals(this.query)) {
-								OfflineHeadlinesFragment frag = (OfflineHeadlinesFragment) getSupportFragmentManager()
-										.findFragmentByTag(FRAG_HEADLINES);
-								
-								if (frag != null) {
-									frag.setSearchQuery(newText);
-									this.query = newText;
-								}
-							}
-							
-							return false;
-						}
-					});
-				}
-			}
-		}		
+		}
 	}
 	
 	private void switchOnline() {

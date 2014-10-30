@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -759,7 +758,7 @@ public class OnlineActivity extends CommonActivity {
 			startActivityForResult(intent, 0);
 			return true;
 		case R.id.search:			
-			if (hf != null && isCompatMode()) {
+			if (hf != null) {
 				Dialog dialog = new Dialog(this);
 
 				final EditText edit = new EditText(this);
@@ -1582,45 +1581,7 @@ public class OnlineActivity extends CommonActivity {
 					m_headlinesActionMode.finish();
 				}
 			}
-
-			if (!isCompatMode()) {
-				SearchView searchView = (SearchView) search.getActionView();
-				
-				if (searchView != null) { 				
-					searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-						private String query = "";
-						
-						@Override
-						public boolean onQueryTextSubmit(String query) {
-							HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
-									.findFragmentByTag(FRAG_HEADLINES);
-							
-							if (frag != null) {
-								frag.setSearchQuery(query);
-								this.query = query;
-							}
-							
-							return false;
-						}
-						
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							if (newText.equals("") && !newText.equals(this.query)) {
-								HeadlinesFragment frag = (HeadlinesFragment) getSupportFragmentManager()
-										.findFragmentByTag(FRAG_HEADLINES);
-								
-								if (frag != null) {
-									frag.setSearchQuery(newText);
-									this.query = newText;
-								}
-							}
-							
-							return false;
-						}
-					});
-				}
-			} 
-		}		
+		}
 	}
 	
 	protected void refresh(boolean includeHeadlines) {

@@ -10,15 +10,13 @@
         <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_list_light"
-            app:showAsAction="ifRoom"
+            app:showAsAction=""
             android:title="@string/menu_all_feeds"/>
     </group>
     <group android:id="@+id/menu_group_headlines" >
         <item
             android:id="@+id/search"
-            app:actionViewClass="android.widget.SearchView"
             android:icon="@drawable/ic_search_light"
-            app:showAsAction="ifRoom|collapseActionView"
             android:title="@string/search"/>
         <item
             android:id="@+id/headlines_mark_as_read"
@@ -28,7 +26,7 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_select_all_light"
-            app:showAsAction="ifRoom"
+            app:showAsAction=""
             android:title="@string/headlines_select"/>
         <item
             android:id="@+id/headlines_view_mode"
@@ -81,7 +79,7 @@
         <item
             android:id="@+id/set_unread"
             android:icon="@drawable/ic_read_light"
-            app:showAsAction="ifRoom"
+            app:showAsAction=""
             android:title="@string/article_set_unread"/>
         <item
             android:id="@+id/catchup_above"
