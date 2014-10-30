@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
@@ -44,9 +43,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		setContentView(R.layout.headlines);
 
         setStatusBarTint();
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null &&
-				findViewById(R.id.sw600dp_port_anchor) == null);
-		
+        setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+
 		GlobalState.getInstance().load(savedInstanceState);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
@@ -254,13 +252,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onFeedSelected(final int feedId, final boolean isCat, boolean open) {
 		
 		if (open) {
-			if (!isSmallScreen()) {
-				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				if (container != null) {
-					container.setWeightSum(3f);
-				}
-			}
-			
+
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {

@@ -1,7 +1,6 @@
 package org.fox.ttrss;
 
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.google.gson.JsonElement;
 
@@ -59,9 +57,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		setContentView(R.layout.headlines);
 
         setStatusBarTint();
-		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null &&
-				findViewById(R.id.sw600dp_port_anchor) == null);
-				
+		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+
 		GlobalState.getInstance().load(savedInstanceState);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
@@ -161,21 +158,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_drawerLayout.openDrawer(Gravity.START);
 			}
 
-			if (!isSmallScreen()) {
-				// temporary hack because FeedsActivity doesn't track whether active feed is open
-				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				
-				if (container != null)
-					container.setWeightSum(3f);
-			}
-			
 		}
 		
-		/* if (!isCompatMode() && !isSmallScreen()) {
-			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
-			((ViewGroup)findViewById(R.id.feeds_fragment)).setLayoutTransition(new LayoutTransition());
-		} */
-
 	}
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -226,18 +210,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
 			ft.commit();
-
-			if (!isCompatMode() && !isSmallScreen()) {
-				LinearLayout container = (LinearLayout) findViewById(R.id.fragment_container);
-				if (container != null) {
-					float wSum = container.getWeightSum();
-					if (wSum <= 2.0f) {
-						ObjectAnimator anim = ObjectAnimator.ofFloat(container, "weightSum", wSum, 3.0f);
-						anim.setDuration(200);
-						anim.start();
-					}
-				}
-			}
 
 			final Feed fFeed = feed;
 			
