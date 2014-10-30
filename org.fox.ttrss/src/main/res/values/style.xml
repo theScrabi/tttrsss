@@ -95,7 +95,7 @@
 	</style>
 		
 	<style name="DarkThemeBase" parent="HoloTheme">
-        <item name="statusBarHintColor">#394A63</item>
+        <item name="statusBarHintColor">#22667f</item>
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		
