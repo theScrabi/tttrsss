@@ -10,7 +10,8 @@
         android:title="@string/article_link_copy"/>
     <item
         android:id="@+id/article_img_share"
-        app:showAsAction=""
+        android:icon="@drawable/ic_share_light"
+        app:showAsAction="ifRoom"
         android:title="@string/article_img_share"/>
     <item
         android:id="@+id/article_img_view_caption"
