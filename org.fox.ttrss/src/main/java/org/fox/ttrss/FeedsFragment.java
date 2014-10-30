@@ -561,6 +561,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			if (m_lastError == ApiError.LOGIN_FAILED) {
 				m_activity.login(true);
 			} else {
+                m_activity.toast(getErrorMessage());
 				//m_activity.setLoadingStatus(getErrorMessage(), false);
 			}
 	    }

@@ -485,6 +485,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_lastError == ApiError.LOGIN_FAILED) {
 							m_activity.login(true);
 						} else {
+                            m_activity.toast(getErrorMessage());
 							//m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
 					}
@@ -579,84 +580,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putCharSequence("searchQuery", m_searchQuery);
 	}
 
-	/* private void setLoadingStatus(int status, boolean showProgress) {
-		if (getView() != null) {
-			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-			
-			if (tv != null) {
-				tv.setText(status);
-			}
-		}
-		
-		if (getActivity() != null)
-			getActivity().setProgressBarIndeterminateVisibility(showProgress);
-	} */
-	
-	/* private class HeadlinesRequest extends ApiRequest {
-		int m_offset = 0;
-		
-		public HeadlinesRequest(Context context) {
-			super(context);
-		}
-		
-		protected void onPostExecute(JsonElement result) {
-			if (result != null) {
-				try {			
-					JsonArray content = result.getAsJsonArray();
-					if (content != null) {
-						Type listType = new TypeToken<List<Article>>() {}.getType();
-						final List<Article> articles = new Gson().fromJson(content, listType);
-						
-						while (m_articles.size() > HEADLINES_BUFFER_MAX)
-							m_articles.remove(0);
-						
-						if (m_offset == 0)
-							m_articles.clear();
-						else
-							m_articles.remove(m_articles.size()-1); // remove previous placeholder
-						
-						for (Article f : articles) 
-							m_articles.add(f);
-
-						if (articles.size() == HEADLINES_REQUEST_SIZE) {
-							Article placeholder = new Article(-1);
-							m_articles.add(placeholder);
-							
-							m_canLoadMore = true;
-						} else {
-							m_canLoadMore = false;
-						}
-
-						m_adapter.notifyDataSetChanged();
-
-						if (m_articles.size() == 0)
-							setLoadingStatus(R.string.no_headlines_to_display, false);
-						else
-							setLoadingStatus(R.string.blank, false);
-
-						m_refreshInProgress = false;
-						
-						return;
-					}
-							
-				} catch (Exception e) {
-					e.printStackTrace();						
-				}
-			}
-
-			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_activity.login();
-			} else {
-				setLoadingStatus(getErrorMessage(), false);
-			}
-			m_refreshInProgress = false;
-	    }
-
-		public void setOffset(int skip) {
-			m_offset = skip;			
-		}
-	} */
-	
 	static class HeadlineViewHolder {
 		public TextView titleView;
 		public TextView feedTitleView;
@@ -1178,61 +1101,4 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public Feed getFeed() {
 		return m_feed;
 	}
-
-	/* class DownloadFlavorImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
-		   ImageView imageView = null;
-		   @Override
-		   protected Bitmap doInBackground(ImageView... imageViews) {
-		      this.imageView = imageViews[0];
-		      return download((URL)imageView.getTag());
-		   }
-
-		   @Override
-		   protected void onPostExecute(Bitmap result) {
-			  if (result != null) {
-				  imageView.setImageBitmap(result);
-				  imageView.setVisibility(View.VISIBLE);
-			  }
-		   }
-
-		   private Bitmap download(URL url) {
-			   try {
-				   HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				
-				   conn.setDoInput(true); 
-				   conn.setUseCaches(true);
-				   conn.connect();
-				   
-				   ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				   
-				   byte[] buf = new byte[256];
-				   int read = 0;
-
-				   while ((read = conn.getInputStream().read(buf)) >= 0) {
-					   bos.write(buf, 0, read);
-				   }
-				   
-				   final BitmapFactory.Options options = new BitmapFactory.Options();
-
-				   byte[] bitmap = bos.toByteArray();
-				   
-				   options.inJustDecodeBounds = true;
-				   BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length, options);
-				   options.inJustDecodeBounds = false;
-				   
-				   int inSampleSize = CommonActivity.calculateInSampleSize(options, 128, 128);
-				   
-				   Bitmap decodedBitmap = BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length, options);
-				   
-			       return decodedBitmap;
-			    } catch (OutOfMemoryError e) {
-			    	Log.d(TAG, "OOM while trying to decode headline flavor image. :(");
-			    	e.printStackTrace();
-				} catch (IOException e) {
-					//
-				}
-			   
-		       return null;
-		   }
-	} */
 }

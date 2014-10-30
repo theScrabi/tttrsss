@@ -90,6 +90,7 @@ public class HeadlinesRequest extends ApiRequest {
 		if (m_lastError == ApiError.LOGIN_FAILED) {
 			m_activity.login();
 		} else {
+            m_activity.toast(getErrorMessage());
 			//m_activity.setLoadingStatus(getErrorMessage(), false);
 		}
     }
