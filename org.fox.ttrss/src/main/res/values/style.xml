@@ -95,25 +95,25 @@
 	</style>
 		
 	<style name="DarkThemeBase" parent="HoloTheme">
-        <item name="statusBarHintColor">#22667f</item>
+        <item name="statusBarHintColor">#51698E</item>
 	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		
 		<item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
 		<item name="headlinesBackgroundSolid">@color/feeds_dark_gray</item>
 		<item name="articleBackground">@color/feeds_dark_gray</item>
-		<item name="headlineSelectedBackground">#22667f</item>
+		<item name="headlineSelectedBackground">#51698E</item>
 		<item name="headlineUnreadBackground">#383c42</item>
-		<item name="feedsSelectedBackground">#22667f</item>
+		<item name="feedsSelectedBackground">#51698E</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <!--  <item name="actionBarStyle">@style/ActionBarDarkGray</item> -->
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
 
-        <item name="colorPrimary">#22667f</item>
-        <item name="colorPrimaryDark">#394a63</item>
-        <item name="colorAccent">#22667f</item>
+        <item name="colorPrimary">#51698E</item>
+        <item name="colorPrimaryDark">#445877</item>
+        <item name="colorAccent">#88b0f0</item>
 	</style>
 
 	<style name="DarkTheme" parent="DarkThemeBase">

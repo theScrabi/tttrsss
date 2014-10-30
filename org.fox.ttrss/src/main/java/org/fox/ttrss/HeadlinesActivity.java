@@ -1,9 +1,5 @@
 package org.fox.ttrss;
 
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -171,14 +170,14 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			
 			if (af != null) {
 				if (af.getSelectedArticle() != null && af.getSelectedArticle().attachments != null && af.getSelectedArticle().attachments.size() > 0) {
-					if (!isCompatMode() && (isSmallScreen() || !isPortrait())) {
+					/* if (!isCompatMode() && (isSmallScreen() || !isPortrait())) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-					}
+					} */
 					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
 				} else {
-					if (!isCompatMode()) {
+					/* if (!isCompatMode()) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-					}
+					} */
 					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
 				}
 			}
