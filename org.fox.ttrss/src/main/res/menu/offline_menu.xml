@@ -1,64 +1,64 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ugh="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <group android:id="@+id/menu_group_feeds" >
         <item
             android:id="@+id/go_online"
             android:icon="@drawable/ic_cloud_light"
-            ugh:showAsAction="ifRoom|withText"
+            app:showAsAction="ifRoom|withText"
             android:title="@string/go_online"
             android:visible="false"/>
         <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_list_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/menu_all_feeds"/>
     </group>
     <group android:id="@+id/menu_group_headlines" >
         <item
             android:id="@+id/search"
-            ugh:actionViewClass="android.widget.SearchView"
+            app:actionViewClass="android.widget.SearchView"
             android:icon="@drawable/ic_search_light"
-            ugh:showAsAction="ifRoom|collapseActionView"
+            app:showAsAction="ifRoom|collapseActionView"
             android:title="@string/search"/>
         <item
             android:id="@+id/headlines_mark_as_read"
             android:icon="@drawable/ic_accept_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/headlines_mark_as_read"/>
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_select_all_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
         <item
             android:id="@+id/headlines_view_mode"
-            ugh:showAsAction=""
+            app:showAsAction=""
             android:title="@string/headlines_view_mode"/>
         
         <item
                 android:id="@+id/headlines_toggle_sidebar"
-                ugh:showAsAction=""
+                app:showAsAction=""
                 android:title="@string/toggle_sidebar"/>
     </group>
     <!--
     <group android:id="@+id/menu_group_headlines_selection" >
         <item
             android:id="@+id/selection_toggle_unread"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/selection_toggle_unread"/>
         <item
             android:id="@+id/selection_toggle_marked"
             android:icon="@drawable/ic_unimportant_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/selection_toggle_marked"/>
         <item
             android:id="@+id/selection_toggle_published"
             android:icon="@drawable/ic_menu_unpublished_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/selection_toggle_published"/>
         <item
             android:id="@+id/selection_select_none"
-            ugh:showAsAction=""
+            app:showAsAction=""
             android:title="@string/selection_select_none"/>
     </group>
     -->
@@ -66,22 +66,22 @@
         <item
             android:id="@+id/toggle_marked"
             android:icon="@drawable/ic_unimportant_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/article_toggle_marked"/>
         <item
             android:id="@+id/toggle_published"
             android:icon="@drawable/ic_menu_unpublished_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
         <item
             android:id="@+id/share_article"
             android:icon="@drawable/ic_share_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/share_article"/>
         <item
             android:id="@+id/set_unread"
             android:icon="@drawable/ic_read_light"
-            ugh:showAsAction="ifRoom"
+            app:showAsAction="ifRoom"
             android:title="@string/article_set_unread"/>
         <item
             android:id="@+id/catchup_above"
@@ -90,7 +90,7 @@
 
     <item
         android:id="@+id/preferences"
-        ugh:showAsAction=""
+        app:showAsAction=""
         android:title="@string/preferences"/>
 
 </menu>

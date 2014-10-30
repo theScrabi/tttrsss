@@ -1,13 +1,13 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ugh="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/article_link_share"
-        ugh:showAsAction=""
+        app:showAsAction=""
         android:title="@string/share_article"/>
 
     <item
         android:id="@+id/article_link_copy"
-        ugh:showAsAction=""
+        app:showAsAction=""
         android:title="@string/article_link_copy"/>
 
 </menu>
