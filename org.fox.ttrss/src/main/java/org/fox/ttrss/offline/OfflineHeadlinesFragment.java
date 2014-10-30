@@ -1,16 +1,5 @@
 package org.fox.ttrss.offline;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
-import org.fox.ttrss.CommonActivity;
-import org.fox.ttrss.GlobalState;
-import org.fox.ttrss.R;
-import org.fox.ttrss.util.TypefaceCache;
-import org.jsoup.Jsoup;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,8 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -28,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
-import android.text.Html.ImageGetter;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -45,6 +31,17 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.R;
+import org.fox.ttrss.util.TypefaceCache;
+import org.jsoup.Jsoup;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
@@ -664,7 +661,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					}
 				});
 			}
-			
+
+            View flavorImageHolder = v.findViewById(R.id.flavorImageHolder);
+
+            if (flavorImageHolder != null) {
+                flavorImageHolder.setVisibility(View.GONE);
+            }
+
 			ImageView ib = (ImageView) v.findViewById(R.id.article_menu_button);
 			
 			if (ib != null) {
