@@ -1194,8 +1194,20 @@ public class OnlineActivity extends CommonActivity {
 		
 		req.execute(map);
 	}
-	
-	protected void logout() {
+
+    private void setLoadingStatus(int status, boolean showProgress) {
+        TextView tv = (TextView) findViewById(R.id.loading_message);
+
+        if (tv != null) {
+            tv.setText(status);
+        }
+
+        findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
+
+        setProgressBarIndeterminateVisibility(showProgress);
+    }
+
+    protected void logout() {
 		setSessionId(null);
 		
 		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);

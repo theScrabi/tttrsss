@@ -1,12 +1,5 @@
 package org.fox.ttrss;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.util.HeadlinesRequest;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -16,9 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ClassloaderWorkaroundFragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +18,13 @@ import android.view.WindowManager;
 
 import com.google.gson.JsonElement;
 import com.viewpagerindicator.UnderlinePageIndicator;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.HeadlinesRequest;
+
+import java.util.HashMap;
 
 public class ArticlePager extends Fragment {
 
@@ -144,8 +142,7 @@ public class ArticlePager extends Fragment {
 	
 	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
-		m_activity.setLoadingStatus(R.string.blank, true);
-
+		//m_activity.setLoadingStatus(R.string.blank, true);
 		m_activity.setProgressBarVisibility(true);
 		//m_activity.m_pullToRefreshAttacher.setRefreshing(true);
 		

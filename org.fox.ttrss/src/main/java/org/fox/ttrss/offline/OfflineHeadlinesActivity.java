@@ -1,8 +1,5 @@
 package org.fox.ttrss.offline;
 
-import org.fox.ttrss.GlobalState;
-import org.fox.ttrss.R;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +13,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.R;
 
 public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -85,9 +85,6 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 			}
 		} 
-		
-		setLoadingStatus(R.string.blank, false);
-		findViewById(R.id.loading_container).setVisibility(View.GONE);
 		
 		initMenu();
 	}

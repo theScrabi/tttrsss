@@ -174,12 +174,9 @@ public class OfflineActivity extends CommonActivity {
 		super.onCreate(savedInstanceState);
 
 		setProgressBarVisibility(false);
-		
+
 		setContentView(R.layout.login);
-		
-		setLoadingStatus(R.string.blank, false);
-		findViewById(R.id.loading_container).setVisibility(View.GONE);
-		
+
 		initMenu();
 
 		Intent intent = getIntent();

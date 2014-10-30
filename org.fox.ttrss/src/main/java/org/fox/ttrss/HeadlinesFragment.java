@@ -485,7 +485,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_lastError == ApiError.LOGIN_FAILED) {
 							m_activity.login(true);
 						} else {
-							m_activity.setLoadingStatus(getErrorMessage(), false);
+							//m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
 					}
 				}
@@ -518,7 +518,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 				
 			} else {
-				m_activity.setLoadingStatus(R.string.blank, true);
+				//m_activity.setLoadingStatus(R.string.blank, true);
 			}
 			
 			final int fskip = skip;

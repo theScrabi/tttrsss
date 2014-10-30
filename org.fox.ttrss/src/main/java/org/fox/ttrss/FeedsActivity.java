@@ -10,12 +10,15 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.gson.JsonElement;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -34,12 +37,15 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected SharedPreferences m_prefs;
 	protected long m_lastRefresh = 0;
 	
-	private boolean m_actionbarUpEnabled = false;
-	private int m_actionbarRevertDepth = 0;
-	private SlidingMenu m_slidingMenu;
+	//private boolean m_actionbarUpEnabled = false;
+	//private int m_actionbarRevertDepth = 0;
+	//private SlidingMenu m_slidingMenu;
 	private boolean m_feedIsSelected = false;
-	private boolean m_feedWasSelected = false;
-	
+	//private boolean m_feedWasSelected = false;
+
+    private ActionBarDrawerToggle m_drawerToggle;
+    private DrawerLayout m_drawerLayout;
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,53 +63,38 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				findViewById(R.id.sw600dp_port_anchor) == null);
 				
 		GlobalState.getInstance().load(savedInstanceState);
-		
-		if (isSmallScreen() || findViewById(R.id.sw600dp_port_anchor) != null) {
-			m_slidingMenu = new SlidingMenu(this);
-			
-/*			if (findViewById(R.id.sw600dp_port_anchor) != null) {
-				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-			} */
-			
-			m_slidingMenu.setMode(SlidingMenu.LEFT);
-			m_slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-			m_slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-			m_slidingMenu.setMenu(R.layout.feeds);
-			m_slidingMenu.setSlidingEnabled(true);
-			
-			m_slidingMenu.setOnClosedListener(new SlidingMenu.OnClosedListener() {
-				
-				@Override
-				public void onClosed() {
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					m_actionbarUpEnabled = true;
-					m_feedIsSelected = true;
-					
-					initMenu();
-				}
-			});
-			
-			m_slidingMenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
-					
-				@Override
-				public void onOpened() {
-					if (m_actionbarRevertDepth == 0) {
-						m_actionbarUpEnabled = false;
-						getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-						refresh(false);
-					}
 
-                    setTitle(R.string.app_name);
+        m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 
-                    m_feedIsSelected = false;
-					initMenu();
-				}
-			});
-		}
+        if (m_drawerLayout != null) {
 
-		if (savedInstanceState == null) {
-			if (m_slidingMenu != null)
-				m_slidingMenu.showMenu();
+            m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+            };
+
+            m_drawerLayout.setDrawerListener(m_drawerToggle);
+            m_drawerToggle.setDrawerIndicatorEnabled(true);
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (savedInstanceState == null) {
+            if (m_drawerLayout != null) {
+                m_drawerLayout.openDrawer(Gravity.START);
+            }
 
 			final Intent i = getIntent();
 			boolean shortcutMode = i.getBooleanExtra("shortcut_mode", false);
@@ -157,25 +148,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			checkTrial(true);
 
 		} else { // savedInstanceState != null
-			m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
-			m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
+			//m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
+			//m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
-			m_feedWasSelected = savedInstanceState.getBoolean("feedWasSelected");
+			//m_feedWasSelected = savedInstanceState.getBoolean("feedWasSelected");
 
-			if (findViewById(R.id.sw600dp_port_anchor) != null && m_feedWasSelected && m_slidingMenu != null) {
+			/* if (findViewById(R.id.sw600dp_port_anchor) != null && m_feedWasSelected && m_slidingMenu != null) {
 				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-			}
+			} */
 			
-			if (m_slidingMenu != null && m_feedIsSelected == false) {
-				m_slidingMenu.showMenu();
-			} else if (m_slidingMenu != null) {
-				m_actionbarUpEnabled = true;
-			} else {
-				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
-			}
-
-			if (m_actionbarUpEnabled) {
-				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			if (m_drawerLayout != null && m_feedIsSelected == false) {
+				m_drawerLayout.openDrawer(Gravity.START);
 			}
 
 			if (!isSmallScreen()) {
@@ -194,7 +177,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		} */
 
 	}
-	
+
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if (m_drawerToggle != null) m_drawerToggle.syncState();
+    }
+
 	@Override
 	protected void initMenu() {
 		super.initMenu();
@@ -204,9 +193,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			if (m_slidingMenu != null) {
-				m_menu.setGroupVisible(R.id.menu_group_feeds, m_slidingMenu.isMenuShowing());
-				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !m_slidingMenu.isMenuShowing());
+			if (m_drawerLayout != null) {
+                boolean isDrawerOpen = m_drawerLayout.isDrawerOpen(Gravity.START);
+
+				m_menu.setGroupVisible(R.id.menu_group_feeds, isDrawerOpen);
+				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded() && !isDrawerOpen);
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
@@ -263,16 +254,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ft.commit();
 
 					m_feedIsSelected = true;
-					m_feedWasSelected = true;
+					//m_feedWasSelected = true;
 					
-					if (m_slidingMenu != null) {
-						if (findViewById(R.id.sw600dp_port_anchor) != null) {
+					if (m_drawerLayout != null) {
+						/* if (findViewById(R.id.sw600dp_port_anchor) != null) {
 							m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-						}
+						} */
 
-						m_slidingMenu.showContent();
-						getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-						m_actionbarUpEnabled = true;
+                        m_drawerLayout.closeDrawers();
+
+						//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+						//m_actionbarUpEnabled = true;
 						
 					}
 				}
@@ -302,15 +294,15 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					.beginTransaction();
 
 			FeedsFragment ff = new FeedsFragment();
-			ff.initialize(cat);
+			ff.initialize(cat, true);
 			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 
 			ft.addToBackStack(null);
 			ft.commit();
 			
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-			m_actionbarUpEnabled = true;
-			m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
+			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			//m_actionbarUpEnabled = true;
+			//m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
 
 		} else {
 			
@@ -329,10 +321,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	@Override
 	public void onBackPressed() {
-		if (m_actionbarRevertDepth > 0) {
+        super.onBackPressed();
+
+		/* if (m_actionbarRevertDepth > 0) {
 			
-			if (m_feedIsSelected && m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
-				m_slidingMenu.showMenu();
+			if (m_feedIsSelected && m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START)) {
+				m_drawerLayout.closeDrawers();
 			} else {			
 				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
 				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
@@ -344,15 +338,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			m_slidingMenu.showMenu();
 		} else {
 			super.onBackPressed();
-		}
+		} */
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+        if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
 		case android.R.id.home:
-			if (m_actionbarUpEnabled)
-				onBackPressed();
+            onBackPressed();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
@@ -371,10 +368,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	@Override
 	protected void loginSuccess(boolean refresh) {
-		setLoadingStatus(R.string.blank, false);
-		//findViewById(R.id.loading_container).setVisibility(View.GONE);
 		initMenu();
-		
+
 		if (refresh) refresh();
 	}
 	
@@ -382,10 +377,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);	
 		
-		out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
-		out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
+		//out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
+		//out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
-		out.putBoolean("feedWasSelected", m_feedWasSelected);
+		//out.putBoolean("feedWasSelected", m_feedWasSelected);
 		
 		//if (m_slidingMenu != null )
 		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());

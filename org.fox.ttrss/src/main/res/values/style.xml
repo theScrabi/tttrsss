@@ -29,6 +29,7 @@
     	<item name="unreadSelectedCounterBackground">@drawable/counter_background_selected_light</item>
     	<item name="articleNoteTextColor">#9a8c59</item>
     	<item name="articleNoteBackground">#fff7d5</item>
+        <item name="parentBtnBackground">#dddddd</item>
 
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
@@ -89,6 +90,7 @@
         <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
     	<item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
     	<item name="articleNoteBackground">#303030</item>
+        <item name="parentBtnBackground">#101010</item>
 	</style>
 
 	<style name="HoloTheme" parent="HoloThemeBase">

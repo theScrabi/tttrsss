@@ -1,16 +1,5 @@
 package org.fox.ttrss;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.types.FeedCategory;
-import org.fox.ttrss.types.FeedCategoryList;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,10 +15,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -44,6 +33,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedCategoryList;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -363,7 +363,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						else */
 						
 						//m_adapter.notifyDataSetChanged(); (done by sortCats)
-						m_activity.setLoadingStatus(R.string.blank, false);
+						//m_activity.setLoadingStatus(R.string.blank, false);
 						
 						return;
 					}
@@ -376,7 +376,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			if (m_lastError == ApiError.LOGIN_FAILED) {
 				m_activity.login(true);
 			} else {
-				m_activity.setLoadingStatus(getErrorMessage(), false);
+				//m_activity.setLoadingStatus(getErrorMessage(), false);
 			}
 		}
 
@@ -429,7 +429,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		public int getItemViewType(int position) {
 			FeedCategory cat = items.get(position);
 			
-			if (!m_activity.isSmallScreen() && m_selectedCat != null && cat.id == m_selectedCat.id) {
+			if (m_selectedCat != null && cat.id == m_selectedCat.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -521,8 +521,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				}
 			}
 			
-			//if (!m_activity.isSmallScreen())
-			//	m_selectedCat = cat;
+			m_selectedCat = cat;
 			
 			m_adapter.notifyDataSetChanged();
 		}

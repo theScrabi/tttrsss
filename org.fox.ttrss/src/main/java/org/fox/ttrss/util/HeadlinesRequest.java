@@ -1,16 +1,5 @@
 package org.fox.ttrss.util;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.GlobalState;
-import org.fox.ttrss.OnlineActivity;
-import org.fox.ttrss.R;
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -18,6 +7,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.OnlineActivity;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class HeadlinesRequest extends ApiRequest {
 	public static final int HEADLINES_REQUEST_SIZE = 30;
@@ -78,7 +77,7 @@ public class HeadlinesRequest extends ApiRequest {
 						m_activity.setLoadingStatus(R.string.no_headlines_to_display, false);
 					else */
 					
-					m_activity.setLoadingStatus(R.string.blank, false);
+					//m_activity.setLoadingStatus(R.string.blank, false);
 					
 					return;
 				}
@@ -91,7 +90,7 @@ public class HeadlinesRequest extends ApiRequest {
 		if (m_lastError == ApiError.LOGIN_FAILED) {
 			m_activity.login();
 		} else {
-			m_activity.setLoadingStatus(getErrorMessage(), false);
+			//m_activity.setLoadingStatus(getErrorMessage(), false);
 		}
     }
 

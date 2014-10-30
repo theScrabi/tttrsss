@@ -1,22 +1,5 @@
 package org.fox.ttrss;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
-import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.types.FeedCategory;
-import org.fox.ttrss.types.FeedList;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -39,15 +22,16 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -57,6 +41,23 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
+import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedList;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class FeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -70,9 +71,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	private SwipeRefreshLayout m_swipeLayout;
+    private boolean m_enableParentBtn = false;
 	
-	public void initialize(FeedCategory cat) {
-		m_activeCategory = cat;
+	public void initialize(FeedCategory cat, boolean enableParentBtn) {
+        m_activeCategory = cat;
+        m_enableParentBtn = enableParentBtn;
 	}
 	
 	@SuppressLint("DefaultLocale")
@@ -273,6 +276,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			m_feeds = savedInstanceState.getParcelable("feeds");
 			m_feedIconsChecked = savedInstanceState.getBoolean("feedIconsChecked");
 			m_activeCategory = savedInstanceState.getParcelable("activeCat");
+            m_enableParentBtn = savedInstanceState.getBoolean("enableParentBtn");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -292,7 +296,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	            android.R.color.holo_blue_dark, 
 	            android.R.color.holo_orange_dark);
 	    }
-	    
+
+        Button parentBtn = (Button) view.findViewById(R.id.open_parent);
+
+        if (parentBtn != null) {
+            if (m_enableParentBtn) {
+                parentBtn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        m_activity.onBackPressed();
+                    }
+                });
+            } else {
+                parentBtn.setVisibility(View.GONE);
+            }
+        }
+
 		ListView list = (ListView)view.findViewById(R.id.feeds);		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
@@ -342,7 +361,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		out.putParcelable("selectedFeed", m_selectedFeed);
 		out.putParcelable("feeds", m_feeds);
 		out.putBoolean("feedIconsChecked", m_feedIconsChecked);
-		out.putParcelable("activeCat", m_activeCategory);	
+		out.putParcelable("activeCat", m_activeCategory);
+        out.putBoolean("enableParentBtn", m_enableParentBtn);
 	}
 	
 	@Override
@@ -524,7 +544,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 							setLoadingStatus(R.string.no_feeds_to_display, false);
 						else */
 						
-						m_activity.setLoadingStatus(R.string.blank, false);
+						//m_activity.setLoadingStatus(R.string.blank, false);
 						//m_adapter.notifyDataSetChanged(); (done by sortFeeds)
 						
 						if (m_enableFeedIcons && !m_feedIconsChecked &&	Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
@@ -541,7 +561,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			if (m_lastError == ApiError.LOGIN_FAILED) {
 				m_activity.login(true);
 			} else {
-				m_activity.setLoadingStatus(getErrorMessage(), false);
+				//m_activity.setLoadingStatus(getErrorMessage(), false);
 			}
 	    }
 	}
@@ -567,7 +587,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
 			
-			if (!m_activity.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
+			if (m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				

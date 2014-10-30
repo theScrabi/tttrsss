@@ -1,33 +1,22 @@
 package org.fox.ttrss;
 
 
-import java.io.File;
-import java.io.IOException;
-
-import org.fox.ttrss.util.DatabaseHelper;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.fox.ttrss.util.DatabaseHelper;
 
 public class CommonActivity extends ActionBarActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -40,7 +29,6 @@ public class CommonActivity extends ActionBarActivity {
 	public final static String THEME_DARK = "THEME_DARK";
 	public final static String THEME_LIGHT = "THEME_LIGHT";
 	public final static String THEME_SEPIA = "THEME_SEPIA";
-	public final static String THEME_HOLO = "THEME_HOLO";
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
 	
 	public static final int EXCERPT_MAX_SIZE = 200;
@@ -83,18 +71,6 @@ public class CommonActivity extends ActionBarActivity {
 		editor.commit();
 	}
 
-	public void setLoadingStatus(int status, boolean showProgress) {
-		TextView tv = (TextView) findViewById(R.id.loading_message);
-
-		if (tv != null) {
-			tv.setText(status);
-		}
-		
-		findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
-		
-		setProgressBarIndeterminateVisibility(showProgress);
-	}
-	
 	public void toast(int msgId) {
 		Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
 		toast.show();
@@ -226,7 +202,7 @@ public class CommonActivity extends ActionBarActivity {
 	public boolean isDarkTheme() {
 		String theme = m_prefs.getString("theme", THEME_DEFAULT);
 		
-		return theme.equals(THEME_DARK) || theme.equals(THEME_HOLO);
+		return theme.equals(THEME_DARK);
 	}
 	
 	protected void setAppTheme(SharedPreferences prefs) {
@@ -236,8 +212,6 @@ public class CommonActivity extends ActionBarActivity {
 			setTheme(R.style.DarkTheme);
 		} else if (theme.equals(THEME_SEPIA)) {
 			setTheme(R.style.SepiaTheme);
-		} else if (theme.equals(THEME_HOLO)) {
-			setTheme(R.style.HoloTheme);
 		} else {
 			setTheme(R.style.LightTheme);
 		}

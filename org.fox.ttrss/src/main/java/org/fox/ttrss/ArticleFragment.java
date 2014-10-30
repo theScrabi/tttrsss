@@ -1,20 +1,5 @@
 package org.fox.ttrss;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.Attachment;
-import org.fox.ttrss.util.TypefaceCache;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -39,6 +24,21 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
+
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.Attachment;
+import org.fox.ttrss.util.TypefaceCache;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ArticleFragment extends Fragment  {
 	private final String TAG = this.getClass().getSimpleName();
@@ -262,9 +262,7 @@ public class ArticleFragment extends Fragment  {
 			    
 			    String theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT); 
 			    
-			    if (CommonActivity.THEME_HOLO.equals(theme)) {
-					cssOverride = "body { background : transparent; color : #e0e0e0}";
-				} else if (CommonActivity.THEME_DARK.equals(theme)) {
+				if (CommonActivity.THEME_DARK.equals(theme)) {
 					cssOverride = "body { background : transparent; color : #e0e0e0}";
 				} else {
 					cssOverride = "body { background : transparent; }";

@@ -1,29 +1,28 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/headlines"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:id="@+id/loading_container"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/headlines_drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" >
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/loading_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </LinearLayout>
+        <FrameLayout
+            android:id="@+id/headlines_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?smallScreenBackground"></FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/headlines_fragment"
-        android:background="?smallScreenBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/feeds_fragment"
+            android:layout_width="240dp"
+            android:layout_gravity="start"
+            android:background="?smallScreenBackground"
+            android:layout_height="match_parent" >
+        </FrameLayout>
 
-</LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
+
+
+</FrameLayout>

@@ -1,7 +1,5 @@
 package org.fox.ttrss.offline;
 
-import org.fox.ttrss.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,10 +14,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -28,6 +26,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.fox.ttrss.R;
 
 public class OfflineFeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -170,8 +170,6 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		list.setEmptyView(view.findViewById(R.id.no_feeds));
 		registerForContextMenu(list);
 
-		view.findViewById(R.id.loading_container).setVisibility(View.GONE);
-		
 		return view;    	
 	}
 
@@ -219,10 +217,9 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 				} else {
 					m_activity.onCatSelected(feedId);
 				}
-				
-				/* if (!m_activity.isSmallScreen())
-					m_selectedCatId = feedId; */
-				
+
+                m_selectedCatId = feedId;
+
 				m_adapter.notifyDataSetChanged();
 			}
 		}
@@ -262,7 +259,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (!m_activity.isSmallScreen() && cursor.getLong(0) == m_selectedCatId) {
+			if (cursor.getLong(0) == m_selectedCatId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				

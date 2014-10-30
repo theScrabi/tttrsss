@@ -1,9 +1,5 @@
 package org.fox.ttrss.offline;
 
-import java.io.File;
-
-import org.fox.ttrss.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,18 +17,23 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.fox.ttrss.R;
+
+import java.io.File;
 
 public class OfflineFeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -45,9 +46,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 	private Cursor m_cursor;
 	private OfflineFeedsActivity m_activity;
     private SwipeRefreshLayout m_swipeLayout;
-	
-	public void initialize(int catId) {
+    private boolean m_enableParentBtn = false;
+
+	public void initialize(int catId, boolean enableParentBtn) {
 		m_catId = catId;
+        m_enableParentBtn = enableParentBtn;
 	}
 	
 	@Override
@@ -148,6 +151,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		if (savedInstanceState != null) {
 			m_selectedFeedId = savedInstanceState.getInt("selectedFeedId");
 			m_catId = savedInstanceState.getInt("catId");
+            m_enableParentBtn = savedInstanceState.getBoolean("enableParentBtn");
 		}
 
 		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
@@ -168,6 +172,21 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
                     android.R.color.holo_orange_dark);
         }
 
+        Button parentBtn = (Button) view.findViewById(R.id.open_parent);
+
+        if (parentBtn != null) {
+            if (m_enableParentBtn) {
+                parentBtn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        m_activity.onBackPressed();
+                    }
+                });
+            } else {
+                parentBtn.setVisibility(View.GONE);
+            }
+        }
+
 		ListView list = (ListView)view.findViewById(R.id.feeds);
 		
 		m_cursor = createCursor();
@@ -180,8 +199,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		list.setEmptyView(view.findViewById(R.id.no_feeds));
 		registerForContextMenu(list);
 
-		view.findViewById(R.id.loading_container).setVisibility(View.GONE);
-		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 		
 		return view;    	
@@ -211,6 +228,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 
 		out.putInt("selectedFeedId", m_selectedFeedId);
 		out.putInt("catId", m_catId);
+        out.putBoolean("enableParentBtn", m_enableParentBtn);
 	}
 	
 	@Override
@@ -230,8 +248,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 					m_activity.onFeedSelected(feedId);
 				}
 				
-				if (!m_activity.isSmallScreen())
-					m_selectedFeedId = feedId;
+                m_selectedFeedId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
 			}
@@ -272,7 +289,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (!m_activity.isSmallScreen() && cursor.getLong(0) == m_selectedFeedId) {
+			if (cursor.getLong(0) == m_selectedFeedId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				

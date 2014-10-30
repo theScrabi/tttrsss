@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/feeds_fragment"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="fill_parent" >
-
-    <LinearLayout
-        android:id="@+id/loading_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" >
-
-        <TextView
-            android:id="@+id/loading_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" >
-        </TextView>
-    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout 
     	android:id="@+id/feeds_swipe_container"
     	android:layout_width="match_parent"
-    	android:layout_height="match_parent" >
-    
+    	android:layout_height="match_parent"
+        android:layout_weight="1">
+
 	    <ListView
 	        android:id="@+id/feeds"
 	        android:layoutAnimation="@anim/layout_feeds"
@@ -31,6 +19,15 @@
 	    </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:background="?parentBtnBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_parent"
+        android:layout_weight="0"
+        android:id="@+id/open_parent" />
+
     <TextView
         android:id="@+id/no_feeds"
         android:layout_width="wrap_content"
@@ -38,7 +35,7 @@
         android:layout_gravity="center"
         android:text="@string/no_feeds"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="invisible" >
+        android:visibility="gone" >
     </TextView>
 
-</FrameLayout>
+</LinearLayout>
