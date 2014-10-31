@@ -10,7 +10,7 @@
     	android:layout_height="match_parent" >
     
 	   <ListView
-	       android:id="@+id/headlines"
+	       android:id="@+id/headlines_list"
 	       android:layout_width="match_parent"
 	       android:layoutAnimation="@anim/layout_headline"
 	       android:dividerHeight="0dp"

@@ -300,7 +300,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		m_cursor = createCursor();
 		
-		ListView list = (ListView)view.findViewById(R.id.headlines);
+		ListView list = (ListView)view.findViewById(R.id.headlines_list);
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -318,34 +318,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_cursor,
 				new String[] { "title" }, new int[] { R.id.title }, 0);
 		
-		/* if (!m_activity.isCompatMode()) {
-			AnimationSet set = new AnimationSet(true);
-	
-		    Animation animation = new AlphaAnimation(0.0f, 1.0f);
-		    animation.setDuration(500);
-		    set.addAnimation(animation);
-	
-		    animation = new TranslateAnimation(
-		        Animation.RELATIVE_TO_SELF, 50.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-		        Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f
-		    );
-		    animation.setDuration(1000);
-		    set.addAnimation(animation);
-	
-		    LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
-	
-		    list.setLayoutAnimation(controller);
-		} */
-		
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
         list.setOnScrollListener(this);
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
-		//if (m_activity.isSmallScreen())
-		//	view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
-		
 		getActivity().setProgressBarIndeterminateVisibility(false);
 
 		return view;    	
@@ -732,7 +710,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		try {
 			m_adapter.notifyDataSetChanged();
 
-			ListView list = (ListView)getView().findViewById(R.id.headlines);
+			ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 		
 			Log.d(TAG, articleId + " position " + getArticleIdPosition(articleId));
 			

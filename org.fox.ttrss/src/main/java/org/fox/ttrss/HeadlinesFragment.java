@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -318,7 +320,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	    }
 
 		
-		ListView list = (ListView)view.findViewById(R.id.headlines);
+		ListView list = (ListView)view.findViewById(R.id.headlines_list);
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -425,7 +427,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (!append) {
 				if (getView() != null) {
 					Log.d(TAG, "scroll hack");
-					ListView list = (ListView)getView().findViewById(R.id.headlines);
+					ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 					m_autoCatchupDisabled = true;
 					list.setSelection(0);
 					m_autoCatchupDisabled = false;
@@ -450,7 +452,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					if (isDetached()) return;
 					
 					if (getView() != null) {
-						ListView list = (ListView)getView().findViewById(R.id.headlines);
+						ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 					
 						if (list != null) {
 							list.setEmptyView(getView().findViewById(R.id.no_headlines));
@@ -851,7 +853,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								
 							}
 
-							@Override
+							@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                            @Override
 							public void onLoadingComplete(String arg0,
 									View arg1, Bitmap arg2) {
 								// TODO Auto-generated method stub
@@ -991,7 +994,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_activeArticle = article;
 			m_adapter.notifyDataSetChanged();
 		
-			ListView list = (ListView)getView().findViewById(R.id.headlines);
+			ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 		
 			if (list != null && article != null) {
 				int position = m_adapter.getPosition(article);
