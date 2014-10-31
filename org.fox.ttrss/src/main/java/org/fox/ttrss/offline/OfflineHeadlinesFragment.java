@@ -66,10 +66,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private OfflineHeadlinesEventListener m_listener;
 	private OfflineActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
+
+    private boolean m_compactLayoutMode = false;
 	
-	public void initialize(int feedId, boolean isCat) {
+	public void initialize(int feedId, boolean isCat, boolean compactMode) {
 		m_feedId = feedId;
 		m_feedIsCat = isCat;
+        m_compactLayoutMode = compactMode;
 	}
 	
 	@Override
@@ -276,6 +279,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			//m_selectedArticles = savedInstanceState.getParcelableArrayList("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
+            m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		} else {
 			m_activity.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
 		}
@@ -405,6 +409,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		//out.putParcelableArrayList("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
 		out.putBoolean("feedIsCat", m_feedIsCat);
+
+        out.putBoolean("compactLayoutMode", m_compactLayoutMode);
 	}
 
 	/* public void setLoadingStatus(int status, boolean showProgress) {
@@ -586,7 +592,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
-				if (!m_prefs.getBoolean("headlines_show_content", true)) {
+				if ((m_compactLayoutMode && m_activity.isSmallScreen()) || !m_prefs.getBoolean("headlines_show_content", true)) {
 					te.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
@@ -664,7 +670,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 flavorImageHolder.setVisibility(View.GONE);
             }
 
-			ImageView ib = (ImageView) v.findViewById(R.id.article_menu_button);
+            ImageView ib = (ImageView) v.findViewById(R.id.article_menu_button);
 			
 			if (ib != null) {
 				//if (m_activity.isDarkTheme())
@@ -678,7 +684,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				});								
 			}
 
-			return v;
+            View headlineFooter = v.findViewById(R.id.headline_footer);
+
+            if (headlineFooter != null && m_compactLayoutMode && m_activity.isSmallScreen()) {
+                headlineFooter.setVisibility(View.GONE);
+            }
+
+            return v;
 		}
 
 		private void adjustTitleTextView(int score, TextView tv, int position) {

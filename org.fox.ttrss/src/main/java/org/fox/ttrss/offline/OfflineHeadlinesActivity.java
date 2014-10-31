@@ -10,8 +10,11 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
@@ -20,6 +23,9 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
+
+    private ActionBarDrawerToggle m_drawerToggle;
+    private DrawerLayout m_drawerLayout;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -32,8 +38,34 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines_articles);
-		
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
+
+        if (m_drawerLayout != null) {
+
+            m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+            };
+
+            m_drawerLayout.setDrawerListener(m_drawerToggle);
+            m_drawerToggle.setDrawerIndicatorEnabled(true);
+
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
@@ -52,7 +84,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 				String searchQuery = i.getStringExtra("searchQuery");
 				
 				OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
-				hf.initialize(feedId, isCat);
+				hf.initialize(feedId, isCat, true);
 				
 				OfflineArticlePager af = new OfflineArticlePager();
 				af.initialize(articleId, feedId, isCat);
@@ -88,9 +120,19 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		initMenu();
 	}
 
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if (m_drawerToggle != null) m_drawerToggle.syncState();
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+        if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
 			overridePendingTransition(0, R.anim.right_slide_out);
@@ -115,7 +157,11 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		}
 		
 		if (open) {
-			OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+            if (m_drawerLayout != null) {
+                m_drawerLayout.closeDrawers();
+            }
+
+            OfflineArticlePager af = (OfflineArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			af.setArticleId(articleId);
 		} else {

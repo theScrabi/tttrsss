@@ -240,7 +240,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 							.beginTransaction();
 					
 					OfflineHeadlinesFragment hf = new OfflineHeadlinesFragment();
-					hf.initialize(feedId, isCat);
+					hf.initialize(feedId, isCat, false);
 					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 					
 					ft.commit();
