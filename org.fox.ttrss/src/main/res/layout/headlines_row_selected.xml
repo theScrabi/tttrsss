@@ -156,7 +156,7 @@
                     android:id="@+id/marked"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="11dp"
                     android:layout_weight="0"
                     android:clickable="true"
                     android:src="@drawable/ic_star_empty" />
@@ -173,7 +173,7 @@
                 <ImageView
                     android:id="@+id/article_menu_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="16dp"
                     android:layout_weight="0"
                     android:paddingLeft="2dp"
                     android:paddingRight="6dp"
