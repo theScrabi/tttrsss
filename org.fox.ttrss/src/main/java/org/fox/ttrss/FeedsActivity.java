@@ -83,10 +83,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
             m_drawerLayout.setDrawerListener(m_drawerToggle);
             m_drawerToggle.setDrawerIndicatorEnabled(true);
-        }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             if (m_drawerLayout != null) {
