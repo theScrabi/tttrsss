@@ -14,7 +14,7 @@
    viewBox="0 0 32 32"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="s_headline_unpublished.svg"
-   inkscape:export-filename="C:\Users\Andrew\workspace\Tiny-Tiny-RSS-for-Honeycomb\res\drawable-hdpi\ic_unpublished.png"
+   inkscape:export-filename="C:\Users\Andrew\Documents\Projects\Tiny-Tiny-RSS-for-Honeycomb\org.fox.ttrss\src\main\res\drawable-hdpi\ic_unpublished.png"
    inkscape:export-xdpi="208.25"
    inkscape:export-ydpi="208.25">
   <metadata
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,14 +38,14 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1137"
+     inkscape:window-width="1858"
+     inkscape:window-height="1177"
      id="namedview32"
      showgrid="false"
-     inkscape:zoom="23.953242"
-     inkscape:cx="-5.7565318"
-     inkscape:cy="8.340867"
-     inkscape:window-x="-8"
+     inkscape:zoom="43.3125"
+     inkscape:cx="13.232431"
+     inkscape:cy="4.9804959"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="RSSicon" />
@@ -186,7 +186,7 @@
     </filter>
   </defs>
   <path
-     style="opacity:0.80000000000000004;fill:#939393;fill-opacity:1;filter:url(#filter3031)"
+     style="opacity:1;fill:#aaaaaa;fill-opacity:1;filter:url(#filter3031)"
      d="M 4.53125 1.9375 C 3.0904121 1.9375 1.9375 3.090412 1.9375 4.53125 L 1.9375 11.46875 C 1.9375 12.909587 3.0904121 14.0625 4.53125 14.0625 L 11.46875 14.0625 C 12.909587 14.0625 14.0625 12.909587 14.0625 11.46875 L 14.0625 4.53125 C 14.0625 3.0904121 12.909587 1.9375 11.46875 1.9375 L 4.53125 1.9375 z M 4.03125 3.75 A 8.2752425 8.2752425 0 0 1 12.3125 12 L 10.65625 12 A 6.620194 6.620194 0 0 0 4.03125 5.40625 L 4.03125 3.75 z M 4.03125 6.53125 A 5.4853035 5.4853035 0 0 1 9.53125 12 L 7.90625 12 A 3.8775421 3.8775421 0 0 0 4.03125 8.125 L 4.03125 6.53125 z M 5.15625 9.75 C 5.7830325 9.75 6.28125 10.248218 6.28125 10.875 C 6.28125 11.501782 5.7830325 12 5.15625 12 C 4.5294672 12 4.03125 11.501782 4.03125 10.875 C 4.03125 10.248218 4.5294672 9.75 5.15625 9.75 z "
      transform="scale(2,2)"
      id="path3999" />
