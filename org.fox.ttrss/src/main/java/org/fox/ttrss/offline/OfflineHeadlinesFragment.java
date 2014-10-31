@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -42,10 +43,11 @@ import org.jsoup.Jsoup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener {
+public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener, AbsListView.OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD };
 
 	private final String TAG = this.getClass().getSimpleName();
@@ -56,6 +58,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private String m_searchQuery = "";
 	
 	private SharedPreferences m_prefs;
+    private ArrayList<Integer> m_readArticleIds = new ArrayList<Integer>();
 	
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
@@ -336,6 +339,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
+        list.setOnScrollListener(this);
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
@@ -400,19 +404,19 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		Log.d(TAG, "onItemClick=" + position);
 		
 		if (list != null) {
-			/* Cursor cursor = (Cursor)list.getItemAtPosition(position);
-			
-			int articleId = cursor.getInt(0); */
-			
-			int articleId = getArticleIdAtPosition(position);
-			
-			if (getActivity().findViewById(R.id.article_fragment) != null) {
-				m_activeArticleId = articleId;
-			}
 
-			m_listener.onArticleSelected(articleId);
-			
-			refresh();
+			int articleId = getArticleIdAtPosition(position);
+
+            if (articleId != 0) {
+
+                if (getActivity().findViewById(R.id.article_fragment) != null) {
+                    m_activeArticleId = articleId;
+                }
+
+                m_listener.onArticleSelected(articleId);
+
+                refresh();
+            }
 		}
 	}
 
@@ -789,5 +793,45 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public String getSearchQuery() {
 		return m_searchQuery;
 	}
-	
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0) {
+            //Article a = m_articles.get(firstVisibleItem - 1);
+
+            Cursor article = getArticleAtPosition(firstVisibleItem - 1);
+
+            if (article != null) {
+                Integer id = article.getInt(article.getColumnIndex(BaseColumns._ID));
+                boolean unread = article.getInt(article.getColumnIndex("unread")) != 0;
+
+                if (unread && !m_readArticleIds.contains(id)) {
+                    m_readArticleIds.add(id);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+            if (!m_readArticleIds.isEmpty()) {
+
+                SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+                        "UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
+                                + " = ?");
+
+                for (int articleId : m_readArticleIds) {
+                    stmt.bindLong(1, articleId);
+                    stmt.execute();
+                }
+
+                stmt.close();
+                refresh();
+
+                m_readArticleIds.clear();
+            }
+        }
+    }
+
 }
