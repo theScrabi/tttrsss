@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
@@ -50,9 +49,9 @@ public class ArticleFragment extends Fragment  {
 	public void initialize(Article article) {
 		m_article = article;
 	}
-	
-	private View.OnTouchListener m_gestureListener;
-	
+
+	//private View.OnTouchListener m_gestureListener;
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -84,8 +83,7 @@ public class ArticleFragment extends Fragment  {
 	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
-		m_activity.setProgressBarVisibility(true);
-		
+
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
 		}
@@ -209,7 +207,7 @@ public class ArticleFragment extends Fragment  {
 				
 			}
 			
-			final WebView web = (WebView)view.findViewById(R.id.content);
+			final WebView web = (WebView)view.findViewById(R.id.article_content);
 			
 			if (web != null) {
 				
@@ -241,16 +239,6 @@ public class ArticleFragment extends Fragment  {
 			    	}
 			    }
 
-			    web.setWebChromeClient(new WebChromeClient() {					
-					@Override
-	                public void onProgressChanged(WebView view, int progress) {
-	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
-	                	if (progress == 100) {
-	                		m_activity.setProgressBarVisibility(false);
-	                	}
-	                }
-				});
-				
 				String content;
 				String cssOverride = "";
 				
@@ -359,8 +347,8 @@ public class ArticleFragment extends Fragment  {
 					e.printStackTrace();
 				}
 				
-				if (m_activity.isSmallScreen())
-					web.setOnTouchListener(m_gestureListener);
+//				if (m_activity.isSmallScreen())
+//					web.setOnTouchListener(m_gestureListener);
 				
 				web.setVisibility(View.VISIBLE);
 			}

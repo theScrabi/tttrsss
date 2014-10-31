@@ -31,7 +31,7 @@
         android:singleLine="true"
         android:text="{FEED}"
         android:textColor="?feedlistTextColor"
-        android:textSize="18dip" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/unread_counter"

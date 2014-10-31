@@ -48,9 +48,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener, AbsListView.OnScrollListener {
-	public static enum ArticlesSelection { ALL, NONE, UNREAD };
+	public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
-	private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 	
 	private int m_feedId;
 	private boolean m_feedIsCat = false;
@@ -323,8 +323,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         list.setOnScrollListener(this);
 		list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
-
-		getActivity().setProgressBarIndeterminateVisibility(false);
 
 		return view;    	
 	}

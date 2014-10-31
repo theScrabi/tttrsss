@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -71,9 +70,9 @@ public class OfflineActivity extends CommonActivity {
 			onOptionsItemSelected(item);
 			return false;
 		}
-	};
+	}
 
-	@Override
+    @Override
 	public boolean onContextItemSelected(android.view.MenuItem item) {
 		/* AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo(); */
@@ -167,13 +166,9 @@ public class OfflineActivity extends CommonActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-
 		setAppTheme(m_prefs);
 
 		super.onCreate(savedInstanceState);
-
-		setProgressBarVisibility(false);
 
 		setContentView(R.layout.login);
 

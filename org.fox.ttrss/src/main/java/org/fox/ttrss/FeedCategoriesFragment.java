@@ -324,7 +324,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		protected void onPostExecute(JsonElement result) {
 			if (isDetached()) return;
 			
-			m_activity.setProgressBarVisibility(false);
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
 			if (getView() != null) {

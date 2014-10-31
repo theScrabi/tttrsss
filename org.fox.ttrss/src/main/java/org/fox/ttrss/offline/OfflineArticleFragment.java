@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
@@ -217,40 +216,30 @@ public class OfflineArticleFragment extends Fragment {
 				note.setVisibility(View.GONE);
 			}
 			
-			final WebView web = (WebView)view.findViewById(R.id.content);
+			final WebView web = (WebView)view.findViewById(R.id.article_content);
 			
 			if (web != null) {
 				
-				web.setOnLongClickListener(new View.OnLongClickListener() {					
-					@Override
-					public boolean onLongClick(View v) {
-						HitTestResult result = ((WebView)v).getHitTestResult();
+				web.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        HitTestResult result = ((WebView) v).getHitTestResult();
 
-						if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
-							registerForContextMenu(web);
-							m_activity.openContextMenu(web);
-							unregisterForContextMenu(web);
-							return true;
-						} else {
-							if (m_activity.isCompatMode()) {
-								KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-								shiftPressEvent.dispatch(web);
-							}
-							
-							return false;
-						}
-					}
-				});
-				
-				web.setWebChromeClient(new WebChromeClient() {					
-					@Override
-	                public void onProgressChanged(WebView view, int progress) {
-	                	m_activity.setProgress(Math.round(((float)progress / 100f) * 10000));
-	                	if (progress == 100) {
-	                		m_activity.setProgressBarVisibility(false);
-	                	}
-	                }
-				});
+                        if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+                            registerForContextMenu(web);
+                            m_activity.openContextMenu(web);
+                            unregisterForContextMenu(web);
+                            return true;
+                        } else {
+                            if (m_activity.isCompatMode()) {
+                                KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+                                shiftPressEvent.dispatch(web);
+                            }
+
+                            return false;
+                        }
+                    }
+                });
 				
 				String content;
 				String cssOverride = "";

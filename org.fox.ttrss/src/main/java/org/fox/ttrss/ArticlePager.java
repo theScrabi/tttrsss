@@ -93,9 +93,7 @@ public class ArticlePager extends Fragment {
 		int position = m_articles.indexOf(m_article);
 		
 		m_listener.onArticleSelected(m_article, false);
-		
-		m_activity.setProgressBarVisibility(true);
-		
+
 		pager.setAdapter(m_adapter);
 		
 		UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_titles);
@@ -142,10 +140,7 @@ public class ArticlePager extends Fragment {
 	
 	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
-		//m_activity.setLoadingStatus(R.string.blank, true);
-		m_activity.setProgressBarVisibility(true);
-		//m_activity.m_pullToRefreshAttacher.setRefreshing(true);
-		
+
 		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
 		}
@@ -159,9 +154,6 @@ public class ArticlePager extends Fragment {
 			@Override
 			protected void onPostExecute(JsonElement result) {
 				if (isDetached()) return;
-
-				m_activity.setProgressBarVisibility(false);
-				//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
 
 				super.onPostExecute(result);
 				

@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -76,9 +75,9 @@ public class OnlineActivity extends CommonActivity {
 	protected abstract class OnLoginFinishedListener {
 		public abstract void OnLoginSuccess();
 		public abstract void OnLoginFailed();
-	};
-	
-	private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
+	}
+
+    private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context content, Intent intent) {
 
@@ -134,9 +133,9 @@ public class OnlineActivity extends CommonActivity {
 			onOptionsItemSelected(item);
 			return false;
 		}
-	};
-	
-	protected String getSessionId() {
+	}
+
+    protected String getSessionId() {
 		return GlobalState.getInstance().m_sessionId;
 	}
 
@@ -152,18 +151,9 @@ public class OnlineActivity extends CommonActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-//        if (canUseProgress()) {
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-//        }
-
 		setAppTheme(m_prefs);
 
 		super.onCreate(savedInstanceState);
-
-		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
-		setProgressBarVisibility(false);
-		setProgressBarIndeterminateVisibility(false);
 
 //		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 
@@ -1207,8 +1197,6 @@ public class OnlineActivity extends CommonActivity {
         if (loadingContainer != null) {
             loadingContainer.setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
         }
-
-        setProgressBarIndeterminateVisibility(showProgress);
     }
 
     protected void logout() {

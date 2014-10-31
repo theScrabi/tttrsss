@@ -520,8 +520,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				}
 			}
 			
-			m_activity.setProgressBarVisibility(false);
-			//m_activity.m_pullToRefreshAttacher.setRefreshComplete();
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 			
 			if (result != null) {

@@ -68,9 +68,9 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
-	public static enum ArticlesSelection { ALL, NONE, UNREAD };
+	public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
-	public static final int HEADLINES_REQUEST_SIZE = 30;
+    public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
 	
 	private final String TAG = this.getClass().getSimpleName();
@@ -417,8 +417,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_refreshInProgress = true;
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
-			m_activity.setProgressBarVisibility(true);
-			
+
 			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 				append = false;
 			}
@@ -458,8 +457,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							list.setEmptyView(getView().findViewById(R.id.no_headlines));
 						}
 					}
-					
-					m_activity.setProgressBarVisibility(false);
 
 					super.onPostExecute(result);	
 

@@ -1,10 +1,5 @@
 package org.fox.ttrss.share;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.JsonElement;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.R;
+
+import java.util.HashMap;
 
 public class ShareActivity extends CommonShareActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -120,9 +120,9 @@ public class ShareActivity extends CommonShareActivity {
 					put("content", content.getText().toString());
 				}
 			};
-	
+
 			setProgressBarIndeterminateVisibility(true);
-			
+
 			req.execute(map);
 		}
 	}

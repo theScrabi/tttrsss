@@ -7,7 +7,7 @@
     android:padding="5sp" >
 
     <org.fox.ttrss.util.TitleWebView
-        android:id="@+id/content"
+        android:id="@+id/article_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">

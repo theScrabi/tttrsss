@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -184,12 +183,6 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         // we use that before parent onCreate so let's init locally
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
-
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-
-        setProgressBarVisibility(false);
-        setProgressBarIndeterminateVisibility(false);
-
         setAppTheme(m_prefs);
 
         super.onCreate(savedInstanceState);

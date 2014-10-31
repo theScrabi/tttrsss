@@ -1,12 +1,5 @@
 package org.fox.ttrss.offline;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.OnlineActivity;
-import org.fox.ttrss.R;
-import org.fox.ttrss.util.DatabaseHelper;
-
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,6 +12,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.OnlineActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.util.DatabaseHelper;
+
+import java.util.HashMap;
 
 public class OfflineUploadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
@@ -122,9 +122,9 @@ public class OfflineUploadService extends IntentService {
 	
 	private enum ModifiedCriteria {
 		READ, MARKED, PUBLISHED
-	};
+	}
 
-	private String getModifiedIds(ModifiedCriteria criteria) {
+    private String getModifiedIds(ModifiedCriteria criteria) {
 
 		String criteriaStr = "";
 

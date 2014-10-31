@@ -92,7 +92,7 @@
                 android:text="[Article note]" />
 
             <org.fox.ttrss.util.LessBrokenWebView
-                android:id="@+id/content"
+                android:id="@+id/article_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
