@@ -1202,7 +1202,11 @@ public class OnlineActivity extends CommonActivity {
             tv.setText(status);
         }
 
-        findViewById(R.id.loading_container).setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
+        View loadingContainer = findViewById(R.id.loading_container);
+
+        if (loadingContainer != null) {
+            loadingContainer.setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
+        }
 
         setProgressBarIndeterminateVisibility(showProgress);
     }
