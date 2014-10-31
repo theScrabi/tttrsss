@@ -20,7 +20,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -257,7 +256,7 @@ public class OfflineActivity extends CommonActivity {
 		/* case android.R.id.home:
 			finish();
 			return true; */
-		case R.id.headlines_toggle_sidebar:
+		/* case R.id.headlines_toggle_sidebar:
 			if (true && !isSmallScreen()) {
 				SharedPreferences.Editor editor = m_prefs.edit();
 				editor.putBoolean("headlines_hide_sidebar", !m_prefs.getBoolean("headlines_hide_sidebar", false));
@@ -267,7 +266,7 @@ public class OfflineActivity extends CommonActivity {
 					ohf.getView().setVisibility(m_prefs.getBoolean("headlines_hide_sidebar", false) ? View.GONE : View.VISIBLE);
 				}
 			}
-			return true;
+			return true; */
 		case R.id.go_online:
 			switchOnline();
 			return true;	

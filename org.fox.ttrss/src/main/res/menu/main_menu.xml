@@ -64,10 +64,10 @@
                 app:showAsAction=""
                 android:title="@string/headlines_view_mode"/>
             
-            <item
+            <!-- <item
                 android:id="@+id/headlines_toggle_sidebar"
                 app:showAsAction=""
-                android:title="@string/toggle_sidebar"/>
+                android:title="@string/toggle_sidebar"/> -->
             
             <!--
                   <item

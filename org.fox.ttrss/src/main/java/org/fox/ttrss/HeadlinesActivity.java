@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +21,10 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
-	
+
+    private ActionBarDrawerToggle m_drawerToggle;
+    private DrawerLayout m_drawerLayout;
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,17 +36,43 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines_articles);
-		
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
+
+        if (m_drawerLayout != null) {
+
+            m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+
+                    invalidateOptionsMenu();
+                }
+            };
+
+            m_drawerLayout.setDrawerListener(m_drawerToggle);
+            m_drawerToggle.setDrawerIndicatorEnabled(true);
+
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
+		/* if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-		}
+		} */
 		
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
@@ -85,7 +116,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 						HeadlinesFragment hf = new HeadlinesFragment();
-						hf.initialize(feed, article);
+						hf.initialize(feed, article, true);
 						hf.setSearchQuery(searchQuery);
 
 						ArticlePager af = new ArticlePager();
@@ -101,13 +132,14 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				
 			}
 		}
-		
-		/* if (!isCompatMode()) {
-			((ViewGroup)findViewById(R.id.headlines_fragment)).setLayoutTransition(new LayoutTransition());
-			((ViewGroup)findViewById(R.id.article_fragment)).setLayoutTransition(new LayoutTransition());
-		} */
 	}
-	
+
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        if (m_drawerToggle != null) m_drawerToggle.syncState();
+    }
+
 	@Override
 	protected void refresh() {
 		super.refresh();
@@ -133,7 +165,11 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+        if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
 			overridePendingTransition(0, R.anim.right_slide_out);
@@ -159,7 +195,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			//HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
 			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());
-			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
+			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
 			
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
@@ -210,7 +246,11 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+                    if (m_drawerLayout != null) {
+                        m_drawerLayout.closeDrawers();
+                    }
+
+                    ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 					
 					if (af != null) {
 						af.setActiveArticle(fArticle);

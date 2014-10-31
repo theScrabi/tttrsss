@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
@@ -39,9 +38,9 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
         setStatusBarTint();
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
-		if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
+		/* if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
 			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-		}
+		} */
 		
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
@@ -141,7 +140,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 			//OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
 			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());
-			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
+			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
 			
 			Fragment af = getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			

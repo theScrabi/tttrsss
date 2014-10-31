@@ -291,6 +291,9 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         }
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.article_img_open:
                 if (url != null) {
                     try {

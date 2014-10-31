@@ -91,6 +91,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private OnlineActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
 	private int m_maxImageSize = 0;
+    private boolean m_compactLayoutMode = false;
 
 	public ArticleList getSelectedArticles() {
 		return m_selectedArticles;
@@ -100,8 +101,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_feed = feed;
 	}
 
-	public void initialize(Feed feed, Article activeArticle) {
+	public void initialize(Feed feed, Article activeArticle, boolean compactMode) {
 		m_feed = feed;
+        m_compactLayoutMode = compactMode;
 		
 		if (activeArticle != null) {
 			m_activeArticle = getArticleById(activeArticle.id);
@@ -293,6 +295,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
+            m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		}
 
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -570,6 +573,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
+        out.putBoolean("compactLayoutMode", m_compactLayoutMode);
 	}
 
 	static class HeadlineViewHolder {
@@ -586,7 +590,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ViewGroup flavorImageHolder;
 		public ProgressBar flavorImageLoadingBar;
         public View flavorImageArrow;
-	}
+        public View headlineFooter;
+    }
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
@@ -680,6 +685,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
                 holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
+                holder.headlineFooter = v.findViewById(R.id.headline_footer);
 				
 				v.setTag(holder);
 				
@@ -762,7 +768,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContent = article.content != null ? article.content : "";
 
 			if (holder.excerptView != null) {
-				if (!m_prefs.getBoolean("headlines_show_content", true)) {
+				if ((m_compactLayoutMode && m_activity.isSmallScreen()) || !m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(articleContent).text(); 
@@ -775,129 +781,133 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
-			if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
-                holder.flavorImageArrow.setVisibility(View.GONE);
+            if (!m_compactLayoutMode) {
+                if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
+                    holder.flavorImageArrow.setVisibility(View.GONE);
 
-				Document doc = Jsoup.parse(articleContent);
+                    Document doc = Jsoup.parse(articleContent);
 
-                boolean loadableImageFound = false;
-				
-    			if (doc != null) {
-                    //Element img = doc.select("img").first();
+                    boolean loadableImageFound = false;
 
-                    final Elements imgs = doc.select("img");
-                    Element img = imgs.first();
+                    if (doc != null) {
+                        //Element img = doc.select("img").first();
 
-					if (img != null) {
-						String imgSrc = img.attr("src");
-						
-						// retarded schema-less urls
-						if (imgSrc.indexOf("//") == 0)
-							imgSrc = "http:" + imgSrc;
-						
-						DisplayImageOptions options = new DisplayImageOptions.Builder()
-								.cacheInMemory(true)
-                                .resetViewBeforeLoading(true)
-								.cacheOnDisk(true)
-								.build();
+                        final Elements imgs = doc.select("img");
+                        Element img = imgs.first();
 
-                        holder.flavorImageView.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ArrayList<String> imgsList = new ArrayList<String>();
+                        if (img != null) {
+                            String imgSrc = img.attr("src");
 
-                                for (Element img : imgs) {
-                                    String imgSrc = img.attr("src");
+                            // retarded schema-less urls
+                            if (imgSrc.indexOf("//") == 0)
+                                imgSrc = "http:" + imgSrc;
 
-                                    if (imgSrc.indexOf("//") == 0)
-                                        imgSrc = "http:" + imgSrc;
+                            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                                    .cacheInMemory(true)
+                                    .resetViewBeforeLoading(true)
+                                    .cacheOnDisk(true)
+                                    .build();
 
-                                    imgsList.add(imgSrc);
+                            holder.flavorImageView.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ArrayList<String> imgsList = new ArrayList<String>();
+
+                                    for (Element img : imgs) {
+                                        String imgSrc = img.attr("src");
+
+                                        if (imgSrc.indexOf("//") == 0)
+                                            imgSrc = "http:" + imgSrc;
+
+                                        imgsList.add(imgSrc);
+                                    }
+
+                                    Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+                                    intent.putExtra("urls", imgsList);
+                                    intent.putExtra("title", article.title);
+
+                                    startActivityForResult(intent, 0);
+                                    //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
+
+
+                                }
+                            });
+
+                            final ViewGroup flavorImageHolder = holder.flavorImageHolder;
+                            final ImageView flavorImageView = holder.flavorImageView;
+                            final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
+
+                            ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+
+                            flavorImageHolder.setVisibility(View.VISIBLE);
+
+                            if (imgs.size() > 1 && holder.flavorImageArrow != null) {
+                                holder.flavorImageArrow.setVisibility(View.VISIBLE);
+                            }
+
+                            final boolean weNeedAnimation = MemoryCacheUtils.findCachedBitmapsForImageUri(imgSrc, ImageLoader.getInstance().getMemoryCache()).size() == 0;
+
+                            loadableImageFound = true;
+                            ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
+
+                                @Override
+                                public void onLoadingCancelled(String arg0,
+                                                               View arg1) {
+                                    // TODO Auto-generated method stub
+
                                 }
 
-                                Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-                                intent.putExtra("urls", imgsList);
-                                intent.putExtra("title", article.title);
+                                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                                @Override
+                                public void onLoadingComplete(String arg0,
+                                                              View arg1, Bitmap arg2) {
+                                    // TODO Auto-generated method stub
 
-                                startActivityForResult(intent, 0);
-                                //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
+                                    if (!isAdded() || arg2 == null) return;
 
+                                    flavorImageLoadingBar.setVisibility(View.INVISIBLE);
 
-                            }
-                        });
+                                    if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
+                                        if (!m_activity.isCompatMode() && weNeedAnimation) {
 
-                        final ViewGroup flavorImageHolder = holder.flavorImageHolder;
-                        final ImageView flavorImageView = holder.flavorImageView;
-                        final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
+                                            ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
+                                            anim.setDuration(200);
+                                            anim.start();
 
-                        ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-
-                        flavorImageHolder.setVisibility(View.VISIBLE);
-
-                        if (imgs.size() > 1 && holder.flavorImageArrow != null) {
-                            holder.flavorImageArrow.setVisibility(View.VISIBLE);
-                        }
-
-                        final boolean weNeedAnimation =  MemoryCacheUtils.findCachedBitmapsForImageUri(imgSrc, ImageLoader.getInstance().getMemoryCache()).size() == 0;
-
-                        loadableImageFound = true;
-						ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
-
-							@Override
-							public void onLoadingCancelled(String arg0,
-									View arg1) {
-								// TODO Auto-generated method stub
-								
-							}
-
-							@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                            @Override
-							public void onLoadingComplete(String arg0,
-									View arg1, Bitmap arg2) {
-								// TODO Auto-generated method stub
-								
-								if (!isAdded() || arg2 == null) return;
-
-                                flavorImageLoadingBar.setVisibility(View.INVISIBLE);
-
-								if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
-                                    if (!m_activity.isCompatMode() && weNeedAnimation) {
-
-                                        ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
-                                        anim.setDuration(200);
-                                        anim.start();
-
+                                        }
+                                        //flavorImageHolder.setVisibility(View.VISIBLE);
+                                    } else {
+                                        flavorImageHolder.setVisibility(View.GONE);
                                     }
-                                    //flavorImageHolder.setVisibility(View.VISIBLE);
-								} else {
+                                }
+
+                                @Override
+                                public void onLoadingFailed(String arg0,
+                                                            View arg1, FailReason arg2) {
+                                    // TODO Auto-generated method stub
                                     flavorImageHolder.setVisibility(View.GONE);
                                 }
-							}
 
-							@Override
-							public void onLoadingFailed(String arg0,
-									View arg1, FailReason arg2) {
-								// TODO Auto-generated method stub
-                                flavorImageHolder.setVisibility(View.GONE);
-                            }
+                                @Override
+                                public void onLoadingStarted(String arg0,
+                                                             View arg1) {
+                                    // TODO Auto-generated method stub
 
-							@Override
-							public void onLoadingStarted(String arg0,
-									View arg1) {
-								// TODO Auto-generated method stub
-								
-							}
-							
-						});
+                                }
+
+                            });
+                        }
                     }
-				}
 
-                if (!loadableImageFound && holder.flavorImageHolder != null) {
+                    if (!loadableImageFound && holder.flavorImageHolder != null) {
+                        holder.flavorImageHolder.setVisibility(View.GONE);
+                    }
+                } else if (holder.flavorImageHolder != null) {
                     holder.flavorImageHolder.setVisibility(View.GONE);
                 }
-			} else if (holder.flavorImageHolder != null) {
-				holder.flavorImageHolder.setVisibility(View.GONE);
-			}
+            } else {
+                holder.flavorImageHolder.setVisibility(View.GONE);
+            }
 			
 			String articleAuthor = article.author != null ? article.author : "";
 			
@@ -955,6 +965,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});								
 			}
+
+            if (m_compactLayoutMode && m_activity.isSmallScreen()) {
+                if (holder.headlineFooter != null) {
+                    holder.headlineFooter.setVisibility(View.GONE);
+                }
+            }
 			
 			return v;
 		}

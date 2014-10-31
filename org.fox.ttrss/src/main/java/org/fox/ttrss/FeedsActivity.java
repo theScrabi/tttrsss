@@ -35,11 +35,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected SharedPreferences m_prefs;
 	protected long m_lastRefresh = 0;
 	
-	//private boolean m_actionbarUpEnabled = false;
-	//private int m_actionbarRevertDepth = 0;
-	//private SlidingMenu m_slidingMenu;
 	private boolean m_feedIsSelected = false;
-	//private boolean m_feedWasSelected = false;
 
     private ActionBarDrawerToggle m_drawerToggle;
     private DrawerLayout m_drawerLayout;
@@ -189,7 +185,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
 			}
 			
-			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
+			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 
@@ -229,15 +225,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					//m_feedWasSelected = true;
 					
 					if (m_drawerLayout != null) {
-						/* if (findViewById(R.id.sw600dp_port_anchor) != null) {
-							m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-						} */
-
                         m_drawerLayout.closeDrawers();
-
-						//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-						//m_actionbarUpEnabled = true;
-						
 					}
 				}
 			}, 10);
@@ -336,14 +324,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);	
 		
-		//out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
-		//out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
-		//out.putBoolean("feedWasSelected", m_feedWasSelected);
-		
-		//if (m_slidingMenu != null )
-		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
-		
+
 		GlobalState.getInstance().save(out);
 	}
 	

@@ -155,15 +155,8 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 
-		//out.putBoolean("actionbarUpEnabled", m_actionbarUpEnabled);
-		//out.putInt("actionbarRevertDepth", m_actionbarRevertDepth);
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
-		//out.putBoolean("feedWasSelected", m_feedWasSelected);
 
-		
-		//if (m_slidingMenu != null )
-		//	out.putBoolean("slidingMenuVisible", m_slidingMenu.isMenuShowing());
-		
 		GlobalState.getInstance().save(out);
 	}
 	
@@ -185,7 +178,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());				
 			}
 			
-			m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
+			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
 

@@ -651,7 +651,7 @@ public class OnlineActivity extends CommonActivity {
 		/* case android.R.id.home:
 			finish();
 			return true; */
-		case R.id.headlines_toggle_sidebar:
+		/* case R.id.headlines_toggle_sidebar:
 			if (true && !isSmallScreen()) {
 				View v = findViewById(R.id.headlines_fragment); 
 				
@@ -663,7 +663,7 @@ public class OnlineActivity extends CommonActivity {
 					v.setVisibility(m_prefs.getBoolean("headlines_hide_sidebar", false) ? View.GONE : View.VISIBLE);
 				}
 			}
-			return true;
+			return true; */
 		case R.id.subscribe_to_feed:
 			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
 			startActivityForResult(subscribe, 0);

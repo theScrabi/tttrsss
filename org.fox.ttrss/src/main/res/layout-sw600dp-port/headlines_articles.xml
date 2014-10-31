@@ -12,27 +12,25 @@
         android:visibility="gone" >
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/fragment_container"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/headlines_drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <FrameLayout
-            android:id="@+id/headlines_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:background="?headlinesBackgroundSolid" >
-        </FrameLayout>
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/article_fragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.7"
-            android:background="?articleBackground" >
+            android:layout_height="match_parent"
+            android:background="?articleBackground">
         </FrameLayout>
-    </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/headlines_fragment"
+            android:layout_height="match_parent"
+            android:layout_width="300dp"
+            android:layout_gravity="start"
+            android:background="?headlinesBackgroundSolid">
+        </FrameLayout>
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
