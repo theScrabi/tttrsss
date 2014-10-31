@@ -19,11 +19,13 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -295,8 +297,22 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		m_cursor = createCursor();
 		
-		ListView list = (ListView)view.findViewById(R.id.headlines);		
-		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_cursor,
+		ListView list = (ListView)view.findViewById(R.id.headlines);
+
+        if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+            WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            int screenHeight = display.getHeight();
+
+            View layout = inflater.inflate(R.layout.headlines_footer, container, false);
+
+            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
+
+            list.addFooterView(layout);
+        }
+
+
+        m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_cursor,
 				new String[] { "title" }, new int[] { R.id.title }, 0);
 		
 		/* if (!m_activity.isCompatMode()) {

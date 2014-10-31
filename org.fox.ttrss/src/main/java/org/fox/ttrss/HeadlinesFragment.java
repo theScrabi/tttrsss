@@ -20,11 +20,13 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -316,28 +318,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	    }
 
 		
-		ListView list = (ListView)view.findViewById(R.id.headlines);		
+		ListView list = (ListView)view.findViewById(R.id.headlines);
+
+        if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+            WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            int screenHeight = display.getHeight();
+
+            View layout = inflater.inflate(R.layout.headlines_footer, container, false);
+
+            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
+
+            list.addFooterView(layout);
+        }
+
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
-		
-		/* if (!m_activity.isCompatMode()) {
-			AnimationSet set = new AnimationSet(true);
-	
-		    Animation animation = new AlphaAnimation(0.0f, 1.0f);
-		    animation.setDuration(500);
-		    set.addAnimation(animation);
-	
-		    animation = new TranslateAnimation(
-		        Animation.RELATIVE_TO_SELF, 50.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-		        Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f
-		    );
-		    animation.setDuration(1000);
-		    set.addAnimation(animation);
-	
-		    LayoutAnimationController controller = new LayoutAnimationController(set, 0.5f);
-	
-		    list.setLayoutAnimation(controller);
-		} */
-		
+
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		list.setOnScrollListener(this);
@@ -347,11 +343,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
         }
-
-        //m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
-
-		//if (m_activity.isSmallScreen())
-		//view.findViewById(R.id.headlines_fragment).setPadding(0, 0, 0, 0);
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
 		
@@ -399,7 +390,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (list != null) {
 			Article article = (Article)list.getItemAtPosition(position);
-			if (article.id >= 0) {
+
+            // could be footer or w/e
+			if (article != null && article.id >= 0) {
 				m_listener.onArticleSelected(article);
 				
 				// only set active article when it makes sense (in HeadlinesActivity)
