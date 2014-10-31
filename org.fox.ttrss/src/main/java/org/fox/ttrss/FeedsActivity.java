@@ -293,24 +293,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	
 	@Override
 	public void onBackPressed() {
-        super.onBackPressed();
-
-		/* if (m_actionbarRevertDepth > 0) {
-			
-			if (m_feedIsSelected && m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START)) {
-				m_drawerLayout.closeDrawers();
-			} else {			
-				m_actionbarRevertDepth = m_actionbarRevertDepth - 1;
-				m_actionbarUpEnabled = m_actionbarRevertDepth > 0;
-				getSupportActionBar().setDisplayHomeAsUpEnabled(m_actionbarUpEnabled);
-			
-				onBackPressed();
-			}
-		} else if (m_slidingMenu != null && !m_slidingMenu.isMenuShowing()) {
-			m_slidingMenu.showMenu();
-		} else {
-			super.onBackPressed();
-		} */
+        if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START)) {
+            m_drawerLayout.openDrawer(Gravity.START);
+        } else {
+            super.onBackPressed();
+        }
 	}
 	
 	@Override
