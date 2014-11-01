@@ -279,7 +279,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		return null;
 	}
 	
-	protected static void trustAllHosts(boolean trustAnyCert, boolean trustAnyHost) {
+	public static void trustAllHosts(boolean trustAnyCert, boolean trustAnyHost) {
 	    try {
 	    	if (trustAnyCert) {
 	    	    X509TrustManager easyTrustManager = new X509TrustManager() {
