@@ -27,7 +27,7 @@
         <FrameLayout
             android:id="@+id/headlines_fragment"
             android:layout_height="match_parent"
-            android:layout_width="400dp"
+            android:layout_width="500dp"
             android:layout_gravity="start"
             android:background="?headlinesBackgroundSolid">
         </FrameLayout>
