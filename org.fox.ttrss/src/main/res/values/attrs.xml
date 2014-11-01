@@ -23,8 +23,6 @@
     <attr name="headlineTitleHighScoreUnreadTextColor" format="reference|color" />
     <attr name="linkColor" format="reference|color" />
     <attr name="loadingBackground" format="reference|color" />
-    <attr name="unreadCounterBackground" format="reference|color" />    
-    <attr name="unreadSelectedCounterBackground" format="reference|color" />
     <attr name="articleNoteBackground" format="reference|color" />
     <attr name="articleNoteTextColor" format="reference|color" />
     <attr name="statusBarHintColor" format="reference|color" />

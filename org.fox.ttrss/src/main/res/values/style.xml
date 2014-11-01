@@ -5,14 +5,14 @@
 	    <item name="smallScreenBackground">#eeeeee</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
 		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
-		<item name="unreadCounterColor">#ffffff</item>
+		<item name="unreadCounterColor">#909090</item>
 		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
 		<item name="headlinesBackgroundSolid">#f0f0f0</item>
 		<item name="articleBackground">@android:color/transparent</item>
 		<item name="headlineSelectedBackground">#88b0f0</item>
 		<item name="headlineUnreadBackground">@android:color/white</item>
 		<item name="headlineNormalBackground">#f5f5f5</item>
-		<item name="feedsSelectedBackground">#88b0f0</item>
+		<item name="feedsSelectedBackground">#526a8e</item>
 		<item name="feedlistTextColor">@android:color/primary_text_light</item>
 		<item name="feedlistSelectedTextColor">#ffffff</item>
     	<item name="headlineTextColor">@android:color/secondary_text_light</item>
@@ -25,8 +25,6 @@
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
     	<item name="linkColor">#4684ff</item>
     	<item name="loadingBackground">@android:color/white</item>
-    	<item name="unreadCounterBackground">@drawable/counter_background</item>    	    	
-    	<item name="unreadSelectedCounterBackground">@drawable/counter_background_selected_light</item>
     	<item name="articleNoteTextColor">#9a8c59</item>
     	<item name="articleNoteBackground">#fff7d5</item>
         <item name="parentBtnBackground">#dddddd</item>
@@ -46,10 +44,8 @@
 		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
 		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
 		<item name="headlineSelectedBackground">#E5B0A0</item>
-		<item name="feedsSelectedBackground">#E5B0A0</item>
+		<item name="feedsSelectedBackground">#7F3F3F</item>
 		<item name="articleBackground">@drawable/paper_sepia</item>
-		<item name="unreadCounterBackground">@drawable/counter_background_sepia</item>
-		<item name="unreadSelectedCounterBackground">@drawable/counter_background_sepia</item>
 		<item name="feedlistTextColor">#35281C</item>
 		<item name="linkColor">#C46262</item>
 
@@ -66,7 +62,7 @@
 	    <item name="smallScreenBackground">@android:color/transparent</item>
 		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
 		<item name="feedlistBackground">@android:color/transparent</item>
-		<item name="unreadCounterColor">#ffffff</item>
+		<item name="unreadCounterColor">#909090</item>
 		<item name="headlinesBackground">@android:color/black</item>
 		<item name="headlinesBackgroundSolid">@android:color/black</item>
 		<item name="articleBackground">@android:color/black</item>
@@ -86,8 +82,6 @@
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="linkColor">@color/ics_cyan</item>
         <item name="loadingBackground">@android:color/black</item>
-        <item name="unreadCounterBackground">@drawable/counter_background_dark</item>
-        <item name="unreadSelectedCounterBackground">@drawable/counter_background_dark</item>
     	<item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
     	<item name="articleNoteBackground">#303030</item>
         <item name="parentBtnBackground">#101010</item>
@@ -106,11 +100,10 @@
 		<item name="articleBackground">@color/feeds_dark_gray</item>
 		<item name="headlineSelectedBackground">#51698E</item>
 		<item name="headlineUnreadBackground">#383c42</item>
-		<item name="feedsSelectedBackground">#51698E</item>
+		<item name="feedsSelectedBackground">#445877</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
-        <!--  <item name="actionBarStyle">@style/ActionBarDarkGray</item> -->
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
 
         <item name="colorPrimary">#51698E</item>
