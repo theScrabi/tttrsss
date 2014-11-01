@@ -592,7 +592,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
 			if (te != null) {
-				if ((m_compactLayoutMode && m_activity.isSmallScreen()) || !m_prefs.getBoolean("headlines_show_content", true)) {
+				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					te.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
@@ -683,12 +683,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					}
 				});								
 			}
-
-            View headlineFooter = v.findViewById(R.id.headline_footer);
-
-            if (headlineFooter != null && m_compactLayoutMode && m_activity.isSmallScreen()) {
-                headlineFooter.setVisibility(View.GONE);
-            }
 
             return v;
 		}

@@ -768,7 +768,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContent = article.content != null ? article.content : "";
 
 			if (holder.excerptView != null) {
-				if ((m_compactLayoutMode && m_activity.isSmallScreen()) || !m_prefs.getBoolean("headlines_show_content", true)) {
+				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(articleContent).text(); 
@@ -966,12 +966,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});								
 			}
 
-            if (m_compactLayoutMode && m_activity.isSmallScreen()) {
-                if (holder.headlineFooter != null) {
-                    holder.headlineFooter.setVisibility(View.GONE);
-                }
-            }
-			
 			return v;
 		}
 

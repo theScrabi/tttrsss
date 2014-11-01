@@ -4,25 +4,19 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/headlines_drawer"
+    <FrameLayout
+        android:id="@+id/article_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?articleBackground">
+    </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/article_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?articleBackground">
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/headlines_fragment"
-            android:layout_height="match_parent"
-            android:layout_width="240dp"
-            android:layout_gravity="start"
-            android:background="?headlinesBackgroundSolid">
-        </FrameLayout>
-    </android.support.v4.widget.DrawerLayout>
+    <FrameLayout
+        android:id="@+id/headlines_fragment"
+        android:visibility="gone"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:background="?headlinesBackgroundSolid">
+    </FrameLayout>
 
 </FrameLayout>
