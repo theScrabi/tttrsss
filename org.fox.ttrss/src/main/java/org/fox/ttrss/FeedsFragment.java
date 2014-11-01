@@ -389,8 +389,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				}
 			}
 			
-			if (!m_activity.isSmallScreen())
-				m_selectedFeed = feed;
+    		m_selectedFeed = feed;
 			
 			m_adapter.notifyDataSetChanged();
 		}
