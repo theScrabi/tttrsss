@@ -26,7 +26,7 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_select_all_light"
-            app:showAsAction=""
+            app:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
         <item
             android:id="@+id/headlines_view_mode"
