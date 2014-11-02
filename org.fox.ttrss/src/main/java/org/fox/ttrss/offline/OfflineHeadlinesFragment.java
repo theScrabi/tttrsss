@@ -315,7 +315,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-            list.addFooterView(layout);
+            list.addFooterView(layout, null, false);
         }
 
 

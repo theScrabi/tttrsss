@@ -275,8 +275,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		} else {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 			Article article = getArticleAtPosition(info.position);
-			menu.setHeaderTitle(Html.fromHtml(article.title));
-			menu.setGroupVisible(R.id.menu_group_single_article, true);
+
+            menu.setHeaderTitle(Html.fromHtml(article.title));
+            menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
 		
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
@@ -334,7 +335,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-            list.addFooterView(layout);
+            list.addFooterView(layout, null, false);
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
