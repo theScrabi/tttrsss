@@ -905,7 +905,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 } else if (holder.flavorImageHolder != null) {
                     holder.flavorImageHolder.setVisibility(View.GONE);
                 }
-            } else {
+            } else if (holder.flavorImageHolder != null) {
                 holder.flavorImageHolder.setVisibility(View.GONE);
             }
 			
