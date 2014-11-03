@@ -57,10 +57,11 @@ public class ArticleFragment extends Fragment  {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 
-		if (v.getId() == R.id.content) {
+		if (v.getId() == R.id.article_content) {
 			HitTestResult result = ((WebView)v).getHitTestResult();
 
 			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+
 				menu.setHeaderTitle(result.getExtra());
 				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
 				
@@ -217,7 +218,7 @@ public class ArticleFragment extends Fragment  {
 					public boolean onLongClick(View v) {
 						HitTestResult result = ((WebView)v).getHitTestResult();
 
-						if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+                        if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
 							registerForContextMenu(web);
 							m_activity.openContextMenu(web);
 							unregisterForContextMenu(web);

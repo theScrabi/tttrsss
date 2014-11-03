@@ -90,7 +90,7 @@ public class OfflineArticleFragment extends Fragment {
 		
 		String title = m_cursor.getString(m_cursor.getColumnIndex("title"));
 		
-		if (v.getId() == R.id.content) {
+		if (v.getId() == R.id.article_content) {
 			HitTestResult result = ((WebView)v).getHitTestResult();
 
 			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
