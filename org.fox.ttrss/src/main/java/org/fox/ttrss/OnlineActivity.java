@@ -1201,8 +1201,13 @@ public class OnlineActivity extends CommonActivity {
 
     protected void logout() {
 		setSessionId(null);
-		
-		findViewById(R.id.loading_container).setVisibility(View.VISIBLE);
+
+        View loadingContainer = findViewById(R.id.loading_container);
+
+        if (loadingContainer != null) {
+            loadingContainer.setVisibility(View.VISIBLE);
+        }
+
 		setLoadingStatus(R.string.login_ready, false);
 
 		initMenu();
