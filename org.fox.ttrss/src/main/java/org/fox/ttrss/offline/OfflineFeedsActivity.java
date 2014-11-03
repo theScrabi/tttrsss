@@ -120,16 +120,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			startActivityForResult(intent, 0);
 		}
 	}
-	
-	@Override
-	public void onBackPressed() {
-        if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START)) {
-            m_drawerLayout.openDrawer(Gravity.START);
-        } else {
-            super.onBackPressed();
-        }
-	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {

@@ -278,16 +278,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	public void onCatSelected(FeedCategory cat) {
 		onCatSelected(cat, m_prefs.getBoolean("browse_cats_like_feeds", false));		
 	}
-	
-	@Override
-	public void onBackPressed() {
-        if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START)) {
-            m_drawerLayout.openDrawer(Gravity.START);
-        } else {
-            super.onBackPressed();
-        }
-	}
-	
+
+    @Override
+    public void logout() {
+        super.logout();
+
+        finish();
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
