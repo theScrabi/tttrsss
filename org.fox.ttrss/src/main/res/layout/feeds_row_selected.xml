@@ -44,6 +44,7 @@
         android:layout_weight="0"
         android:singleLine="true"
         android:text="3200"
+        android:layout_marginLeft="16dp"
         android:textColor="?unreadCounterColor"
         android:textSize="14sp"
         android:textStyle="bold" />
