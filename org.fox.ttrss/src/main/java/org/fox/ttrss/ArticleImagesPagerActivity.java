@@ -1,6 +1,7 @@
 package org.fox.ttrss;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,6 +30,10 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.viewpagerindicator.UnderlinePageIndicator;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     private ArrayList<String> m_checkedUrls;
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
+    private String m_content;
 
     private class ArticleImagesPagerAdapter extends PagerAdapter {
         private List<String> m_urls;
@@ -196,9 +203,11 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         if (savedInstanceState == null) {
             m_title = getIntent().getStringExtra("title");
             m_urls = getIntent().getStringArrayListExtra("urls");
+            m_content = getIntent().getStringExtra("content");
         } else {
             m_urls = savedInstanceState.getStringArrayList("urls");
             m_title = savedInstanceState.getString("title");
+            m_content = savedInstanceState.getString("content");
         }
 
 
@@ -250,9 +259,6 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
         getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
 
-        // not supported here yet
-        menu.findItem(R.id.article_img_view_caption).setVisible(false);
-
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -263,14 +269,13 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
         out.putStringArrayList("urls", m_urls);
         out.putString("title", m_title);
+        out.putString("content", m_content);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
 
-        // not supported here yet
-        menu.findItem(R.id.article_img_view_caption).setVisible(false);
 
         return true;
     }
@@ -323,14 +328,14 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                 }
                 return true;
             // TODO: this needs access to article text, I'm afraid
-            /* case R.id.article_img_view_caption:
+            case R.id.article_img_view_caption:
                 if (url != null) {
 
                     // Android doesn't give us an easy way to access title tags;
                     // we'll use Jsoup on the body text to grab the title text
                     // from the first image tag with this url. This will show
                     // the wrong text if an image is used multiple times.
-                    Document doc = Jsoup.parse(ap.getSelectedArticle().content);
+                    Document doc = Jsoup.parse(m_content);
                     Elements es = doc.getElementsByAttributeValue("src", url);
                     if (es.size() > 0) {
                         if (es.get(0).hasAttr("title")) {
@@ -359,7 +364,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                         toast(R.string.no_caption_to_display);
                     }
                 }
-                return true; */
+                return true;
             default:
                 Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
                 return super.onContextItemSelected(item);

@@ -826,6 +826,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                     Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
                                     intent.putExtra("urls", imgsList);
                                     intent.putExtra("title", article.title);
+                                    intent.putExtra("content", article.content);
 
                                     startActivityForResult(intent, 0);
                                     //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
