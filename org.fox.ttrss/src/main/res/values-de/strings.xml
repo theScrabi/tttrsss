@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="login_in_progress">Anmelden…</string>
     <string name="app_name">Tiny Tiny RSS</string>
     <string name="login_need_configure">Bitte erst Einstellungen überprüfen.</string>
@@ -14,9 +15,9 @@
     <string name="pref_theme">Theme</string>
     <string name="pref_theme_long">Ändert die Farbeinstellungen</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
+    <string name="theme_light">Hell</string>
     <string name="theme_dark">Dunkel</string>
     <string name="preferences">Einstellungen</string>
-    <string name="theme_light">Hell</string>
     <string name="connection">Verbindung</string>
     <string name="headline_context_multiple">Ausgewählte Artikel</string>
     <string name="http_authentication">HTTP Authentifizierung</string>
@@ -54,7 +55,7 @@
     <string name="download_feed_icons">Feedsymbole herunterladen</string>
     <string name="enable_cats">Feedkategorien anzeigen</string>
     <string name="no_feeds_to_display">Keine Feeds zum Anzeigen</string>
-    <string name="no_headlines_to_display">Keine Überschriften zum Anzeigen.</string>
+    <string name="no_headlines_to_display">Keine Überschriften zum Anzeigen</string>
     <string name="browse_cats_like_feeds">Kategorien als Feeds anzeigen</string>
     <string name="browse_cats_like_feeds_summary">Kann im Kontextmenü jeder Kategorie angepasst werden.</string>
     <string name="headlines_mark_as_read">Als gelesen markieren</string>
@@ -146,9 +147,11 @@
     <string name="prefs_dim_status_bar">Statusleiste abdunkeln</string>
     <string name="prefs_dim_status_bar_long">Statusleiste beim Lesen dunkler machen</string>
     <string name="article_comments">%1$d Kommentare</string>
+
     <plurals name="trial_mode_prompt">
         <item quantity="other">Testversion, %1$d Tag(e) übrig.</item>
     </plurals>
+
     <string name="trial_purchase">Vollversion freischalten</string>
     <string name="trial_expired">Testzeitraum abgelaufen</string>
     <string name="trial_expired_message">Um Tiny Tiny RSS weiterhin nutzen zu können kaufen Sie bitte den Schlüssel.</string>
@@ -195,14 +198,18 @@
     <string name="light_theme_is_not_supported_on_honeycomb">Helle Oberfläche wird auf Honeycomb nicht unterstützt</string>
     <string name="pref_headlines_mark_read_scroll">Beim scrollen als gelesen markieren</string>
     <string name="pref_headlines_mark_read_scroll_long">Überschriften werden beim Vorbeiscrollen als gelesen markiert</string>
+
     <plurals name="mark_num_headlines_as_read">
         <item quantity="other">%1$d Artikel als gelesen markieren?</item>
     </plurals>
+
     <string name="prefs_confirm_headlines_catchup">Nachfragen, bevor Artikel als gelesen markiert werden</string>
     <string name="author_formatted">von %1$s</string>
+
     <plurals name="n_unread_articles">
         <item quantity="other">%1$d ungelesene Artikel</item>
     </plurals>
+
     <string name="pref_headline_font_size">Schriftgröße Überschriften</string>
     <string name="context_confirm_catchup">Alle Artikel in %1$s als gelesen markieren?</string>
     <string name="theme_system">Voreinstellung des Systems</string>
@@ -215,12 +222,13 @@
     <string name="synchronize_read_articles_and_go_online">Gelesene Artikel synchronisieren und online gehen</string>
     <string name="prefs_compatible_article_layout">Kompatibles Artikel-Layout</string>
     <string name="prefs_compatible_layout_summary">Aktivieren, falls der Inhalt von Artikeln nicht richtig dargestellt wird</string>
-    <string name="pref_headlines_use_condensed_fonts">Schmale Schriftart benutzen</string>
-    <string name="pref_headlines_use_condensed_fonts_long">Benutzt einen schmaleren Schriftstil für Überschriften und einige andere Elemente.</string>
     <string name="font_size_dialog_suffix">sp</string>
     <string name="server_function_not_available">Diese Funktion ist für deine Version von tt-rss leider nicht verfügbar.</string>
     <string name="unsubscribe">Nicht mehr abonnieren</string>
     <string name="unsubscribe_from_prompt">Feed %1$s wirklich abbestellen?</string>
     <string name="toggle_sidebar">Seitenleiste umschalten</string>
     <string name="open_article_in_web_browser">In Webbrowser öffnen</string>
+    <string name="pref_headlines_use_condensed_fonts">Schmale Schriftart benutzen</string>
+    <string name="pref_headlines_use_condensed_fonts_long">Benutzt einen schmaleren Schriftstil für Überschriften und einige andere Elemente.</string>
+
 </resources>
