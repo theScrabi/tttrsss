@@ -296,7 +296,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		case android.R.id.home:
             //getSupportFragmentManager().popBackStack();
 			return true;
-		case R.id.show_feeds:
+        case R.id.headlines_toggle_sort_order:
+            SharedPreferences.Editor editor = m_prefs.edit();
+            editor.putBoolean("oldest_first", !m_prefs.getBoolean("oldest_first", false));
+            editor.commit();
+            refresh();
+            return true;
+        case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			initMenu();
 			refresh();

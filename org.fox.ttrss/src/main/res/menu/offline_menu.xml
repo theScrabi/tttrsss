@@ -16,6 +16,7 @@
     <group android:id="@+id/menu_group_headlines" >
         <item
             android:id="@+id/search"
+            app:showAsAction="ifRoom"
             android:icon="@drawable/ic_search_light"
             android:title="@string/search"/>
         <item
@@ -26,8 +27,15 @@
         <item
             android:id="@+id/headlines_select"
             android:icon="@drawable/ic_select_all_light"
-            app:showAsAction="ifRoom"
+            app:showAsAction=""
             android:title="@string/headlines_select"/>
+
+        <item
+            android:id="@+id/toggle_sort_order"
+            android:icon="@drawable/ic_action_sort_by_size"
+            app:showAsAction="ifRoom"
+            android:title="@string/toggle_sort_order"/>
+
         <item
             android:id="@+id/headlines_view_mode"
             app:showAsAction=""

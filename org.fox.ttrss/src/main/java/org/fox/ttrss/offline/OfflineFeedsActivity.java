@@ -2,6 +2,7 @@ package org.fox.ttrss.offline;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,6 +132,12 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		case android.R.id.home:
             //getSupportFragmentManager().popBackStack();
 			return true;
+        case R.id.headlines_toggle_sort_order:
+            SharedPreferences.Editor editor = m_prefs.edit();
+            editor.putBoolean("offline_oldest_first", !m_prefs.getBoolean("offline_oldest_first", false));
+            editor.commit();
+            refresh();
+            return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			initMenu();
