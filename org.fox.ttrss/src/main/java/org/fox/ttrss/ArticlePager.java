@@ -279,7 +279,7 @@ public class ArticlePager extends Fragment {
 			GlobalState.getInstance().m_activeFeed = m_feed;
 		}
 		
-		m_activity.initMenu();
+		m_activity.invalidateOptionsMenu();
 		
 		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
 			getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);

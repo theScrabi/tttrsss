@@ -350,7 +350,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
 		refresh(false);
 		
-		m_activity.initMenu();
+		m_activity.invalidateOptionsMenu();
 	}
 	
 	@Override

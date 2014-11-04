@@ -171,7 +171,7 @@ public class OfflineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-		initMenu();
+		invalidateOptionsMenu();
 
 		Intent intent = getIntent();
 		
@@ -389,7 +389,7 @@ public class OfflineActivity extends CommonActivity {
 									int which) {
 
 								selectArticles(ohf.getFeedId(), ohf.getFeedIsCat(), which);
-								initMenu();
+								invalidateOptionsMenu();
 								refresh();
 
 								dialog.cancel();
@@ -788,7 +788,7 @@ public class OfflineActivity extends CommonActivity {
 			ohf.refresh();		
 		}
 		
-		initMenu();		
+		invalidateOptionsMenu();
 	}
 
 	public void catchupFeed(int feedId, boolean isCat) {

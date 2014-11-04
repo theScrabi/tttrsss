@@ -245,7 +245,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		refresh();
 		
-		m_activity.initMenu();
+		m_activity.invalidateOptionsMenu();
 	}
 	
 	public void refresh() {
@@ -658,7 +658,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						
 						refresh();
 						
-						m_activity.initMenu();
+						m_activity.invalidateOptionsMenu();
 						
 					}
 				});

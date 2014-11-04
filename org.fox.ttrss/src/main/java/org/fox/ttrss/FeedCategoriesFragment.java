@@ -257,7 +257,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		refresh(false);
 		
-		m_activity.initMenu();
+		m_activity.invalidateOptionsMenu();
 	}
 	
 	@Override

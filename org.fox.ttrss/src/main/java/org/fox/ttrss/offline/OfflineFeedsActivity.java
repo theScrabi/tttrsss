@@ -104,8 +104,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 			ft.commit();
 		}
-
-		initMenu();
 	}
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -184,7 +182,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
             return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
-			initMenu();
+			invalidateOptionsMenu();
 			refresh();
 			return true;
 		default:
@@ -323,7 +321,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			stmt.close();
 		}
 		
-		initMenu();
+		invalidateOptionsMenu();
 		
 		if (open) {
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
@@ -340,8 +338,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		} else {
 			refresh();
 		}
-		
-		initMenu();
 
 	}
 

@@ -151,7 +151,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	protected void loginSuccess(boolean refresh) {
 		Log.d(TAG, "loginSuccess");
 
-		initMenu();
+		invalidateOptionsMenu();
 		
 		if (refresh) refresh();
 	}
@@ -221,7 +221,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public void onArticleListSelectionChange(ArticleList m_selectedArticles) {
-		initMenu();
+		invalidateOptionsMenu();
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		GlobalState.getInstance().m_activeArticle = article;
 		
-		initMenu();
+		invalidateOptionsMenu();
 		
 	}
 

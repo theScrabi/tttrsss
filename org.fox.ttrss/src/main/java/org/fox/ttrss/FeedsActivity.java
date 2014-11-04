@@ -353,7 +353,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             return true;
         case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
-			initMenu();
+			invalidateOptionsMenu();
 			refresh();
 			return true;
 		case R.id.update_feeds:
@@ -373,7 +373,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 	@Override
 	protected void loginSuccess(boolean refresh) {
-		initMenu();
+		invalidateOptionsMenu();
 
 		if (refresh) refresh();
 	}
@@ -390,12 +390,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	public void onResume() {
 		super.onResume();
-		initMenu();
+		invalidateOptionsMenu();
 	}
 
 	@Override
 	public void onArticleListSelectionChange(ArticleList m_selectedArticles) {
-		initMenu();		
+		invalidateOptionsMenu();
 	}
 
 	public void openFeedArticles(Feed feed) {
@@ -428,7 +428,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			overridePendingTransition(R.anim.right_slide_in, 0);
 
 		} else {
-			initMenu();
+			invalidateOptionsMenu();
 		}
 	}
 

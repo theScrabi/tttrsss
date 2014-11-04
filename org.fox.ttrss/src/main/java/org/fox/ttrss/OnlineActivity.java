@@ -113,7 +113,7 @@ public class OnlineActivity extends CommonActivity {
 				ArticleList selected = hf.getSelectedArticles();
 				if (selected.size() > 0) {
 					selected.clear();
-					initMenu();
+					invalidateOptionsMenu();
 					hf.notifyUpdated();
 				}
 			}
@@ -908,7 +908,7 @@ public class OnlineActivity extends CommonActivity {
 											break;
 										}
 										dialog.cancel();
-										initMenu();
+										invalidateOptionsMenu();
 									}
 								});
 
@@ -934,7 +934,7 @@ public class OnlineActivity extends CommonActivity {
 				ArticleList selected = hf.getSelectedArticles();
 				if (selected.size() > 0) {
 					selected.clear();
-					initMenu();
+					invalidateOptionsMenu();
 					hf.notifyUpdated();
 				}
 			}
@@ -949,7 +949,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesUnread(selected);
 					hf.notifyUpdated();
-					initMenu();
+					invalidateOptionsMenu();
 				}
 			}
 			return true;
@@ -963,7 +963,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesMarked(selected);
 					hf.notifyUpdated();
-					initMenu();
+					invalidateOptionsMenu();
 				}
 			}
 			return true;
@@ -977,7 +977,7 @@ public class OnlineActivity extends CommonActivity {
 
 					toggleArticlesPublished(selected);
 					hf.notifyUpdated();
-					initMenu();
+					invalidateOptionsMenu();
 				}
 			}
 			return true;
@@ -1008,7 +1008,7 @@ public class OnlineActivity extends CommonActivity {
 					if (tmp.size() > 0) {
 						toggleArticlesUnread(tmp);
 						hf.notifyUpdated();
-						initMenu();
+						invalidateOptionsMenu();
 					}
 				}
 			}
@@ -1331,7 +1331,7 @@ public class OnlineActivity extends CommonActivity {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
 				//toast(article.marked ? R.string.notify_article_marked : R.string.notify_article_unmarked);
-				initMenu();
+				invalidateOptionsMenu();
 			}
 		};
 
@@ -1354,7 +1354,7 @@ public class OnlineActivity extends CommonActivity {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
 				//toast(article.published ? R.string.notify_article_published : R.string.notify_article_unpublished);
-				initMenu();
+				invalidateOptionsMenu();
 			}
 		};
 

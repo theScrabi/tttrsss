@@ -116,8 +116,6 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 
 			}
 		} 
-		
-		initMenu();
 	}
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -172,7 +170,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		GlobalState.getInstance().m_selectedArticleId = articleId;
 		
-		initMenu();
+		invalidateOptionsMenu();
 		refresh();
 	}
 	

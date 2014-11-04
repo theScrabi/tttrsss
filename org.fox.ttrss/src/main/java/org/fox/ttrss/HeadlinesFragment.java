@@ -377,7 +377,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			notifyUpdated();
 		}
 		
-		m_activity.initMenu();
+		m_activity.invalidateOptionsMenu();
 	}
 
 	@Override
