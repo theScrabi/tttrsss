@@ -206,7 +206,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			ff.initialize(catId, true);
 
 			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-			ft.addToBackStack(null);
+			//ft.addToBackStack(null);
 
 			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			//m_actionbarUpEnabled = true;

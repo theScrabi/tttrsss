@@ -257,7 +257,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			ff.initialize(cat, true);
 			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 
-			ft.addToBackStack(null);
+			//ft.addToBackStack(null);
 			ft.commit();
 			
 			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
