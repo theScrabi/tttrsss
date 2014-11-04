@@ -149,7 +149,8 @@
     <string name="article_comments">%1$d Kommentare</string>
 
     <plurals name="trial_mode_prompt">
-        <item quantity="other">Testversion, %1$d Tag(e) übrig.</item>
+        <item quantity="one">Testversion, noch ein Tag übrig.</item>
+        <item quantity="other">Testversion, %1$d Tage übrig.</item>
     </plurals>
 
     <string name="trial_purchase">Vollversion freischalten</string>
@@ -207,6 +208,8 @@
     <string name="author_formatted">von %1$s</string>
 
     <plurals name="n_unread_articles">
+        <item quantity="zero">Kein ungelesener Artikel</item>
+        <item quantity="one">Ein ungelesener Artikel</item>
         <item quantity="other">%1$d ungelesene Artikel</item>
     </plurals>
 
