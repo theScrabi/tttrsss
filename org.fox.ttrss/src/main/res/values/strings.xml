@@ -244,5 +244,10 @@
     <string name="error_loading_image">Error loading image.</string>
     <string name="open_parent">Open parent</string>
     <string name="toggle_sort_order">Toggle oldest first</string>
+    <string name="headlines_sort_default">Default</string>
+    <string name="headlines_sort_newest_first">Newest first</string>
+    <string name="headlines_sort_oldest_first">Oldest first</string>
+    <string name="headlines_sort_title">Title</string>
+    <string name="headlines_sort_articles_title">Sort articles</string>
 
 </resources>

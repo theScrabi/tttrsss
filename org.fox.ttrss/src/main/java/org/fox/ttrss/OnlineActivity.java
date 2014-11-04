@@ -1723,13 +1723,25 @@ public class OnlineActivity extends CommonActivity {
 
 	}
 
-	public void setViewMode(String viewMode) {
+    public String getSortMode() {
+        return m_prefs.getString("headlines_sort_mode", "default");
+    }
+
+    public void setSortMode(String sortMode) {
+        Log.d(TAG, "setSortMode:" + sortMode);
+
+        SharedPreferences.Editor editor = m_prefs.edit();
+        editor.putString("headlines_sort_mode", sortMode);
+        editor.commit();
+    }
+
+    public void setViewMode(String viewMode) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putString("view_mode", viewMode);
 		editor.commit();
 	}
-	
-	public String getViewMode() {		
+
+	public String getViewMode() {
 		return m_prefs.getString("view_mode", "adaptive");
 	}
 	

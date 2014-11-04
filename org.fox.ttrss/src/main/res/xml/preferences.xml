@@ -106,11 +106,6 @@
         
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="oldest_first"
-            android:summary="@string/requires_api5"
-            android:title="@string/offline_oldest_first" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="headlines_mark_read_scroll"
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />
@@ -171,10 +166,6 @@
             android:key="offline_image_cache_enabled"
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="offline_oldest_first"
-            android:title="@string/offline_oldest_first" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
         <CheckBoxPreference

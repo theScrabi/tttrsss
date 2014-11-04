@@ -233,7 +233,7 @@ public class ArticlePager extends Fragment {
 				put("view_mode", m_activity.getViewMode());
 				put("skip", String.valueOf(fskip));
 				put("include_nested", "true");
-				put("order_by", m_prefs.getBoolean("oldest_first", false) ? "date_reverse" : "");
+				put("order_by", m_activity.getSortMode());
 				
 				if (feed.is_cat) put("is_cat", "true");
 				

@@ -823,7 +823,17 @@ public class OfflineActivity extends CommonActivity {
 		editor.putString("offline_view_mode", viewMode);
 		editor.commit();
 	}
-	
+
+    /* public String getSortMode() {
+        return m_prefs.getString("headlines_sort_mode", "default");
+    }
+
+    public void setSortMode(String sortMode) {
+        SharedPreferences.Editor editor = m_prefs.edit();
+        editor.putString("headlines_sort_mode", sortMode);
+        editor.commit();
+    } */
+
 	public String getViewMode() {		
 		return m_prefs.getString("offline_view_mode", "adaptive");
 	}

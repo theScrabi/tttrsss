@@ -2,6 +2,9 @@ package org.fox.ttrss;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -297,10 +300,58 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             //getSupportFragmentManager().popBackStack();
 			return true;
         case R.id.headlines_toggle_sort_order:
-            SharedPreferences.Editor editor = m_prefs.edit();
-            editor.putBoolean("oldest_first", !m_prefs.getBoolean("oldest_first", false));
-            editor.commit();
-            refresh();
+            Dialog dialog = new Dialog(this);
+
+            String sortMode = getSortMode();
+
+            int selectedIndex = 0;
+
+            if (sortMode.equals("feed_dates")) {
+                selectedIndex = 1;
+            } else if (sortMode.equals("date_reverse")) {
+                selectedIndex = 2;
+            } else if (sortMode.equals("title")) {
+                selectedIndex = 3;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.headlines_sort_articles_title))
+                    .setSingleChoiceItems(
+                            new String[] {
+                                    getString(R.string.headlines_sort_default),
+                                    getString(R.string.headlines_sort_newest_first),
+                                    getString(R.string.headlines_sort_oldest_first),
+                                    getString(R.string.headlines_sort_title)
+                            },
+                            selectedIndex, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    Log.d(TAG, "which:" + which);
+
+                                    switch (which) {
+                                        case 0:
+                                            setSortMode("default");
+                                            break;
+                                        case 1:
+                                            setSortMode("feed_dates");
+                                            break;
+                                        case 2:
+                                            setSortMode("date_reverse");
+                                            break;
+                                        case 3:
+                                            setSortMode("title");
+                                            break;
+                                    }
+                                    dialog.cancel();
+
+                                    refresh();
+                                }
+                            });
+
+            dialog = builder.create();
+            dialog.show();
+
             return true;
         case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
