@@ -129,7 +129,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
     	switch (item.getItemId()) {
 		case android.R.id.home:
-            onBackPressed();
+            //getSupportFragmentManager().popBackStack();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
@@ -206,7 +206,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			ff.initialize(catId, true);
 
 			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
-			//ft.addToBackStack(null);
+			ft.addToBackStack(null);
 
 			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			//m_actionbarUpEnabled = true;
@@ -215,8 +215,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			ft.commit();
 		}
 	}
-	
-	public void onFeedSelected(int feedId) {
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    public void onFeedSelected(int feedId) {
 		onFeedSelected(feedId, false, true);		
 	}
 

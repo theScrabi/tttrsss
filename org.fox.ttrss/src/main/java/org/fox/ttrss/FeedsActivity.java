@@ -257,7 +257,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			ff.initialize(cat, true);
 			ft.replace(R.id.feeds_fragment, ff, FRAG_FEEDS);
 
-			//ft.addToBackStack(null);
+			ft.addToBackStack(null);
 			ft.commit();
 			
 			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -294,7 +294,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
         switch (item.getItemId()) {
 		case android.R.id.home:
-            onBackPressed();
+            //getSupportFragmentManager().popBackStack();
 			return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
@@ -310,7 +310,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 	@Override
 	protected void loginSuccess(boolean refresh) {
 		initMenu();

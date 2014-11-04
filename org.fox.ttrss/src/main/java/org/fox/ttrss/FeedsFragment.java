@@ -304,7 +304,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
                 parentBtn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        m_activity.onBackPressed();
+                        m_activity.getSupportFragmentManager().popBackStack();
                     }
                 });
             } else {
