@@ -824,13 +824,17 @@ public class OfflineActivity extends CommonActivity {
 		editor.commit();
 	}
 
-    /* public String getSortMode() {
-        return m_prefs.getString("headlines_sort_mode", "default");
+    /* public boolean getOldestFirst() {
+        return getSortMode().equals("oldest_first");
+    }
+
+    public String getSortMode() {
+        return m_prefs.getString("offline_headlines_sort_mode", "default");
     }
 
     public void setSortMode(String sortMode) {
         SharedPreferences.Editor editor = m_prefs.edit();
-        editor.putString("headlines_sort_mode", sortMode);
+        editor.putString("offline_headlines_sort_mode", sortMode);
         editor.commit();
     } */
 

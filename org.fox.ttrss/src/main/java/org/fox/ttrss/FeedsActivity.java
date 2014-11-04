@@ -327,8 +327,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    Log.d(TAG, "which:" + which);
-
                                     switch (which) {
                                         case 0:
                                             setSortMode("default");

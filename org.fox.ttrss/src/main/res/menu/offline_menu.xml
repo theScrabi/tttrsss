@@ -31,7 +31,7 @@
             android:title="@string/headlines_select"/>
 
         <item
-            android:id="@+id/toggle_sort_order"
+            android:id="@+id/headlines_toggle_sort_order"
             android:icon="@drawable/ic_action_sort_by_size"
             app:showAsAction="ifRoom"
             android:title="@string/toggle_sort_order"/>

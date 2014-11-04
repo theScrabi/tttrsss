@@ -1,6 +1,9 @@
 package org.fox.ttrss.offline;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteStatement;
@@ -133,10 +136,51 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
             //getSupportFragmentManager().popBackStack();
 			return true;
         case R.id.headlines_toggle_sort_order:
-            SharedPreferences.Editor editor = m_prefs.edit();
+            /* SharedPreferences.Editor editor = m_prefs.edit();
             editor.putBoolean("offline_oldest_first", !m_prefs.getBoolean("offline_oldest_first", false));
             editor.commit();
-            refresh();
+            refresh(); */
+
+            Dialog dialog = new Dialog(this);
+
+            int selectedIndex = m_prefs.getBoolean("offline_oldest_first", false) ? 1 : 0;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.headlines_sort_articles_title))
+                    .setSingleChoiceItems(
+                            new String[] {
+                                    getString(R.string.headlines_sort_default),
+                                    getString(R.string.headlines_sort_oldest_first)
+                            },
+                            selectedIndex, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    switch (which) {
+                                        case 0:
+                                            if (true) {
+                                                SharedPreferences.Editor editor = m_prefs.edit();
+                                                editor.putBoolean("offline_oldest_first", false);
+                                                editor.commit();
+                                            }
+                                            break;
+                                        case 1:
+                                            if (true) {
+                                                SharedPreferences.Editor editor = m_prefs.edit();
+                                                editor.putBoolean("offline_oldest_first", true);
+                                                editor.commit();
+                                            }
+                                            break;
+                                    }
+                                    dialog.cancel();
+
+                                    refresh();
+                                }
+                            });
+
+            dialog = builder.create();
+            dialog.show();
+
             return true;
 		case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());

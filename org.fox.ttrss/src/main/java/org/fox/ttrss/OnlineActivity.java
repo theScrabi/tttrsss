@@ -1728,8 +1728,6 @@ public class OnlineActivity extends CommonActivity {
     }
 
     public void setSortMode(String sortMode) {
-        Log.d(TAG, "setSortMode:" + sortMode);
-
         SharedPreferences.Editor editor = m_prefs.edit();
         editor.putString("headlines_sort_mode", sortMode);
         editor.commit();
