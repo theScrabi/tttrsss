@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="statusBarHintColor">?colorPrimaryDark</item>
+        <item name="statusBarHintColor">?colorPrimary</item>
         <item name="smallScreenBackground">#eeeeee</item>
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
         <item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
@@ -50,7 +50,7 @@
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat">
-        <item name="statusBarHintColor">?colorPrimaryDark</item>
+        <item name="statusBarHintColor">?colorPrimary</item>
         <item name="unreadCounterColor">#909090</item>
         <item name="headlineNormalBackground">#151515</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
