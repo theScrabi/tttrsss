@@ -1,120 +1,90 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <style name="LightThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="statusBarHintColor">#6482AF</item>
-	    <item name="smallScreenBackground">#eeeeee</item>
-		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
-		<item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
-		<item name="unreadCounterColor">#909090</item>
-		<item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
-		<item name="headlinesBackgroundSolid">#f0f0f0</item>
-		<item name="articleBackground">@android:color/transparent</item>
-		<item name="headlineSelectedBackground">#88b0f0</item>
-		<item name="headlineUnreadBackground">@android:color/white</item>
-		<item name="headlineNormalBackground">#f5f5f5</item>
-		<item name="feedsSelectedBackground">#526a8e</item>
-		<item name="feedlistTextColor">@android:color/primary_text_light</item>
-		<item name="feedlistSelectedTextColor">#ffffff</item>
-    	<item name="headlineTextColor">@android:color/secondary_text_light</item>
-    	<item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
-    	<item name="headlineSelectedTextColor">#ffffff</item>
-    	<item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
-    	<item name="headlineSecondaryTextColor">#909090</item>
-    	<item name="headlineSelectedSecondaryTextColor">#606060</item>
-    	<item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
+
+    <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="statusBarHintColor">?colorPrimaryDark</item>
+        <item name="smallScreenBackground">#eeeeee</item>
+        <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
+        <item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
+        <item name="unreadCounterColor">#909090</item>
+        <item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
+        <item name="headlinesBackgroundSolid">#f0f0f0</item>
+        <item name="articleBackground">@android:color/white</item>
+        <item name="headlineSelectedBackground">?colorAccent</item>
+        <item name="headlineUnreadBackground">@android:color/white</item>
+        <item name="headlineNormalBackground">#f5f5f5</item>
+        <item name="feedsSelectedBackground">?colorPrimaryDark</item>
+        <item name="feedlistTextColor">@android:color/primary_text_light</item>
+        <item name="feedlistSelectedTextColor">#ffffff</item>
+        <item name="headlineTextColor">@android:color/secondary_text_light</item>
+        <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
+        <item name="headlineSelectedTextColor">#ffffff</item>
+        <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
+        <item name="headlineSecondaryTextColor">#909090</item>
+        <item name="headlineSelectedSecondaryTextColor">#606060</item>
+        <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
-    	<item name="linkColor">#4684ff</item>
-    	<item name="loadingBackground">@android:color/white</item>
-    	<item name="articleNoteTextColor">#9a8c59</item>
-    	<item name="articleNoteBackground">#fff7d5</item>
+        <item name="linkColor">?colorPrimary</item>
+        <item name="loadingBackground">@android:color/white</item>
+        <item name="articleNoteTextColor">#9a8c59</item>
+        <item name="articleNoteBackground">#fff7d5</item>
         <item name="parentBtnBackground">#dddddd</item>
+        <item name="articleHeader">?colorPrimaryDark</item>
+        <item name="articleHeaderTextColor">@android:color/white</item>
 
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
-        <item name="colorAccent">#88b0f0</item>
-	</style>
-
-    <style name="LightTheme" parent="LightThemeBase">
+        <item name="colorAccent">?colorPrimary</item>
     </style>
-    
-	<style name="SepiaThemeBase" parent="LightTheme">
-        <item name="statusBarHintColor">#7F3F3F</item>
-	    <item name="smallScreenBackground">@drawable/paper_sepia</item>
-		<item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
-		<item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
-		<item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
-		<item name="headlineSelectedBackground">#E5B0A0</item>
-		<item name="feedsSelectedBackground">#7F3F3F</item>
-		<item name="articleBackground">@drawable/paper_sepia</item>
-		<item name="feedlistTextColor">#35281C</item>
-		<item name="linkColor">#C46262</item>
+
+    <style name="SepiaTheme" parent="LightTheme">
+        <item name="smallScreenBackground">@drawable/paper_sepia</item>
+        <item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
+        <item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
+        <item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
+        <item name="feedlistTextColor">#35281C</item>
+        <item name="linkColor">?colorPrimary</item>
 
         <item name="colorPrimary">#C46262</item>
         <item name="colorPrimaryDark">#7F3F3F</item>
         <item name="colorAccent">#E5B0A0</item>
-	</style>
-	
-	<style name="SepiaTheme" parent="SepiaThemeBase">
-	</style>
-	    
-	<style name="HoloThemeBase" parent="Theme.AppCompat">
-        <item name="statusBarHintColor">@android:color/black</item>
-	    <item name="smallScreenBackground">@android:color/transparent</item>
-		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
-		<item name="feedlistBackground">@android:color/transparent</item>
-		<item name="unreadCounterColor">#909090</item>
-		<item name="headlinesBackground">@android:color/black</item>
-		<item name="headlinesBackgroundSolid">@android:color/black</item>
-		<item name="articleBackground">@android:color/black</item>
-		<item name="headlineSelectedBackground">@color/ics_cyan</item>
-		<item name="headlineUnreadBackground">#202020</item>
-		<item name="headlineNormalBackground">#151515</item>
-		<item name="feedsSelectedBackground">@color/ics_cyan</item>
+    </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat">
+        <item name="statusBarHintColor">?colorPrimaryDark</item>
+        <item name="unreadCounterColor">#909090</item>
+        <item name="headlineNormalBackground">#151515</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
-        <item name="feedlistSelectedTextColor">@android:color/black</item>
-        <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedTextColor">@android:color/white</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
-        <item name="headlineSelectedExcerptTextColor">@android:color/black</item>
         <item name="headlineSecondaryTextColor">#909090</item>
-        <item name="headlineSelectedSecondaryTextColor">#404040</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
-        <item name="linkColor">@color/ics_cyan</item>
+        <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>
-    	<item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
-    	<item name="articleNoteBackground">#303030</item>
+        <item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
+        <item name="articleNoteBackground">#303030</item>
         <item name="parentBtnBackground">#101010</item>
-	</style>
-
-	<style name="HoloTheme" parent="HoloThemeBase">
-	</style>
-		
-	<style name="DarkThemeBase" parent="HoloTheme">
-        <item name="statusBarHintColor">#51698E</item>
-	    <item name="smallScreenBackground">@color/feeds_dark_gray</item>
-		<item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
-		<item name="feedlistBackground">@drawable/shadow_feeds_gray</item>		
-		<item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
-		<item name="headlinesBackgroundSolid">@color/feeds_dark_gray</item>
-		<item name="articleBackground">@color/feeds_dark_gray</item>
-		<item name="headlineSelectedBackground">#51698E</item>
-		<item name="headlineUnreadBackground">#383c42</item>
-		<item name="feedsSelectedBackground">#445877</item>
+        <item name="smallScreenBackground">@color/feeds_dark_gray</item>
+        <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
+        <item name="feedlistBackground">@drawable/shadow_feeds_gray</item>
+        <item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
+        <item name="headlinesBackgroundSolid">@color/feeds_dark_gray</item>
+        <item name="articleBackground">@color/feeds_dark_gray</item>
+        <item name="headlineSelectedBackground">?colorPrimary</item>
+        <item name="headlineUnreadBackground">#383c42</item>
+        <item name="feedsSelectedBackground">#445877</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
+        <item name="articleHeader">?colorPrimaryDark</item>
+        <item name="articleHeaderTextColor">@android:color/white</item>
 
         <item name="colorPrimary">#51698E</item>
         <item name="colorPrimaryDark">#445877</item>
         <item name="colorAccent">#88b0f0</item>
-	</style>
-
-	<style name="DarkTheme" parent="DarkThemeBase">
-	</style>
-
-	<style name="DarkDialogTheme" parent="android:Theme">
     </style>
-	
+
+    <style name="DarkDialogTheme" parent="android:Theme"></style>
+
 </resources>

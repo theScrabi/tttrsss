@@ -16,7 +16,9 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:padding="8dp"
                 android:id="@+id/article_header"
+                android:background="?articleHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -29,7 +31,7 @@
                     android:layout_weight="1"
                     android:paddingTop="4dp"
                     android:text="My simple headline"                    
-                    android:textColor="?linkColor"
+                    android:textColor="?articleHeaderTextColor"
                     android:textSize="18sp" />
 
                 <TextView
@@ -40,7 +42,7 @@
                     android:fontFamily="sans-serif-light"
                     android:paddingTop="4dp"
                     android:text="24 comments"
-                    android:textColor="?linkColor"
+                    android:textColor="?articleHeaderTextColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -59,7 +61,7 @@
                         android:singleLine="true"
                         android:fontFamily="sans-serif-light"
                         android:text="Example Feed"
-                        android:textColor="?headlineSecondaryTextColor"
+                        android:textColor="?articleHeaderTextColor"
                         android:textSize="12sp" />
 
                     <TextView
@@ -72,7 +74,7 @@
                         android:fontFamily="sans-serif-light"
                         android:text="Jan 01, 12:00"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="?headlineSecondaryTextColor"
+                        android:textColor="?articleHeaderTextColor"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -87,11 +89,11 @@
                 android:background="?articleNoteBackground"                
                 android:textColor="?articleNoteTextColor"
                 android:textSize="13sp"
-                android:padding="2dp"
-                android:layout_marginBottom="6dp"
+                android:padding="8dp"
                 android:text="[Article note]" />
 
             <org.fox.ttrss.util.LessBrokenWebView
+                android:layout_margin="8dp"
                 android:id="@+id/article_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

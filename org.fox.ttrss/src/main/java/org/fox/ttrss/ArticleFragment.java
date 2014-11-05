@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -96,7 +94,7 @@ public class ArticleFragment extends Fragment  {
 		
 		if (m_article != null) {
 			
-			if (!useTitleWebView) {
+			/* if (!useTitleWebView) {
 				View scroll = view.findViewById(R.id.article_scrollview);
 
 				if (scroll != null) {
@@ -116,7 +114,7 @@ public class ArticleFragment extends Fragment  {
 					}
 					
 				}
-			}
+			} */
 			
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
 			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
@@ -247,29 +245,23 @@ public class ArticleFragment extends Fragment  {
 				WebSettings ws = web.getSettings();
 				ws.setSupportZoom(false);
 
-				TypedValue tv = new TypedValue();				
-			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
-			    
-			    String theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT); 
-			    
-				if (CommonActivity.THEME_DARK.equals(theme)) {
-					cssOverride = "body { background : transparent; color : #e0e0e0}";
-				} else {
-					cssOverride = "body { background : transparent; }";
-				}
-				
-				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-					web.setBackgroundColor(Color.TRANSPARENT);
-				} else {
-					// seriously?
-					web.setBackgroundColor(Color.argb(1, 0, 0, 0));
-				}
-				
-				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
-			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
+				TypedValue tvBackground = new TypedValue();
+			    getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
 
-			    cssOverride += " table { width : 100%; }";
-			    
+                String backgroundHexColor = String.format("#%06X", (0xFFFFFF & tvBackground.data));
+
+                cssOverride = "body { background : "+ backgroundHexColor+"; }";
+
+                if (m_activity.isDarkTheme()) {
+                    cssOverride += "body { color : #e0e0e0; }";
+                }
+
+                TypedValue tvLinkColor = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.linkColor, tvLinkColor, true);
+
+				String linkHexColor = String.format("#%06X", (0xFFFFFF & tvLinkColor.data));
+			    cssOverride += " a:link {color: "+linkHexColor+";} a:visited { color: "+linkHexColor+";}";
+
 				String articleContent = m_article.content != null ? m_article.content : "";
 				
 				Document doc = Jsoup.parse(articleContent);
@@ -298,6 +290,7 @@ public class ArticleFragment extends Fragment  {
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; line-height : 130%; }" +
 					"img { max-width : 100%; width : auto; height : auto; }" +
+                    " table { width : 100%; }" +
 					cssOverride +
 					"</style>" +
 					"</head>" +
