@@ -76,6 +76,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                 public void onDrawerClosed(View drawerView) {
                     super.onDrawerClosed(drawerView);
 
+                    if (m_prefs.getBoolean("drawer_open_on_start", true)) {
+                        SharedPreferences.Editor editor = m_prefs.edit();
+                        editor.putBoolean("drawer_open_on_start", false);
+                        editor.commit();
+                    }
+
                     invalidateOptionsMenu();
                 }
             };
@@ -88,7 +94,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
         }
 
         if (savedInstanceState == null) {
-            if (m_drawerLayout != null) {
+            if (m_drawerLayout != null && m_prefs.getBoolean("drawer_open_on_start", true)) {
                 m_drawerLayout.openDrawer(Gravity.START);
             }
 
@@ -144,7 +150,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 
 			ft.commit();
-				
+
+            m_feedIsSelected = true;
+
 			AppRater.appLaunched(this);
 			checkTrial(true);
 
