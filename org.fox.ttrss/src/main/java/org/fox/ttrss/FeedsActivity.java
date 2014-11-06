@@ -296,14 +296,19 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home && getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            if (m_drawerLayout != null && m_drawerLayout.isDrawerOpen(Gravity.START)) {
+                getSupportFragmentManager().popBackStack();
+                return true;
+            }
+        }
+
         if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
         switch (item.getItemId()) {
-		case android.R.id.home:
-            //getSupportFragmentManager().popBackStack();
-			return true;
         case R.id.headlines_toggle_sort_order:
             Dialog dialog = new Dialog(this);
 
