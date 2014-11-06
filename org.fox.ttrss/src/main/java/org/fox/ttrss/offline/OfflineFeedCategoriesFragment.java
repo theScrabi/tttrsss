@@ -208,15 +208,8 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 			if (cursor != null) {
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
-				
-				if (m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
-						m_prefs.getBoolean("browse_cats_like_feeds", false)) {
-				
-					m_activity.openFeedArticles(feedId, true);
-					
-				} else {
-					m_activity.onCatSelected(feedId);
-				}
+
+                m_activity.onCatSelected(feedId);
 
                 m_selectedCatId = feedId;
 

@@ -79,14 +79,6 @@
             android:summary="@string/browse_cats_like_feeds_summary"
             android:title="@string/browse_cats_like_feeds" />
 
-        <ListPreference
-            android:defaultValue="HEADLINES"
-            android:entries="@array/pref_view_mode_names"
-            android:entryValues="@array/pref_view_mode_values"
-            android:key="default_view_mode"
-            android:summary="@string/pref_default_view_mode_long"
-            android:title="@string/pref_default_view_mode" />
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="headlines_show_content"

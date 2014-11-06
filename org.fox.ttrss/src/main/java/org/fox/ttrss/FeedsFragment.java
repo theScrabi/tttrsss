@@ -392,20 +392,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			Feed feed = (Feed)list.getItemAtPosition(position);
 
 			if (feed.is_cat) {
-				if (m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES")) &&
-						m_prefs.getBoolean("browse_cats_like_feeds", false)) {
-					
-					m_activity.openFeedArticles(feed);
-					
-				} else {
-					m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
-				}
+				m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
 			} else {
-				if ("ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES"))) {
-					m_activity.openFeedArticles(feed);
-				} else {
-					m_activity.onFeedSelected(feed);
-				}
+				m_activity.onFeedSelected(feed);
 			}
 			
     		m_selectedFeed = feed;

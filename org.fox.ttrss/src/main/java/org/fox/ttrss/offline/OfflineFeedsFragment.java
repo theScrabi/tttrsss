@@ -226,12 +226,8 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				int feedId = (int) cursor.getLong(0);
 				Log.d(TAG, "clicked on feed " + feedId);
 				
-				if (!m_activity.isSmallScreen() && "ARTICLES".equals(m_prefs.getString("default_view_mode", "HEADLINES"))) {
-					m_activity.openFeedArticles(feedId, false);
-				} else {
-					m_activity.onFeedSelected(feedId);
-				}
-				
+                m_activity.onFeedSelected(feedId);
+
                 m_selectedFeedId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
