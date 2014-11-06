@@ -594,8 +594,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_SELECTED = 1;
-        //public static final int VIEW_GOBACK = 2;
-		
+
 		public static final int VIEW_COUNT = VIEW_SELECTED+1;
 
 		public FeedListAdapter(Context context, int textViewResourceId, ArrayList<Feed> items) {
@@ -611,9 +610,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
 
-            /* if (m_enableParentBtn && position == 0) {
-                return VIEW_GOBACK;
-            } else */ if (m_selectedFeed != null && feed.id == m_selectedFeed.id) {
+            if (!m_activity.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -630,8 +627,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				int layoutId = R.layout.feeds_row;
 				
 				switch (getItemViewType(position)) {
-                /* case VIEW_GOBACK:
-                    layoutId = R.layout.feeds_goback; */
 				case VIEW_SELECTED:
 					layoutId = R.layout.feeds_row_selected;
 					break;
