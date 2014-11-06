@@ -325,7 +325,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
         list.setOnScrollListener(this);
-		list.setEmptyView(view.findViewById(R.id.no_headlines));
+		//list.setEmptyView(view.findViewById(R.id.no_headlines));
 		registerForContextMenu(list);
 
 		return view;    	

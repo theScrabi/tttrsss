@@ -241,7 +241,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 
         ListView list = (ListView) getView().findViewById(R.id.feeds);
-        Feed feed = (Feed) list.getItemAtPosition(info.position);
+        Feed feed = (Feed) getFeedAtPosition(info.position);
 		
 		menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
 
@@ -837,7 +837,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 	public Feed getFeedAtPosition(int position) {
 		try {
-			return m_adapter.getItem(position);
+            ListView list = (ListView) getView().findViewById(R.id.feeds);
+
+            return (Feed) list.getItemAtPosition(position);
+        } catch (NullPointerException e) {
+            return null;
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}

@@ -457,9 +457,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					if (getView() != null) {
 						ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 					
-						if (list != null) {
+						/* if (list != null) {
 							list.setEmptyView(getView().findViewById(R.id.no_headlines));
-						}
+						} */
 					}
 
 					super.onPostExecute(result);	
