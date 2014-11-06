@@ -248,5 +248,6 @@
     <string name="headlines_sort_oldest_first">Oldest first</string>
     <string name="headlines_sort_title">Title</string>
     <string name="headlines_sort_articles_title">Sort articles</string>
+    <string name="fresh_articles">Fresh articles</string>
 
 </resources>

@@ -138,6 +138,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
 			}
 
+            HeadlinesFragment hf = new HeadlinesFragment();
+            hf.initialize(new Feed(-3, getString(R.string.fresh_articles), false));
+
+            ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+
 			ft.commit();
 				
 			AppRater.appLaunched(this);
