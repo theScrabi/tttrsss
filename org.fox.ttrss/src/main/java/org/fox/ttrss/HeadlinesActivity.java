@@ -22,9 +22,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	protected SharedPreferences m_prefs;
 
-    private ActionBarDrawerToggle m_drawerToggle;
-    private DrawerLayout m_drawerLayout;
-
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,31 +34,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		setContentView(R.layout.headlines_articles);
 
-        m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
-
-        if (m_drawerLayout != null) {
-
-            m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
-                @Override
-                public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-
-                    invalidateOptionsMenu();
-                }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    super.onDrawerClosed(drawerView);
-
-                    invalidateOptionsMenu();
-                }
-            };
-
-            m_drawerLayout.setDrawerListener(m_drawerToggle);
-            m_drawerToggle.setDrawerIndicatorEnabled(true);
-
-        }
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -70,10 +42,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		
 		GlobalState.getInstance().load(savedInstanceState);
 
-		/* if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-		} */
-		
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
 			
@@ -134,12 +102,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		}
 	}
 
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (m_drawerToggle != null) m_drawerToggle.syncState();
-    }
-
 	@Override
 	protected void refresh() {
 		super.refresh();
@@ -165,10 +127,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-        if (m_drawerToggle != null && m_drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -246,10 +204,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-                    if (m_drawerLayout != null) {
-                        m_drawerLayout.closeDrawers();
-                    }
-
                     ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 					
 					if (af != null) {
