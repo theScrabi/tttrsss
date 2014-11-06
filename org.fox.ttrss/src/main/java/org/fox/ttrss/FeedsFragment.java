@@ -239,10 +239,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		Feed feed = m_adapter.getItem(info.position);
+
+        ListView list = (ListView) getView().findViewById(R.id.feeds);
+        Feed feed = (Feed) list.getItemAtPosition(info.position);
 		
-		if (feed != null) 
-			menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
+		menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
 
 		if (!feed.is_cat) {
 			menu.findItem(R.id.browse_feeds).setVisible(false);
@@ -376,9 +377,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	@Override
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
 		ListView list = (ListView)av;
-		
+
 		if (list != null) {
-			Feed feed = (Feed)list.getItemAtPosition(position);
+            Feed feed = (Feed)list.getItemAtPosition(position);
 
 			if (feed.is_cat) {
                 if (feed.always_display_as_feed) {
@@ -535,7 +536,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 						Type listType = new TypeToken<List<Feed>>() {}.getType();
 						final List<Feed> feeds = new Gson().fromJson(content, listType);
-						
+
 						m_feeds.clear();
 
                         int catUnread = 0;
@@ -548,13 +549,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						
 						sortFeeds();
 
-                        if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0) {
+                        if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0 && m_feeds.size() > 0) {
                             Feed feed = new Feed(m_activeCategory.id, m_activeCategory.title, true);
                             feed.unread = catUnread;
                             feed.always_display_as_feed = true;
                             feed.display_title = getString(R.string.feed_all_articles);
 
                             m_feeds.add(0, feed);
+                            m_adapter.notifyDataSetChanged();
                         }
 
 						/*if (m_feeds.size() == 0)
@@ -722,7 +724,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			// sort order got changed in prefs or something
 			e.printStackTrace();
 		}
-		
+
 		try {
 			m_adapter.notifyDataSetChanged();
 		} catch (NullPointerException e) {
