@@ -591,6 +591,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			this.items = items;
 		}
 
+        @Override
+        public boolean isEmpty() {
+            return m_enableParentBtn ? false : super.isEmpty();
+        }
+
+        @Override
 		public int getViewTypeCount() {
 			return VIEW_COUNT;
 		}

@@ -281,6 +281,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 			return VIEW_COUNT;
 		}
 
+        @Override
+        public boolean isEmpty() {
+            return m_enableParentBtn ? false : super.isEmpty();
+        }
+
 		@Override
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
