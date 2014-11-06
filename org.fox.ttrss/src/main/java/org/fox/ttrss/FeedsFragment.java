@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -241,7 +242,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		Feed feed = m_adapter.getItem(info.position);
 		
 		if (feed != null) 
-			menu.setHeaderTitle(feed.title);
+			menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
 
 		if (!feed.is_cat) {
 			menu.findItem(R.id.browse_feeds).setVisible(false);
@@ -380,7 +381,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			Feed feed = (Feed)list.getItemAtPosition(position);
 
 			if (feed.is_cat) {
-				m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
+                if (feed.always_display_as_feed) {
+                    m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread), true);
+                } else {
+                    m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
+                }
 			} else {
 				m_activity.onFeedSelected(feed);
 			}
@@ -533,11 +538,24 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						
 						m_feeds.clear();
 
+                        int catUnread = 0;
+
 						for (Feed f : feeds)
-							if (f.id > -10 || m_catId != -4) // skip labels for flat feedlist for now
-								m_feeds.add(f);
+							if (f.id > -10 || m_catId != -4) { // skip labels for flat feedlist for now
+                                m_feeds.add(f);
+                                catUnread += f.unread;
+                            }
 						
 						sortFeeds();
+
+                        if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0) {
+                            Feed feed = new Feed(m_activeCategory.id, m_activeCategory.title, true);
+                            feed.unread = catUnread;
+                            feed.always_display_as_feed = true;
+                            feed.display_title = getString(R.string.feed_all_articles);
+
+                            m_feeds.add(0, feed);
+                        }
 
 						/*if (m_feeds.size() == 0)
 							setLoadingStatus(R.string.no_feeds_to_display, false);
@@ -623,7 +641,14 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			TextView tt = (TextView) v.findViewById(R.id.title);
 
 			if (tt != null) {
-				tt.setText(feed.title);
+                tt.setText(feed.display_title != null ? feed.display_title : feed.title);
+
+                if (feed.always_display_as_feed) {
+                    tt.setTypeface(null, Typeface.BOLD);
+                } else {
+                    tt.setTypeface(null, Typeface.NORMAL);
+                }
+
 			}
 
 			TextView tu = (TextView) v.findViewById(R.id.unread_counter);
@@ -636,8 +661,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			ImageView icon = (ImageView)v.findViewById(R.id.icon);
 			
 			if (icon != null) {
-				
-				if (m_enableFeedIcons) {
+
+                if (feed.is_cat && feed.always_display_as_feed) {
+                    icon.setImageResource(R.drawable.ic_published_special);
+                } else if (m_enableFeedIcons) {
 					
 					try {
 						File storage = m_activity.getExternalCacheDir();

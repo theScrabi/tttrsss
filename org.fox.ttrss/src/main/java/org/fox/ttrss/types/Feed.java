@@ -13,6 +13,8 @@ public class Feed implements Comparable<Feed>, Parcelable {
 	public int last_updated;
 	public int order_id;
 	public boolean is_cat;
+    public boolean always_display_as_feed;
+    public String display_title;
 	
 	public Feed(int id, String title, boolean is_cat) {
 		this.id = id;
@@ -62,6 +64,8 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		out.writeInt(last_updated);
 		out.writeInt(is_cat ? 1 : 0);
 		out.writeInt(order_id);
+        out.writeInt(always_display_as_feed ? 1 : 0);
+        out.writeString(display_title);
 	}
 	
 	public void readFromParcel(Parcel in) {
@@ -74,6 +78,8 @@ public class Feed implements Comparable<Feed>, Parcelable {
 		last_updated = in.readInt();
 		is_cat = in.readInt() == 1;
 		order_id = in.readInt();
+        always_display_as_feed = in.readInt() == 1;
+        display_title = in.readString();
 	}
 	
 	@SuppressWarnings("rawtypes")

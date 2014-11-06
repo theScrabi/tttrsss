@@ -249,5 +249,6 @@
     <string name="headlines_sort_title">Title</string>
     <string name="headlines_sort_articles_title">Sort articles</string>
     <string name="fresh_articles">Fresh articles</string>
+    <string name="feed_all_articles">All articles</string>
 
 </resources>
