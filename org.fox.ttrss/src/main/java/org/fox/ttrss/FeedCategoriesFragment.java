@@ -516,8 +516,12 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (list != null) {
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
-			
-            m_activity.onCatSelected(cat);
+
+            if (cat.id < 0) {
+                m_activity.onCatSelected(cat, false);
+            } else {
+                m_activity.onCatSelected(cat);
+            }
 
 			m_selectedCat = cat;
 			
