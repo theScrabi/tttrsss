@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -170,21 +169,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
                     android.R.color.holo_red_dark,
                     android.R.color.holo_blue_dark,
                     android.R.color.holo_orange_dark);
-        }
-
-        Button parentBtn = (Button) view.findViewById(R.id.open_parent);
-
-        if (parentBtn != null) {
-            if (m_enableParentBtn) {
-                parentBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        m_activity.getSupportFragmentManager().popBackStack();
-                    }
-                });
-            } else {
-                parentBtn.setVisibility(View.GONE);
-            }
         }
 
 		ListView list = (ListView)view.findViewById(R.id.feeds);

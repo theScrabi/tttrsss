@@ -234,7 +234,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
-		
+
+        View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
+        loadingBar.setVisibility(View.VISIBLE);
+
 		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 		
 		return view; 
@@ -332,7 +335,13 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				if (list != null) {
 					list.setEmptyView(getView().findViewById(R.id.no_feeds));
 				}
-			}
+
+                View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
+
+                if (loadingBar != null) {
+                    loadingBar.setVisibility(View.GONE);
+                }
+            }
 			
 			if (result != null) {
 				try {			

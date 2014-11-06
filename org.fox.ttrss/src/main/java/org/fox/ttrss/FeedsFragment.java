@@ -31,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -297,7 +296,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	            android.R.color.holo_orange_dark);
 	    }
 
-        Button parentBtn = (Button) view.findViewById(R.id.open_parent);
+        /* Button parentBtn = (Button) view.findViewById(R.id.open_parent);
 
         if (parentBtn != null) {
             if (m_enableParentBtn) {
@@ -310,19 +309,39 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
             } else {
                 parentBtn.setVisibility(View.GONE);
             }
+        } */
+
+		ListView list = (ListView)view.findViewById(R.id.feeds);
+
+        if (m_enableParentBtn) {
+            View layout = inflater.inflate(R.layout.feeds_goback, container, false);
+
+            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+                    ListView.LayoutParams.WRAP_CONTENT));
+
+            layout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    m_activity.getSupportFragmentManager().popBackStack();
+                }
+            });
+
+            list.addHeaderView(layout, null, false);
         }
 
-		ListView list = (ListView)view.findViewById(R.id.feeds);		
-		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
+        m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		list.setAdapter(m_adapter);
 		//list.setEmptyView(view.findViewById(R.id.no_feeds));
 		list.setOnItemClickListener(this);
-		
+
 		registerForContextMenu(list);
 		
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
-		
-		//Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);		
+
+        View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
+        loadingBar.setVisibility(View.VISIBLE);
+
+        //Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);
 		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 		
 		return view;    	
@@ -517,7 +536,13 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				if (list != null) {
 					list.setEmptyView(getView().findViewById(R.id.no_feeds));
 				}
-			}
+
+                View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
+
+                if (loadingBar != null) {
+                    loadingBar.setVisibility(View.GONE);
+                }
+            }
 			
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 			
@@ -569,6 +594,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_SELECTED = 1;
+        //public static final int VIEW_GOBACK = 2;
 		
 		public static final int VIEW_COUNT = VIEW_SELECTED+1;
 
@@ -584,8 +610,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		@Override
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
-			
-			if (m_selectedFeed != null && feed.id == m_selectedFeed.id) {
+
+            /* if (m_enableParentBtn && position == 0) {
+                return VIEW_GOBACK;
+            } else */ if (m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -602,6 +630,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				int layoutId = R.layout.feeds_row;
 				
 				switch (getItemViewType(position)) {
+                /* case VIEW_GOBACK:
+                    layoutId = R.layout.feeds_goback; */
 				case VIEW_SELECTED:
 					layoutId = R.layout.feeds_row_selected;
 					break;

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/feeds_fragment"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <android.support.v4.widget.SwipeRefreshLayout 
     	android:id="@+id/feeds_swipe_container"
     	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-        android:layout_weight="1">
+    	android:layout_height="match_parent">
 
 	    <ListView
 	        android:id="@+id/feeds"
@@ -21,15 +19,6 @@
 	    </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:background="?parentBtnBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/open_parent"
-        android:layout_weight="0"
-        android:id="@+id/open_parent" />
-
     <TextView
         android:id="@+id/no_feeds"
         android:layout_width="wrap_content"
@@ -40,4 +29,11 @@
         android:visibility="gone" >
     </TextView>
 
-</LinearLayout>
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/feeds_loading_bar"
+        android:layout_gravity="center" />
+</FrameLayout>

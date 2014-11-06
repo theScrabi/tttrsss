@@ -130,9 +130,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
         }
 
     	switch (item.getItemId()) {
-		case android.R.id.home:
-            //getSupportFragmentManager().popBackStack();
-			return true;
         case R.id.headlines_toggle_sort_order:
             /* SharedPreferences.Editor editor = m_prefs.edit();
             editor.putBoolean("offline_oldest_first", !m_prefs.getBoolean("offline_oldest_first", false));
