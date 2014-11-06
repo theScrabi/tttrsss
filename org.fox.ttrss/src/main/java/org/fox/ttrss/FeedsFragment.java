@@ -404,7 +404,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
 		
 		final String sessionId = m_activity.getSessionId();
-		final boolean unreadOnly = m_activity.getUnreadOnly();
+		final boolean unreadOnly = m_activity.getUnreadOnly() && (m_activeCategory == null || m_activeCategory.id != -1);
 
 		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
 		
