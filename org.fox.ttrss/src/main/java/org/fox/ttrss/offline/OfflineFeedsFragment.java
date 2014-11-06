@@ -172,8 +172,24 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
         }
 
 		ListView list = (ListView)view.findViewById(R.id.feeds);
-		
-		m_cursor = createCursor();
+
+        if (m_enableParentBtn) {
+            View layout = inflater.inflate(R.layout.feeds_goback, container, false);
+
+            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+                    ListView.LayoutParams.WRAP_CONTENT));
+
+            layout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    m_activity.getSupportFragmentManager().popBackStack();
+                }
+            });
+
+            list.addHeaderView(layout, null, false);
+        }
+
+        m_cursor = createCursor();
 		
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
