@@ -137,14 +137,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		switch (item.getItemId()) {
-		case R.id.browse_articles:
-			if (true) {
-				Feed feed = getFeedAtPosition(info.position);
-				if (feed != null) {
-					m_activity.openFeedArticles(feed);
-				}
-			}
-			return true;		
 		case R.id.browse_headlines:
 			if (true) {
 				Feed feed = getFeedAtPosition(info.position);
@@ -251,10 +243,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		if (feed != null) 
 			menu.setHeaderTitle(feed.title);
 
-		if (!m_activity.isSmallScreen()) {
-			menu.findItem(R.id.browse_articles).setVisible(false);
-		}
-		
 		if (!feed.is_cat) {
 			menu.findItem(R.id.browse_feeds).setVisible(false);
 		}
@@ -544,13 +532,13 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						final List<Feed> feeds = new Gson().fromJson(content, listType);
 						
 						m_feeds.clear();
-						
+
 						for (Feed f : feeds)
 							if (f.id > -10 || m_catId != -4) // skip labels for flat feedlist for now
 								m_feeds.add(f);
 						
 						sortFeeds();
-						
+
 						/*if (m_feeds.size() == 0)
 							setLoadingStatus(R.string.no_feeds_to_display, false);
 						else */

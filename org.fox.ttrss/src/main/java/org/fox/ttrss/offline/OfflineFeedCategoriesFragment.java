@@ -50,11 +50,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		if (cursor != null) 
 			menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex("title")));
 
-		if (!m_activity.isSmallScreen()) {
-			menu.findItem(R.id.browse_articles).setVisible(false);
-		}
-
-		super.onCreateContextMenu(menu, v, menuInfo);		
+		super.onCreateContextMenu(menu, v, menuInfo);
 		
 	}
 	
@@ -95,14 +91,6 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 				.getMenuInfo();
 		
 		switch (item.getItemId()) {
-		case R.id.browse_articles:
-			if (true) {
-				int catId = getCatIdAtPosition(info.position);
-				if (catId != -10000) {
-					m_activity.openFeedArticles(catId, true);
-				}
-			}
-			return true;
 		case R.id.browse_headlines:
 			if (true) {
 				int catId = getCatIdAtPosition(info.position);

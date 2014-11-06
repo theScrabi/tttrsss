@@ -101,15 +101,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				.getMenuInfo();
 		
 		switch (item.getItemId()) {
-		case R.id.browse_articles:
-			if (true) {
-				FeedCategory cat = getCategoryAtPosition(info.position);
-				if (cat != null) {
-					m_activity.openFeedArticles(new Feed(cat.id, cat.title, true));
-					//setSelectedCategory(cat);
-				}
-			}
-			return true;		
 		case R.id.browse_headlines:
 			if (true) {
 				FeedCategory cat = getCategoryAtPosition(info.position);
@@ -190,10 +181,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		
 		if (cat != null) 
 			menu.setHeaderTitle(cat.title);
-		
-		if (!m_activity.isSmallScreen()) {
-			menu.findItem(R.id.browse_articles).setVisible(false);
-		}
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		

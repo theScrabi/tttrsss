@@ -63,14 +63,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		switch (item.getItemId()) {
-		case R.id.browse_articles:
-			if (true) {
-				int feedId = getFeedIdAtPosition(info.position);
-				if (feedId != -10000) {
-					m_activity.openFeedArticles(feedId, false);
-				}
-			}
-			return true;
 		case R.id.browse_headlines:
 			if (true) {
 				int feedId = getFeedIdAtPosition(info.position);
@@ -103,11 +95,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		if (cursor != null) 
 			menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex("title")));
 
-		if (!m_activity.isSmallScreen()) {
-			menu.findItem(R.id.browse_articles).setVisible(false);
-		}
-		
-		super.onCreateContextMenu(menu, v, menuInfo);		
+		super.onCreateContextMenu(menu, v, menuInfo);
 		
 	}
 	
