@@ -30,6 +30,7 @@
         <item name="parentBtnBackground">#dddddd</item>
         <item name="articleHeader">?colorPrimaryDark</item>
         <item name="articleHeaderTextColor">@android:color/white</item>
+        <item name="floatingActionButtonStyle">@style/FabTheme</item>
 
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
@@ -79,6 +80,7 @@
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
         <item name="articleHeader">?colorPrimaryDark</item>
         <item name="articleHeaderTextColor">@android:color/white</item>
+        <item name="floatingActionButtonStyle">@style/FabTheme</item>
 
         <item name="colorPrimary">#51698E</item>
         <item name="colorPrimaryDark">#445877</item>
@@ -86,5 +88,9 @@
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>
+
+    <style name="FabTheme" parent="FloatingActionButton">
+        <item name="floatingActionButtonColor">?colorPrimaryDark</item>
+    </style>
 
 </resources>

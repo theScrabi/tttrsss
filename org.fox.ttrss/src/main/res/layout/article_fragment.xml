@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
@@ -101,5 +101,14 @@
         </LinearLayout>
     </org.fox.ttrss.util.NoChildFocusScrollView>
 
+    <com.shamanland.fab.FloatingActionButton
+        android:id="@+id/article_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_action_web_site"
+        />
 
-</RelativeLayout>
+</FrameLayout>

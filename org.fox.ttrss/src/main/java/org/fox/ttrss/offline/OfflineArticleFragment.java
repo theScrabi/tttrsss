@@ -27,6 +27,8 @@ import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.TextView;
 
+import com.shamanland.fab.ShowHideOnScroll;
+
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
@@ -133,8 +135,33 @@ public class OfflineArticleFragment extends Fragment {
 		m_cursor.moveToFirst();
 		
 		if (m_cursor.isFirst()) {
+            final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
+
 			if (!useTitleWebView) {
-				View scroll = view.findViewById(R.id.article_scrollview);
+                View scrollView = view.findViewById(R.id.article_scrollview);
+                View fab = view.findViewById(R.id.article_fab);
+
+                if (scrollView != null && fab != null) {
+                    scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
+
+                    fab.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                URL url = new URL(link.trim());
+                                String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+                                        url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                m_activity.toast(R.string.error_other_error);
+                            }
+                        }
+                    });
+                }
+
+				/* View scroll = view.findViewById(R.id.article_scrollview);
 
 				if (scroll != null) {
 					final float scale = getResources().getDisplayMetrics().density;
@@ -152,7 +179,7 @@ public class OfflineArticleFragment extends Fragment {
 
 					}
 					
-				}
+				} */
 			}
 			
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
@@ -160,8 +187,6 @@ public class OfflineArticleFragment extends Fragment {
 			
 			TextView title = (TextView)view.findViewById(R.id.title);
 
-			final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
-			
 			if (title != null) {
 				
 				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
