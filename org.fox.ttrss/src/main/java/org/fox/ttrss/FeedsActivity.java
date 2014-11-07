@@ -378,7 +378,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
     @Override
     public void onBackPressed() {
-        finish();
+        if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START) &&
+                getSupportFragmentManager().getBackStackEntryCount() > 0) {
+
+            m_drawerLayout.openDrawer(Gravity.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 	@Override
