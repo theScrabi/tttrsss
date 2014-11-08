@@ -265,7 +265,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
     @Override
     public void onBackPressed() {
         if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START) &&
-                getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                (getSupportFragmentManager().getBackStackEntryCount() > 0 || m_feedIsSelected)) {
 
             m_drawerLayout.openDrawer(Gravity.START);
         } else {

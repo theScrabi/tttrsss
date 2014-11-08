@@ -359,7 +359,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						
 						//m_adapter.notifyDataSetChanged(); (done by sortCats)
 						//m_activity.setLoadingStatus(R.string.blank, false);
-						
+
 						return;
 					}
 							

@@ -568,7 +568,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 						
 						if (m_enableFeedIcons && !m_feedIconsChecked &&	Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) 
 							getFeedIcons();
-						
+
 						return;
 					}
 							

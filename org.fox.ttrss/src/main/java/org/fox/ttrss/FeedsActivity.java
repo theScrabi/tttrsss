@@ -39,6 +39,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	protected long m_lastRefresh = 0;
 	
 	private boolean m_feedIsSelected = false;
+    private boolean m_userFeedSelected = false;
 
     private ActionBarDrawerToggle m_drawerToggle;
     private DrawerLayout m_drawerLayout;
@@ -114,7 +115,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 						
 						Feed tmpFeed = new Feed(feedId, feedTitle, isCat);
 						
-						onFeedSelected(tmpFeed);
+						onFeedSelected(tmpFeed, false);
 					}
 					
 					@Override
@@ -160,6 +161,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			//m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
 			//m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
 			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
+            m_userFeedSelected = savedInstanceState.getBoolean("userFeedSelected");
 			//m_feedWasSelected = savedInstanceState.getBoolean("feedWasSelected");
 
 			/* if (findViewById(R.id.sw600dp_port_anchor) != null && m_feedWasSelected && m_slidingMenu != null) {
@@ -212,8 +214,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			}
 		}		
 	}
-	
-	public void onFeedSelected(Feed feed) {
+
+    public void onFeedSelected(Feed feed) {
+        onFeedSelected(feed, true);
+    }
+
+	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
 		GlobalState.getInstance().m_loadedArticles.clear();
 		//m_pullToRefreshAttacher.setRefreshing(true);
 
@@ -238,6 +244,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 					ft.commit();
 
 					m_feedIsSelected = true;
+                    m_userFeedSelected = selectedByUser;
 					//m_feedWasSelected = true;
 					
 					if (m_drawerLayout != null) {
@@ -379,7 +386,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
     @Override
     public void onBackPressed() {
         if (m_drawerLayout != null && !m_drawerLayout.isDrawerOpen(Gravity.START) &&
-                getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                (getSupportFragmentManager().getBackStackEntryCount() > 0 || m_userFeedSelected)) {
 
             m_drawerLayout.openDrawer(Gravity.START);
         } else {
@@ -399,6 +406,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		super.onSaveInstanceState(out);	
 		
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
+        out.putBoolean("userFeedSelected", m_userFeedSelected);
 
 		GlobalState.getInstance().save(out);
 	}
