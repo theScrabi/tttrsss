@@ -149,24 +149,26 @@
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:text="by Author"
-                    android:textColor="?headlineSelectedSecondaryTextColor"
+                    android:textColor="?headlineSecondaryTextColor"
                     android:textSize="12sp"
                     android:textStyle="italic" />
 
                 <ImageView
                     android:id="@+id/marked"
-                    android:layout_width="16dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="16dp"
-                    android:layout_marginRight="11dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
                     android:src="@drawable/ic_star_empty" />
 
                 <ImageView
                     android:id="@+id/published"
-                    android:layout_width="16dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="16dp"
-                    android:layout_marginRight="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
                     android:src="@drawable/ic_unpublished" />
@@ -176,8 +178,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:layout_weight="0"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:src="@drawable/ic_action_overflow" />
             </LinearLayout>
         </TableRow>
