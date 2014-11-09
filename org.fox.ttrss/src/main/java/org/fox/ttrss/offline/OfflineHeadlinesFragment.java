@@ -33,6 +33,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.fox.ttrss.CommonActivity;
@@ -91,7 +92,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		return selected;
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
@@ -424,8 +425,25 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	} */
-	
-	private class ArticleListAdapter extends SimpleCursorAdapter {
+
+    static class HeadlineViewHolder {
+        public TextView titleView;
+        public TextView feedTitleView;
+        public ImageView markedView;
+        public ImageView publishedView;
+        public TextView excerptView;
+        public ImageView flavorImageView;
+        public TextView authorView;
+        public TextView dateView;
+        public CheckBox selectionBoxView;
+        public ImageView menuButtonView;
+        public ViewGroup flavorImageHolder;
+        public ProgressBar flavorImageLoadingBar;
+        public View flavorImageArrow;
+        public View headlineFooter;
+    }
+
+    private class ArticleListAdapter extends SimpleCursorAdapter {
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
@@ -474,6 +492,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			View v = convertView;
 
 			Cursor article = (Cursor)getItem(position);
+
+            HeadlineViewHolder holder;
+
 			final int articleId = article.getInt(0);
 			
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
@@ -496,192 +517,197 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					layoutId = R.layout.headlines_row_selected;
 					break;
 				}
-				
-				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(layoutId, null);
-				
-				// http://code.google.com/p/android/issues/detail?id=3414
-				((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-			}
 
-			TextView tt = (TextView)v.findViewById(R.id.title);
+                LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = vi.inflate(layoutId, null);
 
-			if (tt != null) {
+                holder = new HeadlineViewHolder();
+                holder.titleView = (TextView)v.findViewById(R.id.title);
+
+                holder.feedTitleView = (TextView)v.findViewById(R.id.feed_title);
+                holder.markedView = (ImageView)v.findViewById(R.id.marked);
+                holder.publishedView = (ImageView)v.findViewById(R.id.published);
+                holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
+                holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+                holder.authorView = (TextView)v.findViewById(R.id.author);
+                holder.dateView = (TextView) v.findViewById(R.id.date);
+                holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
+                holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
+                holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
+                holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
+                holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
+                holder.headlineFooter = v.findViewById(R.id.headline_footer);
+
+                v.setTag(holder);
+
+                // http://code.google.com/p/android/issues/detail?id=3414
+                ((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            } else {
+                holder = (HeadlineViewHolder) v.getTag();
+            }
+
+            // block footer clicks to make button/selection clicking easier
+            if (holder.headlineFooter != null) {
+                holder.headlineFooter.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //
+                    }
+                });
+            }
+
+			if (holder.titleView != null) {
 				
-				tt.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
+				holder.titleView.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 
 				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
 					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.getInt(article.getColumnIndex("unread")) == 1 ? Typeface.BOLD : Typeface.NORMAL);
 					
-					if (tf != null && !tf.equals(tt.getTypeface())) {
-						tt.setTypeface(tf);
+					if (tf != null && !tf.equals(holder.titleView.getTypeface())) {
+						holder.titleView.setTypeface(tf);
 					}
-					
-					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
+
+                    holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
 				} else {
-					tt.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));	
+                    holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
 				}
 				
 				int scoreIndex = article.getColumnIndex("score");
 				if (scoreIndex >= 0)
-					adjustTitleTextView(article.getInt(scoreIndex), tt, position);
+					adjustTitleTextView(article.getInt(scoreIndex), holder.titleView, position);
 			}
-			
-			TextView ft = (TextView)v.findViewById(R.id.feed_title);
 			
 			int feedTitleIndex = article.getColumnIndex("feed_title");
 			
-			if (ft != null && feedTitleIndex != -1 && m_feedIsCat) {				
+			if (holder.feedTitleView != null && feedTitleIndex != -1 && m_feedIsCat) {				
 				String feedTitle = article.getString(feedTitleIndex);
 				
 				if (feedTitle.length() > 20)
 					feedTitle = feedTitle.substring(0, 20) + "...";
 				
 				if (feedTitle.length() > 0) {
-					ft.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
-					ft.setText(feedTitle);					
+					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+					holder.feedTitleView.setText(feedTitle);					
 				} else {
-					ft.setVisibility(View.GONE);
+					holder.feedTitleView.setVisibility(View.GONE);
 				}				
-			} else if (ft != null) {
-				ft.setVisibility(View.GONE);
+			} else if (holder.feedTitleView != null) {
+				holder.feedTitleView.setVisibility(View.GONE);
 			}
 			
-			ImageView marked = (ImageView)v.findViewById(R.id.marked);
-			
-			if (marked != null) {
-				marked.setImageResource(article.getInt(article.getColumnIndex("marked")) == 1 ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
+			if (holder.markedView != null) {
+				holder.markedView.setImageResource(article.getInt(article.getColumnIndex("marked")) == 1 ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
 				
-				marked.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
-								"WHERE " + BaseColumns._ID + " = ?");
-						
-						stmtUpdate.bindLong(1, articleId);
-						stmtUpdate.execute();
-						stmtUpdate.close();
-						
-						refresh();
-					}
-				});
+				holder.markedView.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
+                                "WHERE " + BaseColumns._ID + " = ?");
+
+                        stmtUpdate.bindLong(1, articleId);
+                        stmtUpdate.execute();
+                        stmtUpdate.close();
+
+                        refresh();
+                    }
+                });
 			}
 			
-			ImageView published = (ImageView)v.findViewById(R.id.published);
-			
-			if (published != null) {
-				published.setImageResource(article.getInt(article.getColumnIndex("published")) == 1 ? R.drawable.ic_published : R.drawable.ic_unpublished);
+			if (holder.publishedView != null) {
+				holder.publishedView.setImageResource(article.getInt(article.getColumnIndex("published")) == 1 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 				
-				published.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, published = NOT published " +
-								"WHERE " + BaseColumns._ID + " = ?");
-						
-						stmtUpdate.bindLong(1, articleId);
-						stmtUpdate.execute();
-						stmtUpdate.close();
+				holder.publishedView.setOnClickListener(new OnClickListener() {
 
-						refresh();
-					}
-				});
+                    @Override
+                    public void onClick(View v) {
+                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, published = NOT published " +
+                                "WHERE " + BaseColumns._ID + " = ?");
+
+                        stmtUpdate.bindLong(1, articleId);
+                        stmtUpdate.execute();
+                        stmtUpdate.close();
+
+                        refresh();
+                    }
+                });
 			}
-			
-			TextView te = (TextView)v.findViewById(R.id.excerpt);
 
-			if (te != null) {
+			if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
-					te.setVisibility(View.GONE);
+					holder.excerptView.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
 					
 					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
 						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
 					
-					te.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
-					te.setText(excerpt);
+					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
+					holder.excerptView.setText(excerpt);
 				}
 			}       	
 
-			TextView ta = (TextView)v.findViewById(R.id.author);
-
-			if (ta != null) {
+			if (holder.authorView != null) {
 				int authorIndex = article.getColumnIndex("author");
 				if (authorIndex >= 0) {
 					String author = article.getString(authorIndex);
 					
-					ta.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);					
+					holder.authorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);					
 					
 					if (author != null && author.length() > 0) 
-						ta.setText(getString(R.string.author_formatted, author));
+						holder.authorView.setText(getString(R.string.author_formatted, author));
 					else
-						ta.setText("");
+						holder.authorView.setText("");
 				}
 			}
-
-			/* ImageView separator = (ImageView)v.findViewById(R.id.headlines_separator);
 			
-			if (separator != null && m_offlineServices.isSmallScreen()) {
-				separator.setVisibility(View.GONE);
-			} */
-			
-			TextView dv = (TextView) v.findViewById(R.id.date);
-			
-			if (dv != null) {
-				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
+			if (holder.dateView != null) {
+				holder.dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 				
 				Date d = new Date((long)article.getInt(article.getColumnIndex("updated")) * 1000);
 				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
 				df.setTimeZone(TimeZone.getDefault());
-				dv.setText(df.format(d));
-			}
-			
-			CheckBox cb = (CheckBox) v.findViewById(R.id.selected);
-
-			if (cb != null) {
-				cb.setChecked(article.getInt(article.getColumnIndex("selected")) == 1);
-				cb.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View view) {
-						CheckBox cb = (CheckBox)view;
-
-						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
-								"WHERE " + BaseColumns._ID + " = ?");
-						
-						stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
-						stmtUpdate.bindLong(2, articleId);
-						stmtUpdate.execute();
-						stmtUpdate.close();
-						
-						refresh();
-						
-						m_activity.invalidateOptionsMenu();
-						
-					}
-				});
+				holder.dateView.setText(df.format(d));
 			}
 
-            View flavorImageHolder = v.findViewById(R.id.flavorImageHolder);
+			if (holder.selectionBoxView != null) {
+				holder.selectionBoxView.setChecked(article.getInt(article.getColumnIndex("selected")) == 1);
+				holder.selectionBoxView.setOnClickListener(new OnClickListener() {
 
-            if (flavorImageHolder != null) {
-                flavorImageHolder.setVisibility(View.GONE);
+                    @Override
+                    public void onClick(View view) {
+                        CheckBox cb = (CheckBox) view;
+
+                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+                                "WHERE " + BaseColumns._ID + " = ?");
+
+                        stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
+                        stmtUpdate.bindLong(2, articleId);
+                        stmtUpdate.execute();
+                        stmtUpdate.close();
+
+                        refresh();
+
+                        m_activity.invalidateOptionsMenu();
+
+                    }
+                });
+			}
+
+            if (holder.flavorImageHolder != null) {
+                holder.flavorImageHolder.setVisibility(View.GONE);
             }
-
-            ImageView ib = (ImageView) v.findViewById(R.id.article_menu_button);
 			
-			if (ib != null) {
+			if (holder.menuButtonView != null) {
 				//if (m_activity.isDarkTheme())
 				//	ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
 				
-				ib.setOnClickListener(new OnClickListener() {					
-					@Override
-					public void onClick(View v) {
-						getActivity().openContextMenu(v);
-					}
-				});								
+				holder.menuButtonView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().openContextMenu(v);
+                    }
+                });								
 			}
 
             return v;

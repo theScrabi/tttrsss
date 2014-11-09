@@ -695,6 +695,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			} else {
 				holder = (HeadlineViewHolder) v.getTag();
 			}
+
+            // block footer clicks to make button/selection clicking easier
+            if (holder.headlineFooter != null) {
+                holder.headlineFooter.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //
+                    }
+                });
+            }
 			
 			if (holder.titleView != null) {				
 				holder.titleView.setText(Html.fromHtml(article.title));
