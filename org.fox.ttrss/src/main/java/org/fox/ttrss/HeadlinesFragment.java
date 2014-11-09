@@ -70,6 +70,9 @@ import java.util.TimeZone;
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
+    public static final int FLAVOR_IMG_MIN_WIDTH = 128;
+    public static final int FLAVOR_IMG_MIN_HEIGHT = 128;
+
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
 	
@@ -804,7 +807,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         //Element img = doc.select("img").first();
 
                         final Elements imgs = doc.select("img");
-                        Element img = imgs.first();
+                        Element img = null;
+
+                        for (Element tmp : imgs) {
+                            try {
+                                if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
+                                    img = tmp;
+                                    break;
+                                }
+                            } catch (NumberFormatException e) {
+                                //
+                            }
+                        }
+
+                        if (img == null)
+                            img = imgs.first();
 
                         if (img != null) {
                             String imgSrc = img.attr("src");
@@ -879,7 +896,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                                     flavorImageLoadingBar.setVisibility(View.INVISIBLE);
 
-                                    if (arg2.getWidth() > 128 && arg2.getHeight() > 128) {
+                                    if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
                                         if (!m_activity.isCompatMode() && weNeedAnimation) {
 
                                             ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
