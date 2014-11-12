@@ -675,7 +675,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			
 			if (icon != null) {
 
-                if (feed.is_cat && feed.always_display_as_feed) {
+                if ((feed.is_cat && feed.always_display_as_feed) || (!feed.is_cat && feed.id == -4)) {
                     icon.setImageResource(R.drawable.ic_published_special);
                 } else if (m_enableFeedIcons) {
 					
