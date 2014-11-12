@@ -251,6 +251,6 @@
     <string name="fresh_articles">Fresh articles</string>
     <string name="feed_all_articles">All articles</string>
     <string name="prefs_enable_fab">Enable FAB</string>
-    <string name="prefs_enable_fab_long">Show floating action button while reading</string>
+    <string name="prefs_enable_fab_long">Show floating action button when reading</string>
 
 </resources>

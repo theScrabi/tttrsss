@@ -656,7 +656,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			if (tt != null) {
                 tt.setText(feed.display_title != null ? feed.display_title : feed.title);
 
-                if (feed.always_display_as_feed) {
+                if (feed.always_display_as_feed || (!feed.is_cat && feed.id == -4)) {
                     tt.setTypeface(null, Typeface.BOLD);
                 } else {
                     tt.setTypeface(null, Typeface.NORMAL);
