@@ -543,11 +543,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 						for (Feed f : feeds)
 							if (f.id > -10 || m_catId != -4) { // skip labels for flat feedlist for now
-                                m_feeds.add(f);
-                                catUnread += f.unread;
+                                if (m_activeCategory != null || f.id >= 0) {
+                                    m_feeds.add(f);
+                                    catUnread += f.unread;
+                                }
                             }
 						
 						sortFeeds();
+
+                        if (m_activeCategory == null) {
+                            Feed feed = new Feed(-1, "Special", true);
+                            feed.unread = catUnread;
+
+                            m_feeds.add(0, feed);
+                            m_adapter.notifyDataSetChanged();
+
+                        }
 
                         if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0 && m_feeds.size() > 0) {
                             Feed feed = new Feed(m_activeCategory.id, m_activeCategory.title, true);
