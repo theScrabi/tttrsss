@@ -85,11 +85,6 @@
             app:showAsAction="ifRoom"
             android:title="@string/share_article"/>
         <item
-            android:id="@+id/set_unread"
-            android:icon="@drawable/ic_read_light"
-            app:showAsAction=""
-            android:title="@string/article_set_unread"/>
-        <item
             android:id="@+id/catchup_above"
             android:title="@string/article_mark_read_above"/>
     </group>

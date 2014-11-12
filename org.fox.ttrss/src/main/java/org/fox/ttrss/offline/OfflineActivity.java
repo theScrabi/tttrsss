@@ -539,20 +539,6 @@ public class OfflineActivity extends CommonActivity {
 				refresh();
 			}
 			return true;
-		case R.id.set_unread:
-			if (oap != null) {
-				int articleId = oap.getSelectedArticleId();
-				
-				SQLiteStatement stmt = getWritableDb().compileStatement(
-						"UPDATE articles SET modified = 1, unread = 1 WHERE "
-								+ BaseColumns._ID + " = ?");
-				stmt.bindLong(1, articleId);
-				stmt.execute();
-				stmt.close();
-				
-				refresh();
-			}
-			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -606,9 +592,6 @@ public class OfflineActivity extends CommonActivity {
 					m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_menu_published_light :
 						R.drawable.ic_menu_unpublished_light);
 
-					m_menu.findItem(R.id.set_unread).setIcon(unread ? R.drawable.ic_unread_light :
-						R.drawable.ic_read_light);
-					
 					article.close();
 				}				
 			}

@@ -1013,18 +1013,6 @@ public class OnlineActivity extends CommonActivity {
 				}
 			}
 			return true;
-		case R.id.set_unread:
-			if (ap != null && ap.getSelectedArticle() != null) {
-				Article a = ap.getSelectedArticle();
-				
-				if (a != null) {
-					a.unread = !a.unread;
-					saveArticleUnread(a);
-				}
-				
-				if (hf != null) hf.notifyUpdated();
-			}
-			return true;
 		case R.id.set_labels:
 			if (ap != null && ap.getSelectedArticle() != null) {
 				if (getApiLevel() != 7) {
@@ -1575,10 +1563,7 @@ public class OnlineActivity extends CommonActivity {
 
 					m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_menu_published_light :
 						R.drawable.ic_menu_unpublished_light);
-
-					m_menu.findItem(R.id.set_unread).setIcon(article.unread ? R.drawable.ic_unread_light :
-						R.drawable.ic_read_light);
-				}				
+				}
 			}
 			
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);

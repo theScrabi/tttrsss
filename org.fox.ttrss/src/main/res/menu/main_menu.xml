@@ -140,12 +140,6 @@
                 android:id="@+id/catchup_above"
                 android:title="@string/article_mark_read_above"/>
 
-            <item
-                android:id="@+id/set_unread"
-                android:icon="@drawable/ic_read_light"
-                app:showAsAction=""
-                android:title="@string/article_set_unread"/>
-
         </group>
 
         <item
