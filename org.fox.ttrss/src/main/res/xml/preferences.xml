@@ -143,6 +143,11 @@
             android:defaultValue="true"
             android:key="confirm_headlines_catchup"
             android:title="@string/prefs_confirm_headlines_catchup" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enable_article_fab"
+            android:summary="@string/prefs_enable_fab_long"
+            android:title="@string/prefs_enable_fab" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference

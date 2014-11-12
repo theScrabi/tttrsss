@@ -142,23 +142,27 @@ public class OfflineArticleFragment extends Fragment {
                 View fab = view.findViewById(R.id.article_fab);
 
                 if (scrollView != null && fab != null) {
-                    scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
+                    if (m_prefs.getBoolean("enable_article_fab", true)) {
+                        scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
 
-                    fab.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                URL url = new URL(link.trim());
-                                String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-                                        url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                m_activity.toast(R.string.error_other_error);
+                        fab.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+                                    URL url = new URL(link.trim());
+                                    String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+                                            url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    m_activity.toast(R.string.error_other_error);
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        fab.setVisibility(View.GONE);
+                    }
                 }
 
 				/* View scroll = view.findViewById(R.id.article_scrollview);
