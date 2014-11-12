@@ -340,19 +340,32 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 						m_cats.clear();
 						
 						int apiLevel = m_activity.getApiLevel();
-						
+
+                        boolean specialCatFound = false;
+
 						// virtual cats implemented in getCategories since api level 1
 						if (apiLevel == 0) {
 							m_cats.add(new FeedCategory(-1, "Special", 0));
 							m_cats.add(new FeedCategory(-2, "Labels", 0));
 							m_cats.add(new FeedCategory(0, "Uncategorized", 0));
+
+                            specialCatFound = true;
 						}
 						
-						for (FeedCategory c : cats)
-							m_cats.add(c);
+						for (FeedCategory c : cats) {
+                            if (c.id == -1) {
+                                specialCatFound = true;
+                            }
+
+                            m_cats.add(c);
+                        }
 						
 						sortCats();
-						
+
+                        if (!specialCatFound) {
+                            m_cats.add(0, new FeedCategory(-1, "Special", 0));
+                        }
+
 						/* if (m_cats.size() == 0)
 							setLoadingStatus(R.string.no_feeds_to_display, false);
 						else */
