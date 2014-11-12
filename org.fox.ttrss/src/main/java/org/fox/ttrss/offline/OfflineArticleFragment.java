@@ -164,26 +164,6 @@ public class OfflineArticleFragment extends Fragment {
                         fab.setVisibility(View.GONE);
                     }
                 }
-
-				/* View scroll = view.findViewById(R.id.article_scrollview);
-
-				if (scroll != null) {
-					final float scale = getResources().getDisplayMetrics().density;
-					
-					if (m_activity.isSmallScreen()) {
-						scroll.setPadding((int)(8 * scale + 0.5f),
-								(int)(5 * scale + 0.5f),
-								(int)(8 * scale + 0.5f),
-								0);
-					} else {
-						scroll.setPadding((int)(25 * scale + 0.5f),
-								(int)(10 * scale + 0.5f),
-								(int)(25 * scale + 0.5f),
-								0);
-
-					}
-					
-				} */
 			}
 			
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
@@ -269,43 +249,40 @@ public class OfflineArticleFragment extends Fragment {
                         }
                     }
                 });
-				
-				String content;
-				String cssOverride = "";
-				
-				WebSettings ws = web.getSettings();
-				ws.setSupportZoom(false);
 
-				TypedValue tv = new TypedValue();				
-			    getActivity().getTheme().resolveAttribute(R.attr.linkColor, tv, true);
-			    
-			    // prevent flicker in ics
-			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
-			    	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			    		web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-			    	}
-			    }
-			    
-			    String theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT); 
-			    
-				if (CommonActivity.THEME_DARK.equals(theme)) {
-					cssOverride = "body { background : transparent; color : #e0e0e0}";
-				} else {
-					cssOverride = "body { background : transparent; }";
-				}
+                // prevent flicker in ics
+                if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                        web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                    }
+                }
 
-				if (useTitleWebView || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-					web.setBackgroundColor(Color.TRANSPARENT);
-				} else {
-					// seriously?
-					web.setBackgroundColor(Color.argb(1, 0, 0, 0));
-				}
-				
-				String hexColor = String.format("#%06X", (0xFFFFFF & tv.data));
-			    cssOverride += " a:link {color: "+hexColor+";} a:visited { color: "+hexColor+";}";
-				
-			    cssOverride += " table { width : 100%; }";
-			    
+                String content;
+                String cssOverride = "";
+
+                WebSettings ws = web.getSettings();
+                ws.setSupportZoom(false);
+
+                TypedValue tvBackground = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
+
+                String backgroundHexColor = String.format("#%06X", (0xFFFFFF & tvBackground.data));
+
+                cssOverride = "body { background : "+ backgroundHexColor+"; }";
+
+                TypedValue tvTextColor = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.articleTextColor, tvTextColor, true);
+
+                String textColor = String.format("#%06X", (0xFFFFFF & tvTextColor.data));
+
+                cssOverride += "body { color : "+textColor+"; }";
+
+                TypedValue tvLinkColor = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.linkColor, tvLinkColor, true);
+
+                String linkHexColor = String.format("#%06X", (0xFFFFFF & tvLinkColor.data));
+                cssOverride += " a:link {color: "+linkHexColor+";} a:visited { color: "+linkHexColor+";}";
+
 				String articleContent = m_cursor.getString(m_cursor.getColumnIndex("content"));
 				Document doc = Jsoup.parse(articleContent);
 					
@@ -337,19 +314,20 @@ public class OfflineArticleFragment extends Fragment {
 				}
 				
 				ws.setDefaultFontSize(articleFontSize);
-				
-				content = 
-					"<html>" +
-					"<head>" +
-					"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-					"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
-					"<style type=\"text/css\">" +
-					"body { padding : 0px; margin : 0px; line-height : 130%; }" +
-					cssOverride +
-					"img { max-width : 100%; width : auto; height : auto; }" +
-					"</style>" +
-					"</head>" +
-					"<body>" + articleContent;
+
+                content =
+                    "<html>" +
+                    "<head>" +
+                    "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+                    "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
+                    "<style type=\"text/css\">" +
+                    "body { padding : 0px; margin : 0px; line-height : 130%; }" +
+                    "img { max-width : 100%; width : auto; height : auto; }" +
+                    " table { width : 100%; }" +
+                    cssOverride +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" + articleContent;
 				
 				if (useTitleWebView) {
 					content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>";

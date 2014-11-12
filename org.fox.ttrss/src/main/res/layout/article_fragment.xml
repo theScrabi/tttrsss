@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="?articleNoteBackground"                
+                android:background="?articleNoteBackground"
                 android:textColor="?articleNoteTextColor"
                 android:textSize="13sp"
                 android:padding="8dp"

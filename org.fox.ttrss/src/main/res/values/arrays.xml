@@ -2,12 +2,14 @@
     <string-array name="pref_theme_names">
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
-        <item>@string/theme_sepia</item>        
+        <item>@string/theme_sepia</item>
+        <item>@string/theme_amber</item>
     </string-array>
     <string-array name="pref_theme_values" translatable="false">
         <item>THEME_LIGHT</item>
         <item>THEME_DARK</item>
         <item>THEME_SEPIA</item>
+        <item>THEME_AMBER</item>
     </string-array>
     <string-array name="pref_view_mode_names">
         <item>@string/category_browse_headlines</item>

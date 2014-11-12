@@ -13,6 +13,7 @@
     android:orientation="horizontal">
 
     <ImageView
+        android:tint="?iconTintColor"
         android:id="@+id/icon"
         android:layout_gravity="center_vertical"
         android:layout_width="16dp"

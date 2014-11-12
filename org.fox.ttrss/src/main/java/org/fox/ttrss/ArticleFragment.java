@@ -123,29 +123,6 @@ public class ArticleFragment extends Fragment  {
                 }
             }
 
-
-			/* if (!useTitleWebView) {
-				View scroll = view.findViewById(R.id.article_scrollview);
-
-				if (scroll != null) {
-					final float scale = getResources().getDisplayMetrics().density;
-					
-					if (m_activity.isSmallScreen()) {
-						scroll.setPadding((int)(8 * scale + 0.5f),
-								(int)(5 * scale + 0.5f),
-								(int)(8 * scale + 0.5f),
-								0);
-					} else {
-						scroll.setPadding((int)(25 * scale + 0.5f),
-								(int)(10 * scale + 0.5f),
-								(int)(25 * scale + 0.5f),
-								0);
-
-					}
-					
-				}
-			} */
-			
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
 			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
@@ -282,9 +259,12 @@ public class ArticleFragment extends Fragment  {
 
                 cssOverride = "body { background : "+ backgroundHexColor+"; }";
 
-                if (m_activity.isDarkTheme()) {
-                    cssOverride += "body { color : #e0e0e0; }";
-                }
+                TypedValue tvTextColor = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.articleTextColor, tvTextColor, true);
+
+                String textColor = String.format("#%06X", (0xFFFFFF & tvTextColor.data));
+
+                cssOverride += "body { color : "+textColor+"; }";
 
                 TypedValue tvLinkColor = new TypedValue();
                 getActivity().getTheme().resolveAttribute(R.attr.linkColor, tvLinkColor, true);
