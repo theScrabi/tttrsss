@@ -15,7 +15,6 @@
         <item name="feedsSelectedBackground">?colorPrimaryDark</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
         <item name="feedlistSelectedTextColor">#ffffff</item>
-        <item name="headlineTextColor">@android:color/secondary_text_light</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
         <item name="headlineSelectedTextColor">#ffffff</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
@@ -74,19 +73,18 @@
 
         <item name="headlineUnreadTextColor">?linkColor</item>
         <item name="headlineSelectedTextColor">?linkColor</item>
-        <item name="headlineExcerptTextColor">?articleTextColor</item>
-        <item name="headlineSecondaryTextColor">?colorPrimary</item>
+        <item name="headlineExcerptTextColor">?linkColor</item>
+        <item name="headlineSecondaryTextColor">?linkColor</item>
         <item name="headlineSelectedExcerptTextColor">?linkColor</item>
-        <item name="headlineTextColor">@android:color/secondary_text_dark</item>
-        <item name="headlineSelectedSecondaryTextColor">?colorPrimary</item>
+        <item name="headlineSelectedSecondaryTextColor">?linkColor</item>
 
         <item name="headlineUnreadBackground">@android:color/black</item>
         <item name="headlineSelectedBackground">#635200</item>
 
         <item name="iconTintColor">?linkColor</item>
 
-        <item name="colorPrimary">#B78300</item>
-        <item name="colorPrimaryDark">#A87300</item>
+        <item name="colorPrimary">#CC9500</item>
+        <item name="colorPrimaryDark">#A57100</item>
         <item name="colorAccent">#FFBF00</item>
     </style>
 
@@ -101,7 +99,6 @@
         <item name="headlineSecondaryTextColor">#909090</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
-        <item name="headlineTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
         <item name="headlineSelectedBackground">?colorPrimary</item>
         <item name="headlineUnreadBackground">#383c42</item>
