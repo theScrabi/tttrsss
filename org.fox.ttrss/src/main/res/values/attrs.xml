@@ -11,7 +11,7 @@
     <attr name="feedsSelectedBackground" format="reference|color" />
     <attr name="feedlistTextColor" format="reference|color" />
     <attr name="feedlistSelectedTextColor" format="reference|color" />
-    <attr name="headlineTextColor" format="reference|color" />
+    <!-- <attr name="headlineTextColor" format="reference|color" /> -->
     <attr name="headlineUnreadTextColor" format="reference|color" />
     <attr name="headlineSelectedTextColor" format="reference|color" />    
     <attr name="headlineExcerptTextColor" format="reference|color" />
@@ -28,4 +28,5 @@
     <attr name="articleHeader" format="reference|color" />
     <attr name="articleHeaderTextColor" format="reference|color" />
     <attr name="articleTextColor" format="reference|color" />
+    <attr name="headlineFooterColor" format="reference|color" />
 </resources>
