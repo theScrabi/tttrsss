@@ -11,10 +11,6 @@
         <item>THEME_SEPIA</item>
         <item>THEME_AMBER</item>
     </string-array>
-    <string-array name="pref_view_mode_names">
-        <item>@string/category_browse_headlines</item>
-        <item>@string/category_browse_articles</item>
-    </string-array>
     <string-array name="pref_offline_amounts" translatable="false">
         <item>150</item>
         <item>250</item>
