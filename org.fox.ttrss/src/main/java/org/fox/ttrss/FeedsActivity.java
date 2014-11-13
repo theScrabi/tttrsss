@@ -144,10 +144,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
 			}
 
-            HeadlinesFragment hf = new HeadlinesFragment();
-            hf.initialize(new Feed(-3, getString(R.string.fresh_articles), false));
+            if (m_prefs.getBoolean("open_fresh_on_startup", true)) {
+                HeadlinesFragment hf = new HeadlinesFragment();
+                hf.initialize(new Feed(-3, getString(R.string.fresh_articles), false));
 
-            ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+                ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+            } else if (m_drawerLayout != null) {
+                m_drawerLayout.openDrawer(Gravity.START);
+            }
 
 			ft.commit();
 

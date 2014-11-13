@@ -114,6 +114,11 @@
             android:dialogMessage="@string/pref_headline_font_size"
             android:title="@string/pref_headline_font_size" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="open_fresh_on_startup"
+            android:title="@string/prefs_open_fresh_on_startup" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <org.fox.ttrss.util.FontSizeDialogPreference

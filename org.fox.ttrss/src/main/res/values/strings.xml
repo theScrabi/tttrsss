@@ -253,5 +253,6 @@
     <string name="feed_all_articles">All articles</string>
     <string name="prefs_enable_fab">Enable FAB</string>
     <string name="prefs_enable_fab_long">Show floating action button when reading</string>
+    <string name="prefs_open_fresh_on_startup">Open Fresh feed on startup</string>
 
 </resources>
