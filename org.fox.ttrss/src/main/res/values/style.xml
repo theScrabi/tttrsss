@@ -29,7 +29,6 @@
         <item name="articleHeaderTextColor">@android:color/white</item>
         <item name="articleTextColor">@android:color/black</item>
         <item name="floatingActionButtonStyle">@style/FabTheme</item>
-        <item name="iconTintColor">@android:color/transparent</item>
 
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
@@ -62,7 +61,6 @@
         <item name="articleTextColor">#D2B944</item>
         <item name="linkColor">?colorAccent</item>
 
-        <item name="feedlistTextColor">?linkColor</item>
         <item name="unreadCounterColor">?colorPrimaryDark</item>
 
         <item name="headlineUnreadTextColor">?linkColor</item>
@@ -75,10 +73,8 @@
         <item name="headlineUnreadBackground">@android:color/black</item>
         <item name="headlineSelectedBackground">#635200</item>
 
-        <item name="iconTintColor">?linkColor</item>
-
         <item name="colorPrimary">@android:color/black</item>
-        <item name="colorPrimaryDark">#A57100</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorAccent">#EACF4C</item>
     </style>
 
@@ -111,7 +107,6 @@
         <item name="articleHeaderTextColor">@android:color/white</item>
         <item name="floatingActionButtonStyle">@style/FabTheme</item>
         <item name="articleTextColor">#e0e0e0</item>
-        <item name="iconTintColor">@android:color/transparent</item>
 
         <item name="colorPrimary">#51698E</item>
         <item name="colorPrimaryDark">#445877</item>

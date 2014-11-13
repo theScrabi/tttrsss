@@ -310,6 +310,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         // thanks google
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.KITKAT) {
             list.setDividerHeight(0);
+
+            int px = m_activity.dpToPx(4);
+            list.setPadding(px, px, px, px);
         }
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {

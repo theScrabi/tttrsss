@@ -141,6 +141,11 @@ public class CommonActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 	}
 
+    public int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
+    }
+
 	public void setStatusBarTint() {
 		if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT &&
                 !m_prefs.getBoolean("full_screen_mode", false)) {

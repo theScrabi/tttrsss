@@ -28,5 +28,4 @@
     <attr name="articleHeader" format="reference|color" />
     <attr name="articleHeaderTextColor" format="reference|color" />
     <attr name="articleTextColor" format="reference|color" />
-    <attr name="iconTintColor" format="reference|color" />
 </resources>

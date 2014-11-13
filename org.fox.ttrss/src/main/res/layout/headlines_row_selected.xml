@@ -154,7 +154,6 @@
                     android:textStyle="italic" />
 
                 <ImageView
-                    android:tint="?iconTintColor"
                     android:id="@+id/marked"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
@@ -165,7 +164,6 @@
                     android:src="@drawable/ic_star_empty" />
 
                 <ImageView
-                    android:tint="?iconTintColor"
                     android:id="@+id/published"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
@@ -176,7 +174,6 @@
                     android:src="@drawable/ic_unpublished" />
 
                 <ImageView
-                    android:tint="?iconTintColor"
                     android:id="@+id/article_menu_button"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
