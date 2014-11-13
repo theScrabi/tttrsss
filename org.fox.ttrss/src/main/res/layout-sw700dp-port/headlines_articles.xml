@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:layout_width="500dp"
             android:layout_gravity="start"
-            android:background="?headlinesBackgroundSolid">
+            android:background="?headlinesBackground">
         </FrameLayout>
     </android.support.v4.widget.DrawerLayout>
 

@@ -2,12 +2,10 @@
 
     <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="statusBarHintColor">?colorPrimary</item>
-        <item name="smallScreenBackground">#eeeeee</item>
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
-        <item name="feedlistBackground"><!--  #e0e0e0 -->@drawable/shadow_feeds</item>
+        <item name="feedlistBackground">#e0e0e0</item>
         <item name="unreadCounterColor">#909090</item>
-        <item name="headlinesBackground"><!--  #f0f0f0 -->@drawable/shadow_headlines</item>
-        <item name="headlinesBackgroundSolid">#f0f0f0</item>
+        <item name="headlinesBackground">#f0f0f0</item>
         <item name="articleBackground">@android:color/white</item>
         <item name="headlineSelectedBackground">?colorAccent</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
@@ -39,10 +37,8 @@
     </style>
 
     <style name="SepiaTheme" parent="LightTheme">
-        <item name="smallScreenBackground">@drawable/paper_sepia</item>
-        <item name="feedlistBackground">@drawable/shadow_feeds_sepia</item>
-        <item name="headlinesBackground">@drawable/shadow_headlines_sepia</item>
-        <item name="headlinesBackgroundSolid">@drawable/paper_sepia</item>
+        <item name="feedlistBackground">#EAE2DC</item>
+        <item name="headlinesBackground">#EAE2DC</item>
         <item name="feedlistTextColor">#35281C</item>
         <item name="linkColor">?colorPrimary</item>
 
@@ -57,15 +53,13 @@
         <item name="articleNoteBackground">#543800</item>
 
         <item name="headlineNormalBackground">@android:color/black</item>
-        <item name="smallScreenBackground">@android:color/black</item>
 
         <item name="feedlistBackground">?colorPrimaryDark</item>
         <item name="headlinesBackground">@android:color/black</item>
-        <item name="headlinesBackgroundSolid">@android:color/black</item>
         <item name="articleBackground">@android:color/black</item>
 
         <item name="articleHeaderTextColor">?linkColor</item>
-        <item name="articleTextColor">?colorPrimary</item>
+        <item name="articleTextColor">#D2B944</item>
         <item name="linkColor">?colorAccent</item>
 
         <item name="feedlistTextColor">?linkColor</item>
@@ -83,9 +77,9 @@
 
         <item name="iconTintColor">?linkColor</item>
 
-        <item name="colorPrimary">#CC9500</item>
+        <item name="colorPrimary">@android:color/black</item>
         <item name="colorPrimaryDark">#A57100</item>
-        <item name="colorAccent">#FFBF00</item>
+        <item name="colorAccent">#EACF4C</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat">
@@ -107,12 +101,10 @@
         <item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
         <item name="articleNoteBackground">#303030</item>
         <item name="parentBtnBackground">#101010</item>
-        <item name="smallScreenBackground">@color/feeds_dark_gray</item>
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_dark</item>
-        <item name="feedlistBackground">@drawable/shadow_feeds_gray</item>
-        <item name="headlinesBackground">@drawable/shadow_headlines_gray</item>
-        <item name="headlinesBackgroundSolid">@color/feeds_dark_gray</item>
-        <item name="articleBackground">@color/feeds_dark_gray</item>
+        <item name="feedlistBackground">#1c1d1e</item>
+        <item name="headlinesBackground">#1c1d1e</item>
+        <item name="articleBackground">#1c1d1e</item>
         <item name="feedsSelectedBackground">?colorPrimaryDark</item>
         <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
         <item name="articleHeader">?colorPrimaryDark</item>

@@ -19,13 +19,14 @@
             android:id="@+id/headlines_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?smallScreenBackground"></FrameLayout>
+            android:background="?headlinesBackground">
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/feeds_fragment"
             android:layout_width="300dp"
             android:layout_gravity="start"
-            android:background="?smallScreenBackground"
+            android:background="?feedlistBackground"
             android:layout_height="match_parent" >
         </FrameLayout>
 
