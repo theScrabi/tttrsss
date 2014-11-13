@@ -93,6 +93,7 @@
 
 
         <ImageView
+            android:tint="?headlineFooterColor"
             android:id="@+id/marked"
             android:layout_width="24dp"
             android:layout_gravity="bottom|right"

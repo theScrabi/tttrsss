@@ -91,7 +91,7 @@
         <item name="headlineExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSecondaryTextColor">#909090</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
-        <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
+        <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
         <item name="headlineSelectedBackground">#88b0f0</item>
         <item name="headlineUnreadBackground">#383c42</item>
