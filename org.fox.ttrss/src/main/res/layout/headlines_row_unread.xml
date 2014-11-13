@@ -6,7 +6,8 @@
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    card_view:cardElevation="2dp"
+    card_view:cardElevation="4dp"
+    card_view:cardUseCompatPadding="true"
     card_view:cardBackgroundColor="?headlineUnreadBackground"
     tools:ignore="HardcodedText" >
 
