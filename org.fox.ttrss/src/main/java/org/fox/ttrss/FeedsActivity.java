@@ -25,7 +25,6 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
-import org.fox.ttrss.util.AppRater;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -154,7 +153,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
             m_feedIsSelected = true;
 
-			AppRater.appLaunched(this);
 			checkTrial(true);
 
 		} else { // savedInstanceState != null
