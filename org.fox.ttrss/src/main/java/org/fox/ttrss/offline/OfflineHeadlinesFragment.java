@@ -36,7 +36,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.TypefaceCache;
@@ -646,9 +645,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
 					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
-					
-					if (excerpt.length() > CommonActivity.EXCERPT_MAX_SIZE)
-						excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_SIZE) + "...";
 					
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);

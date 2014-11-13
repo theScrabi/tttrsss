@@ -31,9 +31,7 @@ public class CommonActivity extends ActionBarActivity {
 	public final static String THEME_SEPIA = "THEME_SEPIA";
     public final static String THEME_AMBER = "THEME_AMBER";
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
-	
-	public static final int EXCERPT_MAX_SIZE = 200;
-	
+
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;
 
