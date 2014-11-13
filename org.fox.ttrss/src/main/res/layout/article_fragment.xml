@@ -17,6 +17,7 @@
 
             <LinearLayout
                 android:padding="8dp"
+                android:elevation="6dp"
                 android:id="@+id/article_header"
                 android:background="?articleHeader"
                 android:layout_width="match_parent"
@@ -82,6 +83,7 @@
             </LinearLayout>
 
             <TextView
+                android:elevation="2dp"
                 android:id="@+id/note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
