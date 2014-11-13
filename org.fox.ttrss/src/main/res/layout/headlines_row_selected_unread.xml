@@ -151,7 +151,7 @@
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:text="by Author"
-                    android:textColor="?headlineSecondaryTextColor"
+                    android:textColor="?headlineSelectedSecondaryTextColor"
                     android:textSize="12sp"
                     android:textStyle="italic" />
 

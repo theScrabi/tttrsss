@@ -7,7 +7,7 @@
         <item name="unreadCounterColor">#909090</item>
         <item name="headlinesBackground">#f0f0f0</item>
         <item name="articleBackground">@android:color/white</item>
-        <item name="headlineSelectedBackground">?colorAccent</item>
+        <item name="headlineSelectedBackground">#88b0f0</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
         <item name="headlineNormalBackground">#f5f5f5</item>
         <item name="feedsSelectedBackground">?colorPrimaryDark</item>
@@ -17,7 +17,7 @@
         <item name="headlineSelectedTextColor">#ffffff</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineSecondaryTextColor">#909090</item>
-        <item name="headlineSelectedSecondaryTextColor">#606060</item>
+        <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_light</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#008000</item>
         <item name="linkColor">?colorPrimary</item>
@@ -92,8 +92,8 @@
         <item name="headlineSecondaryTextColor">#909090</item>
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
-        <item name="headlineSelectedSecondaryTextColor">#a0a0a0</item>
-        <item name="headlineSelectedBackground">?colorPrimary</item>
+        <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
+        <item name="headlineSelectedBackground">#88b0f0</item>
         <item name="headlineUnreadBackground">#383c42</item>
         <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>

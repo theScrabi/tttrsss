@@ -20,6 +20,7 @@
         android:orientation="horizontal" >
 
         <FrameLayout
+            android:paddingRight="4dp"
             android:id="@+id/headlines_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"

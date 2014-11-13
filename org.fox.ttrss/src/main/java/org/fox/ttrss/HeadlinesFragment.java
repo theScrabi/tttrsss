@@ -302,6 +302,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		}
 
+        if ("HL_COMPACT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT")))
+            m_compactLayoutMode = true;
+
 		DisplayMetrics metrics = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		m_maxImageSize = (int) (128 * metrics.density + 0.5);
@@ -328,6 +331,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		
 		ListView list = (ListView)view.findViewById(R.id.headlines_list);
+
+        if (!m_compactLayoutMode) {
+            list.setDividerHeight(0);
+            list.setDivider(null);
+        }
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -654,20 +662,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
 			
 			if (v == null) {
-				int layoutId = R.layout.headlines_row;
-				
-				switch (getItemViewType(position)) {
+                int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
+
+                switch (getItemViewType(position)) {
 				case VIEW_LOADMORE:
 					layoutId = R.layout.headlines_row_loadmore;
 					break;
 				case VIEW_UNREAD:
-					layoutId = R.layout.headlines_row_unread;
+					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
 					break;
 				case VIEW_SELECTED:
-					layoutId = R.layout.headlines_row_selected;
+					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_compact : R.layout.headlines_row_selected;
 					break;
 				case VIEW_SELECTED_UNREAD:
-					layoutId = R.layout.headlines_row_selected_unread;
+					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_unread_compact : R.layout.headlines_row_selected_unread;
 					break;
 				}
 				
@@ -796,7 +804,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (!m_compactLayoutMode) {
-                if (holder.flavorImageView != null && m_prefs.getBoolean("headlines_show_flavor_image", true)) {
+                boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
+
+                if (holder.flavorImageView != null && showFlavorImage) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
                     Document doc = Jsoup.parse(articleContent);

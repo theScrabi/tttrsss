@@ -11,6 +11,16 @@
         <item>THEME_SEPIA</item>
         <item>THEME_AMBER</item>
     </string-array>
+    <string-array name="headline_mode_names">
+        <item>@string/headline_display_mode_default</item>
+        <item>@string/headline_display_mode_no_images</item>
+        <item>@string/headline_display_mode_compact</item>
+    </string-array>
+    <string-array name="headline_mode_values" translatable="false">
+        <item>HL_DEFAULT</item>
+        <item>HL_NOIMAGES</item>
+        <item>HL_COMPACT</item>
+    </string-array>
     <string-array name="pref_offline_amounts" translatable="false">
         <item>150</item>
         <item>250</item>

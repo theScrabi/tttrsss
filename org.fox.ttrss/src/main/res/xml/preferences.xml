@@ -85,10 +85,10 @@
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
 
-        <CheckBoxPreference
+        <!-- <CheckBoxPreference
             android:defaultValue="true"
             android:key="headlines_show_flavor_image"
-            android:title="@string/prefs_headlines_show_flavor_image" />
+            android:title="@string/prefs_headlines_show_flavor_image" /> -->
         
         <!--  <CheckBoxPreference
             android:defaultValue="false"
@@ -113,6 +113,14 @@
             android:key="headlines_font_size_sp"
             android:dialogMessage="@string/pref_headline_font_size"
             android:title="@string/pref_headline_font_size" />
+
+        <ListPreference
+            android:defaultValue="HL_DEFAULT"
+            android:entries="@array/headline_mode_names"
+            android:entryValues="@array/headline_mode_values"
+            android:key="headline_mode"
+            android:summary="@string/prefs_headline_display_mode_long"
+            android:title="@string/prefs_headline_display_mode" />
 
         <CheckBoxPreference
             android:defaultValue="true"
