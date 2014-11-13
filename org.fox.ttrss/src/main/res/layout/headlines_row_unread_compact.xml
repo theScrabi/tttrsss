@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/excerpt"
-            android:singleLine="true"
+            android:maxLines="2"
             android:ellipsize="end"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -87,7 +87,7 @@
             android:singleLine="true"
             android:ellipsize="none"
             android:layout_weight="1"
-            android:text="Jan 01, 12:00, 1970"
+            android:text="Jan 01"
             android:textColor="?headlineSecondaryTextColor"
             android:textSize="12sp"
             />
@@ -95,9 +95,9 @@
 
         <ImageView
             android:id="@+id/marked"
-            android:layout_width="16dp"
+            android:layout_width="24dp"
             android:layout_gravity="bottom|right"
-            android:layout_height="16dp"
+            android:layout_height="24dp"
             android:layout_weight="0"
             android:clickable="true"
             android:src="@drawable/ic_star_empty" />

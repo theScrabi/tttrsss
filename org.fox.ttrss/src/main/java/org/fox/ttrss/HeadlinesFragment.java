@@ -965,7 +965,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 				
 				Date d = new Date((long)article.updated * 1000);
-				DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
+                Date now = new Date();
+
+                DateFormat df;
+
+                if (now.getYear() == d.getYear() && now.getMonth() == d.getMonth() && now.getDay() == d.getDay()) {
+                    df = new SimpleDateFormat("HH:mm");
+                } else {
+                    df = new SimpleDateFormat("MMM dd");
+                }
+
 				df.setTimeZone(TimeZone.getDefault());
 				holder.dateView.setText(df.format(d));
 			}
