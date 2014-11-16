@@ -10,13 +10,25 @@
     android:background="?headlineUnreadBackground"
     tools:ignore="HardcodedText" >
 
-    <CheckBox
-        android:id="@+id/selected"
+    <FrameLayout
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_vertical|left"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:layout_gravity="center"
-        android:focusable="false" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:clickable="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/text_image"/>
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/check_sm"
+            android:id="@+id/text_checked"/>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_weight="1"

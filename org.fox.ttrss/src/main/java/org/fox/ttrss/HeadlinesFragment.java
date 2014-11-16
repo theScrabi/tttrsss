@@ -41,6 +41,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.JsonElement;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -603,6 +605,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ProgressBar flavorImageLoadingBar;
         public View flavorImageArrow;
         public View headlineFooter;
+        public ImageView textImage;
+        public ImageView textChecked;
     }
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -618,6 +622,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
+
+        private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
+        private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -650,13 +657,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}			
 		}
 
+        private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
+            String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
+
+            if (m_selectedArticles.contains(item)) {
+                holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+
+                holder.textChecked.setVisibility(View.VISIBLE);
+            } else {
+                holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
+
+                holder.textChecked.setVisibility(View.GONE);
+            }
+        }
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			View v = convertView;
 			
 			final Article article = items.get(position);
-			HeadlineViewHolder holder;
+			final HeadlineViewHolder holder;
 			
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
@@ -698,6 +719,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
                 holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
                 holder.headlineFooter = v.findViewById(R.id.headline_footer);
+                holder.textImage = (ImageView) v.findViewById(R.id.text_image);
+                holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				
 				v.setTag(holder);
 				
@@ -716,7 +739,31 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     }
                 });
             }
-			
+
+            if (holder.textImage != null) {
+                updateTextCheckedState(holder, article);
+
+                holder.textImage.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "textImage : onclicked");
+
+                        if (!m_selectedArticles.contains(article)) {
+                            m_selectedArticles.add(article);
+                        } else {
+                            m_selectedArticles.remove(article);
+                        }
+
+                        updateTextCheckedState(holder, article);
+
+                        m_listener.onArticleListSelectionChange(m_selectedArticles);
+
+                        Log.d(TAG, "num selected: " + m_selectedArticles.size());
+                    }
+                });
+
+            }
+
 			if (holder.titleView != null) {				
 				holder.titleView.setText(Html.fromHtml(article.title));
 				

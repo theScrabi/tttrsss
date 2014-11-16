@@ -36,6 +36,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.TypefaceCache;
@@ -448,6 +451,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         public ProgressBar flavorImageLoadingBar;
         public View flavorImageArrow;
         public View headlineFooter;
+        public ImageView textImage;
+        public ImageView textChecked;
     }
 
     private class ArticleListAdapter extends SimpleCursorAdapter {
@@ -461,6 +466,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
+
+        private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
+        private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 		
 		public ArticleListAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int flags) {
@@ -493,14 +501,32 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}			
 		}
 
+        private void updateTextCheckedState(HeadlineViewHolder holder, Cursor item) {
+            String title = item.getString(item.getColumnIndex("title"));
+
+            String tmp = title.length() > 0 ? title.substring(0, 1) : "?";
+
+            boolean isChecked = item.getInt(item.getColumnIndex("selected")) == 1;
+
+            if (isChecked) {
+                holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+
+                holder.textChecked.setVisibility(View.VISIBLE);
+            } else {
+                holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(title)));
+
+                holder.textChecked.setVisibility(View.GONE);
+            }
+        }
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			View v = convertView;
 
-			Cursor article = (Cursor)getItem(position);
+			final Cursor article = (Cursor)getItem(position);
 
-            HeadlineViewHolder holder;
+            final HeadlineViewHolder holder;
 
 			final int articleId = article.getInt(0);
 			
@@ -544,6 +570,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
                 holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
                 holder.headlineFooter = v.findViewById(R.id.headline_footer);
+                holder.textImage = (ImageView) v.findViewById(R.id.text_image);
+                holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 
                 v.setTag(holder);
 
@@ -561,6 +589,31 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                         //
                     }
                 });
+            }
+
+            if (holder.textImage != null) {
+                updateTextCheckedState(holder, article);
+
+                holder.textImage.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "textImage : onclicked");
+
+                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = NOT selected " +
+                                "WHERE " + BaseColumns._ID + " = ?");
+
+                        stmtUpdate.bindLong(1, articleId);
+                        stmtUpdate.execute();
+                        stmtUpdate.close();
+
+                        updateTextCheckedState(holder, article);
+
+                        refresh();
+
+                        m_activity.invalidateOptionsMenu();
+                    }
+                });
+
             }
 
 			if (holder.titleView != null) {
