@@ -51,7 +51,7 @@
             <item
                 android:id="@+id/headlines_mark_as_read"
                 android:icon="@drawable/ic_accept_light"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/headlines_mark_as_read"/>
             <item
                 android:id="@+id/headlines_select"
