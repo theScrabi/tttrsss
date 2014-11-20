@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
@@ -238,11 +239,14 @@ public class ArticleFragment extends Fragment  {
 						}
 					}
 				});
-				
+
+                boolean acceleratedWebview = true;
+
 			    // prevent flicker in ics
 			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
 			    	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			    		web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                        acceleratedWebview = false;
 			    	}
 			    }
 
@@ -273,18 +277,23 @@ public class ArticleFragment extends Fragment  {
 			    cssOverride += " a:link {color: "+linkHexColor+";} a:visited { color: "+linkHexColor+";}";
 
 				String articleContent = m_article.content != null ? m_article.content : "";
-				
-				Document doc = Jsoup.parse(articleContent);
-				
-				if (doc != null) {
-					// thanks webview for crashing on <video> tag
-					Elements videos = doc.select("video");
-					
-					for (Element video : videos)
-						video.remove();
-					
-					articleContent = doc.toString();
-				}
+
+                if (m_activity.isCompatMode() || !acceleratedWebview) {
+                    Document doc = Jsoup.parse(articleContent);
+
+                    if (doc != null) {
+                        // thanks webview for crashing on <video> tag
+                        Elements videos = doc.select("video");
+
+                        for (Element video : videos)
+                            video.remove();
+
+                        articleContent = doc.toString();
+                    }
+                } else {
+                    ws.setJavaScriptEnabled(true);
+                    web.setWebChromeClient(new WebChromeClient());
+                }
 
 				if (m_prefs.getBoolean("justify_article_text", true)) {
 					cssOverride += "body { text-align : justify; } ";
@@ -299,7 +308,7 @@ public class ArticleFragment extends Fragment  {
 					"<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
 					"<style type=\"text/css\">" +
 					"body { padding : 0px; margin : 0px; line-height : 130%; }" +
-					"img { max-width : 100%; width : auto; height : auto; }" +
+					"img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
                     " table { width : 100%; }" +
 					cssOverride +
 					"</style>" +
