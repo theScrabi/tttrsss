@@ -22,6 +22,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
@@ -51,6 +52,56 @@ public class ArticleFragment extends Fragment  {
 	public void initialize(Article article) {
 		m_article = article;
 	}
+
+    private class FSVideoChromeClient extends WebChromeClient {
+        protected FrameLayout m_videoView;
+        protected View m_contentView;
+        protected View m_videoChildView;
+
+        public FSVideoChromeClient(View container) {
+            super();
+
+            m_contentView = container.findViewById(R.id.article_scrollview);
+            m_videoView = (FrameLayout) container.findViewById(R.id.article_fullscreen_video);
+        }
+
+        @Override
+        public void onShowCustomView(View view, CustomViewCallback callback) {
+            /* mCustomViewCallback = callback;
+            mTargetView.addView(view);
+            mCustomView = view;
+            mContentView.setVisibility(View.GONE);
+            mTargetView.setVisibility(View.VISIBLE);
+            mTargetView.bringToFront(); */
+
+            m_videoChildView = view;
+
+            m_videoView.addView(view);
+
+            m_contentView.setVisibility(View.INVISIBLE);
+            m_videoView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onHideCustomView() {
+
+            /* if (mCustomView == null)
+                return;
+
+            mCustomView.setVisibility(View.GONE);
+            mTargetView.removeView(mCustomView);
+            mCustomView = null;
+            mTargetView.setVisibility(View.GONE);
+            mCustomViewCallback.onCustomViewHidden();
+            mContentView.setVisibility(View.VISIBLE); */
+
+            m_videoView.removeView(m_videoChildView);
+
+            m_contentView.setVisibility(View.VISIBLE);
+            m_videoView.setVisibility(View.INVISIBLE);
+
+        }
+    }
 
 	//private View.OnTouchListener m_gestureListener;
 
@@ -292,7 +343,7 @@ public class ArticleFragment extends Fragment  {
                     }
                 } else {
                     ws.setJavaScriptEnabled(true);
-                    web.setWebChromeClient(new WebChromeClient());
+                    web.setWebChromeClient(new FSVideoChromeClient(view));
                 }
 
 				if (m_prefs.getBoolean("justify_article_text", true)) {

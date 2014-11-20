@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:background="?articleBackground">
 
+
+    <FrameLayout
+        android:id="@+id/article_fullscreen_video"
+        android:visibility="invisible"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"></FrameLayout>
+
     <org.fox.ttrss.util.NoChildFocusScrollView
         android:id="@+id/article_scrollview"
         android:layout_width="match_parent"
