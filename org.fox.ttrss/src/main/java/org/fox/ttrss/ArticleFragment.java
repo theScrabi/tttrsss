@@ -361,6 +361,11 @@ public class ArticleFragment extends Fragment  {
                         for (Element video : videos)
                             video.remove();
 
+                        videos = doc.select("iframe");
+
+                        for (Element video : videos)
+                            video.remove();
+
                         articleContent = doc.toString();
                     }
                 } else {
@@ -431,7 +436,7 @@ public class ArticleFragment extends Fragment  {
 						//
 					}
 
-                    if (savedInstanceState == null && !m_activity.isCompatMode())
+                    if (savedInstanceState == null)
                         m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
                     else
                         m_web.restoreState(savedInstanceState);
