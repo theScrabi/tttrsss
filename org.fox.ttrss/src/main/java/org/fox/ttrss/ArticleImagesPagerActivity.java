@@ -280,10 +280,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     public void onResume() {
         super.onResume();
 
-        /* if (isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
-            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-        } */
-
         if (m_prefs.getBoolean("full_screen_mode", false)) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);

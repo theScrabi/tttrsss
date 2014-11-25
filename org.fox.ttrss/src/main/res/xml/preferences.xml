@@ -145,11 +145,6 @@
             android:title="@string/use_volume_keys" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="dim_status_bar"
-            android:summary="@string/prefs_dim_status_bar_long"
-            android:title="@string/prefs_dim_status_bar" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="full_screen_mode"
             android:title="@string/prefs_fullscreen_mode" />
         <CheckBoxPreference
