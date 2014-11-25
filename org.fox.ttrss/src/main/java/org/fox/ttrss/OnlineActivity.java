@@ -165,8 +165,6 @@ public class OnlineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-        setStatusBarTint();
-
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .diskCache(
                         new LimitedAgeDiscCache(new File(StorageUtils.getCacheDirectory(getApplicationContext()), "article-images"),

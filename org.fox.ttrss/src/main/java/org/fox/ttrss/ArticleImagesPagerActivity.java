@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -237,8 +236,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.article_images_pager);
-
-        setStatusBarTint();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
