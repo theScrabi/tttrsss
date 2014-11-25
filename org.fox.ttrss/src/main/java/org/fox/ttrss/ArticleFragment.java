@@ -53,6 +53,7 @@ public class ArticleFragment extends Fragment  {
     protected FrameLayout m_customViewContainer;
     protected View m_contentView;
     protected FSVideoChromeClient m_chromeClient;
+    protected View m_fab;
 
 	public void initialize(Article article) {
 		m_article = article;
@@ -83,6 +84,8 @@ public class ArticleFragment extends Fragment  {
             m_customViewContainer.setVisibility(View.VISIBLE);
             m_customViewContainer.addView(view);
 
+            if (m_fab != null) m_fab.setVisibility(View.GONE);
+
             m_callback = callback;
         }
 
@@ -104,6 +107,9 @@ public class ArticleFragment extends Fragment  {
             // Remove the custom view from its container.
             m_customViewContainer.removeView(m_customView);
             m_callback.onCustomViewHidden();
+
+            if (m_fab != null && m_prefs.getBoolean("enable_article_fab", true))
+                m_fab.setVisibility(View.VISIBLE);
 
             m_customView = null;
 
@@ -165,13 +171,13 @@ public class ArticleFragment extends Fragment  {
             m_customViewContainer = (FrameLayout) view.findViewById(R.id.article_fullscreen_video);
 
             View scrollView = view.findViewById(R.id.article_scrollview);
-            View fab = view.findViewById(R.id.article_fab);
+            m_fab = view.findViewById(R.id.article_fab);
 
-            if (scrollView != null && fab != null) {
+            if (scrollView != null && m_fab != null) {
                 if (m_prefs.getBoolean("enable_article_fab", true)) {
-                    scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
+                    scrollView.setOnTouchListener(new ShowHideOnScroll(m_fab));
 
-                    fab.setOnClickListener(new OnClickListener() {
+                    m_fab.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             try {
@@ -187,7 +193,7 @@ public class ArticleFragment extends Fragment  {
                         }
                     });
                 } else {
-                    fab.setVisibility(View.GONE);
+                    m_fab.setVisibility(View.GONE);
                 }
             }
 
