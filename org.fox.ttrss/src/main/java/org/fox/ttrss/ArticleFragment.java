@@ -47,7 +47,7 @@ public class ArticleFragment extends Fragment  {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private OnlineActivity m_activity;
+	private HeadlinesActivity m_activity;
     private WebView m_web;
     protected View m_customView;
     protected FrameLayout m_customViewContainer;
@@ -86,6 +86,8 @@ public class ArticleFragment extends Fragment  {
 
             if (m_fab != null) m_fab.setVisibility(View.GONE);
 
+            m_activity.showSidebar(false);
+
             m_callback = callback;
         }
 
@@ -113,6 +115,7 @@ public class ArticleFragment extends Fragment  {
 
             m_customView = null;
 
+            m_activity.showSidebar(true);
         }
     }
 
@@ -563,7 +566,7 @@ public class ArticleFragment extends Fragment  {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_activity = (OnlineActivity)activity;
+		m_activity = (HeadlinesActivity)activity;
 
 	}
 }

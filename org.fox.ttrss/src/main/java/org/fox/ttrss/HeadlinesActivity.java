@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -220,6 +221,13 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		invalidateOptionsMenu();
 		
 	}
+
+    public void showSidebar(boolean show) {
+        if (!isSmallScreen()) {
+            findViewById(R.id.headlines_fragment).setVisibility(show ? View.VISIBLE : View.GONE);
+            invalidateOptionsMenu();
+        }
+    }
 
 	@Override
 	public void onHeadlinesLoaded(boolean appended) {
