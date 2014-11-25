@@ -52,10 +52,6 @@ public class ArticlePager extends Fragment {
 				ArticleFragment af = new ArticleFragment();
 				af.initialize(article);
 
-				if (m_prefs.getBoolean("dim_status_bar", false) && getView() != null && !m_activity.isCompatMode()) {
-					getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-				}
-				
 				return af;
 			}
 			return null;
@@ -280,11 +276,7 @@ public class ArticlePager extends Fragment {
 		}
 		
 		m_activity.invalidateOptionsMenu();
-		
-		if (!m_activity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
-			getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-		}
-		
+
 		if (m_prefs.getBoolean("full_screen_mode", false)) {
 			m_activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);

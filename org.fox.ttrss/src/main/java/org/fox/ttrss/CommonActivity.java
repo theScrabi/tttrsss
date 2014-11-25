@@ -9,13 +9,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
@@ -155,24 +151,6 @@ public class CommonActivity extends ActionBarActivity {
         return Math.round((float)dp * density);
     }
 
-	public void setStatusBarTint() {
-		if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT &&
-                !m_prefs.getBoolean("full_screen_mode", false)) {
-
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-			SystemBarTintManager tintManager = new SystemBarTintManager(this);
-		    // enable status bar tint
-		    tintManager.setStatusBarTintEnabled(true);
-
-		    TypedValue tv = new TypedValue();
-		    getTheme().resolveAttribute(R.attr.statusBarHintColor, tv, true);
-		    
-		    tintManager.setStatusBarTintColor(tv.data);
-		}
-	}
-	
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
