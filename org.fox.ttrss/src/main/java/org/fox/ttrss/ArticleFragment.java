@@ -551,7 +551,6 @@ public class ArticleFragment extends Fragment  {
 
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("article", m_article);
-        //out.putBoolean("fsviewShown", m_fsviewShown);
 	}
 
 	@Override
@@ -560,7 +559,6 @@ public class ArticleFragment extends Fragment  {
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_activity = (OnlineActivity)activity;
-		//m_article = m_onlineServices.getSelectedArticle(); 
-		
+
 	}
 }
