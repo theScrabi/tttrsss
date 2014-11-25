@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -38,7 +41,9 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleImagesPagerActivity extends CommonActivity {
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+
+public class ArticleImagesPagerActivity extends CommonActivity implements GestureDetector.OnDoubleTapListener {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<String> m_urls;
@@ -46,6 +51,30 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
     private String m_content;
+    private GestureDetector m_detector;
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        ActionBar bar = getSupportActionBar();
+
+        if (bar.isShowing()) {
+            bar.hide();
+        } else {
+            bar.show();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+        return false;
+    }
 
     private class ArticleImagesPagerAdapter extends PagerAdapter {
         private List<String> m_urls;
@@ -80,8 +109,21 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
             View view = inflater.inflate(R.layout.article_images_image, null);
 
-            ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
-            //imgView.setOnClickListener(this);
+            m_detector = new GestureDetector(ArticleImagesPagerActivity.this, new GestureDetector.SimpleOnGestureListener());
+
+            m_detector.setOnDoubleTapListener(ArticleImagesPagerActivity.this);
+
+            ImageViewTouch imgView = (ImageViewTouch) view.findViewById(R.id.flavor_image);
+
+            imgView.setFitToScreen(true);
+            imgView.setFitToWidth(true);
+
+            imgView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+                    return m_detector.onTouchEvent(event);
+                }
+            });
 
             registerForContextMenu(imgView);
 
