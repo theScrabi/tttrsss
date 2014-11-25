@@ -554,6 +554,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("offset", String.valueOf(0));
 					put("skip", String.valueOf(fskip));
 					put("include_nested", "true");
+                    put("has_sandbox", "true");
 					put("order_by", m_activity.getSortMode());
 					
 					if (isCat) put("is_cat", "true");
