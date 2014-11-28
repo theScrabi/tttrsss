@@ -77,7 +77,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
-	
+
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
@@ -783,15 +783,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				adjustTitleTextView(article.score, holder.titleView, position);
 			}
 
-			
-			
 			if (holder.feedTitleView != null) {				
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
-					
-					/* if (article.feed_title.length() > 20)
-						ft.setText(article.feed_title.substring(0, 20) + "...");
-					else */
-					
 					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 					holder.feedTitleView.setText(article.feed_title);
 					
@@ -841,7 +834,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
-					String excerpt = Jsoup.parse(articleContent).text(); 
+                    String tmp = articleContent.length() > CommonActivity.EXCERPT_MAX_LENGTH ?
+                            articleContent.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…" : articleContent;
+
+					String excerpt = Jsoup.parse(tmp).text();
 					
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
