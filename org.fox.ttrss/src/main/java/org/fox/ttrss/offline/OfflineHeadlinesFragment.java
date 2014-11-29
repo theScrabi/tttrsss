@@ -694,17 +694,18 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 });
 			}
 
-            String articleContent = article.getString(article.getColumnIndex("content"));
-            if (articleContent == null) articleContent = "";
-
 			if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
-                    String tmp = articleContent.length() > CommonActivity.EXCERPT_MAX_LENGTH ?
-                            articleContent.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…" : articleContent;
+                    String articleContent = article.getString(article.getColumnIndex("content"));
+
+                    String tmp = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+                            articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
 
                     String excerpt = Jsoup.parse(tmp).text();
+
+                    if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH) excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
 
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);

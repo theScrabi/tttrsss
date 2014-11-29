@@ -828,16 +828,30 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-			String articleContent = article.content != null ? article.content : "";
+            boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
-			if (holder.excerptView != null) {
+            String articleContent = article.content != null ? article.content : "";
+
+
+            String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+                    articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
+
+            /* if (m_compactLayoutMode || !showFlavorImage) {
+               if (articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH) {
+                    articleContent = articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH);
+               }
+            } */
+
+            Document articleDoc = Jsoup.parse(articleContentReduced);
+
+            if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
-				} else {
-                    String tmp = articleContent.length() > CommonActivity.EXCERPT_MAX_LENGTH ?
-                            articleContent.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…" : articleContent;
+				} else if (articleDoc != null) {
+                    String excerpt = articleDoc.text();
 
-					String excerpt = Jsoup.parse(tmp).text();
+                    if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
+                        excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
 					
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
@@ -845,19 +859,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (!m_compactLayoutMode) {
-                boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
                 if (holder.flavorImageView != null && showFlavorImage) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
-                    Document doc = Jsoup.parse(articleContent);
+                    //Document doc = Jsoup.parse(articleContent);
 
                     boolean loadableImageFound = false;
 
-                    if (doc != null) {
+                    if (articleDoc != null) {
                         //Element img = doc.select("img").first();
 
-                        final Elements imgs = doc.select("img");
+                        final Elements imgs = articleDoc.select("img");
                         Element img = null;
 
                         for (Element tmp : imgs) {
@@ -876,6 +889,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                         if (img != null) {
                             String imgSrc = img.attr("src");
+                            final String imgSrcFirst = imgSrc;
 
                             // retarded schema-less urls
                             if (imgSrc.indexOf("//") == 0)
@@ -890,19 +904,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                             holder.flavorImageView.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    ArrayList<String> imgsList = new ArrayList<String>();
+                                    /* ArrayList<String> imgsList = new ArrayList<String>();
+
+                                    boolean firstFound = false;
 
                                     for (Element img : imgs) {
                                         String imgSrc = img.attr("src");
 
-                                        if (imgSrc.indexOf("//") == 0)
-                                            imgSrc = "http:" + imgSrc;
+                                        if (imgSrcFirst.equals(imgSrc))
+                                            firstFound = true;
 
-                                        imgsList.add(imgSrc);
-                                    }
+                                        if (firstFound) {
+                                            if (imgSrc.indexOf("//") == 0)
+                                                imgSrc = "http:" + imgSrc;
+
+                                            imgsList.add(imgSrc);
+                                        }
+                                    } */
 
                                     Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-                                    intent.putExtra("urls", imgsList);
+                                    //intent.putExtra("urls", imgsList);
+                                    intent.putExtra("firstSrc", imgSrcFirst);
                                     intent.putExtra("title", article.title);
                                     intent.putExtra("content", article.content);
 

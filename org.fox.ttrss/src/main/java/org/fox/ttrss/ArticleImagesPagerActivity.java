@@ -35,6 +35,7 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -241,14 +242,37 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         if (savedInstanceState == null) {
             m_title = getIntent().getStringExtra("title");
-            m_urls = getIntent().getStringArrayListExtra("urls");
+            //m_urls = getIntent().getStringArrayListExtra("urls");
             m_content = getIntent().getStringExtra("content");
+
+            String imgSrcFirst = getIntent().getStringExtra("firstSrc");
+
+            m_urls = new ArrayList<String>();
+
+            Document doc = Jsoup.parse(m_content);
+            Elements imgs = doc.select("img");
+
+            boolean firstFound = false;
+
+            for (Element img : imgs) {
+                String imgSrc = img.attr("src");
+
+                if (imgSrcFirst.equals(imgSrc))
+                    firstFound = true;
+
+                if (firstFound) {
+                    if (imgSrc.indexOf("//") == 0)
+                        imgSrc = "http:" + imgSrc;
+
+                    m_urls.add(imgSrc);
+                }
+            }
+
         } else {
             m_urls = savedInstanceState.getStringArrayList("urls");
             m_title = savedInstanceState.getString("title");
             m_content = savedInstanceState.getString("content");
         }
-
 
         if (m_urls.size() > 1) {
             m_checkedUrls = new ArrayList<String>();
