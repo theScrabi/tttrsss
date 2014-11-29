@@ -538,8 +538,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					skip == 0;
 
 			Log.d(TAG, "allowForceUpdate=" + allowForceUpdate + " userInitiated=" + userInitiated);
-					
-					
+
 			req.setOffset(skip);
 			
 			HashMap<String,String> map = new HashMap<String,String>() {
@@ -547,6 +546,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("op", "getHeadlines");
 					put("sid", sessionId);
 					put("feed_id", String.valueOf(m_feed.id));
+                    put("show_excerpt", "true");
+                    put("excerpt_length", String.valueOf(CommonActivity.EXCERPT_MAX_LENGTH));
 					put("show_content", "true");
 					put("include_attachments", "true");
 					put("view_mode", m_activity.getViewMode());
@@ -838,8 +839,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
-				} else if (articleDoc != null) {
-                    String excerpt = articleDoc.text();
+				} else {
+                    String excerpt;
+
+                    if (m_activity.getApiLevel() >= 11) {
+                        excerpt = article.excerpt != null ? article.excerpt : "";
+                        excerpt = excerpt.replace("&hellip;", "");
+                    } else {
+                        excerpt = articleDoc.text();
+                    }
 
                     if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
                         excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";

@@ -1,10 +1,10 @@
 package org.fox.ttrss.types;
-import java.util.ArrayList;
-import java.util.List;
-
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: serialize Labels
 public class Article implements Parcelable {
@@ -21,6 +21,7 @@ public class Article implements Parcelable {
 	public List<String> tags;
 	public List<Attachment> attachments;
 	public String content;
+    public String excerpt;
 	public List<List<String>> labels;
 	public String feed_title;	
 	public int comments_count;
@@ -63,6 +64,7 @@ public class Article implements Parcelable {
 		out.writeInt(feed_id);
 		out.writeStringList(tags);
 		out.writeString(content);
+        out.writeString(excerpt);
 		out.writeList(attachments);
 		out.writeString(feed_title);
 		out.writeInt(comments_count);
@@ -88,6 +90,7 @@ public class Article implements Parcelable {
 		in.readStringList(tags);
 		
 		content = in.readString();
+        excerpt = in.readString();
 		
 		attachments = new ArrayList<Attachment>();
 		in.readList(attachments, Attachment.class.getClassLoader());
