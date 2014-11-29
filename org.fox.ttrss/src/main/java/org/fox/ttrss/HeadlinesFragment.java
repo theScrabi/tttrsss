@@ -844,14 +844,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                     if (m_activity.getApiLevel() >= 11) {
                         excerpt = article.excerpt != null ? article.excerpt : "";
-                        excerpt = excerpt.replace("&hellip;", "");
+                        excerpt = excerpt.replace("&hellip;", "…");
+                        excerpt = excerpt.replace("]]>", "");
+                        excerpt = Jsoup.parse(excerpt).text();
                     } else {
                         excerpt = articleDoc.text();
+
+                        if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
+                            excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
                     }
 
-                    if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
-                        excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
-					
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
 				}
