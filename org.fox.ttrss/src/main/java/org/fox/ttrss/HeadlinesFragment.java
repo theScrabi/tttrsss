@@ -828,19 +828,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-            boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
-
             String articleContent = article.content != null ? article.content : "";
-
 
             String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
                     articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
-
-            /* if (m_compactLayoutMode || !showFlavorImage) {
-               if (articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH) {
-                    articleContent = articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH);
-               }
-            } */
 
             Document articleDoc = Jsoup.parse(articleContentReduced);
 
@@ -859,17 +850,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (!m_compactLayoutMode) {
+                boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
                 if (holder.flavorImageView != null && showFlavorImage) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
-                    //Document doc = Jsoup.parse(articleContent);
-
                     boolean loadableImageFound = false;
 
                     if (articleDoc != null) {
-                        //Element img = doc.select("img").first();
-
                         final Elements imgs = articleDoc.select("img");
                         Element img = null;
 
@@ -904,34 +892,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                             holder.flavorImageView.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    /* ArrayList<String> imgsList = new ArrayList<String>();
-
-                                    boolean firstFound = false;
-
-                                    for (Element img : imgs) {
-                                        String imgSrc = img.attr("src");
-
-                                        if (imgSrcFirst.equals(imgSrc))
-                                            firstFound = true;
-
-                                        if (firstFound) {
-                                            if (imgSrc.indexOf("//") == 0)
-                                                imgSrc = "http:" + imgSrc;
-
-                                            imgsList.add(imgSrc);
-                                        }
-                                    } */
 
                                     Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-                                    //intent.putExtra("urls", imgsList);
                                     intent.putExtra("firstSrc", imgSrcFirst);
                                     intent.putExtra("title", article.title);
                                     intent.putExtra("content", article.content);
 
                                     startActivityForResult(intent, 0);
-                                    //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
-
-
                                 }
                             });
 

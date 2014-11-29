@@ -30,7 +30,7 @@ public class CommonActivity extends ActionBarActivity {
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
 
     public static final int EXCERPT_MAX_LENGTH = 256;
-    public static final int EXCERPT_MAX_QUERY_LENGTH = 1024;
+    public static final int EXCERPT_MAX_QUERY_LENGTH = 512;
 
 	private SQLiteDatabase m_readableDb;
 	private SQLiteDatabase m_writableDb;

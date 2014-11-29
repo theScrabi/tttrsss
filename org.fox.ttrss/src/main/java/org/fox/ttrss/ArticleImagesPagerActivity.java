@@ -116,7 +116,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             ImageViewTouch imgView = (ImageViewTouch) view.findViewById(R.id.flavor_image);
 
             imgView.setFitToScreen(true);
-            imgView.setFitToWidth(true);
+            //imgView.setFitToWidth(true);
 
             imgView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -126,6 +126,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             });
 
             registerForContextMenu(imgView);
+            getSupportActionBar().hide();
 
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
