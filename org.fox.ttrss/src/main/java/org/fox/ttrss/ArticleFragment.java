@@ -442,7 +442,7 @@ public class ArticleFragment extends Fragment  {
 						//
 					}
 
-                    if (savedInstanceState == null)
+                    if (savedInstanceState == null || !acceleratedWebview)
                         m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
                     else
                         m_web.restoreState(savedInstanceState);
