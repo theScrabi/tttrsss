@@ -145,6 +145,12 @@
             android:title="@string/use_volume_keys" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="enable_fs_video"
+            android:summary="@string/prefs_enable_fs_video_summary"
+            android:title="@string/prefs_enable_fs_video" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="full_screen_mode"
             android:title="@string/prefs_fullscreen_mode" />
         <CheckBoxPreference

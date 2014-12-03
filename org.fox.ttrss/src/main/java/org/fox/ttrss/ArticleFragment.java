@@ -318,6 +318,7 @@ public class ArticleFragment extends Fragment  {
 				});
 
                 boolean acceleratedWebview = true;
+                boolean enableFullscreenVideo = m_prefs.getBoolean("enable_fs_video", false);
 
 			    // prevent flicker in ics
 			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
@@ -375,9 +376,11 @@ public class ArticleFragment extends Fragment  {
                 } else {
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         ws.setJavaScriptEnabled(true);
-                        m_chromeClient = new FSVideoChromeClient(view);
 
-                        m_web.setWebChromeClient(m_chromeClient);
+                        if (enableFullscreenVideo) {
+                            m_chromeClient = new FSVideoChromeClient(view);
+                            m_web.setWebChromeClient(m_chromeClient);
+                        }
                     }
                 }
 
@@ -442,7 +445,7 @@ public class ArticleFragment extends Fragment  {
 						//
 					}
 
-                    if (savedInstanceState == null || !acceleratedWebview)
+                    if (savedInstanceState == null || !acceleratedWebview || !enableFullscreenVideo)
                         m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
                     else
                         m_web.restoreState(savedInstanceState);

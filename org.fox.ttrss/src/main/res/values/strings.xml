@@ -259,4 +259,6 @@
     <string name="headline_display_mode_default">Default</string>
     <string name="headline_display_mode_no_images">No images</string>
     <string name="headline_display_mode_compact">Compact</string>
+    <string name="prefs_enable_fs_video_summary">May cause graphical glitches on some devices.</string>
+    <string name="prefs_enable_fs_video">Fullscreen video support</string>
 </resources>
