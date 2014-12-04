@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -318,7 +319,6 @@ public class ArticleFragment extends Fragment  {
 				});
 
                 boolean acceleratedWebview = true;
-                boolean enableFullscreenVideo = m_prefs.getBoolean("enable_fs_video", false);
 
 			    // prevent flicker in ics
 			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
@@ -377,10 +377,8 @@ public class ArticleFragment extends Fragment  {
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         ws.setJavaScriptEnabled(true);
 
-                        if (enableFullscreenVideo) {
-                            m_chromeClient = new FSVideoChromeClient(view);
-                            m_web.setWebChromeClient(m_chromeClient);
-                        }
+                        m_chromeClient = new FSVideoChromeClient(view);
+                        m_web.setWebChromeClient(m_chromeClient);
                     }
                 }
 
@@ -445,10 +443,16 @@ public class ArticleFragment extends Fragment  {
 						//
 					}
 
-                    if (savedInstanceState == null || !acceleratedWebview || !enableFullscreenVideo)
+                    if (savedInstanceState == null || !acceleratedWebview) {
                         m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
-                    else
-                        m_web.restoreState(savedInstanceState);
+                    } else {
+                        WebBackForwardList rc = m_web.restoreState(savedInstanceState);
+
+                        if (rc == null) {
+                            // restore failed...
+                            m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
+                        }
+                    }
 
 				} catch (RuntimeException e) {					
 					e.printStackTrace();
