@@ -163,7 +163,11 @@
     <string name="offline_oldest_first">Wyświetl najpierw najstarsze artykuły</string>
     <string name="prefs_dim_status_bar">Przyciemnij pasek statusu</string>
     <string name="prefs_dim_status_bar_long">Przyciemnij pasek statusu podczas czytania</string>
-    <string name="article_comments">%1$d komentarzy</string>
+
+    <plurals name="article_comments">
+        <item quantity="other">%1$d komentarzy</item>
+    </plurals>
+
     <plurals name="trial_mode_prompt">
         <item quantity="other">Tryb wersji testowej, pozostało dni: %1$d.</item>
     </plurals>

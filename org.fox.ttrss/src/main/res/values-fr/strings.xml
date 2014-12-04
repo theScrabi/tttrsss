@@ -147,7 +147,11 @@
     <string name="offline_oldest_first">Afficher les plus anciens d\'abord</string>
     <string name="prefs_dim_status_bar">Assombrir la barre de statut</string>
     <string name="prefs_dim_status_bar_long">Assombrir la barre de satut pendant la lecture</string>
-    <string name="article_comments">%1$d commentaires</string>
+
+    <plurals name="article_comments">
+        <item quantity="other">%1$d commentaires</item>
+    </plurals>
+
     <plurals name="trial_mode_prompt">
         <item quantity="one">Mode évaluation, un seul jour restant.</item>
         <item quantity="other">Mode évaluation, %1$d jours restants.</item>

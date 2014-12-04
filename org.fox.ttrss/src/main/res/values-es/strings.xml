@@ -147,7 +147,11 @@
     <string name="offline_oldest_first">Mostrar artículos más antiguos primero</string>
     <string name="prefs_dim_status_bar">Oscurecer barra de estado</string>
     <string name="prefs_dim_status_bar_long">Oscurecer barra de estado durante lectura</string>
-    <string name="article_comments">%1$d comentarios</string>
+
+    <plurals name="article_comments">
+        <item quantity="other">%1$d comentarios</item>
+    </plurals>
+
     <plurals name="trial_mode_prompt">
         <item quantity="other">Período de prueba, queda(n) %1$d día(s).</item>
     </plurals>

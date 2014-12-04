@@ -148,7 +148,10 @@
     <string name="offline_oldest_first">Älteste Artikel zuerst anzeigen</string>
     <string name="prefs_dim_status_bar">Statusleiste abdunkeln</string>
     <string name="prefs_dim_status_bar_long">Statusleiste beim Lesen dunkler machen</string>
-    <string name="article_comments">%1$d Kommentare</string>
+
+    <plurals name="article_comments">
+        <item quantity="other">%1$d Kommentare</item>
+    </plurals>
 
     <plurals name="trial_mode_prompt">
         <item quantity="one">Testversion, noch ein Tag übrig.</item>

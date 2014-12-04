@@ -148,7 +148,11 @@
     <string name="offline_oldest_first">Show oldest articles first</string>
     <string name="prefs_dim_status_bar">Dim status bar</string>
     <string name="prefs_dim_status_bar_long">Dim status bar when reading</string>
-    <string name="article_comments">%1$d comments</string>
+
+    <plurals name="article_comments">
+        <item quantity="one">%1$d comment</item>
+        <item quantity="other">%1$d comments</item>
+    </plurals>
 
     <plurals name="trial_mode_prompt">
         <item quantity="one">Trial mode, only one day left.</item>

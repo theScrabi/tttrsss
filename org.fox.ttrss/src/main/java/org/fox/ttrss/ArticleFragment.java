@@ -255,7 +255,7 @@ public class ArticleFragment extends Fragment  {
 				if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
 					comments.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
 					
-					String commentsTitle = getString(R.string.article_comments, m_article.comments_count);
+					String commentsTitle = getResources().getQuantityString(R.plurals.article_comments, m_article.comments_count, m_article.comments_count);
 					comments.setText(commentsTitle);
 					//comments.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 					comments.setOnClickListener(new OnClickListener() {					

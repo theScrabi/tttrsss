@@ -148,7 +148,11 @@
     <string name="offline_oldest_first">古い記事を先頭に表示する</string>
     <string name="prefs_dim_status_bar">下部ソフトキーをぼかす</string>
     <string name="prefs_dim_status_bar_long">記事表示中は下部ソフトキーをぼかす</string>
-    <string name="article_comments">%1$d 件のコメント</string>
+
+    <plurals name="article_comments">
+        <item quantity="other">%1$d 件のコメント</item>
+    </plurals>
+
     <plurals name="trial_mode_prompt">
         <item quantity="other">試用期間中。残り %1$d 日間。</item>
     </plurals>
