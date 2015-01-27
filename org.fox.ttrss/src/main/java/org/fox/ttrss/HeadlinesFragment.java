@@ -324,14 +324,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-	    if (!m_activity.isCompatMode()) {
-	    	m_swipeLayout.setColorScheme(android.R.color.holo_green_dark, 
-	    		android.R.color.holo_red_dark, 
-	            android.R.color.holo_blue_dark, 
-	            android.R.color.holo_orange_dark);
-	    }
+        m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
+            android.R.color.holo_red_dark,
+            android.R.color.holo_blue_dark,
+            android.R.color.holo_orange_dark);
 
-		
 		ListView list = (ListView)view.findViewById(R.id.headlines_list);
 
         if (!m_compactLayoutMode) {
@@ -947,12 +944,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                     flavorImageLoadingBar.setVisibility(View.INVISIBLE);
 
                                     if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
-                                        if (!m_activity.isCompatMode() && weNeedAnimation) {
-
+                                        if (weNeedAnimation) {
                                             ObjectAnimator anim = ObjectAnimator.ofFloat(flavorImageView, "alpha", 0f, 1f);
                                             anim.setDuration(200);
                                             anim.start();
-
                                         }
                                         //flavorImageHolder.setVisibility(View.VISIBLE);
                                     } else {

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +27,6 @@ import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
 
-import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
 import org.fox.ttrss.util.TypefaceCache;
@@ -240,11 +237,6 @@ public class OfflineArticleFragment extends Fragment {
                             unregisterForContextMenu(web);
                             return true;
                         } else {
-                            if (m_activity.isCompatMode()) {
-                                KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-                                shiftPressEvent.dispatch(web);
-                            }
-
                             return false;
                         }
                     }

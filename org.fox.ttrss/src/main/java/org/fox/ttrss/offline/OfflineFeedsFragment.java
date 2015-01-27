@@ -152,12 +152,10 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
             }
         });
 
-        if (!m_activity.isCompatMode()) {
-            m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
-                    android.R.color.holo_red_dark,
-                    android.R.color.holo_blue_dark,
-                    android.R.color.holo_orange_dark);
-        }
+        m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
+                android.R.color.holo_red_dark,
+                android.R.color.holo_blue_dark,
+                android.R.color.holo_orange_dark);
 
 		ListView list = (ListView)view.findViewById(R.id.feeds);
 

@@ -14,7 +14,6 @@ import android.text.Html;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,10 +31,6 @@ import com.shamanland.fab.ShowHideOnScroll;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.util.TypefaceCache;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -308,11 +303,6 @@ public class ArticleFragment extends Fragment  {
 							unregisterForContextMenu(m_web);
 							return true;
 						} else {
-							if (m_activity.isCompatMode()) {
-								KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-								shiftPressEvent.dispatch(m_web);
-							}
-							
 							return false;
 						}
 					}
@@ -356,30 +346,11 @@ public class ArticleFragment extends Fragment  {
 
 				String articleContent = m_article.content != null ? m_article.content : "";
 
-                if (m_activity.isCompatMode() || !acceleratedWebview) {
-                    Document doc = Jsoup.parse(articleContent);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ws.setJavaScriptEnabled(true);
 
-                    if (doc != null) {
-                        // thanks webview for crashing on <video> tag
-                        Elements videos = doc.select("video");
-
-                        for (Element video : videos)
-                            video.remove();
-
-                        videos = doc.select("iframe");
-
-                        for (Element video : videos)
-                            video.remove();
-
-                        articleContent = doc.toString();
-                    }
-                } else {
-                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        ws.setJavaScriptEnabled(true);
-
-                        m_chromeClient = new FSVideoChromeClient(view);
-                        m_web.setWebChromeClient(m_chromeClient);
-                    }
+                    m_chromeClient = new FSVideoChromeClient(view);
+                    m_web.setWebChromeClient(m_chromeClient);
                 }
 
 				if (m_prefs.getBoolean("justify_article_text", true)) {
@@ -525,18 +496,14 @@ public class ArticleFragment extends Fragment  {
     public void onPause() {
         super.onPause();
 
-        if (!m_activity.isCompatMode()) {
-            m_web.onPause();
-        }
+        m_web.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (!m_activity.isCompatMode()) {
-            m_web.onResume();
-        }
+        m_web.onResume();
     }
 
     public boolean inCustomView() {

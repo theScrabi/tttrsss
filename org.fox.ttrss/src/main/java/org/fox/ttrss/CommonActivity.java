@@ -36,7 +36,6 @@ public class CommonActivity extends ActionBarActivity {
 	private SQLiteDatabase m_writableDb;
 
 	private boolean m_smallScreenMode = true;
-	private boolean m_compatMode = false;
 	private String m_theme;
     private boolean m_fullScreen;
 
@@ -141,11 +140,7 @@ public class CommonActivity extends ActionBarActivity {
 		}
 		
 		initDatabase();
-				
-		m_compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
 
-		Log.d(TAG, "m_compatMode=" + m_compatMode);
-		
 		super.onCreate(savedInstanceState);
 	}
 
@@ -164,10 +159,6 @@ public class CommonActivity extends ActionBarActivity {
 	
 	public boolean isSmallScreen() {
 		return m_smallScreenMode;
-	}
-	
-	public boolean isCompatMode() {
-		return m_compatMode;
 	}
 
 	@SuppressWarnings("deprecation")
