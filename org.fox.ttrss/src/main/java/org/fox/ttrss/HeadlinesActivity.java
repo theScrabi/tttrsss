@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -38,6 +39,10 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
 		GlobalState.getInstance().load(savedInstanceState);
+
+        if (isPortrait() && !isSmallScreen()) {
+            findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
+        }
 
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
@@ -98,6 +103,15 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			}
 		}
 	}
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (!isSmallScreen()) {
+            findViewById(R.id.headlines_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
+        }
+    }
 
 	@Override
 	protected void refresh() {
@@ -223,7 +237,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	}
 
     public void showSidebar(boolean show) {
-        if (!isSmallScreen()) {
+        if (!isSmallScreen() && !isPortrait()) {
             findViewById(R.id.headlines_fragment).setVisibility(show ? View.VISIBLE : View.GONE);
             invalidateOptionsMenu();
         }
