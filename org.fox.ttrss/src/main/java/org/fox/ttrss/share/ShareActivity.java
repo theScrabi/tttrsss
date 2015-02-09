@@ -41,7 +41,7 @@ public class ShareActivity extends CommonShareActivity {
 
 		setContentView(R.layout.share);
 		
-		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
+		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_launcher);
 		
 		setSmallScreen(false); 
 		

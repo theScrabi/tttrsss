@@ -90,7 +90,7 @@ public class OfflineDownloadService extends Service {
 	
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
-		Notification notification = new Notification(R.drawable.icon, 
+		Notification notification = new Notification(R.drawable.ic_launcher,
 				getString(R.string.notify_downloading_title), System.currentTimeMillis());
 		
 		Intent intent = new Intent(this, OnlineActivity.class);

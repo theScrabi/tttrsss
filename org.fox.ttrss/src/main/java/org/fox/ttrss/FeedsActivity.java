@@ -491,7 +491,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, feed.title);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(this, R.drawable.icon));  
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher));
 		intent.putExtra("duplicate", false);
 		
 		sendBroadcast(intent);
