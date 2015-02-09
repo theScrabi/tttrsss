@@ -1,15 +1,20 @@
 package org.fox.ttrss;
 
-import java.util.ArrayList;
-
-import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
-import org.fox.ttrss.types.Feed;
-
 import android.app.Application;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.fox.ttrss.types.Article;
+import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Feed;
+
+import java.util.ArrayList;
+@ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
+        resDialogText = R.string.crash_dialog_text,
+        formUri = "http://tt-rss.org/acra/submit/")
 public class GlobalState extends Application {
 	private static GlobalState m_singleton;
 	
@@ -28,6 +33,8 @@ public class GlobalState extends Application {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
+        ACRA.init(this);
+
 		m_singleton = this;
 	}
 	

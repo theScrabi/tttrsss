@@ -250,6 +250,13 @@
             android:name=".ArticleImagesPagerActivity"
             android:label="Article Images" >
         </activity>
+
+        <activity android:name="org.acra.CrashReportDialog"
+            android:theme="@style/DarkDialogTheme"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true" />
+
     </application>
 
 </manifest>
