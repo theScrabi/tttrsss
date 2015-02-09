@@ -121,9 +121,7 @@ public class OfflineArticleFragment extends Fragment {
 			m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
-		boolean useTitleWebView = m_prefs.getBoolean("article_compat_view", false);
-		
-		View view = inflater.inflate(useTitleWebView ? R.layout.article_fragment_compat : R.layout.article_fragment, container, false);
+		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
 		m_cursor = m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 
@@ -134,35 +132,33 @@ public class OfflineArticleFragment extends Fragment {
 		if (m_cursor.isFirst()) {
             final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 
-			if (!useTitleWebView) {
-                View scrollView = view.findViewById(R.id.article_scrollview);
-                View fab = view.findViewById(R.id.article_fab);
+            View scrollView = view.findViewById(R.id.article_scrollview);
+            View fab = view.findViewById(R.id.article_fab);
 
-                if (scrollView != null && fab != null) {
-                    if (m_prefs.getBoolean("enable_article_fab", true)) {
-                        scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
+            if (scrollView != null && fab != null) {
+                if (m_prefs.getBoolean("enable_article_fab", true)) {
+                    scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
 
-                        fab.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                try {
-                                    URL url = new URL(link.trim());
-                                    String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-                                            url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                                    startActivity(intent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    m_activity.toast(R.string.error_other_error);
-                                }
+                    fab.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                URL url = new URL(link.trim());
+                                String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
+                                        url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                m_activity.toast(R.string.error_other_error);
                             }
-                        });
-                    } else {
-                        fab.setVisibility(View.GONE);
-                    }
+                        }
+                    });
+                } else {
+                    fab.setVisibility(View.GONE);
                 }
-			}
-			
+            }
+
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
 			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
@@ -243,7 +239,7 @@ public class OfflineArticleFragment extends Fragment {
                 });
 
                 // prevent flicker in ics
-                if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
+                if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                         web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     }
@@ -320,10 +316,6 @@ public class OfflineArticleFragment extends Fragment {
                     "</style>" +
                     "</head>" +
                     "<body>" + articleContent;
-				
-				if (useTitleWebView) {
-					content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>";
-				}
 				
 				content += "</body></html>";
 				

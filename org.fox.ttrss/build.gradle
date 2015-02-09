@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "org.fox.ttrss"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 21
     }
 

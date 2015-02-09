@@ -156,9 +156,7 @@ public class ArticleFragment extends Fragment  {
             //m_fsviewShown = savedInstanceState.getBoolean("fsviewShown");
 		}
 
-		boolean useTitleWebView = m_prefs.getBoolean("article_compat_view", false);
-		
-		View view = inflater.inflate(useTitleWebView ? R.layout.article_fragment_compat : R.layout.article_fragment, container, false);
+		View view = inflater.inflate(R.layout.article_fragment, container, false);
 
         /* if (m_fsviewShown) {
             view.findViewById(R.id.article_fullscreen_video).setVisibility(View.VISIBLE);
@@ -311,7 +309,7 @@ public class ArticleFragment extends Fragment  {
                 boolean acceleratedWebview = true;
 
 			    // prevent flicker in ics
-			    if (!m_prefs.getBoolean("webview_hardware_accel", true) || useTitleWebView) {
+			    if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
 			    	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			    		m_web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                         acceleratedWebview = false;
@@ -372,10 +370,6 @@ public class ArticleFragment extends Fragment  {
 					"</style>" +
 					"</head>" +
 					"<body>" + articleContent;
-				
-				if (useTitleWebView) {
-					content += "<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>";
-				}
 				
 				if (m_article.attachments != null && m_article.attachments.size() != 0) {
 					String flatContent = articleContent.replaceAll("[\r\n]", "");
