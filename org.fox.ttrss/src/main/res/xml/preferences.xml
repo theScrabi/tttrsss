@@ -189,4 +189,9 @@
             android:title="@string/transport_debugging" />
     </PreferenceCategory>
 
+    <Preference
+        android:key="version"
+        android:enabled="false"
+        android:title="@string/version" />
+
 </PreferenceScreen>
