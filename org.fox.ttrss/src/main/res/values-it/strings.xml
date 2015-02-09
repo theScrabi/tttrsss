@@ -47,8 +47,8 @@
     <string name="context_selection_toggle_marked">(Non)Speciale</string>
     <string name="context_selection_toggle_published">(De)Pubblica</string>
     <string name="context_selection_toggle_unread">(Non)Letto</string>
-    <string name="article_set_unread">Imposta come Non letto</string>
-    <string name="article_mark_read_above">Segna gli articoli sopra questo come letti</string>
+    <string name="article_set_unread">Imposta come non letto</string>
+    <string name="article_mark_read_above">Segna sopra come letti</string>
     <string name="http_login_summary">Opzionale. Compila questo solo se la tua installazione di tt-rss è protetta con autenticazione HTTP Basic</string>
     <string name="login_summary">Il tuo nome utente per tt-rss. Non è necessario per la modalità utente singolo.</string>
     <string name="ttrss_url_summary">URL della tua installazione di tt-rss, es. http://sito.it/tt-rss/</string>
@@ -61,7 +61,7 @@
     <string name="headlines_mark_as_read">Segna come letto</string>
     <string name="error_unknown">Errore: errore sconosciuto (Vedi log)</string>
     <string name="error_http_unauthorized">Errore: 401 non autorizzato</string>
-    <string name="error_http_forbidden">Errore: 403 proibit</string>
+    <string name="error_http_forbidden">Errore: 403 accesso negato</string>
     <string name="error_http_not_found">Errore: 404 non trovato</string>
     <string name="error_http_server_error">Errore: 500 errore del server</string>
     <string name="error_http_other_error">Errore: altro errore HTTP (Vedi log)</string>
@@ -122,7 +122,7 @@
     <string name="close_feed">Chiudi feed</string>
     <string name="close_article">Chiudi articolo</string>
     <string name="dialog_open_preferences">Impostazioni</string>
-    <string name="dialog_need_configure_prompt">Compila le informazioni per l\'accesso al server tt-rss:URL, login, e password.</string>
+    <string name="dialog_need_configure_prompt">Compila le informazioni per l\'accesso al server tt-rss: URL, login, e password.</string>
     <string name="notify_article_marked">Articolo reso speciale</string>
     <string name="notify_article_unmarked">Articolo reso non-speciale</string>
     <string name="notify_article_published">Articolo publicato</string>
@@ -134,7 +134,7 @@
     <string name="category_browse_headlines">Naviga titoli</string>
     <string name="pref_default_view_mode">Modalità visualizzazione default</string>
     <string name="pref_default_view_mode_long">Quale modalità di visualizzazione utilizzare come predefinita sugli smartphones</string>
-    <string name="donate_thanks">Donazione trovata, Grazie per il supporto!</string>
+    <string name="donate_thanks">Donazione trovata, grazie per il supporto!</string>
     <string name="use_volume_keys">Usa pulsanti volume</string>
     <string name="use_volume_keys_long">Sfoglia gli articoli usando i tasti volume</string>
     <string name="ssl_trust_any_host">Nessuna validazione sull\'hostname</string>
@@ -148,11 +148,13 @@
     <string name="prefs_dim_status_bar_long">Oscura la barra di stato durante la lettura</string>
 
     <plurals name="article_comments">
+        <item quantity="one">%1$d commento</item>
         <item quantity="other">%1$d commenti</item>
     </plurals>
 
     <plurals name="trial_mode_prompt">
-        <item quantity="other">Modalità demo, %1$d giorno/i rimanenti.</item>
+        <item quantity="one">Modalità demo, %1$d giorno rimanente.</item>
+        <item quantity="other">Modalità demo, %1$d giorni rimanenti.</item>
     </plurals>
     <string name="trial_purchase">Sblocca versione completa</string>
     <string name="trial_expired">Demo scaduta</string>
@@ -201,11 +203,13 @@
     <string name="pref_headlines_mark_read_scroll">Segna come letto quando si scorre</string>
     <string name="pref_headlines_mark_read_scroll_long">Gli articoli verranno segnati come letti quando si scorre oltre</string>
     <plurals name="mark_num_headlines_as_read">
-        <item quantity="other">Segni %1$d articolo/i come letti?</item>
+        <item quantity="one">Vuoi segnare %1$d articolo come letto?</item>
+        <item quantity="other">Vuoi segnare %1$d articoli come letti?</item>
     </plurals>
     <string name="prefs_confirm_headlines_catchup">Confermi la marcatura degli articoli come letti</string>
     <string name="author_formatted">di %1$s</string>
     <plurals name="n_unread_articles">
+        <item quantity="one">%1$d articolo non letto</item>
         <item quantity="other">%1$d articoli non letti</item>
     </plurals>
 </resources>
