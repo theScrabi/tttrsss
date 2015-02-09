@@ -187,11 +187,6 @@
             android:defaultValue="false"
             android:key="transport_debugging"
             android:title="@string/transport_debugging" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="enable_crash_reporting"
-            android:title="@string/prefs_enable_crash_reporting" />
-
     </PreferenceCategory>
 
     <Preference
