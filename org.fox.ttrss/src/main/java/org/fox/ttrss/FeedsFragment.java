@@ -279,11 +279,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 			}
 		});
 
-        m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
-            android.R.color.holo_red_dark,
-            android.R.color.holo_blue_dark,
-            android.R.color.holo_orange_dark);
-
         /* Button parentBtn = (Button) view.findViewById(R.id.open_parent);
 
         if (parentBtn != null) {

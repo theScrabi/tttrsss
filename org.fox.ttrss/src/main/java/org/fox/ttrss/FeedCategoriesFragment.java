@@ -208,12 +208,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			}
 		});
 
-        m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
-            android.R.color.holo_red_dark,
-            android.R.color.holo_blue_dark,
-            android.R.color.holo_orange_dark);
-
-		ListView list = (ListView)view.findViewById(R.id.feeds);		
+		ListView list = (ListView)view.findViewById(R.id.feeds);
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);

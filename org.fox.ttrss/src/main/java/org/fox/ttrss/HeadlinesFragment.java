@@ -324,11 +324,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-        m_swipeLayout.setColorScheme(android.R.color.holo_green_dark,
-            android.R.color.holo_red_dark,
-            android.R.color.holo_blue_dark,
-            android.R.color.holo_orange_dark);
-
 		ListView list = (ListView)view.findViewById(R.id.headlines_list);
 
         if (!m_compactLayoutMode) {
