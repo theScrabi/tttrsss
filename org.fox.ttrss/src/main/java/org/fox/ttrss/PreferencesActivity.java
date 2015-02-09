@@ -1,10 +1,16 @@
 package org.fox.ttrss;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class PreferencesActivity extends PreferenceActivity {
 	@Override
@@ -13,29 +19,39 @@ public class PreferencesActivity extends PreferenceActivity {
         
         addPreferencesFromResource(R.xml.preferences);
 
-        boolean compatMode = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB;
-
-        if (compatMode) {
-        	findPreference("webview_hardware_accel").setEnabled(false);
-        }
-        
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
         	findPreference("enable_condensed_fonts").setEnabled(false);
         }
 
-        Preference versionPref = (Preference)findPreference("version");
-        String version = null;
+        String version = "?";
         int versionCode = -1;
+        String buildTimestamp = "N/A";
+
         try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            PackageInfo packageInfo = getPackageManager().
+                    getPackageInfo(getPackageName(), 0);
 
             version = packageInfo.versionName;
             versionCode = packageInfo.versionCode;
 
+            ApplicationInfo appInfo = getPackageManager().
+                    getApplicationInfo(getPackageName(), 0);
+
+            ZipFile zf = new ZipFile(appInfo.sourceDir);
+            ZipEntry ze = zf.getEntry("classes.dex");
+            long time = ze.getTime();
+
+            buildTimestamp = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss",
+                    Locale.getDefault()).format(time);
+
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        versionPref.setTitle(getString(R.string.version, version, versionCode));
+
+        findPreference("version").setTitle(getString(R.string.prefs_version, version, versionCode));
+        findPreference("build_timestamp").setTitle(getString(R.string.prefs_build_timestamp, buildTimestamp));
     }
 
 }
