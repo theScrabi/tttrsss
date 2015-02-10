@@ -2,23 +2,19 @@ package org.fox.ttrss;
 
 import android.app.Application;
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.fox.ttrss.types.Article;
-import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
-
-import java.util.ArrayList;
 @ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_dialog_text,
         formUri = "http://tt-rss.org/acra/submit/")
 public class GlobalState extends Application {
 	private static GlobalState m_singleton;
 	
-	public ArticleList m_loadedArticles = new ArticleList();
+	//public ArticleList m_loadedArticles = new ArticleList();
 	public Feed m_activeFeed;
 	public Article m_activeArticle;
 	public int m_selectedArticleId;
@@ -41,7 +37,7 @@ public class GlobalState extends Application {
 	public void save(Bundle out) {
 		
 		out.setClassLoader(getClass().getClassLoader());
-		out.putParcelableArrayList("gs:loadedArticles", m_loadedArticles);
+		//out.putParcelableArrayList("gs:loadedArticles", m_loadedArticles);
 		out.putParcelable("gs:activeFeed", m_activeFeed);
 		out.putParcelable("gs:activeArticle", m_activeArticle);
 		out.putString("gs:sessionId", m_sessionId);
@@ -51,12 +47,12 @@ public class GlobalState extends Application {
 	}
 	
 	public void load(Bundle in) {
-		if (m_loadedArticles.size() == 0 && in != null) {
-			ArrayList<Parcelable> list = in.getParcelableArrayList("gs:loadedArticles");
+		if (/* m_loadedArticles.size() == 0 && */ in != null) {
+			/* ArrayList<Parcelable> list = in.getParcelableArrayList("gs:loadedArticles");
 			
 			for (Parcelable p : list) {
 				m_loadedArticles.add((Article)p);
-			}
+			} */
 			
 			m_activeFeed = (Feed) in.getParcelable("gs:activeFeed");
 			m_activeArticle = (Article) in.getParcelable("gs:activeArticle");

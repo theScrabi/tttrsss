@@ -26,12 +26,13 @@ public class HeadlinesRequest extends ApiRequest {
 	
 	private int m_offset = 0;
 	private OnlineActivity m_activity;
-	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles; // = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
 	private Feed m_feed;
 	
-	public HeadlinesRequest(Context context, OnlineActivity activity, final Feed feed) {
+	public HeadlinesRequest(Context context, OnlineActivity activity, final Feed feed, ArticleList articles) {
 		super(context);
-		
+
+        m_articles = articles;
 		m_activity = activity;
 		m_feed = feed;
 	}

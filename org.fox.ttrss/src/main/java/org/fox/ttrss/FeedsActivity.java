@@ -26,6 +26,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -221,7 +222,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
     }
 
 	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
-		GlobalState.getInstance().m_loadedArticles.clear();
+		//GlobalState.getInstance().m_loadedArticles.clear();
 		//m_pullToRefreshAttacher.setRefreshing(true);
 
 			FragmentTransaction ft = getSupportFragmentManager()
@@ -423,17 +424,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		invalidateOptionsMenu();
 	}
 
-	public void openFeedArticles(Feed feed) {
-		GlobalState.getInstance().m_loadedArticles.clear();
+	/* public void openFeedArticles(Feed feed) {
+		//GlobalState.getInstance().m_loadedArticles.clear();
 		
 		Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
 		intent.putExtra("feed", feed);
 		intent.putExtra("article", (Article)null);
 		intent.putExtra("searchQuery", (String)null);
- 	   
+
 		startActivityForResult(intent, HEADLINES_REQUEST);
 		overridePendingTransition(R.anim.right_slide_in, 0);
-	}
+	} */
 	
 	public void onArticleSelected(Article article, boolean open) {
 		if (article.unread) {
@@ -448,6 +449,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("feed", hf.getFeed());
 			intent.putExtra("article", article);
 			intent.putExtra("searchQuery", hf.getSearchQuery());
+            intent.putParcelableArrayListExtra("articles", hf.getArticles());
 	 	   
 			startActivityForResult(intent, HEADLINES_REQUEST);
 			overridePendingTransition(R.anim.right_slide_in, 0);
@@ -476,7 +478,18 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == HEADLINES_REQUEST) {
-			GlobalState.getInstance().m_activeArticle = null;			
+			GlobalState.getInstance().m_activeArticle = null;
+
+            ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
+
+            if (tmp != null) {
+                HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+                if (hf != null) {
+                    hf.setArticles(tmp);
+                }
+            }
+
+
 		}		
 	}
 

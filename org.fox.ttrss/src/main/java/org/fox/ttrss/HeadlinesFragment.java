@@ -89,7 +89,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
 	private ArticleList m_selectedArticles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
@@ -106,15 +106,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_feed = feed;
 	}
 
-	public void initialize(Feed feed, Article activeArticle, boolean compactMode) {
+	public void initialize(Feed feed, Article activeArticle, boolean compactMode, ArticleList articles) {
 		m_feed = feed;
         m_compactLayoutMode = compactMode;
 		
 		if (activeArticle != null) {
 			m_activeArticle = getArticleById(activeArticle.id);
 		}
+
+        if (articles != null) {
+            m_articles = articles;
+        }
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
@@ -449,7 +453,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			final String sessionId = m_activity.getSessionId();
 			final boolean isCat = m_feed.is_cat;
 			
-			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed) {
+			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 				@Override
 				protected void onProgressUpdate(Integer... progress) {
 					m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
@@ -1182,4 +1186,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public Feed getFeed() {
 		return m_feed;
 	}
+
+    public ArticleList getArticles() {
+        return m_articles;
+    }
+
+    public void setArticles(ArrayList<Article> articles) {
+        m_articles.clear();
+        m_articles.addAll(articles);
+        m_adapter.notifyDataSetChanged();
+    }
 }

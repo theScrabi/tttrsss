@@ -32,7 +32,7 @@ public class ArticlePager extends Fragment {
 	private PagerAdapter m_adapter;
 	private HeadlinesEventListener m_listener;
 	private Article m_article;
-	private ArticleList m_articles = GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles = new ArticleList(); //m_articles = GlobalState.getInstance().m_loadedArticles;
 	private OnlineActivity m_activity;
 	private String m_searchQuery = "";
 	private Feed m_feed;
@@ -64,9 +64,10 @@ public class ArticlePager extends Fragment {
 		
 	}
 		
-	public void initialize(Article article, Feed feed) {
+	public void initialize(Article article, Feed feed, ArticleList articles) {
 		m_article = article;
 		m_feed = feed;
+        m_articles = articles;
 	}
 
 	public void setSearchQuery(String searchQuery) {
@@ -141,7 +142,7 @@ public class ArticlePager extends Fragment {
 			append = false;
 		}
 		
-		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed) {
+		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 			@Override
 			protected void onProgressUpdate(Integer... progress) {
 				m_activity.setProgress(progress[0] / progress[1] * 10000);
