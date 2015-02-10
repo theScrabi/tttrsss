@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -16,8 +17,6 @@ import android.view.View;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
-
-import java.util.ArrayList;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -49,7 +48,10 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
             findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         }
 
-		if (savedInstanceState == null) {
+		if (savedInstanceState != null) {
+            //
+
+        } else {
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
@@ -76,7 +78,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				final Article article = i.getParcelableExtra("article");
 				final String searchQuery = i.getStringExtra("searchQuery");
 
-                ArrayList<Article> tmp = i.getParcelableArrayListExtra("articles");
+                ArticleList tmp = i.getParcelableExtra("articles");
 
                 if (tmp != null) {
                     m_articles.addAll(tmp);
@@ -153,7 +155,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		case android.R.id.home:
 
             Intent resultIntent = new Intent();
-            resultIntent.putParcelableArrayListExtra("articles", m_articles);
+            //resultIntent.putParcelableArrayListExtra("articles", m_articles);
+            resultIntent.putExtra("articles", (Parcelable)m_articles);
             resultIntent.putExtra("activeArticle", m_activeArticle);
 
             setResult(Activity.RESULT_OK, resultIntent);
@@ -309,14 +312,15 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		overridePendingTransition(0, R.anim.right_slide_out);
-
         Intent resultIntent = new Intent();
-        resultIntent.putParcelableArrayListExtra("articles", m_articles);
+
+        resultIntent.putExtra("articles", (Parcelable) m_articles);
         resultIntent.putExtra("activeArticle", m_activeArticle);
 
         setResult(Activity.RESULT_OK, resultIntent);
 
+        super.onBackPressed();
+
+        overridePendingTransition(0, R.anim.right_slide_out);
     }
 }

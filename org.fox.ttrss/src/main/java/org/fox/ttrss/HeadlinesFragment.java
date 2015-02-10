@@ -301,7 +301,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
-			//m_articles = savedInstanceState.getParcelable("articles");
+			m_articles = savedInstanceState.getParcelable("articles");
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
@@ -411,7 +411,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				m_listener.onArticleSelected(article);
 				
 				// only set active article when it makes sense (in HeadlinesActivity)
-				if (getActivity().findViewById(R.id.article_fragment) != null) {
+				if (getActivity() instanceof HeadlinesActivity) {
 					m_activeArticle = article;
 				}
 				
@@ -581,7 +581,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("feed", m_feed);
-		//out.putParcelable("articles", m_articles);
+		out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
 		out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
@@ -1078,11 +1078,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		return m_articles;
 	}
 
+    // if setting active doesn't make sense, scroll to whatever is passed to us
 	public void setActiveArticle(Article article) {
 		if (article != m_activeArticle && article != null) {
-			m_activeArticle = article;
-			m_adapter.notifyDataSetChanged();
-		
+
+            // only set active article when it makes sense (in HeadlinesActivity)
+            if (getActivity() instanceof HeadlinesActivity) {
+                m_activeArticle = article;
+            }
+
+            m_adapter.notifyDataSetChanged();
+
 			ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 
 			if (list != null) {
@@ -1204,7 +1210,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         return m_articles;
     }
 
-    public void setArticles(ArrayList<Article> articles) {
+    public void setArticles(ArticleList articles) {
         m_articles.clear();
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();

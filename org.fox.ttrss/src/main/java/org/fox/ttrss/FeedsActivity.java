@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -26,7 +27,6 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -449,7 +449,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("feed", hf.getFeed());
 			intent.putExtra("article", article);
 			intent.putExtra("searchQuery", hf.getSearchQuery());
-            intent.putParcelableArrayListExtra("articles", hf.getArticles());
+            //intent.putParcelableArrayListExtra("articles", hf.getArticles());
+            intent.putExtra("articles", (Parcelable)hf.getAllArticles());
 	 	   
 			startActivityForResult(intent, HEADLINES_REQUEST);
 			overridePendingTransition(R.anim.right_slide_in, 0);
@@ -480,8 +481,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (requestCode == HEADLINES_REQUEST) {
 			//GlobalState.getInstance().m_activeArticle = null;
 
-            ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
+            //ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
             Article article = data.getParcelableExtra("activeArticle");
+            ArticleList tmp = data.getParcelableExtra("articles");
 
             if (tmp != null) {
                 HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
