@@ -6,7 +6,6 @@ import android.os.Bundle;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
-import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Feed;
 @ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_dialog_text,
@@ -16,7 +15,7 @@ public class GlobalState extends Application {
 	
 	//public ArticleList m_loadedArticles = new ArticleList();
 	public Feed m_activeFeed;
-	public Article m_activeArticle;
+	//public Article m_activeArticle;
 	public int m_selectedArticleId;
 	public String m_sessionId;
 	public int m_apiLevel;
@@ -39,7 +38,7 @@ public class GlobalState extends Application {
 		out.setClassLoader(getClass().getClassLoader());
 		//out.putParcelableArrayList("gs:loadedArticles", m_loadedArticles);
 		out.putParcelable("gs:activeFeed", m_activeFeed);
-		out.putParcelable("gs:activeArticle", m_activeArticle);
+		//out.putParcelable("gs:activeArticle", m_activeArticle);
 		out.putString("gs:sessionId", m_sessionId);
 		out.putInt("gs:apiLevel", m_apiLevel);
 		out.putBoolean("gs:canUseProgress", m_canUseProgress);
@@ -55,7 +54,7 @@ public class GlobalState extends Application {
 			} */
 			
 			m_activeFeed = (Feed) in.getParcelable("gs:activeFeed");
-			m_activeArticle = (Article) in.getParcelable("gs:activeArticle");
+			//m_activeArticle = (Article) in.getParcelable("gs:activeArticle");
 			m_sessionId = in.getString("gs:sessionId");
 			m_apiLevel = in.getInt("gs:apiLevel");
 			m_canUseProgress = in.getBoolean("gs:canUseProgress");

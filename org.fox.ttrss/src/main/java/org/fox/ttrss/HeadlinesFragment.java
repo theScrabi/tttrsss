@@ -368,10 +368,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onResume() {
 		super.onResume();
 
-		if (GlobalState.getInstance().m_activeArticle != null) {
+		/* if (GlobalState.getInstance().m_activeArticle != null) {
 			m_activeArticle = GlobalState.getInstance().m_activeArticle;
 			GlobalState.getInstance().m_activeArticle = null;
-		}
+		} */
 
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
@@ -1079,15 +1079,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public void setActiveArticle(Article article) {
-		if (article != m_activeArticle) {
+		if (article != m_activeArticle && article != null) {
 			m_activeArticle = article;
 			m_adapter.notifyDataSetChanged();
 		
 			ListView list = (ListView)getView().findViewById(R.id.headlines_list);
-		
-			if (list != null && article != null) {
-				int position = m_adapter.getPosition(article);
-				list.setSelection(position);
+
+			if (list != null) {
+				int position = getArticlePositionById(article.id);
+
+                if (position != -1) {
+                    list.smoothScrollToPosition(position);
+                }
 			}
 		}
 	}
@@ -1163,6 +1166,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public Article getActiveArticle() {
 		return m_activeArticle;
 	}
+
+    public int getArticlePositionById(int id) {
+        for (Article a : m_adapter.items) {
+            if (a.id == id) {
+                return m_adapter.getPosition(a);
+            }
+        }
+
+        return -1;
+    }
 
 	public int getArticlePosition(Article article) {
 		try {

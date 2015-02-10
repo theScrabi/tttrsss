@@ -24,8 +24,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	private ArticleList m_articles = new ArticleList();
 
 	protected SharedPreferences m_prefs;
+    private Article m_activeArticle;
 
-	@SuppressLint("NewApi")
+    @SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
@@ -153,6 +154,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
             Intent resultIntent = new Intent();
             resultIntent.putParcelableArrayListExtra("articles", m_articles);
+            resultIntent.putExtra("activeArticle", m_activeArticle);
+
             setResult(Activity.RESULT_OK, resultIntent);
 
 			finish();
@@ -245,7 +248,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			}
 		}
 
-		GlobalState.getInstance().m_activeArticle = article;
+        m_activeArticle = article;
+
+		//GlobalState.getInstance().m_activeArticle = article;
 		
 		invalidateOptionsMenu();
 		
@@ -309,6 +314,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
         Intent resultIntent = new Intent();
         resultIntent.putParcelableArrayListExtra("articles", m_articles);
+        resultIntent.putExtra("activeArticle", m_activeArticle);
+
         setResult(Activity.RESULT_OK, resultIntent);
 
     }

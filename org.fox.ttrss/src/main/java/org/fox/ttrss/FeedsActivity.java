@@ -478,14 +478,17 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == HEADLINES_REQUEST) {
-			GlobalState.getInstance().m_activeArticle = null;
+			//GlobalState.getInstance().m_activeArticle = null;
 
             ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
+            Article article = data.getParcelableExtra("activeArticle");
 
             if (tmp != null) {
                 HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+
                 if (hf != null) {
                     hf.setArticles(tmp);
+                    hf.setActiveArticle(article);
                 }
             }
 
