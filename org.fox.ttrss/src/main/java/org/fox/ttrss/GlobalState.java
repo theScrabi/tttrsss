@@ -8,6 +8,7 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.fox.ttrss.types.Feed;
 @ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
+        excludeMatchingSharedPreferencesKeys = {"password"},
         resDialogText = R.string.crash_dialog_text,
         formUri = "http://tt-rss.org/acra/submit/")
 public class GlobalState extends Application {
@@ -30,7 +31,7 @@ public class GlobalState extends Application {
 		super.onCreate();
         ACRA.init(this);
 
-		m_singleton = this;
+		//m_singleton = this;
 	}
 	
 	public void save(Bundle out) {
