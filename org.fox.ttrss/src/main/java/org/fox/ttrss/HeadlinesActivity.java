@@ -20,7 +20,7 @@ import org.fox.ttrss.types.Feed;
 
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
-	private ArticleList m_articles = new ArticleList();
+	protected ArticleList m_articles = new ArticleList();
 
 	protected SharedPreferences m_prefs;
     private Article m_activeArticle;
@@ -49,8 +49,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
         }
 
 		if (savedInstanceState != null) {
-            //
-
+            m_articles = savedInstanceState.getParcelable("articles");
         } else {
 			Intent i = getIntent();
 			
@@ -145,6 +144,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
+
+        out.putParcelable("articles", m_articles);
 		
 		GlobalState.getInstance().save(out);
 	}

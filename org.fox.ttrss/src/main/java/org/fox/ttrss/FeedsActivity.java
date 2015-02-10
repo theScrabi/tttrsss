@@ -478,7 +478,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == HEADLINES_REQUEST) {
+		if (requestCode == HEADLINES_REQUEST && data != null) {
 			//GlobalState.getInstance().m_activeArticle = null;
 
             //ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");

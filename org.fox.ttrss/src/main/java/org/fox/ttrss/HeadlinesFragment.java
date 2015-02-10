@@ -301,7 +301,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
-			m_articles = savedInstanceState.getParcelable("articles");
+
+            if (! (m_activity instanceof HeadlinesActivity)) {
+                m_articles = savedInstanceState.getParcelable("articles");
+            } else {
+                m_articles = ((HeadlinesActivity)m_activity).m_articles;
+            }
+
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
 			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");

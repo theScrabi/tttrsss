@@ -80,6 +80,7 @@ public class ArticlePager extends Fragment {
 	
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
+            m_articles = ((HeadlinesActivity)m_activity).m_articles;
 			m_feed = savedInstanceState.getParcelable("feed");
 		}
 		
