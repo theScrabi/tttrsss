@@ -31,7 +31,7 @@ public class GlobalState extends Application {
 		super.onCreate();
         ACRA.init(this);
 
-		//m_singleton = this;
+		m_singleton = this;
 	}
 	
 	public void save(Bundle out) {
