@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.ToxicBakery.viewpager.transforms.StackTransformer;
 import com.google.gson.JsonElement;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -93,7 +94,8 @@ public class ArticlePager extends Fragment {
 		m_listener.onArticleSelected(m_article, false);
 
 		pager.setAdapter(m_adapter);
-		
+        pager.setPageTransformer(true, new StackTransformer());
+
 		UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_titles);
 		indicator.setViewPager(pager);
 

@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -295,6 +296,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
         pager.setAdapter(m_adapter);
+        pager.setPageTransformer(true, new DepthPageTransformer());
 
         UnderlinePageIndicator indicator = (UnderlinePageIndicator)findViewById(R.id.article_images_indicator);
         indicator.setViewPager(pager);
