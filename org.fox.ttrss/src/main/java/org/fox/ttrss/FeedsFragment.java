@@ -856,9 +856,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 	public Feed getFeedAtPosition(int position) {
 		try {
-            ListView list = (ListView) getView().findViewById(R.id.feeds);
-
-            return (Feed) list.getItemAtPosition(position);
+            return (Feed) m_list.getItemAtPosition(position);
         } catch (NullPointerException e) {
             return null;
 		} catch (IndexOutOfBoundsException e) {

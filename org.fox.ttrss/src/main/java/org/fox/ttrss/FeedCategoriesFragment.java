@@ -190,7 +190,13 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 	}
 	
 	public FeedCategory getCategoryAtPosition(int position) {
-		return m_adapter.getItem(position);
+        try {
+		    return (FeedCategory) m_list.getItemAtPosition(position);
+        } catch (NullPointerException e) {
+            return null;
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
 	}
 	
 	@Override
