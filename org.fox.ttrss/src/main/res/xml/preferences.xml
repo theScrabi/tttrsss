@@ -187,10 +187,10 @@
     <Preference
         android:key="version"
         android:enabled="false"
-        android:title="@string/prefs_version" />
+        android:title="@string/prefs_version_title" />
 
     <Preference
         android:key="build_timestamp"
         android:enabled="false"
-        android:title="@string/prefs_build_timestamp" />
+        android:title="@string/prefs_build_timestamp_title" />
 </PreferenceScreen>

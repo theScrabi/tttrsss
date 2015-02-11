@@ -41,7 +41,7 @@ public class PreferencesActivity extends PreferenceActivity {
             ZipEntry ze = zf.getEntry("classes.dex");
             long time = ze.getTime();
 
-            buildTimestamp = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss",
+            buildTimestamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss",
                     Locale.getDefault()).format(time);
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -50,8 +50,8 @@ public class PreferencesActivity extends PreferenceActivity {
             e.printStackTrace();
         }
 
-        findPreference("version").setTitle(getString(R.string.prefs_version, version, versionCode));
-        findPreference("build_timestamp").setTitle(getString(R.string.prefs_build_timestamp, buildTimestamp));
+        findPreference("version").setSummary(getString(R.string.prefs_version, version, versionCode));
+        findPreference("build_timestamp").setSummary(getString(R.string.prefs_build_timestamp, buildTimestamp));
     }
 
 }
