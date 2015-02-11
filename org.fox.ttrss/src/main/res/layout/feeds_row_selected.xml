@@ -20,25 +20,26 @@
         android:layout_height="16dp"
         android:layout_weight="0"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_unpublished" />
+        android:src="@drawable/ic_menu_published_dark" />
 
     <TextView
         android:id="@+id/title"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:paddingLeft="16dp"
+        android:paddingLeft="40dp"
         android:singleLine="true"
         android:text="Feed"
         android:paddingBottom="2dp"
         android:textColor="?feedlistSelectedTextColor"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/unread_counter"
+        android:fontFamily="sans-serif-medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
@@ -46,8 +47,7 @@
         android:text="3200"
         android:layout_marginLeft="16dp"
         android:textColor="?unreadCounterColor"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textSize="14sp" />
 
     <ImageButton
         android:id="@+id/feed_menu_button"

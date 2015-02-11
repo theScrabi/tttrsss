@@ -23,17 +23,17 @@
         android:src="@drawable/ic_unpublished" />
 
     <TextView
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:paddingLeft="16dp"
+        android:paddingLeft="40dp"
         android:singleLine="true"
         android:text=".."
         android:paddingBottom="2dp"
         android:textColor="?feedlistTextColor"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

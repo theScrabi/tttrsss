@@ -39,6 +39,8 @@ import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -213,6 +215,19 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setAdapter(m_adapter);
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
+
+        View layout = inflater.inflate(R.layout.drawer_header, container, false);
+        list.addHeaderView(layout, null, false);
+
+        TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+        TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+
+        login.setText(m_prefs.getString("login", ""));
+        try {
+            server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
+        } catch (MalformedURLException e) {
+            server.setText("");
+        }
 
         View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
         loadingBar.setVisibility(View.VISIBLE);
@@ -473,7 +488,13 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 			ImageView icon = (ImageView)v.findViewById(R.id.icon);
 			
 			if (icon != null) {
-				icon.setImageResource(cat.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
+                if (m_activity.isDarkTheme()) {
+                    icon.setImageResource(R.drawable.ic_published);
+                } else {
+                    icon.setImageResource(R.drawable.ic_menu_published_dark);
+                }
+
+				//icon.setImageResource(cat.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
 			}
 
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
