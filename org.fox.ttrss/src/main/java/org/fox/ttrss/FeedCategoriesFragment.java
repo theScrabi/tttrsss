@@ -216,7 +216,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
 
-        View layout = inflater.inflate(R.layout.drawer_header, container, false);
+        View layout = inflater.inflate(R.layout.drawer_header, list, false);
         list.addHeaderView(layout, null, false);
 
         TextView login = (TextView) view.findViewById(R.id.drawer_header_login);

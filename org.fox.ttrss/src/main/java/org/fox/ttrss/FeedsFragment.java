@@ -286,10 +286,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		ListView list = (ListView)view.findViewById(R.id.feeds);
 
         if (m_enableParentBtn) {
-            View layout = inflater.inflate(R.layout.feeds_goback, container, false);
-
-            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
-                    ListView.LayoutParams.WRAP_CONTENT));
+            View layout = inflater.inflate(R.layout.feeds_goback, list, false);
 
             layout.setOnClickListener(new OnClickListener() {
                 @Override
@@ -300,7 +297,7 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
             list.addHeaderView(layout, null, false);
         } else {
-            View layout = inflater.inflate(R.layout.drawer_header, container, false);
+            View layout = inflater.inflate(R.layout.drawer_header, list, false);
             list.addHeaderView(layout, null, false);
 
             TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
