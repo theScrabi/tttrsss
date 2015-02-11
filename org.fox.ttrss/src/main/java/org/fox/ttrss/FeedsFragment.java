@@ -61,8 +61,9 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 	private boolean m_feedIconsChecked = false;
 	private SwipeRefreshLayout m_swipeLayout;
     private boolean m_enableParentBtn = false;
-	
-	public void initialize(FeedCategory cat, boolean enableParentBtn) {
+    private ListView m_list;
+
+    public void initialize(FeedCategory cat, boolean enableParentBtn) {
         m_activeCategory = cat;
         m_enableParentBtn = enableParentBtn;
 	}
@@ -229,8 +230,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 
-        ListView list = (ListView) getView().findViewById(R.id.feeds);
-        Feed feed = (Feed) getFeedAtPosition(info.position);
+        //ListView list = (ListView) getView().findViewById(R.id.feeds);
+        Feed feed = (Feed) m_list.getItemAtPosition(info.position);
 		
 		menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
 
@@ -283,10 +284,10 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
             }
         } */
 
-		ListView list = (ListView)view.findViewById(R.id.feeds);
+		m_list = (ListView)view.findViewById(R.id.feeds);
 
         if (m_enableParentBtn) {
-            View layout = inflater.inflate(R.layout.feeds_goback, list, false);
+            View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
 
             layout.setOnClickListener(new OnClickListener() {
                 @Override
@@ -295,12 +296,12 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
                 }
             });
 
-            list.addHeaderView(layout, null, false);
+            m_list.addHeaderView(layout, null, false);
         } else {
             // TODO: better check
             if (m_activity.findViewById(R.id.headlines_drawer) != null) {
-                View layout = inflater.inflate(R.layout.drawer_header, list, false);
-                list.addHeaderView(layout, null, false);
+                View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
+                m_list.addHeaderView(layout, null, false);
 
                 TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
                 TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
@@ -315,11 +316,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
         }
 
         m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
-		list.setAdapter(m_adapter);
+		m_list.setAdapter(m_adapter);
 		//list.setEmptyView(view.findViewById(R.id.no_feeds));
-		list.setOnItemClickListener(this);
+		m_list.setOnItemClickListener(this);
 
-		registerForContextMenu(list);
+		registerForContextMenu(m_list);
 
         //m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 
