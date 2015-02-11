@@ -216,17 +216,20 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		list.setOnItemClickListener(this);
 		registerForContextMenu(list);
 
-        View layout = inflater.inflate(R.layout.drawer_header, list, false);
-        list.addHeaderView(layout, null, false);
+        // TODO: better check
+        if (m_activity.findViewById(R.id.headlines_drawer) != null) {
+            View layout = inflater.inflate(R.layout.drawer_header, list, false);
+            list.addHeaderView(layout, null, false);
 
-        TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-        TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+            TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+            TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
 
-        login.setText(m_prefs.getString("login", ""));
-        try {
-            server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-        } catch (MalformedURLException e) {
-            server.setText("");
+            login.setText(m_prefs.getString("login", ""));
+            try {
+                server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
+            } catch (MalformedURLException e) {
+                server.setText("");
+            }
         }
 
         View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);

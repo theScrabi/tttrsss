@@ -3,10 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="96dp"
     android:orientation="vertical"
-    android:background="?articleHeader"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:clickable="false">
 
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView"
+        android:src="@drawable/drawer_header"
+        android:scaleType="fitXY"
+        android:tint="?articleHeader"
+        android:tintMode="multiply" />
 
     <LinearLayout
         android:layout_width="match_parent"
