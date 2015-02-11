@@ -335,8 +335,6 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 	 	   
 			startActivityForResult(intent, 0);
 
-			overridePendingTransition(R.anim.right_slide_in, 0);
-			
 		} else {
 			refresh();
 		}

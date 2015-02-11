@@ -132,7 +132,6 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
         switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
-			overridePendingTransition(0, R.anim.right_slide_out);
 			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
@@ -201,6 +200,5 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		overridePendingTransition(0, R.anim.right_slide_out);
 	}
 }

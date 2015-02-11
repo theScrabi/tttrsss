@@ -468,7 +468,7 @@ public class OnlineActivity extends CommonActivity {
  	   
 		startActivityForResult(intent, 0);
 		overridePendingTransition(0, 0);
-	
+
 		if (hasPendingOfflineData())
 			syncOfflineData();
 		

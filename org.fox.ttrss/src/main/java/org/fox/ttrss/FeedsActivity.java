@@ -453,8 +453,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             intent.putExtra("articles", (Parcelable)hf.getAllArticles());
 	 	   
 			startActivityForResult(intent, HEADLINES_REQUEST);
-			overridePendingTransition(R.anim.right_slide_in, 0);
-
 		} else {
 			invalidateOptionsMenu();
 		}

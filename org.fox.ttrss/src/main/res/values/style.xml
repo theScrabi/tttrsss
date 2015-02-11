@@ -10,9 +10,9 @@
         <item name="headlineSelectedBackground">#88b0f0</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
         <item name="headlineNormalBackground">#f5f5f5</item>
-        <item name="feedsSelectedBackground">?colorPrimaryDark</item>
+        <item name="feedsSelectedBackground">#cccccc</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
-        <item name="feedlistSelectedTextColor">#ffffff</item>
+        <item name="feedlistSelectedTextColor">?feedlistTextColor</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
         <item name="headlineSelectedTextColor">#ffffff</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
@@ -105,8 +105,8 @@
         <item name="feedlistBackground">#1c1d1e</item>
         <item name="headlinesBackground">#1c1d1e</item>
         <item name="articleBackground">#1c1d1e</item>
-        <item name="feedsSelectedBackground">?colorPrimaryDark</item>
-        <item name="feedlistSelectedTextColor">@android:color/primary_text_dark</item>
+        <item name="feedsSelectedBackground">#1c1c1c</item>
+        <item name="feedlistSelectedTextColor">?feedlistTextColor</item>
         <item name="articleHeader">?colorPrimaryDark</item>
         <item name="articleHeaderTextColor">@android:color/white</item>
         <item name="floatingActionButtonStyle">@style/FabTheme</item>
