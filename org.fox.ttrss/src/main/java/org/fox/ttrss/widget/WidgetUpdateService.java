@@ -62,7 +62,9 @@ public class WidgetUpdateService extends Service {
 	    			// Toast: need configure
 	    			
 	   		} else {
-	
+
+                final int feedId = m_prefs.getBoolean("widget_show_fresh", true) ? -6 : 0;
+
 	   			SimpleLoginManager loginManager = new SimpleLoginManager() {
 					
 					@Override
@@ -98,6 +100,7 @@ public class WidgetUpdateService extends Service {
 						HashMap<String, String> umap = new HashMap<String, String>() {
 				   				{
 				   					put("op", "getUnread");
+                                    put("feed_id", String.valueOf(feedId));
 				   					put("sid", fSessionId);
 				   				}
 				   			};
@@ -127,7 +130,7 @@ public class WidgetUpdateService extends Service {
     	} catch (Exception e) {
     		e.printStackTrace();
     		
-	    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
+	    	view.setTextViewText(R.id.counter, "?");
 	        manager.updateAppWidget(thisWidget, view);  					
 	
     	}
