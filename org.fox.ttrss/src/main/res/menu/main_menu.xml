@@ -157,7 +157,6 @@
     <group android:id="@+id/menu_group_logged_out" >
         <item
             android:id="@+id/login"
-            android:icon="@android:drawable/ic_menu_rotate"
             app:showAsAction="ifRoom|withText"
             android:title="@string/login_login"/>
     </group>
