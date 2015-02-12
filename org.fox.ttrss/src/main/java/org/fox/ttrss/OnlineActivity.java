@@ -1364,7 +1364,7 @@ public class OnlineActivity extends CommonActivity {
 	public void saveArticleNote(final Article article, final String note) {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				toast(R.string.notify_article_note_set);
+				//
 			}
 		};
 
