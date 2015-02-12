@@ -1,14 +1,5 @@
 package org.fox.ttrss.widget;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.R;
-import org.fox.ttrss.util.SimpleLoginManager;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -17,8 +8,16 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.R;
+import org.fox.ttrss.util.SimpleLoginManager;
+
+import java.util.HashMap;
 
 public class WidgetUpdateService extends Service {
 	private final String TAG = this.getClass().getSimpleName();
@@ -51,8 +50,7 @@ public class WidgetUpdateService extends Service {
     	final AppWidgetManager manager = AppWidgetManager.getInstance(this);
 
     	try {
-        	view.setTextViewText(R.id.counter, String.valueOf(""));
-        	view.setViewVisibility(R.id.progress, View.VISIBLE);
+        	view.setTextViewText(R.id.counter, String.valueOf("..."));
 
 	        manager.updateAppWidget(thisWidget, view);
 	        
@@ -80,7 +78,6 @@ public class WidgetUpdateService extends Service {
    										if (content != null) {
    											int unread = content.get("unread").getAsInt();
    											
-   											view.setViewVisibility(R.id.progress, View.GONE);
    											view.setTextViewText(R.id.counter, String.valueOf(unread));
    											manager.updateAppWidget(thisWidget, view);
    											
@@ -91,7 +88,6 @@ public class WidgetUpdateService extends Service {
 										}
 									}	   										
 								
-									view.setViewVisibility(R.id.progress, View.GONE);
 									view.setTextViewText(R.id.counter, "?");
 									manager.updateAppWidget(thisWidget, view);
 								}
@@ -112,7 +108,6 @@ public class WidgetUpdateService extends Service {
 					@Override
 					protected void onLoginFailed(int requestId, ApiRequest ar) {
 						
-						view.setViewVisibility(R.id.progress, View.GONE);
 	   			    	view.setTextViewText(R.id.counter, "?");
 	   			        manager.updateAppWidget(thisWidget, view);
 					}
@@ -132,7 +127,6 @@ public class WidgetUpdateService extends Service {
     	} catch (Exception e) {
     		e.printStackTrace();
     		
-	    	view.setViewVisibility(R.id.progress, View.GONE);
 	    	view.setTextViewText(R.id.counter, getString(R.string.app_name));
 	        manager.updateAppWidget(thisWidget, view);  					
 	
