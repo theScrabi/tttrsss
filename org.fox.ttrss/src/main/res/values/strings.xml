@@ -13,11 +13,9 @@
     <string name="default_url">http://example.domain/tt-rss/</string>
     <string name="look_and_feel">Interface</string>
     <string name="pref_theme">Theme</string>
-    <string name="pref_theme_long">Changes color theme of the application</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_holo">Holo</string>
     <string name="preferences">Settings</string>
     <string name="connection">Connection</string>
     <string name="headline_context_multiple">Selected articles</string>
@@ -31,7 +29,6 @@
     <string name="sort_feeds_by_unread">Sort feeds by unread count</string>
     <string name="ssl_trust_any">Accept any certificate</string>
     <string name="category_browse_feeds">Browse feeds</string>
-    <string name="category_browse_articles">Browse articles</string>
     <string name="blank"></string>
     <string name="transport_debugging">Log sent and received data</string>
     <string name="article_toggle_marked">(Un)Star</string>
@@ -48,15 +45,11 @@
     <string name="context_selection_toggle_marked">(Un)Star</string>
     <string name="context_selection_toggle_published">(Un)Publish</string>
     <string name="context_selection_toggle_unread">(Un)Read</string>
-    <string name="article_set_unread">Article set unread</string>
     <string name="article_mark_read_above">Mark above read</string>
     <string name="http_login_summary">Optional. Fill this if your tt-rss installation is protected by HTTP Basic authentication</string>
     <string name="login_summary">Your tt-rss login. Not needed for single user mode</string>
-    <string name="ttrss_url_summary">URL of your tt-rss installation directory, e.g. http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">Enable feed icons</string>
+    <string name="ttrss_url_summary">http://example.org/tt-rss</string>
     <string name="enable_cats">Enable feed categories</string>
-    <string name="no_feeds_to_display">No feeds to display</string>
-    <string name="no_headlines_to_display">No headlines to display</string>
     <string name="no_caption_to_display">No caption to display</string>
     <string name="browse_cats_like_feeds">Browse categories like feeds</string>
     <string name="browse_cats_like_feeds_summary">Use category context menu to override this setting</string>
@@ -76,13 +69,10 @@
     <string name="error_api_incorrect_usage">Error: incorrect API usage</string>
     <string name="error_login_failed">Error: username or password incorrect</string>
     <string name="error_invalid_api_url">Error: invalid API URL</string>
-    <string name="combined_mode_summary">Displays full article text inline, instead of a separate panel</string>
-    <string name="combined_mode">Combined mode</string>
     <string name="go_offline">Go offline</string>
     <string name="go_online">Go online</string>
     <string name="offline_switch_error">Failed to prepare offline mode (see log)</string>
     <string name="no_feeds">No feeds to display</string>
-    <string name="no_headlines">No articles to display</string>
     <string name="dialog_offline_prompt">Login failed, but you have stored offline data. Would you like to go offline?</string>
     <string name="dialog_offline_success">Offline mode is ready</string>
     <string name="dialog_offline_go">Go offline</string>
@@ -97,14 +87,11 @@
     <string name="offline_sync_success">Finished synchronizing your offline data</string>
     <string name="offline_mode">Offline mode</string>
     <string name="offline_image_cache_enabled">Cache images</string>
-    <string name="offline_image_cache_enabled_summary">Download images to sdcard. This might significantly increase time it takes to go offline.</string>
+    <string name="offline_image_cache_enabled_summary">Download images to sdcard. This might significantly increase time it takes to go offline</string>
     <string name="notify_downloading_images">Downloading images (%1$d)…</string>
     <string name="article_set_labels">Set labels</string>
     <string name="search">Search</string>
     <string name="cancel">Cancel</string>
-    <string name="font_size_small">Small</string>
-    <string name="font_size_medium">Medium</string>
-    <string name="font_size_large">Large</string>
     <string name="pref_font_size">Article text size</string>
     <string name="donate">Donate</string>
     <string name="dialog_close">Close</string>
@@ -168,7 +155,7 @@
     <string name="prefs_fullscreen_mode">Fullscreen mode</string>
     <string name="reading">Reading</string>
     <string name="offline_articles_to_download">Amount of articles to download</string>
-    <string name="offline_articles_to_download_long">How many articles to download for offline mode (newest first).</string>
+    <string name="offline_articles_to_download_long">How many articles to download for offline mode (newest first)</string>
     <string name="pref_headlines_show_content_long">Show content previews in headlines list</string>
     <string name="pref_headlines_show_content">Preview article content</string>
     <string name="api_too_low">This action requires newer version of Tiny Tiny RSS</string>
@@ -202,7 +189,6 @@
     <string name="requires_api5">Requires tt-rss 1.7.6</string>
     <string name="labels">Labels</string>
     <string name="article_img_view_caption">View Caption</string>
-    <string name="light_theme_is_not_supported_on_honeycomb">Light theme is not supported on Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Mark read on scroll</string>
     <string name="pref_headlines_mark_read_scroll_long">Headlines will be marked read when scrolling past them</string>
 
@@ -211,7 +197,7 @@
         <item quantity="other">Mark %1$d articles as read?</item>
     </plurals>
 
-    <string name="prefs_confirm_headlines_catchup">Confirm marking articles as read</string>
+    <string name="prefs_confirm_headlines_catchup">Confirm mark as read</string>
     <string name="author_formatted">by %1$s</string>
 
     <plurals name="n_unread_articles">
@@ -223,7 +209,7 @@
     <string name="pref_headline_font_size">Headline text size</string>
     <string name="context_confirm_catchup">Mark all articles in %1$s as read?</string>
     <string name="theme_system">Device Default</string>
-    <string name="accel_webview_summary">Disable if you see flicker or visual glitches.</string>
+    <string name="accel_webview_summary">Disable if you see flicker or visual glitches</string>
     <string name="accel_webview_title">Accelerate web views (3.0+)</string>
     <string name="place_shortcut">Place shortcut</string>
     <string name="shortcut_has_been_placed_on_the_home_screen">Shortcut has been placed on the home screen</string>

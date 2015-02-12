@@ -17,7 +17,6 @@
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="theme_light">Hell</string>
     <string name="theme_dark">Dunkel</string>
-    <string name="theme_holo">Holo</string>
     <string name="preferences">Einstellungen</string>
     <string name="connection">Verbindung</string>
     <string name="headline_context_multiple">Ausgewählte Artikel</string>
@@ -31,7 +30,6 @@
     <string name="sort_feeds_by_unread">Sortiere Feeds nach ungelesenen Artikeln</string>
     <string name="ssl_trust_any">Alle SSL Zertifikate akzeptieren</string>
     <string name="category_browse_feeds">Feeds anzeigen</string>
-    <string name="category_browse_articles">Artikel anzeigen</string>
     <string name="blank"></string>
     <string name="transport_debugging">Gesendete und empfangene Daten aufzeichnen</string>
     <string name="article_toggle_marked">Markieren (rückgängig machen)</string>
@@ -48,15 +46,11 @@
     <string name="context_selection_toggle_marked">Markieren (rückgängig machen)</string>
     <string name="context_selection_toggle_published">Veröffentlichen (rückgängig machen)</string>
     <string name="context_selection_toggle_unread">Als (Un)gelesen markieren</string>
-    <string name="article_set_unread">Als ungelesen markieren</string>
     <string name="article_mark_read_above">Obige als gelesen markieren.</string>
     <string name="http_login_summary">Optional. Bitte ausfüllen wenn die TinyTiny RSS Installation durch HTTP Basic Authentication geschützt ist.</string>
     <string name="login_summary">Dein tt-rss Benutzername. Nicht notwendig im Einbenutzermodus</string>
     <string name="ttrss_url_summary">URL deiner tt-rss Installation, Bsp.: http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">Feedsymbole herunterladen</string>
     <string name="enable_cats">Feedkategorien anzeigen</string>
-    <string name="no_feeds_to_display">Keine Feeds zum Anzeigen</string>
-    <string name="no_headlines_to_display">Keine Überschriften zum Anzeigen</string>
     <string name="no_caption_to_display">Keine Bildunterschrift vorhanden</string>
     <string name="browse_cats_like_feeds">Kategorien als Feeds anzeigen</string>
     <string name="browse_cats_like_feeds_summary">Kann im Kontextmenü jeder Kategorie angepasst werden.</string>
@@ -76,13 +70,10 @@
     <string name="error_api_incorrect_usage">Fehler: Fehlerhafte Benutzung der API</string>
     <string name="error_login_failed">Fehler: Benutzername und Passwort falsch</string>
     <string name="error_invalid_api_url">Fehler: API URL ungültig</string>
-    <string name="combined_mode_summary">Zeigt Artikelinhalt in der gleichen Spalte statt in einer eigenen.</string>
-    <string name="combined_mode">Kombinierte Anzeige</string>
     <string name="go_offline">Offline gehen</string>
     <string name="go_online">Online gehen</string>
     <string name="offline_switch_error">Vorbereitungen für den Offlinemodus fehlgeschlagen</string>
     <string name="no_feeds">Keine Feeds zum Anzeigen</string>
-    <string name="no_headlines">Keine Artikel zum Anzeigen</string>
     <string name="dialog_offline_prompt">Anmeldung fehlgeschlagen, Offlinedaten vorhanden. In den Offlinemodus wechseln?</string>
     <string name="dialog_offline_success">Offlinemodus bereit</string>
     <string name="dialog_offline_go">Offline gehen</string>
@@ -102,9 +93,6 @@
     <string name="article_set_labels">Setze Label</string>
     <string name="search">Suchen</string>
     <string name="cancel">Abbrechen</string>
-    <string name="font_size_small">klein</string>
-    <string name="font_size_medium">mittel</string>
-    <string name="font_size_large">groß</string>
     <string name="pref_font_size">Schriftgröße</string>
     <string name="donate">Spenden</string>
     <string name="dialog_close">Schließen</string>

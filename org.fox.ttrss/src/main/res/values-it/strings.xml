@@ -30,7 +30,6 @@
     <string name="sort_feeds_by_unread">Ordina feed per numero di articoli non letti</string>
     <string name="ssl_trust_any">Accetta qualsiasi certificato</string>
     <string name="category_browse_feeds">Naviga feed</string>
-    <string name="category_browse_articles">Naviga articoli</string>
     <string name="blank"></string>
     <string name="transport_debugging">Scrivi su log i dati inviati e ricevuti</string>
     <string name="article_toggle_marked">(non)Speciale</string>
@@ -47,15 +46,11 @@
     <string name="context_selection_toggle_marked">(Non)Speciale</string>
     <string name="context_selection_toggle_published">(De)Pubblica</string>
     <string name="context_selection_toggle_unread">(Non)Letto</string>
-    <string name="article_set_unread">Imposta come non letto</string>
     <string name="article_mark_read_above">Segna sopra come letti</string>
     <string name="http_login_summary">Opzionale. Compila questo solo se la tua installazione di tt-rss è protetta con autenticazione HTTP Basic</string>
     <string name="login_summary">Il tuo nome utente per tt-rss. Non è necessario per la modalità utente singolo.</string>
     <string name="ttrss_url_summary">URL della tua installazione di tt-rss, es. http://sito.it/tt-rss/</string>
-    <string name="download_feed_icons">Abilita icone feed</string>
     <string name="enable_cats">Abilita categorie feed</string>
-    <string name="no_feeds_to_display">Nessun feed da mostrare</string>
-    <string name="no_headlines_to_display">Nessun titolo da mostrare</string>
     <string name="browse_cats_like_feeds">Sfoglia le categorie come feed</string>
     <string name="browse_cats_like_feeds_summary">Usa il menu contestuale delle categorie per sovrascrivere questa impostazione</string>
     <string name="headlines_mark_as_read">Segna come letto</string>
@@ -74,13 +69,10 @@
     <string name="error_api_incorrect_usage">Errore: uso API scorretto</string>
     <string name="error_login_failed">Errore: nome utente o password errati</string>
     <string name="error_invalid_api_url">Errore: URL API errato</string>
-    <string name="combined_mode_summary">Mostra testo completo dell\'articolo in linea invece che in un pannello separato</string>
-    <string name="combined_mode">Modalità combinata</string>
     <string name="go_offline">Vai offline</string>
     <string name="go_online">Vai in linea</string>
     <string name="offline_switch_error">Preparazione modalità offline fallita (Vedi log)</string>
     <string name="no_feeds">Nessun feed da mostrare</string>
-    <string name="no_headlines">Nessun articolo da mostrare</string>
     <string name="dialog_offline_prompt">Accesso non riuscito, ma hai dei contenuti salvati offline. Vuoi andare in modalità offline?</string>
     <string name="dialog_offline_success">Modalità offline pronta</string>
     <string name="dialog_offline_go">Vai offline</string>
@@ -100,9 +92,6 @@
     <string name="article_set_labels">Imposta etichetta</string>
     <string name="search">Cerca</string>
     <string name="cancel">Annulla</string>
-    <string name="font_size_small">Piccolo</string>
-    <string name="font_size_medium">Medio</string>
-    <string name="font_size_large">Grande</string>
     <string name="pref_font_size">Dimensione testo articolo</string>
     <string name="donate">Fai una donazione</string>
     <string name="dialog_close">Chiudi</string>

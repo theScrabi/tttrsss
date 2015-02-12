@@ -17,7 +17,6 @@
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="theme_light">ライト</string>
     <string name="theme_dark">ダーク</string>
-    <string name="theme_holo">ホロ</string>
     <string name="preferences">設定</string>
     <string name="connection">接続</string>
     <string name="headline_context_multiple">選択した記事</string>
@@ -31,7 +30,6 @@
     <string name="sort_feeds_by_unread">フィードを未読記事数順に並びかえ</string>
     <string name="ssl_trust_any">すべての証明書を受け入れる</string>
     <string name="category_browse_feeds">フィードを表示</string>
-    <string name="category_browse_articles">記事を表示</string>
     <string name="blank"></string>
     <string name="transport_debugging">送受信データをロギングする</string>
     <string name="article_toggle_marked">スターを付ける/外す</string>
@@ -48,15 +46,11 @@
     <string name="context_selection_toggle_marked">スターを付ける/外す</string>
     <string name="context_selection_toggle_published">配信/解除</string>
     <string name="context_selection_toggle_unread">既読/未読にする</string>
-    <string name="article_set_unread">記事を未読にする</string>
     <string name="article_mark_read_above">これより上を既読にする</string>
     <string name="http_login_summary">tt-rssサーバにBasic認証を使用している場合は記入してください。(オプション)</string>
     <string name="login_summary">tt-rssサーバのログイン名。 シングルユーザモードの場合は不要。</string>
     <string name="ttrss_url_summary">tt-rssサーバのURL。例 http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">フィードアイコンを表示する</string>
     <string name="enable_cats">フィードのカテゴリを有効にする</string>
-    <string name="no_feeds_to_display">表示するフィードがありません</string>
-    <string name="no_headlines_to_display">表示するヘッドラインがありません</string>
     <string name="no_caption_to_display">表示するキャプションがありません</string>
     <string name="browse_cats_like_feeds">カテゴリをフィードのように扱う</string>
     <string name="browse_cats_like_feeds_summary">カテゴリ内のフィードをまとめて表示する</string>
@@ -76,13 +70,10 @@
     <string name="error_api_incorrect_usage">エラー: APIの使い方が違います</string>
     <string name="error_login_failed">エラー: ユーザー名またはパスワードが違います</string>
     <string name="error_invalid_api_url">エラー: APIのURLが無効です</string>
-    <string name="combined_mode_summary">記事全文を別パネルに表示せずインライン表示します</string>
-    <string name="combined_mode">コンバインモード</string>
     <string name="go_offline">オフラインにする</string>
     <string name="go_online">オンラインにする</string>
     <string name="offline_switch_error">オフラインモードの準備に失敗しました(ログを確認)</string>
     <string name="no_feeds">表示するフィードがありません</string>
-    <string name="no_headlines">表示するヘッドラインがありません</string>
     <string name="dialog_offline_prompt">ログインに失敗しましたが端末内にオフラインデータがあります。オフラインにしますか？</string>
     <string name="dialog_offline_success">オフライン準備完了</string>
     <string name="dialog_offline_go">オフラインにする</string>
@@ -102,9 +93,6 @@
     <string name="article_set_labels">ラベルをセットする</string>
     <string name="search">検索</string>
     <string name="cancel">キャンセル</string>
-    <string name="font_size_small">小</string>
-    <string name="font_size_medium">中</string>
-    <string name="font_size_large">大</string>
     <string name="pref_font_size">記事内容の文字サイズ</string>
     <string name="donate">寄付</string>
     <string name="dialog_close">閉じる</string>

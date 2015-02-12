@@ -31,7 +31,6 @@
   <string name="sort_feeds_by_unread">Řadit zdroje podle počtu nepřečtených článků</string>
   <string name="ssl_trust_any">Přijmout jakýkoliv certifikát</string>
   <string name="category_browse_feeds">Procházet zdroje</string>
-  <string name="category_browse_articles">Procházet články</string>
   <string name="blank"/>
   <string name="transport_debugging">Logovat odeslaná a přijatá data</string>
   <string name="article_toggle_marked">Hvězdička</string>
@@ -47,14 +46,9 @@
   <string name="selection_select_none">Odoznačit vše</string>
   <string name="context_selection_toggle_marked">Hvězdička</string>
   <string name="context_selection_toggle_published">Publikovaný</string>
-  <string name="context_selection_toggle_unread">Nepřečtené</string>
-  <string name="article_set_unread">Nastavit nepřečtené</string>
   <string name="article_mark_read_above">Nastavit jako přečtené</string>
   <string name="ttrss_url_summary">Adresa tt-rss serveru. Například: http://muj_server.cz/tt-rss/</string>
-  <string name="download_feed_icons">Povolit ikony zdrojů</string>
   <string name="enable_cats">Povolit kategorie</string>
-  <string name="no_feeds_to_display">Žádné zdroje k zobrazení</string>
-  <string name="no_headlines_to_display">Žádné titulky k zobrazení</string>
   <string name="browse_cats_like_feeds">Procházet kategorie jako zdroje</string>
   <string name="browse_cats_like_feeds_summary">Použij kontextové menu pro procházení kategorie</string>
   <string name="headlines_mark_as_read">Označit za přečtené</string>
@@ -73,13 +67,10 @@
   <string name="error_api_incorrect_usage">Chyba: nekorektní použití API</string>
   <string name="error_login_failed">Chyba: chybné uživatelské jméno nebo heslo</string>
   <string name="error_invalid_api_url">Chyba: chybna API URL</string>
-  <string name="combined_mode_summary">Zobrazí celý článek, v samostatném panelu</string>
-  <string name="combined_mode">Kombinovaný mód</string>
   <string name="go_offline">Pracovat offline</string>
   <string name="go_online">Pracovat online</string>
   <string name="offline_switch_error">Nepodařilo se přepnout do offline režimu (více log)</string>
   <string name="no_feeds">Žádné zdroje k zobrazení</string>
-  <string name="no_headlines">Žádné články k zobrazení</string>
   <string name="dialog_offline_prompt">Přihlášení se nezdařilo! Mate však uložena offline data. Chcete přejít do offline režimu?</string>
   <string name="dialog_offline_success">Offline režim je připraven</string>
   <string name="dialog_offline_go">Přejít do offline režimu</string>
@@ -99,10 +90,6 @@
   <string name="article_set_labels">Nastavit štítek</string>
   <string name="search">Hledat</string>
   <string name="cancel">Konec</string>
-  <string name="font_size_small">Malý</string>
-  <string name="font_size_medium">Medium</string>
-  <string name="font_size_large">Velký</string>
-  <string name="pref_font_size">Velikost textu</string>
   <string name="donate">Darovat</string>
   <string name="dialog_close">Zavřít</string>
   <string name="donate_select">Prosím vyberte dar</string>

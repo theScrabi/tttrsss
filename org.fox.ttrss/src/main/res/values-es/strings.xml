@@ -30,7 +30,6 @@
     <string name="sort_feeds_by_unread">Ordenar fuentes por número de artículos sin leer</string>
     <string name="ssl_trust_any">Aceptar cualquier certificado</string>
     <string name="category_browse_feeds">Ver fuentes</string>
-    <string name="category_browse_articles">Ver artículos</string>
     <string name="blank"></string>
     <string name="transport_debugging">Registrar datos enviados y recibidos</string>
     <string name="article_toggle_marked">Marcar/desmarcar como favorito</string>
@@ -47,15 +46,11 @@
     <string name="context_selection_toggle_marked">Marcar/desmarcar como favorito</string>
     <string name="context_selection_toggle_published">Marcar/desmarcar como publicado</string>
     <string name="context_selection_toggle_unread">Marcar/desmarcar como leído</string>
-    <string name="article_set_unread">Artículo marcado como no leído</string>
     <string name="article_mark_read_above">Marcar artículos anteriores como leídos</string>
     <string name="http_login_summary">Opcional. Complete este campo si su instalación de Tiny Tiny RSS usa autenticación básica por HTTP</string>
     <string name="login_summary">Sus credenciales para Tiny Tiny RSS. No son necesarias en modo de usuario único</string>
     <string name="ttrss_url_summary">URL de su instalación de Tiny Tiny RSS, por ejemplo http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">Habilitar iconos de las fuentes</string>
     <string name="enable_cats">Habilitar categorías de fuentes</string>
-    <string name="no_feeds_to_display">Ninguna fuente para mostrar</string>
-    <string name="no_headlines_to_display">Ningún titular para mostrar</string>
     <string name="no_caption_to_display">Ninguna leyenda para mostrar</string>
     <string name="browse_cats_like_feeds">Ver categorías como si fuesen fuentes</string>
     <string name="browse_cats_like_feeds_summary">Use el menú contextual de categoría para reemplazar esta preferencia</string>
@@ -75,13 +70,10 @@
     <string name="error_api_incorrect_usage">Error: Uso incorrecto da API</string>
     <string name="error_login_failed">Error: Usuario o contraseña incorrectos</string>
     <string name="error_invalid_api_url">Error: URL de la API inválida</string>
-    <string name="combined_mode_summary">Mostrar texto del artículo con el titular, en vez de usar un panel separado</string>
-    <string name="combined_mode">Modo combinado</string>
     <string name="go_offline">Entrar en modo offline</string>
     <string name="go_online">Entrar en modo online</string>
     <string name="offline_switch_error">Fallo al preparar el modo offline (ver log)</string>
     <string name="no_feeds">Ninguna fuente para mostrar</string>
-    <string name="no_headlines">Ningún artículo para mostrar</string>
     <string name="dialog_offline_prompt">El inicio de sesión ha fallado, pero tiene datos offline almacenados. ¿Quiere entrar en modo offline?</string>
     <string name="dialog_offline_success">Modo offline está listo</string>
     <string name="dialog_offline_go">Entrar en modo offline</string>
@@ -101,9 +93,6 @@
     <string name="article_set_labels">Definir marcadores</string>
     <string name="search">Buscar</string>
     <string name="cancel">Cancelar</string>
-    <string name="font_size_small">Pequeño</string>
-    <string name="font_size_medium">Medio</string>
-    <string name="font_size_large">Grande</string>
     <string name="pref_font_size">Tamaño de texto de los artículos</string>
     <string name="donate">Donar</string>
     <string name="dialog_close">Cerrar</string>

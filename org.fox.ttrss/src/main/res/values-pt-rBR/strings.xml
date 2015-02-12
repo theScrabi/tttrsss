@@ -30,7 +30,6 @@
     <string name="sort_feeds_by_unread">Ordenar por não lidos</string>
     <string name="ssl_trust_any">Aceitar qualquer certificado</string>
     <string name="category_browse_feeds">Navegar pelos feeds</string>
-    <string name="category_browse_articles">Navegar pelos artigos</string>
     <string name="blank"></string>
     <string name="transport_debugging">Registrar no log os dados enviados e recebidos</string>
     <string name="article_toggle_marked">Colocar/Retirar estrela</string>
@@ -47,15 +46,11 @@
     <string name="context_selection_toggle_marked">Colocar/Remover estrela</string>
     <string name="context_selection_toggle_published">Publicar/Nâo publica</string>
     <string name="context_selection_toggle_unread">Lido/Não lido</string>
-    <string name="article_set_unread">Artigo marcado como não lido</string>
     <string name="article_mark_read_above">Marcar acima como lido</string>
     <string name="http_login_summary">Opcional. Preencha este campo se sua instalação do tt-rss usa autenticação básica por http</string>
     <string name="login_summary">Seu usuário tt-rss. Não é necessário no modo mono usuário</string>
     <string name="ttrss_url_summary">URL da sua instalação tt-rss, por exemplo http://site.com/tt-rss/</string>
-    <string name="download_feed_icons">Habilitar ícones das assinaturas</string>
     <string name="enable_cats">Habilitar categorias</string>
-    <string name="no_feeds_to_display">Nenhuma assinatura a mostrar</string>
-    <string name="no_headlines_to_display">Nenhum cabeçalho para mostrar</string>
     <string name="no_caption_to_display">Nenhuma legenda a mostrar</string>
     <string name="browse_cats_like_feeds">Navegar pelas categorias como se fossem feeds</string>
     <string name="browse_cats_like_feeds_summary">Use o menu de categorias para substituir essa configuração</string>
@@ -75,13 +70,10 @@
     <string name="error_api_incorrect_usage">Erro: Uso incorreto da API</string>
     <string name="error_login_failed">Erro: Usuário ou senha inválidos</string>
     <string name="error_invalid_api_url">Erro: A URL da API é inválida</string>
-    <string name="combined_mode_summary">Mostrar todo o texto do arquivo ao invés de usar um painel separado</string>
-    <string name="combined_mode">Modo combinado</string>
     <string name="go_offline">Modo offline</string>
     <string name="go_online">Modo online</string>
     <string name="offline_switch_error">Falha ao preparar o modo offline (ver log)</string>
     <string name="no_feeds">Nenhuma assinatura para mostrar</string>
-    <string name="no_headlines">Nenhum artigo para mostrar</string>
     <string name="dialog_offline_prompt">O Login falhou mas você tem dados armazenados, ir para modo offline?</string>
     <string name="dialog_offline_success">Modo offline está disponível</string>
     <string name="dialog_offline_go">Ir para offline</string>
@@ -101,9 +93,6 @@
     <string name="article_set_labels">Definir tags</string>
     <string name="search">Pesquisar</string>
     <string name="cancel">Cancelar</string>
-    <string name="font_size_small">Pequeno</string>
-    <string name="font_size_medium">Médio</string>
-    <string name="font_size_large">Grande</string>
     <string name="pref_font_size">Tamanho do texto dos artigos</string>
     <string name="donate">Doe</string>
     <string name="dialog_close">Fechar</string>
