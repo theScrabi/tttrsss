@@ -13,7 +13,6 @@
     <string name="default_url">http://example.domain/tt-rss/</string>
     <string name="look_and_feel">インタフェース</string>
     <string name="pref_theme">テーマ</string>
-    <string name="pref_theme_long">アプリケーションのテーマ色を変更する</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="theme_light">ライト</string>
     <string name="theme_dark">ダーク</string>
@@ -42,7 +41,6 @@
     <string name="selection_toggle_marked">スターを付ける/外す</string>
     <string name="selection_toggle_published">配信/解除</string>
     <string name="selection_toggle_unread">既読/未読にする</string>
-    <string name="selection_select_none">全て選択解除</string>
     <string name="context_selection_toggle_marked">スターを付ける/外す</string>
     <string name="context_selection_toggle_published">配信/解除</string>
     <string name="context_selection_toggle_unread">既読/未読にする</string>
@@ -94,11 +92,7 @@
     <string name="search">検索</string>
     <string name="cancel">キャンセル</string>
     <string name="pref_font_size">記事内容の文字サイズ</string>
-    <string name="donate">寄付</string>
     <string name="dialog_close">閉じる</string>
-    <string name="donate_select">寄付金額を選択してください。</string>
-    <string name="donate_do">寄付完了!</string>
-    <string name="tablet_article_swipe">記事をスワイプで切り替える</string>
     <string name="article_link_copy">リンクをクリップボードにコピー</string>
     <string name="text_copied_to_clipboard">テキストをクリップボードにコピー</string>
     <string name="attachments_prompt">Select attachment</string>
@@ -109,22 +103,11 @@
     <string name="dialog_offline_sync_stop">同期の停止</string>
     <string name="dialog_offline_sync_continue">同期の継続</string>
     <string name="article_set_note">注釈を付けて配信</string>
-    <string name="close_feed">フィードを閉じる</string>
-    <string name="close_article">記事を閉じる</string>
     <string name="dialog_open_preferences">設定</string>
     <string name="dialog_need_configure_prompt">URL、ユーザー名、パスワードなどのtt-rssサーバ情報を設定してください。</string>
-    <string name="notify_article_marked">スターを付けました</string>
-    <string name="notify_article_unmarked">スターを外しました</string>
-    <string name="notify_article_published">配信しました</string>
-    <string name="notify_article_unpublished">配信を解除しました</string>
-    <string name="notify_article_note_set">注釈を保存しました</string>
     <string name="update_headlines">更新</string>
-    <string name="attachment_share">シェア</string>
     <string name="error_network_unavailable">エラー: ネットワークが利用できません</string>
     <string name="category_browse_headlines">ヘッドラインを表示</string>
-    <string name="pref_default_view_mode">フィードの表示方法</string>
-    <string name="pref_default_view_mode_long">フィードの表示方法</string>
-    <string name="donate_thanks">寄付を確認。あなたの支援に感謝します！</string>
     <string name="use_volume_keys">ボリュームボタンを使う</string>
     <string name="use_volume_keys_long">ボリュームボタンで記事を切り替える</string>
     <string name="ssl_trust_any_host">ホスト名の確認をしない</string>
@@ -133,9 +116,6 @@
     <string name="ssl_trust_any_host_long">ホスト名の確認をしない</string>
     <string name="ssl">SSL</string>
     <string name="error_ssl_hostname_rejected">エラー: SSLホスト名が確認できません</string>
-    <string name="offline_oldest_first">古い記事を先頭に表示する</string>
-    <string name="prefs_dim_status_bar">下部ソフトキーをぼかす</string>
-    <string name="prefs_dim_status_bar_long">記事表示中は下部ソフトキーをぼかす</string>
 
     <plurals name="article_comments">
         <item quantity="other">%1$d 件のコメント</item>
@@ -148,18 +128,14 @@
     <string name="trial_expired">試用期限終了</string>
     <string name="trial_expired_message">Tiny Tiny RSSを継続して使用する場合はTiny Tiny RSS Unlockerを購入してください。</string>
     <string name="theme_sepia">セピア</string>
-    <string name="trial_thanks">フルバージョン。あなたの支援に感謝します！</string>
-    <string name="prefs_fullscreen_mode">フルスクリーンモード</string>
     <string name="reading">Reading</string>
     <string name="offline_articles_to_download">ダウンロードする記事数</string>
     <string name="offline_articles_to_download_long">オフラインモードにする際にダウンロードする記事数(新しい記事から)</string>
     <string name="pref_headlines_show_content_long">記事内容をヘッドライン一覧に表示する</string>
     <string name="pref_headlines_show_content">記事内容をプレビュー</string>
     <string name="api_too_low">この動作には新しいバージョンのTiny Tiny RSSが必要です。</string>
-    <string name="share_url_prompt">URL:</string>
     <string name="share_url_hint">記事URL</string>
     <string name="share_content_hint">記事内容</string>
-    <string name="share_title_prompt">タイトル:</string>
     <string name="share_title_hint">記事タイトル</string>
     <string name="share_share_button">シェア</string>
     <string name="share_article_posted">記事を投稿しました。</string>
@@ -183,10 +159,7 @@
     <string name="headlines_unread">未読記事</string>
     <string name="article_img_open">イメージを開く</string>
     <string name="article_img_share">イメージをシェア</string>
-    <string name="requires_api5">tt-rss1.7.6以上が必要です</string>
-    <string name="labels">ラベル</string>
     <string name="article_img_view_caption">キャプションを表示</string>
-    <string name="light_theme_is_not_supported_on_honeycomb">ライトテーマはHoneycombではサポートされていません</string>
     <string name="pref_headlines_mark_read_scroll">スクロールしたら既読にする</string>
     <string name="pref_headlines_mark_read_scroll_long">ヘッドラインをスクロールしたら既読にする</string>
     <plurals name="mark_num_headlines_as_read">
@@ -199,7 +172,6 @@
     </plurals>
     <string name="pref_headline_font_size">ヘッドラインの文字サイズ</string>
     <string name="context_confirm_catchup">%1$s の全ての記事を既読にしますか？</string>
-    <string name="theme_system">端末のデフォルト</string>
     <string name="accel_webview_summary">ちらつきや表示化けが起こる場合は無効にしてください。</string>
     <string name="accel_webview_title">WebViewのハードウェアアクセラレーション(Android3.0以降)</string>
     <string name="place_shortcut">ショートカットの配置</string>
@@ -207,18 +179,10 @@
     <string name="download_articles_and_go_offline">記事をダウンロードしてオフラインにする</string>
     <string name="tasker_save_and_close">保存して閉じる</string>
     <string name="synchronize_read_articles_and_go_online">既読記事を同期してオフラインにする</string>
-    <string name="prefs_compatible_article_layout">記事レイアウトの互換表示</string>
-    <string name="prefs_compatible_layout_summary">記事表示が崩れる場合は有効にしてください。</string>
     <string name="font_size_dialog_suffix">sp</string>
     <string name="server_function_not_available">接続中のtt-rssサーバのバージョンではこの機能を使用できません。</string>
     <string name="unsubscribe">購読解除</string>
     <string name="unsubscribe_from_prompt">%1$s の購読を解除しますか？</string>
-    <string name="toggle_sidebar">サイドバーの表示/非表示</string>
     <string name="open_article_in_web_browser">Webブラウザで開く</string>
-    <string name="pref_headlines_use_condensed_fonts">長体フォントを有効にする</string>
-    <string name="pref_headlines_use_condensed_fonts_long">ヘッドラインタイトルとUI部品の一部に長体フォントを使用する。</string>
-    <string name="pref_headlines_full_content_long">ヘッドラインにすべての記事内容を表示する。リソースを消費するので、一部のデバイスでは動作がもたつく可能性があります。</string>
-    <string name="pref_headlines_full_content">すべての内容を表示</string>
-    <string name="prefs_headlines_show_flavor_image">ヘッドラインに画像を表示する</string>
 
 </resources>

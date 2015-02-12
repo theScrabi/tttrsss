@@ -13,7 +13,6 @@
     <string name="default_url">http://exemple.domaine/tt-rss/</string>
     <string name="look_and_feel">Interface</string>
     <string name="pref_theme">Thème</string>
-    <string name="pref_theme_long">Change la couleur du thème de l\'application</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
     <string name="theme_dark">Sombre</string>
     <string name="preferences">Préférences</string>
@@ -42,7 +41,6 @@
     <string name="selection_toggle_marked">Basculer Marqué</string>
     <string name="selection_toggle_published">Basculer Publié</string>
     <string name="selection_toggle_unread">Basculer Non lu</string>
-    <string name="selection_select_none">Desélectionner tout</string>
     <string name="context_selection_toggle_marked">Basculer Marqué</string>
     <string name="context_selection_toggle_published">Basculer Publié</string>
     <string name="context_selection_toggle_unread">Basculer Non lu</string>
@@ -94,11 +92,7 @@
 	<string name="search">Rechercher</string>
 	<string name="cancel">Annuler</string>
     <string name="pref_font_size">Taille du texte des articles</string>
-    <string name="donate">Faire un don</string>
     <string name="dialog_close">Fermer</string>
-    <string name="donate_select">Merci de choisir votre don</string>
-    <string name="donate_do">Faire un don&#160;!</string>
-    <string name="tablet_article_swipe">Basculer entre les articles</string>
     <string name="article_link_copy">Copier le lien dans le presse-papier</string>
     <string name="text_copied_to_clipboard">Texte copié dans le presse-papier</string>
     <string name="attachments_prompt">Sélectionner une pièce jointe</string>
@@ -109,22 +103,11 @@
     <string name="dialog_offline_sync_stop">Arrêter la synchronisation</string>
     <string name="dialog_offline_sync_continue">Continuer</string>
     <string name="article_set_note">Publier avec une note</string>
-    <string name="close_feed">Fermer le flux</string>
-    <string name="close_article">Fermer l\'article</string>
     <string name="dialog_open_preferences">Ouvrir les préférences</string>
     <string name="dialog_need_configure_prompt">Merci d\'indiquer les paramètres de votre serveur tt-rss tels que URL, identifiant et mot de passe.</string>
-    <string name="notify_article_marked">Article marqué</string>
-    <string name="notify_article_unmarked">Article non marqué</string>
-    <string name="notify_article_published">Article publié</string>
-    <string name="notify_article_unpublished">Article non publié</string>
-    <string name="notify_article_note_set">Note enregistrée</string>
     <string name="update_headlines">Rafraichir</string>
-    <string name="attachment_share">Partager</string>
     <string name="error_network_unavailable">Erreur&#160;: réseau indisponible</string>
     <string name="category_browse_headlines">Parcourir les titres</string>
-    <string name="pref_default_view_mode">Vue par défaut</string>
-    <string name="pref_default_view_mode_long">Quel flux afficher par défaut sur les téléphones</string>
-    <string name="donate_thanks">Don trouvé, merci de votre support&#160;!</string>
     <string name="use_volume_keys">Utiliser les boutons de volume</string>
     <string name="use_volume_keys_long">Faire défiler les articles avec les boutons de volume</string>
     <string name="ssl_trust_any_host">Ne pas vérifier les noms d\'hôte</string>
@@ -133,9 +116,6 @@
     <string name="ssl_trust_any_host_long">Ne pas vérifier si les noms des serveurs concordent</string>
     <string name="ssl">SSL</string>
     <string name="error_ssl_hostname_rejected">Erreur&#160;: nom d\'hôte SSL refusé</string>
-    <string name="offline_oldest_first">Afficher les plus anciens d\'abord</string>
-    <string name="prefs_dim_status_bar">Assombrir la barre de statut</string>
-    <string name="prefs_dim_status_bar_long">Assombrir la barre de satut pendant la lecture</string>
 
     <plurals name="article_comments">
         <item quantity="other">%1$d commentaires</item>
@@ -149,19 +129,14 @@
     <string name="trial_expired">La période d\'évaluation a expiré</string>
     <string name="trial_expired_message">Pour continuer à utiliser Tiny Tiny RSS merci de débloquer la version complète en achetant la clé.</string>
     <string name="theme_sepia">Sepia</string>
-    <string name="trial_thanks">Version complète, merci de votre support&#160;!</string>
-    <string name="prefs_fullscreen_mode">Mode plein écran</string>
     <string name="reading">Lecture</string>
-    <string name="theme_dark_gray">Gris sombre</string>
     <string name="offline_articles_to_download">Quantité d\'articles à télécharger</string>
     <string name="offline_articles_to_download_long">Nombre d\'articles à télécharger pour la lecture hors ligne (les plus récents en premier)</string>
     <string name="pref_headlines_show_content_long">Afficher un aperçu du contenu dans les titres</string>
     <string name="pref_headlines_show_content">Afficher un aperçu</string>
     <string name="api_too_low">Vous devez utiliser une version plus récente de Tiny Tiny RSS pour réaliser cette action</string>
-    <string name="share_url_prompt">URL&#160;:</string>
     <string name="share_url_hint">URL de l\'article</string>
     <string name="share_content_hint">Contenu de l\'article</string>
-    <string name="share_title_prompt">Titre&#160;:</string>
     <string name="share_title_hint">Titre de l\'article</string>
     <string name="share_share_button">Partager</string>
     <string name="share_article_posted">Article publié.</string>
@@ -185,10 +160,7 @@
     <string name="headlines_unread">Articles non lus</string>
     <string name="article_img_open">Ouvrir l\'image</string>
     <string name="article_img_share">Partager l\'image</string>
-    <string name="requires_api5">Nécessite la version 1.7.6 ou plus récent de tt-rss</string>
     <string name="article_img_view_caption">Montrer le sous-titre</string>
-    <string name="labels">Tags</string>
-    <string name="light_theme_is_not_supported_on_honeycomb">Le thème clair n\'est pas supporté sur Honeycomb</string>
     <string name="pref_headlines_mark_read_scroll">Automatiquement marquer les articles comme lus</string>
     <string name="pref_headlines_mark_read_scroll_long">Cette option permet de marquer automatiquement les articles comme lus lorsque vous naviguez dans la liste d\'articles.</string>
     <plurals name="mark_num_headlines_as_read">
@@ -205,7 +177,6 @@
     <string name="pref_headline_font_size">Taille du texte des titres</string>
 
     <string name="context_confirm_catchup">Marquer tous les articles de %1$s comme lus ?</string>
-    <string name="theme_system">Réglage système</string>
     <string name="accel_webview_summary">Désactivez si vous voyez des défauts visuels ou des clignotements.</string>
     <string name="accel_webview_title">Utiliser l\'accélération web (3.0+)</string>
     <string name="place_shortcut">Faire un raccourci</string>
@@ -213,12 +184,9 @@
     <string name="download_articles_and_go_offline">Télécharger les articles et passer hors connexion</string>
     <string name="tasker_save_and_close">Sauver et fermer</string>
     <string name="synchronize_read_articles_and_go_online">Synchroniser les articles lus et passer en connexion</string>
-    <string name="prefs_compatible_article_layout">Mise en page compatible</string>
-    <string name="prefs_compatible_layout_summary">Activez si vous voyez des erreurs de mise en page dans le contenu des articles</string>
     <string name="font_size_dialog_suffix">sp</string>
     <string name="server_function_not_available">Désolé, cette fonction n\'est pas disponible pour votre version de tt-rss.</string>
     <string name="unsubscribe">Se désabonner</string>
     <string name="unsubscribe_from_prompt">Se désabonner de %1$s ?</string>
-    <string name="toggle_sidebar">Barre latérale</string>
 	<string name="open_article_in_web_browser">Ouvrir dans le navigateur</string>
 </resources>
