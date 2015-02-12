@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -126,8 +127,10 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 }
             });
 
+            if (position == 0)
+                ViewCompat.setTransitionName(imgView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
             registerForContextMenu(imgView);
-            getSupportActionBar().hide();
 
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
@@ -241,6 +244,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         setContentView(R.layout.article_images_pager);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         if (savedInstanceState == null) {
             m_title = getIntent().getStringExtra("title");

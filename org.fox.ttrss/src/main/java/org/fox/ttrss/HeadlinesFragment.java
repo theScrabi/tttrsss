@@ -14,7 +14,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -901,6 +904,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                     .cacheOnDisk(true)
                                     .build();
 
+                            ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
                             holder.flavorImageView.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -910,7 +915,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                     intent.putExtra("title", article.title);
                                     intent.putExtra("content", article.content);
 
-                                    startActivityForResult(intent, 0);
+                                    ActivityOptionsCompat options =
+                                    ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+                                            holder.flavorImageView,   // The view which starts the transition
+                                            "TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+                                            );
+                                    ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+                                    //startActivityForResult(intent, 0);
                                 }
                             });
 
