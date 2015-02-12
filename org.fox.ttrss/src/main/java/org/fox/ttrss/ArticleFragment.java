@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +30,6 @@ import com.shamanland.fab.ShowHideOnScroll;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Attachment;
-import org.fox.ttrss.util.TypefaceCache;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -201,7 +199,7 @@ public class ArticleFragment extends Fragment  {
 
         if (title != null) {
 
-            if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+            /* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
                 Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", Typeface.NORMAL);
 
                 if (tf != null && !tf.equals(title.getTypeface())) {
@@ -211,7 +209,9 @@ public class ArticleFragment extends Fragment  {
                 title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 5));
             } else {
                 title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
-            }
+            } */
+
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
 
             String titleStr;
 

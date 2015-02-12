@@ -7,7 +7,6 @@ import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -42,7 +41,6 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
-import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 
 import java.text.DateFormat;
@@ -614,7 +612,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				
 				holder.titleView.setText(Html.fromHtml(article.getString(article.getColumnIndex("title"))));
 
-				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+				/* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
 					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.getInt(article.getColumnIndex("unread")) == 1 ? Typeface.BOLD : Typeface.NORMAL);
 					
 					if (tf != null && !tf.equals(holder.titleView.getTypeface())) {
@@ -624,8 +622,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                     holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
 				} else {
                     holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
-				}
-				
+				} */
+
+                holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+
 				int scoreIndex = article.getColumnIndex("score");
 				if (scoreIndex >= 0)
 					adjustTitleTextView(article.getInt(scoreIndex), holder.titleView, position);

@@ -59,10 +59,10 @@
             android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             android:textColor="?headlineSelectedExcerptTextColor"
             android:textSize="13sp"
-            android:layout_span="2" />
+            android:layout_span="2"
+            android:paddingTop="8dp" />
 
         <LinearLayout
-            android:paddingTop="2dp"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
@@ -78,7 +78,8 @@
                 android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
                 android:textColor="?headlineSelectedSecondaryTextColor"
                 android:textSize="12sp"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.5"
+                android:paddingTop="8dp" />
 
         </LinearLayout>
 

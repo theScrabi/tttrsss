@@ -19,9 +19,9 @@ public class PreferencesActivity extends PreferenceActivity {
         
         addPreferencesFromResource(R.xml.preferences);
 
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        /* if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
         	findPreference("enable_condensed_fonts").setEnabled(false);
-        }
+        } */
 
         String version = "?";
         int versionCode = -1;

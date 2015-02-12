@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,7 +60,6 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
-import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -794,7 +792,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (holder.titleView != null) {				
 				holder.titleView.setText(Html.fromHtml(article.title));
 				
-				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+				/* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
 					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.unread ? Typeface.BOLD : Typeface.NORMAL);
 					
 					if (tf != null && !tf.equals(holder.titleView.getTypeface())) {
@@ -804,8 +802,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
 				} else {
 					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
-				}
-				
+				} */
+
+                holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
+
 				adjustTitleTextView(article.score, holder.titleView, position);
 			}
 

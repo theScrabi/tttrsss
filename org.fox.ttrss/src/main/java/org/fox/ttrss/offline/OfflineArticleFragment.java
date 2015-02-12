@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,7 +28,6 @@ import com.shamanland.fab.ShowHideOnScroll;
 
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
-import org.fox.ttrss.util.TypefaceCache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -166,7 +164,7 @@ public class OfflineArticleFragment extends Fragment {
 
 			if (title != null) {
 				
-				if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
+				/* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
 					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", Typeface.NORMAL);
 					
 					if (tf != null && !tf.equals(title.getTypeface())) {
@@ -176,8 +174,10 @@ public class OfflineArticleFragment extends Fragment {
 					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 5));
 				} else {
 					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
-				}
-				
+				} */
+
+                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
+
 				String titleStr;
 				
 				if (m_cursor.getString(m_cursor.getColumnIndex("title")).length() > 200)

@@ -49,7 +49,7 @@
                     android:fontFamily="sans-serif-light"
                     android:paddingTop="8dp"
                     android:text="24 comments"
-                    android:textColor="?articleHeaderTextColor"
+                    android:textColor="?headlineSecondaryTextColor"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -67,7 +67,7 @@
                         android:singleLine="true"
                         android:fontFamily="sans-serif-light"
                         android:text="Example Feed"
-                        android:textColor="?articleHeaderTextColor"
+                        android:textColor="?headlineSecondaryTextColor"
                         android:textSize="12sp" />
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:fontFamily="sans-serif-light"
                         android:text="Jan 01, 12:00"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="?articleHeaderTextColor"
+                        android:textColor="?headlineSecondaryTextColor"
                         android:textSize="12sp" />
 
                 </LinearLayout>

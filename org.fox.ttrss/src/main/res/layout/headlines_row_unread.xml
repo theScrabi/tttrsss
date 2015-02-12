@@ -14,7 +14,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="16dp"
         android:baselineAligned="false"
         android:shrinkColumns="0,1"
         android:stretchColumns="0,1">
@@ -33,7 +33,7 @@
                 android:text="Sample entry title"
                 android:textColor="?headlineUnreadTextColor"
                 android:textSize="18sp"
-                android:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
                 android:paddingBottom="8dp"
                 android:layout_span="2" />
         </TableRow>
