@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -127,8 +128,9 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 }
             });
 
-            if (position == 0)
+            if (position == 0) {
                 ViewCompat.setTransitionName(imgView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+            }
 
             registerForContextMenu(imgView);
 
@@ -170,6 +172,10 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             });
 
             ((ViewPager) container).addView(view, 0);
+
+            if (position == 0) {
+                ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
+            }
 
             return view;
         }
@@ -234,6 +240,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        ActivityCompat.postponeEnterTransition(this);
+
         // we use that before parent onCreate so let's init locally
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
@@ -363,7 +371,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
             case R.id.article_img_open:
                 if (url != null) {
