@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -53,7 +52,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		setAppTheme(m_prefs);
-		
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines);
@@ -154,9 +153,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			//m_pullToRefreshAttacher.setRefreshing(true);
 
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-							
+
 			if (m_prefs.getBoolean("enable_cats", false)) {
-				ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);				
+				ft.replace(R.id.feeds_fragment, new FeedCategoriesFragment(), FRAG_CATS);
 			} else {
 				ft.replace(R.id.feeds_fragment, new FeedsFragment(), FRAG_FEEDS);
 			}
@@ -239,46 +238,31 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
     }
 
 	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
-		//GlobalState.getInstance().m_loadedArticles.clear();
-		//m_pullToRefreshAttacher.setRefreshing(true);
 
-			FragmentTransaction ft = getSupportFragmentManager()
-					.beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager()
+                .beginTransaction();
 
-			ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
-			ft.commit();
+        HeadlinesFragment hf = new HeadlinesFragment();
+        hf.initialize(feed);
 
-			final Feed fFeed = feed;
-			
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					FragmentTransaction ft = getSupportFragmentManager()
-							.beginTransaction();
+        ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 
-					HeadlinesFragment hf = new HeadlinesFragment();
-					hf.initialize(fFeed);
-					ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-					
-					ft.commit();
+        ft.commit();
 
-					m_feedIsSelected = true;
-                    m_userFeedSelected = selectedByUser;
-					//m_feedWasSelected = true;
-					
-					if (m_drawerLayout != null) {
-                        m_drawerLayout.closeDrawers();
-					}
-				}
-			}, 10);
-			
+        m_feedIsSelected = true;
+        m_userFeedSelected = selectedByUser;
+        //m_feedWasSelected = true;
 
-			Date date = new Date();
+        if (m_drawerLayout != null) {
+            m_drawerLayout.closeDrawers();
+        }
 
-			if (date.getTime() - m_lastRefresh > 10000) {
-				m_lastRefresh = date.getTime();
-				refresh(false);
-			}
+        Date date = new Date();
+
+        if (date.getTime() - m_lastRefresh > 10000) {
+            m_lastRefresh = date.getTime();
+            refresh(false);
+        }
 	}
 	
 	public void onCatSelected(FeedCategory cat, boolean openAsFeed) {

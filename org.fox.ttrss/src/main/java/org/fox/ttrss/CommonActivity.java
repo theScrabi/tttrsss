@@ -130,8 +130,8 @@ public class CommonActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		
-		if (savedInstanceState != null) {
+
+        if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
             m_fullScreen = savedInstanceState.getBoolean("fullscreen");
 		} else {		

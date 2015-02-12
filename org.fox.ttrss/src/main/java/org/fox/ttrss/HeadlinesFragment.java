@@ -20,6 +20,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -274,6 +276,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	}
 
+    public HeadlinesFragment() {
+        super();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Transition fade = new Fade();
+
+            setEnterTransition(fade);
+            setReenterTransition(fade);
+        }
+    }
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -300,9 +312,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
-		
-		if (savedInstanceState != null) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
 
             if (! (m_activity instanceof HeadlinesActivity)) {

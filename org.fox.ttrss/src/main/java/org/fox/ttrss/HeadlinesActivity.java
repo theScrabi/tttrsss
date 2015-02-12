@@ -152,15 +152,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 		case android.R.id.home:
-
-            Intent resultIntent = new Intent();
-            //resultIntent.putParcelableArrayListExtra("articles", m_articles);
-            resultIntent.putExtra("articles", (Parcelable)m_articles);
-            resultIntent.putExtra("activeArticle", m_activeArticle);
-
-            setResult(Activity.RESULT_OK, resultIntent);
-
-			finish();
+            onBackPressed();
 			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
