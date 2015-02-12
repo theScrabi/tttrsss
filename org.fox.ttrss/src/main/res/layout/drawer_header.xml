@@ -13,7 +13,7 @@
         android:id="@+id/imageView"
         android:src="@drawable/drawer_header"
         android:scaleType="fitXY"
-        android:tint="?articleHeader"
+        android:tint="?colorPrimaryDark"
         android:tintMode="multiply" />
 
     <LinearLayout
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:textColor="?articleHeaderTextColor"
+            android:textColor="@android:color/primary_text_dark"
             android:text="test"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -40,7 +40,7 @@
             android:id="@+id/drawer_header_server"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?articleHeaderTextColor"
+            android:textColor="@android:color/primary_text_dark"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="5dp"
             android:text="example.org"

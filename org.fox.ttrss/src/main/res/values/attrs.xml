@@ -29,4 +29,5 @@
     <attr name="articleHeaderTextColor" format="reference|color" />
     <attr name="articleTextColor" format="reference|color" />
     <attr name="headlineFooterColor" format="reference|color" />
+    <attr name="articleHeaderSeparator" format="reference|color" />
 </resources>
