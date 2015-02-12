@@ -141,9 +141,9 @@ public class ArticlePager extends Fragment {
 	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
 
-		if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+		/* if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			append = false;
-		}
+		} */
 		
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 			@Override
@@ -277,10 +277,10 @@ public class ArticlePager extends Fragment {
 	public void onResume() {
 		super.onResume();
 		
-		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+		/* if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			refresh(false);
 			GlobalState.getInstance().m_activeFeed = m_feed;
-		}
+		} */
 		
 		m_activity.invalidateOptionsMenu();
 

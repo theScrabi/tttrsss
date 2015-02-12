@@ -1,7 +1,6 @@
 package org.fox.ttrss.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -9,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -42,10 +40,10 @@ public class HeadlinesRequest extends ApiRequest {
 			try {
 				
 				// check if we are returning results for correct feed
-				if (GlobalState.getInstance().m_activeFeed != null && !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+				/* if (GlobalState.getInstance().m_activeFeed != null && !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 					Log.d(TAG, "received results for wrong feed, bailing out.");
 					return;
-				}
+				} */
 				
 				JsonArray content = result.getAsJsonArray();
 				if (content != null) {

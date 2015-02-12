@@ -369,8 +369,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 
 		Log.d(TAG, "onCreateView, feed=" + m_feed);
-		
-		return view;    	
+
+		return view;
 	}
 
 	@Override
@@ -385,15 +385,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
 		}
-		
-		if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+
+        /* if (!(m_activity instanceof HeadlinesActivity)) {
+            refresh(false);
+        } */
+
+        if (m_articles.size() == 0) {
+            refresh(false);
+        }
+
+		/* if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 			if (m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE) == null) {
 				refresh(false);
 				GlobalState.getInstance().m_activeFeed = m_feed;
 			}			
 		} else {
 			notifyUpdated();
-		}
+		} */
 		
 		m_activity.invalidateOptionsMenu();
 	}
@@ -440,9 +448,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
-			if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+			/* if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
 				append = false;
-			}
+			} */
 
 			// new stuff may appear on top, scroll back to show it
 			if (!append) {
