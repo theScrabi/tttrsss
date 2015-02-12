@@ -23,11 +23,13 @@
         android:id="@+id/article_images_progress"
         android:progress="0"
         android:indeterminate="false"
+        android:layout_above="@+id/article_images_indicator"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
     <me.relex.circleindicator.CircleIndicator
         android:id="@+id/article_images_indicator"

@@ -205,12 +205,10 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
                     Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, options);
 
-                    int progress = (int) ((position / (float)urls[0].size()) * 10000);
-
                     if (bmp != null && bmp.getWidth() > 128 && bmp.getHeight() > 128) {
-                        publishProgress(url, String.valueOf(progress));
+                        publishProgress(url, String.valueOf(position));
                     } else {
-                        publishProgress(null, String.valueOf(progress));
+                        publishProgress(null, String.valueOf(position));
                     }
                 }
             }
@@ -226,6 +224,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                     m_checkedUrls.add(checkedUrl[0]);
                     m_adapter.notifyDataSetChanged();
                 }
+
+                Log.d(TAG, "progr=" + checkedUrl[1]);
 
                 m_progress.setProgress(Integer.valueOf(checkedUrl[1]));
             } else {
