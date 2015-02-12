@@ -32,8 +32,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		setAppTheme(m_prefs);
-		
-		super.onCreate(savedInstanceState);
+
+        super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines_articles);
 
@@ -85,10 +85,14 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-				ft.replace(R.id.headlines_fragment, new LoadingFragment(), null);
-				ft.replace(R.id.article_fragment, new LoadingFragment(), null);
-				
-				ft.commit();
+                final HeadlinesFragment hf = new HeadlinesFragment();
+                hf.initialize(feed, article, true, m_articles);
+                hf.setSearchQuery(searchQuery);
+
+                ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+                ft.replace(R.id.article_fragment, new LoadingFragment(), null);
+
+                ft.commit();
 				
 				setTitle(feed.title);
 
@@ -97,21 +101,15 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 					public void run() {
 						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-						HeadlinesFragment hf = new HeadlinesFragment();
-						hf.initialize(feed, article, true, m_articles);
-						hf.setSearchQuery(searchQuery);
-
 						ArticlePager af = new ArticlePager();
 						af.initialize(article != null ? hf.getArticleById(article.id) : new Article(), feed, m_articles);
 						af.setSearchQuery(searchQuery);
 
-						ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 						
 						ft.commit();
-					}
-				}, 25);
-				
+					 }
+				 }, 100);
 			}
 		}
 	}

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -466,8 +468,19 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("searchQuery", hf.getSearchQuery());
             //intent.putParcelableArrayListExtra("articles", hf.getArticles());
             intent.putExtra("articles", (Parcelable)hf.getAllArticles());
-	 	   
-			startActivityForResult(intent, HEADLINES_REQUEST);
+
+            /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivityForResult(intent, HEADLINES_REQUEST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            } else {
+                startActivityForResult(intent, HEADLINES_REQUEST);
+            } */
+
+            View sharedList = hf.getView().findViewById(R.id.headlines_list);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedList, "TRANSITION:HEADLINES_LIST");
+
+            ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
+
 		} else {
 			invalidateOptionsMenu();
 		}
