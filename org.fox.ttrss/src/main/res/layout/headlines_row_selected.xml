@@ -14,7 +14,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
+        android:padding="8dp"
         android:baselineAligned="false"
         android:shrinkColumns="0,1"
         android:stretchColumns="0,1">
@@ -33,7 +33,7 @@
                 android:text="Sample entry title"
                 android:textColor="?headlineSelectedTextColor"
                 android:textSize="18sp"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 android:layout_span="2" />
         </TableRow>
 
@@ -76,8 +76,8 @@
                 android:id="@+id/flavorImageHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="4dp"
-                android:layout_span="2">
+                android:layout_span="2"
+                android:paddingTop="8dp">
 
                 <ProgressBar
                     android:layout_width="wrap_content"
@@ -115,13 +115,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:lineSpacingExtra="2sp"
-                android:paddingTop="3dp"
+                android:paddingTop="8dp"
                 android:maxLines="5"
                 android:ellipsize="end"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 android:textColor="?headlineSelectedExcerptTextColor"
                 android:textSize="13sp"
-                android:layout_span="2" />
+                android:layout_span="2"
+                android:paddingBottom="8dp" />
         </TableRow>
 
         <TableRow

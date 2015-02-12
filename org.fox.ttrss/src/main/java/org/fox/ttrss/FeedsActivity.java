@@ -459,11 +459,16 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                 startActivityForResult(intent, HEADLINES_REQUEST);
             } */
 
-            View sharedList = hf.getView().findViewById(R.id.headlines_list);
+            if (!isPortrait() && !isSmallScreen()) {
+                View sharedList = hf.getView().findViewById(R.id.headlines_list);
 
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedList, "TRANSITION:HEADLINES_LIST");
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedList, "TRANSITION:HEADLINES_LIST");
 
-            ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
+                ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
+            } else {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+                ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
+            }
 
 		} else {
 			invalidateOptionsMenu();
