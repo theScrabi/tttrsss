@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import me.relex.circleindicator.CircleIndicator;
 
 public class ArticleImagesPagerActivity extends CommonActivity implements GestureDetector.OnDoubleTapListener {
     private final String TAG = this.getClass().getSimpleName();
@@ -54,6 +55,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     private String m_content;
     private GestureDetector m_detector;
     private ProgressBar m_progress;
+    private ViewPager m_pager;
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
@@ -234,6 +236,14 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         @Override
         protected void onPostExecute(Integer result) {
             m_progress.setVisibility(View.GONE);
+
+            CircleIndicator indicator = (CircleIndicator) findViewById(R.id.article_images_indicator);
+
+            if (indicator != null) {
+                indicator.setViewPager(m_pager);
+                indicator.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
@@ -311,9 +321,9 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         m_adapter = new ArticleImagesPagerAdapter(m_checkedUrls);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
-        pager.setAdapter(m_adapter);
-        pager.setPageTransformer(true, new DepthPageTransformer());
+        m_pager = (ViewPager) findViewById(R.id.article_images_pager);
+        m_pager.setAdapter(m_adapter);
+        m_pager.setPageTransformer(true, new DepthPageTransformer());
     }
 
     @SuppressLint("NewApi")
