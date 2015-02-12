@@ -171,7 +171,7 @@
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Widget" >
+    <PreferenceCategory android:title="@string/prefs_widget" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="widget_show_fresh"

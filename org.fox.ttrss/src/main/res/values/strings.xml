@@ -219,4 +219,5 @@
     <string name="crash_dialog_text">Unfortunately, Tiny Tiny RSS has stopped. Submit crash report to tt-rss.org?</string>
     <string name="prefs_widget_show_fresh">Show Fresh articles</string>
     <string name="prefs_widget_show_fresh_summary">Instead of total unread display amount of Fresh articles</string>
+    <string name="prefs_widget">Widget</string>
 </resources>
