@@ -720,10 +720,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
 					break;
 				case VIEW_SELECTED:
-					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_compact : R.layout.headlines_row_selected;
+					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_compact : R.layout.headlines_row;
 					break;
 				case VIEW_SELECTED_UNREAD:
-					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_unread_compact : R.layout.headlines_row_selected_unread;
+					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_unread_compact : R.layout.headlines_row_unread;
 					break;
 				}
 				
