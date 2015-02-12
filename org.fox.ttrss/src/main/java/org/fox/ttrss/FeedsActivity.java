@@ -438,11 +438,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	} */
 	
 	public void onArticleSelected(Article article, boolean open) {
-		if (article.unread) {
-			article.unread = false;
-			saveArticleUnread(article);
-		}
-		
 		if (open) {
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
@@ -472,7 +467,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		} else {
 			invalidateOptionsMenu();
-		}
+
+            if (article.unread) {
+			    article.unread = false;
+			    saveArticleUnread(article);
+		    }
+        }
 	}
 
 	@Override
