@@ -208,7 +208,7 @@
     <string name="prefs_enable_fab_long">Show floating action button when reading</string>
     <string name="prefs_open_fresh_on_startup">Open Fresh articles on startup</string>
     <string name="prefs_headline_display_mode">Headline display mode</string>
-    <string name="prefs_headline_display_mode_long">Cards, cards with images, or compact mode</string>
+    <string name="prefs_headline_display_mode_long">Default, no images, or compact mode</string>
     <string name="headline_display_mode_default">Default</string>
     <string name="headline_display_mode_no_images">No images</string>
     <string name="headline_display_mode_compact">Compact</string>
