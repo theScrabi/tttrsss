@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<FrameLayout
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    card_view:cardElevation="2dp"
-    card_view:cardUseCompatPadding="true"
-    card_view:cardBackgroundColor="?headlineUnreadBackground"
+    android:background="?headlineUnreadBackground"
     tools:ignore="HardcodedText" >
 
     <TableLayout
@@ -189,4 +186,4 @@
         </TableRow>
     </TableLayout>
 
-</android.support.v7.widget.CardView>
+</FrameLayout>

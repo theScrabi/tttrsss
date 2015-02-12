@@ -304,10 +304,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		ListView list = (ListView)view.findViewById(R.id.headlines_list);
 
-        if (!m_compactLayoutMode) {
+        /* if (!m_compactLayoutMode) {
             list.setDividerHeight(0);
             list.setDivider(null);
-        }
+        } */
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
