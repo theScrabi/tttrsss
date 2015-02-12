@@ -53,6 +53,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     private ArticleImagesPagerAdapter m_adapter;
     private String m_content;
     private GestureDetector m_detector;
+    private ProgressBar m_progress;
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
@@ -224,7 +225,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                     m_adapter.notifyDataSetChanged();
                 }
 
-                setProgress(Integer.valueOf(checkedUrl[1]));
+                m_progress.setProgress(Integer.valueOf(checkedUrl[1]));
             } else {
                 cancel(true);
             }
@@ -232,7 +233,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         @Override
         protected void onPostExecute(Integer result) {
-            //
+            m_progress.setVisibility(View.GONE);
         }
     }
 
@@ -248,6 +249,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.article_images_pager);
+
+        m_progress = (ProgressBar) findViewById(R.id.article_images_progress);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
@@ -287,6 +290,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         }
 
         if (m_urls.size() > 1) {
+            m_progress.setProgress(0);
+            m_progress.setMax(m_urls.size());
             m_checkedUrls = new ArrayList<String>();
 
             ArrayList<String> tmp = new ArrayList<String>(m_urls);
@@ -298,6 +303,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             ict.execute(tmp);
         } else {
             m_checkedUrls = new ArrayList<String>(m_urls);
+            m_progress.setVisibility(View.GONE);
         }
 
         setTitle(m_title);

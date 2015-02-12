@@ -16,7 +16,7 @@ public class ArrowRight extends View {
     private Path arrowPath;
     private int arrowColor = 0xFF888888;
     private float density;
-    private int diameter = 5, diameter_calc, radius_calc;
+    private int diameter = 2, diameter_calc, radius_calc;
 
     public ArrowRight(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
