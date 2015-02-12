@@ -244,7 +244,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         // we use that before parent onCreate so let's init locally
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
-        setAppTheme(m_prefs);
+
+        setDarkAppTheme(m_prefs);
 
         super.onCreate(savedInstanceState);
 

@@ -200,7 +200,17 @@ public class CommonActivity extends ActionBarActivity {
 			setTheme(R.style.LightTheme);
 		}
 	}
-	
+
+    protected void setDarkAppTheme(SharedPreferences prefs) {
+        String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
+
+        if (theme.equals(THEME_AMBER)) {
+            setTheme(R.style.AmberTheme);
+        } else {
+            setTheme(R.style.DarkTheme);
+        }
+    }
+
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	protected int getScreenWidthInPixel() {
