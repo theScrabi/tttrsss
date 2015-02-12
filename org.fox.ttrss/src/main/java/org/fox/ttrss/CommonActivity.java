@@ -37,7 +37,6 @@ public class CommonActivity extends ActionBarActivity {
 
 	private boolean m_smallScreenMode = true;
 	private String m_theme;
-    private boolean m_fullScreen;
 
 	protected SharedPreferences m_prefs;
 
@@ -108,8 +107,7 @@ public class CommonActivity extends ActionBarActivity {
 	public void onResume() {
 		super.onResume();
 	
-		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT)) ||
-                m_fullScreen != m_prefs.getBoolean("full_screen_mode", false)) {
+		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
 
 			Log.d(TAG, "theme changed, restarting");
 			
@@ -133,10 +131,8 @@ public class CommonActivity extends ActionBarActivity {
 
         if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
-            m_fullScreen = savedInstanceState.getBoolean("fullscreen");
-		} else {		
+		} else {
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
-            m_fullScreen = m_prefs.getBoolean("full_screen_mode", false);
 		}
 		
 		initDatabase();
@@ -154,7 +150,6 @@ public class CommonActivity extends ActionBarActivity {
 		super.onSaveInstanceState(out);
 		
 		out.putString("theme", m_theme);
-        out.putBoolean("fullscreen", m_fullScreen);
 	}
 	
 	public boolean isSmallScreen() {

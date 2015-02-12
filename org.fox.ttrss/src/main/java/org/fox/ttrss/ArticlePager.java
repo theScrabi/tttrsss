@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.google.gson.JsonElement;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -281,15 +280,6 @@ public class ArticlePager extends Fragment {
 		} */
 		
 		m_activity.invalidateOptionsMenu();
-
-		if (m_prefs.getBoolean("full_screen_mode", false)) {
-			m_activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			
-			/* if (!m_activity.isCompatMode()) {
-	            m_activity.getSupportActionBar().hide();
-	        } */
-		}
 	}
 
 	public Article getSelectedArticle() {

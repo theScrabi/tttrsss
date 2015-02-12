@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -318,12 +317,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     @Override
     public void onResume() {
         super.onResume();
-
-        if (m_prefs.getBoolean("full_screen_mode", false)) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getSupportActionBar().hide();
-        }
     }
 
 

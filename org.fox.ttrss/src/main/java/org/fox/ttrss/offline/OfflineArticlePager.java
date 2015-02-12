@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -114,15 +113,6 @@ public class OfflineArticlePager extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-
-		if (m_prefs.getBoolean("full_screen_mode", false)) {
-			m_activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			
-			/* if (!m_activity.isCompatMode()) {
-	            m_activity.getSupportActionBar().hide();
-	         } */
-		}
 	}
 	
 	public void initialize(int articleId, int feedId, boolean isCat) {

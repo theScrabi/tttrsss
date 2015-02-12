@@ -142,10 +142,10 @@
             android:key="use_volume_keys"
             android:summary="@string/use_volume_keys_long"
             android:title="@string/use_volume_keys" />
-        <CheckBoxPreference
+        <!-- <CheckBoxPreference
             android:defaultValue="false"
             android:key="full_screen_mode"
-            android:title="@string/prefs_fullscreen_mode" />
+            android:title="@string/prefs_fullscreen_mode" /> -->
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="confirm_headlines_catchup"
