@@ -33,7 +33,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.viewpagerindicator.UnderlinePageIndicator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -308,9 +307,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
         pager.setAdapter(m_adapter);
         pager.setPageTransformer(true, new DepthPageTransformer());
-
-        UnderlinePageIndicator indicator = (UnderlinePageIndicator)findViewById(R.id.article_images_indicator);
-        indicator.setViewPager(pager);
     }
 
     @SuppressLint("NewApi")

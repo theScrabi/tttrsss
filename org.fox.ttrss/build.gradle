@@ -27,7 +27,6 @@ dependencies {
     compile files('libs/dashclock-api-r1.1.jar')
     compile files('libs/jsoup-1.6.1.jar')
     compile files('libs/universal-image-loader-1.9.3.jar')
-    compile 'com.viewpagerindicator:library:2.4.1'
     compile 'com.android.support:cardview-v7:21.0.0'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.google.code.gson:gson:2.3'

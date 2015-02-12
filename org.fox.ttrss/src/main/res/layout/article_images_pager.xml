@@ -16,11 +16,4 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <com.viewpagerindicator.UnderlinePageIndicator
-        android:id="@+id/article_images_indicator"
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
-
 </RelativeLayout>
