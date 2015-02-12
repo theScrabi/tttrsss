@@ -14,7 +14,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="8dp"
         android:baselineAligned="false"
         android:shrinkColumns="0,1"
         android:stretchColumns="0,1">
