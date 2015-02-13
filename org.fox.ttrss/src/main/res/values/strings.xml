@@ -35,7 +35,7 @@
     <string name="article_toggle_published">(Un)Publish</string>
     <string name="headlines_select">Select articles</string>
     <string name="headlines_select_dialog">Select articles</string>
-    <string name="headlines_select_all">Everything</string>
+    <string name="headlines_select_all">Select all</string>
     <string name="headlines_select_unread">Unread</string>
     <string name="headlines_select_none">Deselect all</string>
     <string name="selection_toggle_marked">(Un)Star</string>

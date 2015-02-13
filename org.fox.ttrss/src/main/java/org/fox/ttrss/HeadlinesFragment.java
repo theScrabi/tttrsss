@@ -93,7 +93,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private ArticleListAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
-	private ArticleList m_selectedArticles = new ArticleList();
+	//private ArticleList m_selectedArticles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
 	private OnlineActivity m_activity;
@@ -102,7 +102,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private boolean m_compactLayoutMode = false;
 
 	public ArticleList getSelectedArticles() {
-		return m_selectedArticles;
+        ArticleList tmp = new ArticleList();
+
+        for (Article a : m_articles) {
+            if (a.selected) tmp.add(a);
+        }
+
+		return tmp;
 	}
 	
 	public void initialize(Feed feed) {
@@ -291,7 +297,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		
 		getActivity().getMenuInflater().inflate(R.menu.headlines_context_menu, menu);
 		
-		if (m_selectedArticles.size() > 0) {
+		if (getSelectedArticles().size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
 			menu.setGroupVisible(R.id.menu_group_single_article, false);
 		} else {
@@ -322,7 +328,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             }
 
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
-			m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
+			//m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		}
@@ -610,7 +616,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putParcelable("feed", m_feed);
 		out.putParcelable("articles", m_articles);
 		out.putParcelable("activeArticle", m_activeArticle);
-		out.putParcelable("selectedArticles", m_selectedArticles);
+		//out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
         out.putBoolean("compactLayoutMode", m_compactLayoutMode);
 	}
@@ -685,7 +691,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
 
-            if (m_selectedArticles.containsId(item.id)) {
+            if (item.selected) {
                 holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
 
                 holder.textChecked.setVisibility(View.VISIBLE);
@@ -773,17 +779,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     public void onClick(View view) {
                         Log.d(TAG, "textImage : onclicked");
 
-                        if (!m_selectedArticles.containsId(article.id)) {
-                            m_selectedArticles.add(article);
-                        } else {
-                            m_selectedArticles.remove(m_selectedArticles.findById(article.id));
-                        }
+                        article.selected = !article.selected;
 
                         updateTextCheckedState(holder, article);
 
-                        m_listener.onArticleListSelectionChange(m_selectedArticles);
+                        m_listener.onArticleListSelectionChange(getSelectedArticles());
 
-                        Log.d(TAG, "num selected: " + m_selectedArticles.size());
+                        Log.d(TAG, "num selected: " + getSelectedArticles().size());
                     }
                 });
 
@@ -1053,7 +1055,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 
 			if (holder.selectionBoxView != null) {
-				holder.selectionBoxView.setChecked(m_selectedArticles.containsId(article.id));
+				holder.selectionBoxView.setChecked(article.selected);
 				holder.selectionBoxView.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -1061,15 +1063,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						CheckBox cb = (CheckBox)view;
 						
 						if (cb.isChecked()) {
-							if (!m_selectedArticles.containsId(article.id))
-								m_selectedArticles.add(article);
+							article.selected = true;
 						} else {
-							m_selectedArticles.remove(m_selectedArticles.findById(article.id));
+							article.selected = false;
 						}
 						
-						m_listener.onArticleListSelectionChange(m_selectedArticles);
+						m_listener.onArticleListSelectionChange(getSelectedArticles());
 						
-						Log.d(TAG, "num selected: " + m_selectedArticles.size());
+						Log.d(TAG, "num selected: " + getSelectedArticles().size());
 					}
 				});
 			}
@@ -1140,12 +1141,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public void setSelection(ArticlesSelection select) {
-		m_selectedArticles.clear();
+		for (Article a : m_articles)
+            a.selected = false;
 		
 		if (select != ArticlesSelection.NONE) {
 			for (Article a : m_articles) {
 				if (select == ArticlesSelection.ALL || select == ArticlesSelection.UNREAD && a.unread) {
-					m_selectedArticles.add(a);
+					a.selected = true;
 				}
 			}
 		}
@@ -1154,19 +1156,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             m_adapter.notifyDataSetChanged();
         }
 	}
-
-    public void setSelectedArticles(ArticleList selectedArticles) {
-        if (selectedArticles != null) {
-            m_selectedArticles.clear();
-            m_selectedArticles.addAll(selectedArticles);
-
-            if (m_adapter != null) {
-                m_adapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-
 
     public Article getArticleAtPosition(int position) {
 		try {

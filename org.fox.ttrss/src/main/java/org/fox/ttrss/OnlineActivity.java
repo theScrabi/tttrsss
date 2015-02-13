@@ -64,6 +64,7 @@ public class OnlineActivity extends CommonActivity {
 	protected Menu m_menu;
 
 	protected int m_offlineModeStatus = 0;
+    protected boolean m_forceDisableActionMode = false;
 	
 	private ActionMode m_headlinesActionMode;
 	private HeadlinesActionModeCallback m_headlinesActionModeCallback;
@@ -107,16 +108,15 @@ public class OnlineActivity extends CommonActivity {
 		public void onDestroyActionMode(ActionMode mode) {
 			m_headlinesActionMode = null;
 
-			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-			
-			if (hf != null) {
-				ArticleList selected = hf.getSelectedArticles();
-				if (selected.size() > 0) {
-					selected.clear();
-					invalidateOptionsMenu();
-					hf.notifyUpdated();
-				}
-			}
+            if (!m_forceDisableActionMode) {
+                HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+
+                if (hf != null) {
+                    hf.setSelection(HeadlinesFragment.ArticlesSelection.NONE);
+                }
+            }
+
+            invalidateOptionsMenu();
 		}
 		
 		@Override
@@ -1569,13 +1569,15 @@ public class OnlineActivity extends CommonActivity {
 			
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
-			if (hf != null) {
+			if (hf != null && !m_forceDisableActionMode) {
 				if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
 					m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
 				} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
 					m_headlinesActionMode.finish();
 				}
-			}
+			} else if (m_forceDisableActionMode && m_headlinesActionMode != null) {
+                m_headlinesActionMode.finish();
+            }
 		}
 	}
 	

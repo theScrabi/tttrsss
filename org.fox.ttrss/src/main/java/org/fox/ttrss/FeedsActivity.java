@@ -447,7 +447,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("searchQuery", hf.getSearchQuery());
             //intent.putParcelableArrayListExtra("articles", hf.getArticles());
             intent.putExtra("articles", (Parcelable)hf.getAllArticles());
-            intent.putExtra("selectedArticles", (Parcelable)hf.getSelectedArticles());
 
             /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivityForResult(intent, HEADLINES_REQUEST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
@@ -500,14 +499,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             //ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
             Article article = data.getParcelableExtra("activeArticle");
             ArticleList articles = data.getParcelableExtra("articles");
-            ArticleList selectedArticles = data.getParcelableExtra("selectedArticles");
 
             if (articles != null) {
                 HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
                 if (hf != null) {
                     hf.setArticles(articles);
-                    hf.setSelectedArticles(selectedArticles);
                     hf.setActiveArticle(article);
                 }
             }

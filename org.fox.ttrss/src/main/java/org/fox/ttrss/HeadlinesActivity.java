@@ -21,7 +21,6 @@ import org.fox.ttrss.types.Feed;
 public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected ArticleList m_articles = new ArticleList();
-    protected ArticleList m_selectedArticles = new ArticleList();
 
 	protected SharedPreferences m_prefs;
     private Article m_activeArticle;
@@ -38,6 +37,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		setContentView(R.layout.headlines_articles);
 
+        m_forceDisableActionMode = isPortrait() || isSmallScreen();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -51,7 +52,6 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		if (savedInstanceState != null) {
             m_articles = savedInstanceState.getParcelable("articles");
-            m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
         } else {
 			Intent i = getIntent();
 			
@@ -85,21 +85,11 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
                     m_articles.addAll(tmp);
                 }
 
-                tmp = i.getParcelableExtra("selectedArticles");
-
-                if (tmp != null) {
-                    m_selectedArticles.addAll(tmp);
-                }
-
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                 final HeadlinesFragment hf = new HeadlinesFragment();
                 hf.initialize(feed, article, true, m_articles);
                 hf.setSearchQuery(searchQuery);
-
-                if (!isPortrait() && !isSmallScreen()) {
-                    hf.setSelectedArticles(m_selectedArticles);
-                }
 
                 ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
                 ft.replace(R.id.article_fragment, new LoadingFragment(), null);
@@ -133,6 +123,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
         if (!isSmallScreen()) {
             findViewById(R.id.headlines_fragment).setVisibility(isPortrait() ? View.GONE : View.VISIBLE);
         }
+
+        m_forceDisableActionMode = isPortrait() || isSmallScreen();
+        invalidateOptionsMenu();
     }
 
 	@Override
@@ -156,8 +149,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 		super.onSaveInstanceState(out);
 
         out.putParcelable("articles", m_articles);
-        out.putParcelable("selectedArticles", m_selectedArticles);
-		
+
 		GlobalState.getInstance().save(out);
 	}
 	
@@ -317,16 +309,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	public void onBackPressed() {
         Intent resultIntent = new Intent();
 
-        HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-
         resultIntent.putExtra("articles", (Parcelable) m_articles);
         resultIntent.putExtra("activeArticle", m_activeArticle);
-
-        if (hf != null && !isPortrait() && !isSmallScreen()) {
-            resultIntent.putExtra("selectedArticles", (Parcelable) hf.getSelectedArticles());
-        } else {
-            resultIntent.putExtra("selectedArticles", (Parcelable) m_selectedArticles);
-        }
 
         setResult(Activity.RESULT_OK, resultIntent);
 
