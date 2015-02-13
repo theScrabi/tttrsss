@@ -63,7 +63,7 @@ public class WidgetUpdateService extends Service {
 	    			
 	   		} else {
 
-                final int feedId = m_prefs.getBoolean("widget_show_fresh", true) ? -6 : 0;
+                final int feedId = m_prefs.getBoolean("widget_show_fresh", true) ? -3 : 0;
 
 	   			SimpleLoginManager loginManager = new SimpleLoginManager() {
 					
