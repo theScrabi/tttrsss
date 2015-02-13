@@ -776,7 +776,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         if (!m_selectedArticles.containsId(article.id)) {
                             m_selectedArticles.add(article);
                         } else {
-                            m_selectedArticles.remove(article);
+                            m_selectedArticles.remove(m_selectedArticles.findById(article.id));
                         }
 
                         updateTextCheckedState(holder, article);
@@ -1064,7 +1064,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							if (!m_selectedArticles.containsId(article.id))
 								m_selectedArticles.add(article);
 						} else {
-							m_selectedArticles.remove(article);
+							m_selectedArticles.remove(m_selectedArticles.findById(article.id));
 						}
 						
 						m_listener.onArticleListSelectionChange(m_selectedArticles);
