@@ -219,9 +219,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
-		m_list.setAdapter(m_adapter);
-		m_list.setOnItemClickListener(this);
-		registerForContextMenu(m_list);
 
         // TODO: better check
         if (m_activity.findViewById(R.id.headlines_drawer) != null) {
@@ -238,6 +235,10 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
                 server.setText("");
             }
         }
+
+        m_list.setAdapter(m_adapter);
+        m_list.setOnItemClickListener(this);
+        registerForContextMenu(m_list);
 
         View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
         loadingBar.setVisibility(View.VISIBLE);
