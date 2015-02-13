@@ -1,10 +1,6 @@
 package org.fox.ttrss.widget;
 
-import org.fox.ttrss.R;
-
 import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
-import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -13,16 +9,58 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import org.fox.ttrss.OnlineActivity;
+import org.fox.ttrss.R;
+
 public class SmallWidgetProvider extends AppWidgetProvider {
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final String FORCE_UPDATE_ACTION = "org.fox.ttrss.WIDGET_FORCE_UPDATE";
-	
-	@Override
+
+    @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(TAG, "onUpdate");
+
+        final int N = appWidgetIds.length;
+
+        // Perform this loop procedure for each App Widget that belongs to this provider
+        for (int i=0; i<N; i++) {
+            int appWidgetId = appWidgetIds[i];
+
+            // Create an Intent to launch ExampleActivity
+            Intent intent = new Intent(context, OnlineActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+            // Get the layout for the App Widget and attach an on-click listener
+            // to the button
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
+            views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
+
+            // Tell the AppWidgetManager to perform an update on the current app widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+
+        /* Intent updateIntent = new Intent(context, org.fox.ttrss.widget.WidgetUpdateService.class);
+        PendingIntent updatePendingIntent = PendingIntent.getService(context, 0, updateIntent, 0);
+
+        Intent intent = new Intent(context, org.fox.ttrss.OnlineActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
+        views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
+
+        appWidgetManager.updateAppWidget(appWidgetIds, views);
+
+        try {
+            updatePendingIntent.send();
+        } catch (CanceledException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } */
+
 		//RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_small);
 		
-		final int N = appWidgetIds.length;
+		/* final int N = appWidgetIds.length;
 		
 		for (int i=0; i < N; i++) {
 			int appWidgetId = appWidgetIds[i];
@@ -44,13 +82,14 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-
+		} */
 	}
 	
 	@Override
     public void onReceive(Context context, Intent intent) {
 		super.onReceive(context, intent);
+
+        Log.d(TAG, "onReceive");
 				
 		if (FORCE_UPDATE_ACTION.equals(intent.getAction())) {
 			
@@ -60,6 +99,6 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 
 		    onUpdate(context, appWidgetManager, appWidgetIds);
 		}
-	} 
+	}
 	
 }
