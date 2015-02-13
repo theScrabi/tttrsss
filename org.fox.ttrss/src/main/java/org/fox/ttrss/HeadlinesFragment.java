@@ -73,7 +73,7 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
-	public static enum ArticlesSelection { ALL, NONE, UNREAD }
+    public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
     public static final int FLAVOR_IMG_MIN_WIDTH = 128;
     public static final int FLAVOR_IMG_MIN_HEIGHT = 128;
@@ -685,7 +685,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
 
-            if (m_selectedArticles.contains(item)) {
+            if (m_selectedArticles.containsId(item.id)) {
                 holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
 
                 holder.textChecked.setVisibility(View.VISIBLE);
@@ -773,7 +773,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     public void onClick(View view) {
                         Log.d(TAG, "textImage : onclicked");
 
-                        if (!m_selectedArticles.contains(article)) {
+                        if (!m_selectedArticles.containsId(article.id)) {
                             m_selectedArticles.add(article);
                         } else {
                             m_selectedArticles.remove(article);
@@ -1053,7 +1053,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 
 			if (holder.selectionBoxView != null) {
-				holder.selectionBoxView.setChecked(m_selectedArticles.contains(article));
+				holder.selectionBoxView.setChecked(m_selectedArticles.containsId(article.id));
 				holder.selectionBoxView.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -1061,7 +1061,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						CheckBox cb = (CheckBox)view;
 						
 						if (cb.isChecked()) {
-							if (!m_selectedArticles.contains(article))
+							if (!m_selectedArticles.containsId(article.id))
 								m_selectedArticles.add(article);
 						} else {
 							m_selectedArticles.remove(article);
@@ -1149,11 +1149,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 		}
-		
-		m_adapter.notifyDataSetChanged();
+
+        if (m_adapter != null) {
+            m_adapter.notifyDataSetChanged();
+        }
 	}
 
-	public Article getArticleAtPosition(int position) {
+    public void setSelectedArticles(ArticleList selectedArticles) {
+        if (selectedArticles != null) {
+            m_selectedArticles.clear();
+            m_selectedArticles.addAll(selectedArticles);
+
+            if (m_adapter != null) {
+                m_adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+
+
+    public Article getArticleAtPosition(int position) {
 		try {
 			return m_adapter.getItem(position);
 		} catch (IndexOutOfBoundsException e) {

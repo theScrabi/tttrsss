@@ -1,11 +1,9 @@
 package org.fox.ttrss.types;
 
-import java.util.ArrayList;
-
-
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class ArticleList extends ArrayList<Article> implements Parcelable {
@@ -18,7 +16,15 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeList(this);
 	}
-	
+
+    public boolean containsId(int id) {
+        return findById(id) != null;
+    }
+
+    public boolean contains(Article article) {
+        return containsId(article.id);
+    }
+
 	public Article findById(int id) {
 		for (Article a : this) {
 			if (a.id == id)
@@ -36,15 +42,7 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 	public ArticleList(Parcel in) {		
 		readFromParcel(in);
 	}
-	
-	public boolean containsId(int id) {
-		for (Article a : this) {
-			if (a.id == id)
-				return true;
-		}
-		return false;
-	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {
