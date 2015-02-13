@@ -314,7 +314,7 @@ public class OnlineActivity extends CommonActivity {
 	public void onStop() {
 		super.onStop();
 		
-		Intent initialUpdateIntent = new Intent(SmallWidgetProvider.FORCE_UPDATE_ACTION);
+		Intent initialUpdateIntent = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
 		sendBroadcast(initialUpdateIntent);
 	}
 	

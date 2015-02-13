@@ -19,13 +19,13 @@
             android:src="@drawable/ic_launcher" />
 
         <TextView
-            android:id="@+id/counter"
+            android:id="@+id/widget_unread_counter"
             android:layout_weight="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:gravity="center_horizontal"
-            android:text="\?"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/primary_text_dark"
             android:textSize="13sp" />

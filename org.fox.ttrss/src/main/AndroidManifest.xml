@@ -219,6 +219,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="org.fox.ttrss.WIDGET_FORCE_UPDATE" />
+                <action android:name="org.fox.ttrss.WIDGET_UPDATE_RESULT" />
             </intent-filter>
 
             <meta-data

@@ -15,35 +15,14 @@ import org.fox.ttrss.R;
 public class SmallWidgetProvider extends AppWidgetProvider {
 	private final String TAG = this.getClass().getSimpleName();
 
-	public static final String FORCE_UPDATE_ACTION = "org.fox.ttrss.WIDGET_FORCE_UPDATE";
+	public static final String ACTION_REQUEST_UPDATE = "org.fox.ttrss.WIDGET_FORCE_UPDATE";
+    public static final String ACTION_UPDATE_RESULT = "org.fox.ttrss.WIDGET_UPDATE_RESULT";
 
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
 
-        final int N = appWidgetIds.length;
-
-        // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i=0; i<N; i++) {
-            int appWidgetId = appWidgetIds[i];
-
-            // Create an Intent to launch ExampleActivity
-            Intent intent = new Intent(context, OnlineActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
-            views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
-
-            // Tell the AppWidgetManager to perform an update on the current app widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
-
-        /* Intent updateIntent = new Intent(context, org.fox.ttrss.widget.WidgetUpdateService.class);
-        PendingIntent updatePendingIntent = PendingIntent.getService(context, 0, updateIntent, 0);
-
-        Intent intent = new Intent(context, org.fox.ttrss.OnlineActivity.class);
+        Intent intent = new Intent(context, OnlineActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
@@ -51,54 +30,60 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 
         appWidgetManager.updateAppWidget(appWidgetIds, views);
 
-        try {
-            updatePendingIntent.send();
-        } catch (CanceledException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } */
-
-		//RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_small);
-		
-		/* final int N = appWidgetIds.length;
-		
-		for (int i=0; i < N; i++) {
-			int appWidgetId = appWidgetIds[i];
-
-			Intent updateIntent = new Intent(context, org.fox.ttrss.widget.WidgetUpdateService.class);
-            PendingIntent updatePendingIntent = PendingIntent.getService(context, 0, updateIntent, 0);
-			
-            Intent intent = new Intent(context, org.fox.ttrss.OnlineActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
-            views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
-            
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-            
-            try {
-				updatePendingIntent.send();
-			} catch (CanceledException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} */
+        Intent serviceIntent = new Intent(context.getApplicationContext(), WidgetUpdateService.class);
+        context.startService(serviceIntent);
 	}
-	
+
+
 	@Override
     public void onReceive(Context context, Intent intent) {
-		super.onReceive(context, intent);
-
         Log.d(TAG, "onReceive");
-				
-		if (FORCE_UPDATE_ACTION.equals(intent.getAction())) {
-			
-			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-		    ComponentName thisAppWidget = new ComponentName(context.getPackageName(), SmallWidgetProvider.class.getName());
-		    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), SmallWidgetProvider.class.getName());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+		if (ACTION_REQUEST_UPDATE.equals(intent.getAction())) {
+            Log.d(TAG, "onReceive: got update request");
 
 		    onUpdate(context, appWidgetManager, appWidgetIds);
-		}
+
+		} else if (ACTION_UPDATE_RESULT.equals(intent.getAction())) {
+            int unread = intent.getIntExtra("unread", -1);
+            int resultCode = intent.getIntExtra("resultCode", WidgetUpdateService.UPDATE_RESULT_ERROR_OTHER);
+
+            Log.d(TAG, "onReceive: got update result from service: " + unread + " " + resultCode);
+
+            updateWidgetsText(context, appWidgetManager, appWidgetIds, unread, resultCode);
+        } else {
+            super.onReceive(context, intent);
+        }
 	}
-	
+
+    private void updateWidgetsText(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int unread, int resultCode) {
+
+        Intent intent = new Intent(context, OnlineActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
+        views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
+
+        String viewText;
+
+        switch (resultCode) {
+            case WidgetUpdateService.UPDATE_RESULT_OK:
+                viewText = String.valueOf(unread);
+                break;
+            case WidgetUpdateService.UPDATE_IN_PROGRESS:
+                viewText = "...";
+                break;
+            default:
+                viewText = "?";
+        }
+
+        views.setTextViewText(R.id.widget_unread_counter, viewText);
+
+        appWidgetManager.updateAppWidget(appWidgetIds, views);
+    }
+
 }
