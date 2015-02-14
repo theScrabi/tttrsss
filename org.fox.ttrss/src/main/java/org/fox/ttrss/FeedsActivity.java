@@ -10,8 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -454,16 +452,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                 startActivityForResult(intent, HEADLINES_REQUEST);
             } */
 
-            if (!isPortrait() && !isSmallScreen()) {
-                View sharedList = hf.getView().findViewById(R.id.headlines_list);
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedList, "TRANSITION:HEADLINES_LIST");
-
-                ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
-            } else {
-                // mysterious crashes if we use activitycompat here so welp
-                startActivityForResult(intent, HEADLINES_REQUEST);
-            }
+            // mysterious crashes somewhere in gl layer (?) on some feeds if we use activitycompat transitions here on LP so welp
+            startActivityForResult(intent, HEADLINES_REQUEST);
 
 
 		} else {
