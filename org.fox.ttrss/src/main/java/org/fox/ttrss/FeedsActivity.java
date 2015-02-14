@@ -461,9 +461,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
                 ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
             } else {
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
-                ActivityCompat.startActivityForResult(this, intent, HEADLINES_REQUEST, options.toBundle());
+                // mysterious crashes if we use activitycompat here so welp
+                startActivityForResult(intent, HEADLINES_REQUEST);
             }
+
 
 		} else {
 			invalidateOptionsMenu();
