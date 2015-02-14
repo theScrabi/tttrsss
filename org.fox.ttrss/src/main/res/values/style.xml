@@ -96,7 +96,7 @@
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
         <item name="headlineSelectedBackground">?feedsSelectedBackground</item>
-        <item name="headlineUnreadBackground">#383c42</item>
+        <item name="headlineUnreadBackground">@android:color/black</item>
         <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>
         <item name="articleNoteTextColor">@android:color/secondary_text_dark</item>
