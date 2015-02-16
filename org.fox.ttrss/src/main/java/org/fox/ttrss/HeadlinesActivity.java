@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -79,7 +78,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				final Article article = i.getParcelableExtra("article");
 				final String searchQuery = i.getStringExtra("searchQuery");
 
-                ArticleList tmp = i.getParcelableExtra("articles");
+                ArticleList tmp = GlobalState.getInstance().tmpArticleList;
 
                 if (tmp != null) {
                     m_articles.addAll(tmp);
@@ -309,7 +308,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	public void onBackPressed() {
         Intent resultIntent = new Intent();
 
-        resultIntent.putExtra("articles", (Parcelable) m_articles);
+        GlobalState.getInstance().tmpArticleList = m_articles;
         resultIntent.putExtra("activeArticle", m_activeArticle);
 
         setResult(Activity.RESULT_OK, resultIntent);

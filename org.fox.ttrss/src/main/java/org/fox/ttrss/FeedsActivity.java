@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -444,8 +443,8 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			intent.putExtra("feed", hf.getFeed());
 			intent.putExtra("article", article);
 			intent.putExtra("searchQuery", hf.getSearchQuery());
-            //intent.putParcelableArrayListExtra("articles", hf.getArticles());
-            intent.putExtra("articles", (Parcelable)hf.getAllArticles());
+            //intent.putExtra("articles", (Parcelable)hf.getAllArticles());
+            GlobalState.getInstance().tmpArticleList = hf.getAllArticles();
 
             /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivityForResult(intent, HEADLINES_REQUEST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
@@ -498,7 +497,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
             //ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
             Article article = data.getParcelableExtra("activeArticle");
-            ArticleList articles = data.getParcelableExtra("articles");
+            ArticleList articles = GlobalState.getInstance().tmpArticleList;
 
             if (articles != null) {
                 HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);

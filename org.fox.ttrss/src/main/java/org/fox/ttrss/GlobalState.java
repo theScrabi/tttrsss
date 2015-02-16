@@ -3,9 +3,10 @@ package org.fox.ttrss;
 import android.app.Application;
 import android.os.Bundle;
 
-import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.fox.ttrss.types.ArticleList;
+
 @ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
         excludeMatchingSharedPreferencesKeys = {"password"},
         resDialogText = R.string.crash_dialog_text,
@@ -13,7 +14,7 @@ import org.acra.annotation.ReportsCrashes;
 public class GlobalState extends Application {
 	private static GlobalState m_singleton;
 	
-	//public ArticleList m_loadedArticles = new ArticleList();
+	public ArticleList tmpArticleList;
 	//public Feed m_activeFeed;
 	//public Article m_activeArticle;
 	public int m_selectedArticleId;
@@ -28,7 +29,7 @@ public class GlobalState extends Application {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
-        ACRA.init(this);
+        //ACRA.init(this);
 
 		m_singleton = this;
 	}
