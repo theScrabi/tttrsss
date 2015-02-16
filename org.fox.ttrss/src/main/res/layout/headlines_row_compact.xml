@@ -45,7 +45,7 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:text="Sample entry title"
-            android:textColor="?headlineUnreadTextColor"
+            android:textColor="?headlineExcerptTextColor"
             android:textSize="18sp"
             android:layout_span="2" />
 
