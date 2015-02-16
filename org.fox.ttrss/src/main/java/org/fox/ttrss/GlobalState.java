@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import android.app.Application;
 import android.os.Bundle;
 
+import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.fox.ttrss.types.ArticleList;
@@ -29,7 +30,7 @@ public class GlobalState extends Application {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
-        //ACRA.init(this);
+        ACRA.init(this);
 
 		m_singleton = this;
 	}
