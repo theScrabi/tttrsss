@@ -45,9 +45,9 @@
     <string name="context_selection_toggle_published">配信/解除</string>
     <string name="context_selection_toggle_unread">既読/未読にする</string>
     <string name="article_mark_read_above">これより上を既読にする</string>
-    <string name="http_login_summary">tt-rssサーバにBasic認証を使用している場合は記入してください。(オプション)</string>
-    <string name="login_summary">tt-rssサーバのログイン名。 シングルユーザモードの場合は不要。</string>
-    <string name="ttrss_url_summary">tt-rssサーバのURL。例 http://site.com/tt-rss/</string>
+    <string name="http_login_summary">オプション。tt-rssサーバにBasic認証を使用している場合は記入してください</string>
+    <string name="login_summary">シングルユーザモードの場合は不要</string>
+    <string name="ttrss_url_summary">http://example.org/tt-rss/</string>
     <string name="enable_cats">フィードのカテゴリを有効にする</string>
     <string name="no_caption_to_display">表示するキャプションがありません</string>
     <string name="browse_cats_like_feeds">カテゴリをフィードのように扱う</string>
@@ -86,7 +86,7 @@
     <string name="offline_sync_success">オフラインデータ同期完了</string>
     <string name="offline_mode">オフラインモード</string>
     <string name="offline_image_cache_enabled">イメージをキャッシュする</string>
-    <string name="offline_image_cache_enabled_summary">イメージをSDカードにダウンロードします。有効にするとオフライン準備時間が長くなる可能性があります。</string>
+    <string name="offline_image_cache_enabled_summary">イメージをSDカードにダウンロードします。有効にするとオフライン準備時間が長くなる可能性があります</string>
     <string name="notify_downloading_images">イメージをダウンロード中 (%1$d)…</string>
     <string name="article_set_labels">ラベルをセットする</string>
     <string name="search">検索</string>
@@ -95,9 +95,9 @@
     <string name="dialog_close">閉じる</string>
     <string name="article_link_copy">リンクをクリップボードにコピー</string>
     <string name="text_copied_to_clipboard">テキストをクリップボードにコピー</string>
-    <string name="attachments_prompt">Select attachment</string>
-    <string name="attachment_view">View</string>
-    <string name="attachment_copy">Copy URL</string>
+    <string name="attachments_prompt">添付の選択</string>
+    <string name="attachment_view">表示</string>
+    <string name="attachment_copy">URLのコピー</string>
     <string name="justify_article_text">記事の文字を均等割り付けする</string>
     <string name="dialog_offline_sync_in_progress">オフライン同期中</string>
     <string name="dialog_offline_sync_stop">同期の停止</string>
@@ -124,10 +124,12 @@
     <plurals name="trial_mode_prompt">
         <item quantity="other">試用期間中。残り %1$d 日間。</item>
     </plurals>
+
     <string name="trial_purchase">フルバージョンを購入</string>
     <string name="trial_expired">試用期限終了</string>
     <string name="trial_expired_message">Tiny Tiny RSSを継続して使用する場合はTiny Tiny RSS Unlockerを購入してください。</string>
     <string name="theme_sepia">セピア</string>
+    <string name="theme_amber">アンバー</string>
     <string name="reading">Reading</string>
     <string name="offline_articles_to_download">ダウンロードする記事数</string>
     <string name="offline_articles_to_download_long">オフラインモードにする際にダウンロードする記事数(新しい記事から)</string>
@@ -162,17 +164,21 @@
     <string name="article_img_view_caption">キャプションを表示</string>
     <string name="pref_headlines_mark_read_scroll">スクロールしたら既読にする</string>
     <string name="pref_headlines_mark_read_scroll_long">ヘッドラインをスクロールしたら既読にする</string>
+
     <plurals name="mark_num_headlines_as_read">
         <item quantity="other">%1$d 件の記事を既読にしますか？</item>
     </plurals>
+
     <string name="prefs_confirm_headlines_catchup">記事を既読にする際に確認する</string>
     <string name="author_formatted">by %1$s</string>
+
     <plurals name="n_unread_articles">
         <item quantity="other">%1$d 件の未読記事</item>
     </plurals>
+
     <string name="pref_headline_font_size">ヘッドラインの文字サイズ</string>
     <string name="context_confirm_catchup">%1$s の全ての記事を既読にしますか？</string>
-    <string name="accel_webview_summary">ちらつきや表示化けが起こる場合は無効にしてください。</string>
+    <string name="accel_webview_summary">ちらつきや表示化けが起こる場合は無効にしてください</string>
     <string name="accel_webview_title">WebViewのハードウェアアクセラレーション(Android3.0以降)</string>
     <string name="place_shortcut">ショートカットの配置</string>
     <string name="shortcut_has_been_placed_on_the_home_screen">ショートカットがホームスクリーンに配置されました</string>
@@ -184,5 +190,29 @@
     <string name="unsubscribe">購読解除</string>
     <string name="unsubscribe_from_prompt">%1$s の購読を解除しますか？</string>
     <string name="open_article_in_web_browser">Webブラウザで開く</string>
-
+    <string name="error_loading_image">画像の読み込みに失敗しました。</string>
+    <string name="toggle_sort_order">表示順の変更</string>
+    <string name="headlines_sort_default">デフォルト</string>
+    <string name="headlines_sort_newest_first">新しい順</string>
+    <string name="headlines_sort_oldest_first">古い順</string>
+    <string name="headlines_sort_title">タイトル順</string>
+    <string name="headlines_sort_articles_title">記事の並び替え</string>
+    <string name="fresh_articles">新着記事</string>
+    <string name="feed_all_articles">全ての記事</string>
+    <string name="prefs_enable_fab">FABを有効にする</string>
+    <string name="prefs_enable_fab_long">フローティングアクションボタンを表示する</string>
+    <string name="prefs_open_fresh_on_startup">起動時に新着記事を表示する</string>
+    <string name="prefs_headline_display_mode">ヘッドラインの表示モード</string>
+    <string name="prefs_headline_display_mode_long">デフォルト、画像無し、コンパクト</string>
+    <string name="headline_display_mode_default">デフォルト</string>
+    <string name="headline_display_mode_no_images">画像無し</string>
+    <string name="headline_display_mode_compact">コンパクト</string>
+    <string name="prefs_version">%1$s (%2$d)</string>
+    <string name="prefs_version_title">バージョン</string>
+    <string name="prefs_build_timestamp">%1$s</string>
+    <string name="prefs_build_timestamp_title">ビルドタイムスタンプ</string>
+    <string name="crash_dialog_text">残念ながら、Tiny Tiny RSSが停止しました。クラッシュレポートをtt-rss.orgに送信しますか？</string>
+    <string name="prefs_widget_show_fresh">新着記事数を表示</string>
+    <string name="prefs_widget_show_fresh_summary">全未読記事数の代わりに新着記事数を表示する</string>
+    <string name="prefs_widget">ウィジェット</string>
 </resources>
