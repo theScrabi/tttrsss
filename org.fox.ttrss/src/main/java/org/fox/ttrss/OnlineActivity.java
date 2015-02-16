@@ -45,7 +45,6 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
-import org.fox.ttrss.widget.SmallWidgetProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -309,15 +308,7 @@ public class OnlineActivity extends CommonActivity {
 
 		return false;
 	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		
-		Intent initialUpdateIntent = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
-		sendBroadcast(initialUpdateIntent);
-	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();

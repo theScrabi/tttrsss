@@ -25,6 +25,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.widget.SmallWidgetProvider;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -466,7 +467,15 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
         }
 	}
 
-	@Override
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        Intent updateWidgetIntent = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
+        sendBroadcast(updateWidgetIntent);
+    }
+
+    @Override
 	public void onArticleSelected(Article article) {
 		onArticleSelected(article, true);		
 	}
