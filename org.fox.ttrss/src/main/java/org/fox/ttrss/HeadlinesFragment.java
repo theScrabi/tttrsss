@@ -494,7 +494,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				@Override
 				protected void onPostExecute(JsonElement result) {
-					if (isDetached()) return;
+					if (isDetached() || !isAdded()) return;
 					
 					if (getView() != null) {
 						ListView list = (ListView)getView().findViewById(R.id.headlines_list);

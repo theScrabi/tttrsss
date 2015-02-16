@@ -145,7 +145,7 @@ public class ArticlePager extends Fragment {
 
 			@Override
 			protected void onPostExecute(JsonElement result) {
-				if (isDetached()) return;
+				if (isDetached() || !isAdded()) return;
 
 				super.onPostExecute(result);
 				
