@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
@@ -53,18 +56,29 @@ public class OfflineUploadService extends IntentService {
 
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
-		Notification notification = new Notification(R.drawable.ic_launcher,
-				getString(R.string.notify_uploading_title), System.currentTimeMillis());
-		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, OnlineActivity.class), 0);
-		
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
-		
-        notification.setLatestEventInfo(this, getString(R.string.notify_uploading_title), msg, contentIntent);
-                       
-        m_nmgr.notify(NOTIFY_UPLOADING, notification);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                .setContentText(msg)
+                .setContentTitle(getString(R.string.notify_uploading_title))
+                .setContentIntent(contentIntent)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.drawable.ic_launcher))
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setVibrate(new long[0]);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_PROGRESS)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setColor(0x88b0f0)
+                    .setGroup("org.fox.ttrss");
+        }
+
+        m_nmgr.notify(NOTIFY_UPLOADING, builder.build());
 	}
 	
 	private void updateNotification(int msgResId) {

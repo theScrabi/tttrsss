@@ -1,8 +1,28 @@
 package org.fox.ttrss.offline;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.graphics.BitmapFactory;
+import android.os.Binder;
+import android.os.Build;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.OnlineActivity;
@@ -17,26 +37,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.os.Binder;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
 
 public class OfflineDownloadService extends Service {
 
@@ -90,21 +93,32 @@ public class OfflineDownloadService extends Service {
 	
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg) {
-		Notification notification = new Notification(R.drawable.ic_launcher,
-				getString(R.string.notify_downloading_title), System.currentTimeMillis());
-		
 		Intent intent = new Intent(this, OnlineActivity.class);
 		intent.setAction(INTENT_ACTION_CANCEL);
 		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 intent, 0);
-		
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
-		
-        notification.setLatestEventInfo(this, getString(R.string.notify_downloading_title), msg, contentIntent);
-                       
-        m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                .setContentText(msg)
+                .setContentTitle(getString(R.string.notify_downloading_title))
+                .setContentIntent(contentIntent)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.drawable.ic_launcher))
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setVibrate(new long[0]);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_PROGRESS)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setColor(0x88b0f0)
+                    .setGroup("org.fox.ttrss");
+        }
+
+        m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
 	private void updateNotification(int msgResId) {
