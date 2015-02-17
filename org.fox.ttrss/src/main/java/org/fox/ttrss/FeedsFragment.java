@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -300,17 +301,22 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
         } else {
             // TODO: better check
             if (m_activity.findViewById(R.id.headlines_drawer) != null) {
-                View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
-                m_list.addHeaderView(layout, null, false);
-
-                TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-                TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
-
-                login.setText(m_prefs.getString("login", ""));
                 try {
-                    server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-                } catch (MalformedURLException e) {
-                    server.setText("");
+                    View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
+                    m_list.addHeaderView(layout, null, false);
+
+                    TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+                    TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+
+                    login.setText(m_prefs.getString("login", ""));
+                    try {
+                        server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
+                    } catch (MalformedURLException e) {
+                        server.setText("");
+                    }
+                } catch (InflateException e) {
+                    // welp couldn't inflate header i guess
+                    e.printStackTrace();
                 }
             }
         }
