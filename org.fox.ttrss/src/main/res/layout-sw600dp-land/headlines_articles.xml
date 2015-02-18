@@ -22,7 +22,6 @@
         <FrameLayout
             android:paddingRight="4dp"
             android:id="@+id/headlines_fragment"
-            android:transitionName="TRANSITION:HEADLINES_LIST"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
