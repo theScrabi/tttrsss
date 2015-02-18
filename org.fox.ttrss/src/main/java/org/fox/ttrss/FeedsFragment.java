@@ -317,6 +317,8 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
                 } catch (InflateException e) {
                     // welp couldn't inflate header i guess
                     e.printStackTrace();
+                } catch (java.lang.UnsupportedOperationException e) {
+                    e.printStackTrace();
                 }
             }
         }

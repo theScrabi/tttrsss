@@ -239,6 +239,8 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
             } catch (InflateException e) {
                 // welp couldn't inflate header i guess
                 e.printStackTrace();
+            } catch (java.lang.UnsupportedOperationException e) {
+                e.printStackTrace();
             }
         }
 
