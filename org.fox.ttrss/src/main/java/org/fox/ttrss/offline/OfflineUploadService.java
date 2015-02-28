@@ -242,7 +242,7 @@ public class OfflineUploadService extends IntentService {
 	private void uploadPublished() {
 		Log.d(TAG, "syncing modified offline data... (published)");
 
-		final String ids = getModifiedIds(ModifiedCriteria.MARKED);
+		final String ids = getModifiedIds(ModifiedCriteria.PUBLISHED);
 
 		if (ids.length() > 0) {
 			ApiRequest req = new ApiRequest(getApplicationContext()) {
