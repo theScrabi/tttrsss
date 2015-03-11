@@ -2,14 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_pager_container"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/article_pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true">
-    </android.support.v4.view.ViewPager>
+        android:layout_above="@+id/article_pager_indicator"
+        android:layout_alignParentTop="true"></android.support.v4.view.ViewPager>
+
+    <com.viewpagerindicator.UnderlinePageIndicator
+        android:id="@+id/article_pager_indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" />
+
 
 </RelativeLayout>

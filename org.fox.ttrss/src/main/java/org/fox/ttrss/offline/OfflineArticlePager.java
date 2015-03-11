@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.viewpagerindicator.UnderlinePageIndicator;
+
 import org.fox.ttrss.R;
 
 public class OfflineArticlePager extends Fragment {
@@ -167,9 +169,13 @@ public class OfflineArticlePager extends Fragment {
 		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
 		
 		pager.setAdapter(m_adapter);
-		
-		pager.setCurrentItem(position);
-		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+        UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_pager_indicator);
+        indicator.setViewPager(pager);
+
+        pager.setCurrentItem(position);
+
+		indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {

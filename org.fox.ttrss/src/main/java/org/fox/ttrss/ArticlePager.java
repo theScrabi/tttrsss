@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.JsonElement;
+import com.viewpagerindicator.UnderlinePageIndicator;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -92,8 +93,12 @@ public class ArticlePager extends Fragment {
 
 		pager.setAdapter(m_adapter);
 
+        UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_pager_indicator);
+        indicator.setViewPager(pager);
+
 		pager.setCurrentItem(position);
-		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+		indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
