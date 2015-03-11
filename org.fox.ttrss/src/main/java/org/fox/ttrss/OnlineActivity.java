@@ -32,7 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.cache.disc.impl.LimitedAgeDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.utils.StorageUtils;
@@ -164,15 +164,14 @@ public class OnlineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .diskCache(
-                        new LimitedAgeDiscCache(new File(StorageUtils.getCacheDirectory(getApplicationContext()), "article-images"),
-                        2*24*60*60)) // 2 days
-                .build();
-		ImageLoader.getInstance().init(config);
-		//ImageLoader.getInstance().clearDiskCache();
-
-
+        if (!ImageLoader.getInstance().isInited()) {
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                    .diskCache(
+                            new UnlimitedDiscCache(new File(StorageUtils.getCacheDirectory(getApplicationContext()), "article-images")))
+                    .build();
+            ImageLoader.getInstance().init(config);
+            ImageLoader.getInstance().clearDiskCache();
+        }
 
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
