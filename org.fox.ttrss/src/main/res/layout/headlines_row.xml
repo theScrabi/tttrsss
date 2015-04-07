@@ -5,7 +5,6 @@
     android:id="@+id/headlines_row"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?headlineNormalBackground"
     tools:ignore="HardcodedText" >
 
     <TableLayout

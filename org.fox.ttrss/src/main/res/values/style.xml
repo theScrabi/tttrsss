@@ -9,7 +9,6 @@
         <item name="articleBackground">@android:color/white</item>
         <item name="headlineSelectedBackground">?feedsSelectedBackground</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
-        <item name="headlineNormalBackground">#f5f5f5</item>
         <item name="feedsSelectedBackground">#cccccc</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
         <item name="feedlistSelectedTextColor">?feedlistTextColor</item>
@@ -53,8 +52,6 @@
         <item name="articleNoteTextColor">?linkColor</item>
         <item name="articleNoteBackground">#543800</item>
 
-        <item name="headlineNormalBackground">@android:color/black</item>
-
         <item name="feedlistBackground">?colorPrimaryDark</item>
         <item name="headlinesBackground">@android:color/black</item>
         <item name="articleBackground">@android:color/black</item>
@@ -86,7 +83,6 @@
     <style name="DarkTheme" parent="Theme.AppCompat">
         <item name="statusBarHintColor">?colorPrimary</item>
         <item name="unreadCounterColor">#909090</item>
-        <item name="headlineNormalBackground">#151515</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
         <item name="headlineSelectedTextColor">@android:color/white</item>
