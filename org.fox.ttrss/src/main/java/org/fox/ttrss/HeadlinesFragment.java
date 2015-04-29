@@ -998,8 +998,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                 }
 
                             });
+                        } else{
+                            article.noValidFlavorImage = true;
+                            holder.flavorImageHolder.setVisibility(View.GONE);
                         }
-
 
                     } else {
                         article.noValidFlavorImage = true;
