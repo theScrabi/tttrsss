@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -54,14 +53,12 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -861,7 +858,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
                     articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
 
-            Document articleDoc = Jsoup.parse(articleContentReduced);
+            if (article.articleDoc == null)
+                article.articleDoc = Jsoup.parse(articleContentReduced);
 
             if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
@@ -875,7 +873,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         excerpt = excerpt.replace("]]>", "");
                         excerpt = Jsoup.parse(excerpt).text();
                     } else {
-                        excerpt = articleDoc.text();
+                        excerpt = article.articleDoc.text();
 
                         if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
                             excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
@@ -889,13 +887,136 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             if (!m_compactLayoutMode) {
                 boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
-                if (holder.flavorImageView != null && showFlavorImage) {
+                if (showFlavorImage && holder.flavorImageView != null) {
+
+                    holder.flavorImageArrow.setVisibility(View.GONE);
+
+                    if (article.noValidFlavorImage) {
+                        holder.flavorImageHolder.setVisibility(View.GONE);
+                    } else if (article.articleDoc != null) {
+
+                        if (article.flavorImage == null) {
+
+                            Elements imgs = article.articleDoc.select("img");
+
+                            for (Element tmp : imgs) {
+                                try {
+                                    if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
+                                        article.flavorImage = tmp;
+                                        break;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    //
+                                }
+                            }
+
+                            if (article.flavorImage == null)
+                                article.flavorImage = imgs.first();
+                        }
+
+                        if (article.flavorImage != null) {
+
+                            String imgSrc = article.flavorImage.attr("src");
+                            final String imgSrcFirst = imgSrc;
+
+                            // retarded schema-less urls
+                            if (imgSrc.indexOf("//") == 0)
+                                imgSrc = "http:" + imgSrc;
+
+                            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                                    .cacheInMemory(true)
+                                    .resetViewBeforeLoading(true)
+                                    .cacheOnDisk(true)
+                                    .build();
+
+                            ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
+                            holder.flavorImageView.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+                                    intent.putExtra("firstSrc", imgSrcFirst);
+                                    intent.putExtra("title", article.title);
+                                    intent.putExtra("content", article.content);
+
+                                    ActivityOptionsCompat options =
+                                            ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+                                                    holder.flavorImageView,   // The view which starts the transition
+                                                    "TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+                                            );
+                                    ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+                                    //startActivityForResult(intent, 0);
+                                }
+                            });
+
+                            final ViewGroup flavorImageHolder = holder.flavorImageHolder;
+                            final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
+
+                            ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+
+                            ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
+
+                                @Override
+                                public void onLoadingCancelled(String arg0,
+                                                               View arg1) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                                @Override
+                                public void onLoadingComplete(String arg0,
+                                                              View arg1, Bitmap arg2) {
+                                    // TODO Auto-generated method stub
+
+                                    if (!isAdded() || arg2 == null) return;
+
+                                    flavorImageLoadingBar.setVisibility(View.INVISIBLE);
+
+                                    if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
+                                        flavorImageHolder.setVisibility(View.VISIBLE);
+                                    } else {
+                                        flavorImageHolder.setVisibility(View.GONE);
+                                    }
+                                }
+
+                                @Override
+                                public void onLoadingFailed(String arg0,
+                                                            View arg1, FailReason arg2) {
+                                    // TODO Auto-generated method stub
+                                    flavorImageHolder.setVisibility(View.GONE);
+                                    article.noValidFlavorImage = true;
+                                }
+
+                                @Override
+                                public void onLoadingStarted(String arg0,
+                                                             View arg1) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                            });
+                        }
+
+
+                    } else {
+                        article.noValidFlavorImage = true;
+                        holder.flavorImageHolder.setVisibility(View.GONE);
+                    }
+
+                }
+
+                /* if (holder.flavorImageView != null && showFlavorImage) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
                     boolean loadableImageFound = false;
 
-                    if (articleDoc != null) {
-                        final Elements imgs = articleDoc.select("img");
+                    if (article.articleDoc != null) {
+
+                        Elements imgs = article.articleDoc.select("img");
+
                         Element img = null;
 
                         for (Element tmp : imgs) {
@@ -921,6 +1042,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                 imgSrc = "http:" + imgSrc;
 
                             DisplayImageOptions options = new DisplayImageOptions.Builder()
+                                    .displayer(new FadeInBitmapDisplayer(500))
                                     .cacheInMemory(true)
                                     .resetViewBeforeLoading(true)
                                     .cacheOnDisk(true)
@@ -1019,7 +1141,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     holder.flavorImageHolder.setVisibility(View.GONE);
                 }
             } else if (holder.flavorImageHolder != null) {
-                holder.flavorImageHolder.setVisibility(View.GONE);
+                holder.flavorImageHolder.setVisibility(View.GONE); */
             }
 			
 			String articleAuthor = article.author != null ? article.author : "";
