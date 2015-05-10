@@ -1,6 +1,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBarOverlay">true</item>
+
         <item name="statusBarHintColor">?colorPrimary</item>
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
         <item name="feedlistBackground">#e0e0e0</item>

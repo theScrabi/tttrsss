@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -177,11 +179,14 @@ public class ArticleFragment extends Fragment  {
             scrollView.setOnScrollChangedListener(new NotifyingScrollView.OnScrollChangedListener() {
                 @Override
                 public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-                    if (t > 0 && t > oldt) {
-                        m_activity.getSupportActionBar().hide();
-                    } else {
-                        m_activity.getSupportActionBar().show();
+                    ActionBar ab = m_activity.getSupportActionBar();
+
+                    if (t >= oldt && t >= ab.getHeight()) {
+                        ab.hide();
+                    } else if (t <= ab.getHeight() | oldt - t >= 10) {
+                        ab.show();
                     }
+
                 }
             });
         }
