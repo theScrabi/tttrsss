@@ -6,7 +6,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ScrollView;
 
-public class NoChildFocusScrollView extends ScrollView {
+public class NoChildFocusScrollView extends NotifyingScrollView {
 
 	public NoChildFocusScrollView(Context context) {
 		super(context);

@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.WindowCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -222,6 +224,8 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 			article.unread = false;
 			saveArticleUnread(article);
 		}
+
+        if (!getSupportActionBar().isShowing()) getSupportActionBar().show();
 
 		if (open) {
 			

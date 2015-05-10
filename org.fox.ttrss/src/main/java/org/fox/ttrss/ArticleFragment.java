@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,12 +25,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.Attachment;
+import org.fox.ttrss.util.NotifyingScrollView;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -165,8 +168,23 @@ public class ArticleFragment extends Fragment  {
         m_contentView = view.findViewById(R.id.article_scrollview);
         m_customViewContainer = (FrameLayout) view.findViewById(R.id.article_fullscreen_video);
 
-        View scrollView = view.findViewById(R.id.article_scrollview);
+        NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
         m_fab = view.findViewById(R.id.article_fab);
+
+        if (scrollView != null && m_activity.isSmallScreen()) {
+            view.findViewById(R.id.article_heading_spacer).setVisibility(View.VISIBLE);
+
+            scrollView.setOnScrollChangedListener(new NotifyingScrollView.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                    if (t > 0 && t > oldt) {
+                        m_activity.getSupportActionBar().hide();
+                    } else {
+                        m_activity.getSupportActionBar().show();
+                    }
+                }
+            });
+        }
 
         if (scrollView != null && m_fab != null) {
             if (m_prefs.getBoolean("enable_article_fab", true)) {
