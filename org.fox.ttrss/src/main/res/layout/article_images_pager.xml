@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/article_images"
     android:layout_width="fill_parent"
-    android:fitsSystemWindows="true"
     android:background="?headlinesBackground"
     android:layout_height="fill_parent">
 /*
