@@ -83,6 +83,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);
 
+                    getSupportActionBar().show();
                     invalidateOptionsMenu();
                 }
 

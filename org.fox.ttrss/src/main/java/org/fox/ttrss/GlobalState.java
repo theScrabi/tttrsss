@@ -30,7 +30,10 @@ public class GlobalState extends Application {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
-        ACRA.init(this);
+
+        if (!BuildConfig.DEBUG) {
+            ACRA.init(this);
+        }
 
 		m_singleton = this;
 	}

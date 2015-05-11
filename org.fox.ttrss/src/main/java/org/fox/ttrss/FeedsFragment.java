@@ -287,6 +287,11 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
+        if (m_activity.isSmallScreen()) {
+            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
+            m_list.addHeaderView(layout);
+        }
+
         if (m_enableParentBtn) {
             View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
 

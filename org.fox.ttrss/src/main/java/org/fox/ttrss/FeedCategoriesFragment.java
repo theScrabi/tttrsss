@@ -221,6 +221,11 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		m_list = (ListView)view.findViewById(R.id.feeds);
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 
+        if (m_activity.isSmallScreen()) {
+            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
+            m_list.addHeaderView(layout);
+        }
+
         // TODO: better check
         if (m_activity.findViewById(R.id.headlines_drawer) != null) {
             try {

@@ -97,6 +97,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SwipeRefreshLayout m_swipeLayout;
 	private int m_maxImageSize = 0;
     private boolean m_compactLayoutMode = false;
+    private int m_listPreviousVisibleItem;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -367,6 +368,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
             list.addFooterView(layout, null, false);
+        }
+
+        if (m_activity.isSmallScreen()) {
+            View layout = inflater.inflate(R.layout.headlines_heading_spacer, list, false);
+            list.addHeaderView(layout);
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
@@ -1315,15 +1321,31 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			refresh(true);
 		}
 
-		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0 && !m_autoCatchupDisabled) {
-			Article a = m_articles.get(firstVisibleItem - 1);
+		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > (m_activity.isSmallScreen() ? 1 : 0) && !m_autoCatchupDisabled) {
+			Article a = (Article) view.getItemAtPosition(firstVisibleItem - 1);
 
 			if (a != null && a.unread) {
+                Log.d(TAG, "title=" + a.title);
+
 				a.unread = false;
 				m_readArticles.add(a);
 				m_feed.unread--;
 			} 
 		}
+
+        if (m_activity.isSmallScreen()) {
+            if (m_adapter.getCount() > 0) {
+                if (firstVisibleItem > m_listPreviousVisibleItem) {
+                    m_activity.getSupportActionBar().hide();
+                } else if (firstVisibleItem < m_listPreviousVisibleItem) {
+                    m_activity.getSupportActionBar().show();
+                }
+            } else {
+                m_activity.getSupportActionBar().show();
+            }
+
+            m_listPreviousVisibleItem = firstVisibleItem;
+        }
 	}
 
 	@Override
