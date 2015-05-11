@@ -48,6 +48,8 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);
 
+                    getSupportActionBar().show();
+
                     invalidateOptionsMenu();
                 }
 

@@ -239,7 +239,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		public int getItemViewType(int position) {
 			Cursor cursor = (Cursor) this.getItem(position);
 			
-			if (cursor.getLong(0) == m_selectedCatId) {
+			if (!m_activity.isSmallScreen() && cursor.getLong(0) == m_selectedCatId) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				

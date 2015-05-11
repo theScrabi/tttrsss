@@ -71,6 +71,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
     private boolean m_compactLayoutMode = false;
     private ListView m_list;
+    private int m_listPreviousVisibleItem;
 	
 	public void initialize(int feedId, boolean isCat, boolean compactMode) {
 		m_feedId = feedId;
@@ -811,18 +812,20 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 
 	public Cursor getArticleAtPosition(int position) {
-		return (Cursor) m_adapter.getItem(position);
+		return (Cursor) m_list.getItemAtPosition(position);
 	}
 
 	public int getArticleIdAtPosition(int position) {
-		/*Cursor c = getArticleAtPosition(position);
+		Cursor c = getArticleAtPosition(position);
 		
 		if (c != null) {
 			int id = c.getInt(0);
 			return id;
-		}		*/
+		}
 
-		return (int) m_adapter.getItemId(position);
+        return 0;
+
+		//return (int) m_adapter.getItemId(position + m_list.getHeaderViewsCount());
 	}
 
 	public int getActiveArticleId() {
@@ -832,7 +835,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public int getArticleIdPosition(int articleId) {
 		for (int i = 0; i < m_adapter.getCount(); i++) {
 			if (articleId == m_adapter.getItemId(i))
-				return i;
+				return i + m_list.getHeaderViewsCount();
 		}
 		
 		return -1;
@@ -862,7 +865,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > 0) {
+        if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > (m_activity.isSmallScreen() ? 1 : 0)) {
             //Article a = m_articles.get(firstVisibleItem - 1);
 
             Cursor article = getArticleAtPosition(firstVisibleItem - 1);
@@ -875,6 +878,20 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                     m_readArticleIds.add(id);
                 }
             }
+        }
+
+        if (!m_activity.isTablet()) {
+            if (m_adapter.getCount() > 0) {
+                if (firstVisibleItem > m_listPreviousVisibleItem) {
+                    m_activity.getSupportActionBar().hide();
+                } else if (firstVisibleItem < m_listPreviousVisibleItem) {
+                    m_activity.getSupportActionBar().show();
+                }
+            } else {
+                m_activity.getSupportActionBar().show();
+            }
+
+            m_listPreviousVisibleItem = firstVisibleItem;
         }
     }
 
