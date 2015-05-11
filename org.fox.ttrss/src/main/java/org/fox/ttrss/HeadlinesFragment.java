@@ -1333,7 +1333,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			} 
 		}
 
-        if (m_activity.isSmallScreen()) {
+        if (!m_activity.isTablet()) {
             if (m_adapter.getCount() > 0) {
                 if (firstVisibleItem > m_listPreviousVisibleItem) {
                     m_activity.getSupportActionBar().hide();

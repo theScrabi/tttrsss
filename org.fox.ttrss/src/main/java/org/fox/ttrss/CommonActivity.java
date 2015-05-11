@@ -72,6 +72,11 @@ public class CommonActivity extends ActionBarActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    // not the same as isSmallScreen() which is mostly about layout being loaded
+    public boolean isTablet() {
+        return getResources().getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
 	public void setUnreadOnly(boolean unread) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("show_unread_only", unread);
