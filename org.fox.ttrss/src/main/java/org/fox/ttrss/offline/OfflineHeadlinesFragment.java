@@ -70,6 +70,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private SwipeRefreshLayout m_swipeLayout;
 
     private boolean m_compactLayoutMode = false;
+    private ListView m_list;
 	
 	public void initialize(int feedId, boolean isCat, boolean compactMode) {
 		m_feedId = feedId;
@@ -302,12 +303,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		m_cursor = createCursor();
 		
-		ListView list = (ListView)view.findViewById(R.id.headlines_list);
+		m_list = (ListView)view.findViewById(R.id.headlines_list);
 
-        /* if (!m_compactLayoutMode) {
-            list.setDividerHeight(0);
-            list.setDivider(null);
-        } */
+        if (m_activity.isSmallScreen()) {
+            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
+            m_list.addHeaderView(layout);
+        }
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -318,18 +319,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-            list.addFooterView(layout, null, false);
+            m_list.addFooterView(layout, null, false);
         }
 
 
         m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_cursor,
 				new String[] { "title" }, new int[] { R.id.title }, 0);
 		
-		list.setAdapter(m_adapter);
-		list.setOnItemClickListener(this);
-        list.setOnScrollListener(this);
-		//list.setEmptyView(view.findViewById(R.id.no_headlines));
-		registerForContextMenu(list);
+		m_list.setAdapter(m_adapter);
+		m_list.setOnItemClickListener(this);
+        m_list.setOnScrollListener(this);
+		registerForContextMenu(m_list);
 
 		return view;    	
 	}
@@ -821,7 +821,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			int id = c.getInt(0);
 			return id;
 		}		*/
-		
+
 		return (int) m_adapter.getItemId(position);
 	}
 
