@@ -98,6 +98,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private int m_maxImageSize = 0;
     private boolean m_compactLayoutMode = false;
     private int m_listPreviousVisibleItem;
+    private ListView m_list;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -351,12 +352,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-		ListView list = (ListView)view.findViewById(R.id.headlines_list);
-
-        /* if (!m_compactLayoutMode) {
-            list.setDividerHeight(0);
-            list.setDivider(null);
-        } */
+		m_list = (ListView)view.findViewById(R.id.headlines_list);
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -367,21 +363,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-            list.addFooterView(layout, null, false);
+            m_list.addFooterView(layout, null, false);
         }
 
         if (m_activity.isSmallScreen()) {
-            View layout = inflater.inflate(R.layout.headlines_heading_spacer, list, false);
-            list.addHeaderView(layout);
+            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
+            m_list.addHeaderView(layout);
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
 
-		list.setAdapter(m_adapter);
-		list.setOnItemClickListener(this);
-		list.setOnScrollListener(this);
-		//list.setEmptyView(view.findViewById(R.id.no_headlines));
-		registerForContextMenu(list);
+		m_list.setAdapter(m_adapter);
+		m_list.setOnItemClickListener(this);
+		m_list.setOnScrollListener(this);
+		registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
@@ -499,15 +494,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				protected void onPostExecute(JsonElement result) {
 					if (isDetached() || !isAdded()) return;
 					
-					if (getView() != null) {
-						ListView list = (ListView)getView().findViewById(R.id.headlines_list);
-					
-						/* if (list != null) {
-							list.setEmptyView(getView().findViewById(R.id.no_headlines));
-						} */
-					}
-
-					super.onPostExecute(result);	
+					super.onPostExecute(result);
 
 					if (isAdded()) {
                         if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
@@ -1291,7 +1278,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
     public Article getArticleAtPosition(int position) {
 		try {
-			return m_adapter.getItem(position);
+            return (Article) m_list.getItemAtPosition(position);
+        } catch (ClassCastException e) {
+            return null;
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		} catch (NullPointerException e) {
@@ -1366,20 +1355,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     public int getArticlePositionById(int id) {
         for (Article a : m_adapter.items) {
             if (a.id == id) {
-                return m_adapter.getPosition(a);
+                return m_adapter.getPosition(a) + m_list.getHeaderViewsCount();
             }
         }
 
         return -1;
     }
 
-	public int getArticlePosition(Article article) {
+	/* public int getArticlePosition(Article article) {
 		try {
 			return m_adapter.getPosition(article);
 		} catch (NullPointerException e) {
 			return -1;
 		}
-	}
+	} */
 
 	public String getSearchQuery() {
 		return m_searchQuery;
