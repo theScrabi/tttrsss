@@ -3,6 +3,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_heading_spacer"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/actionBarSize">
+    android:layout_height="@dimen/abc_action_bar_default_height_material">
 
 </FrameLayout>

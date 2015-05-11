@@ -108,11 +108,11 @@ public class OfflineDownloadService extends Service {
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                         R.drawable.ic_launcher))
                 .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setVibrate(new long[0]);
+                .setOnlyAlertOnce(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setCategory(Notification.CATEGORY_PROGRESS)
+                    .setVibrate(new long[0])
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setColor(0x88b0f0)
                     .setGroup("org.fox.ttrss");
