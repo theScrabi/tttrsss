@@ -369,6 +369,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         if (m_activity.isSmallScreen()) {
             View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
             m_list.addHeaderView(layout);
+
+            m_swipeLayout.setProgressViewOffset(false, 0,
+                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) +
+                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_material));
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
