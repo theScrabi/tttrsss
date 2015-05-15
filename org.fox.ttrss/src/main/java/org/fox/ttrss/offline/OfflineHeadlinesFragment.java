@@ -309,6 +309,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         if (m_activity.isSmallScreen()) {
             View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
             m_list.addHeaderView(layout);
+
+            m_swipeLayout.setProgressViewOffset(false, 0,
+                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) +
+                            m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_material));
         }
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
