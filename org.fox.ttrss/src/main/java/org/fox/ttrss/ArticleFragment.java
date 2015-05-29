@@ -183,7 +183,7 @@ public class ArticleFragment extends Fragment  {
 
                     if (t >= oldt && t >= ab.getHeight()) {
                         ab.hide();
-                    } else if (t <= ab.getHeight() | oldt - t >= 10) {
+                    } else if (t <= ab.getHeight() || oldt - t >= 10) {
                         ab.show();
                     }
 
