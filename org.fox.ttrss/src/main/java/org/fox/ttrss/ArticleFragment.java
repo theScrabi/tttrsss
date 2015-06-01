@@ -12,12 +12,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -27,6 +25,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -262,6 +261,17 @@ public class ArticleFragment extends Fragment  {
             });
 
             registerForContextMenu(title);
+        }
+
+        ImageView share = (ImageView)view.findViewById(R.id.share);
+
+        if (share != null) {
+            share.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    m_activity.shareArticle(m_article);
+                }
+            });
         }
 
         TextView comments = (TextView)view.findViewById(R.id.comments);

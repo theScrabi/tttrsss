@@ -40,14 +40,31 @@
                 android:orientation="vertical"
                 android:paddingBottom="6dp">
 
-                <TextView
-                    android:id="@+id/title"
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="My simple headline"
-                    android:textColor="?articleHeaderTextColor"
-                    android:textSize="18sp" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="My simple but hilariously and excessively long  headline"
+                        android:textColor="?articleHeaderTextColor"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/share"
+                        android:background="@drawable/ripple"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_weight="0"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="true"
+                        android:src="?ic_share"
+                        android:layout_gravity="center_vertical|right" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/comments"

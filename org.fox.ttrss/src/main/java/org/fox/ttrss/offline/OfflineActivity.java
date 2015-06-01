@@ -440,13 +440,13 @@ public class OfflineActivity extends CommonActivity {
 				}
 			}
 			return true;
-		case R.id.share_article:
+		/* case R.id.share_article:
 			if (true) {
 				int articleId = oap.getSelectedArticleId();
 				
 				shareArticle(articleId);
 			}
-			return true;
+			return true; */
 		case R.id.toggle_marked:
 			if (oap != null) {
 				int articleId = oap.getSelectedArticleId();

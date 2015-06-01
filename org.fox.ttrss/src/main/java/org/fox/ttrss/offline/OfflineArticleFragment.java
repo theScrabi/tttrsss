@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -226,7 +227,19 @@ public class OfflineArticleFragment extends Fragment {
 				
 				registerForContextMenu(title);
 			}
-			
+
+			ImageView share = (ImageView)view.findViewById(R.id.share);
+
+			if (share != null) {
+				share.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						m_activity.shareArticle(m_articleId);
+					}
+				});
+			}
+
+
 			TextView comments = (TextView)view.findViewById(R.id.comments);
 			
 			if (comments != null) {

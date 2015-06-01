@@ -83,13 +83,13 @@
             <item
                 android:id="@+id/toggle_unread"
                 android:icon="@drawable/ic_email"
-                app:showAsAction=""
+                app:showAsAction="ifRoom"
                 android:title="@string/article_toggle_unread"/>
-            <item
+            <!-- <item
                 android:id="@+id/share_article"
                 android:icon="@drawable/ic_share"
                 app:showAsAction="ifRoom"
-                android:title="@string/share_article"/>
+                android:title="@string/share_article"/> -->
             <item
                 android:id="@+id/set_labels"
                 app:showAsAction=""

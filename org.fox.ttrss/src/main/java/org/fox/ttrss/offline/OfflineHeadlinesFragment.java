@@ -171,7 +171,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}
 			refresh();			
 			return true;
-		case R.id.share_article:
+		case R.id.headlines_share_article:
 			if (true) {
 				int articleId = getArticleIdAtPosition(info.position);
 				m_activity.shareArticle(articleId);

@@ -58,11 +58,11 @@
             android:icon="@drawable/ic_email"
             app:showAsAction="ifRoom"
             android:title="@string/article_toggle_unread"/> -->
-        <item
+        <!-- <item
             android:id="@+id/share_article"
             android:icon="@drawable/ic_share"
             app:showAsAction="ifRoom"
-            android:title="@string/share_article"/>
+            android:title="@string/share_article"/> -->
         <item
             android:id="@+id/catchup_above"
             android:title="@string/article_mark_read_above"/>

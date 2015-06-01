@@ -907,11 +907,11 @@ public class OnlineActivity extends CommonActivity {
 				dialog.show();
 			}
 			return true;
-		case R.id.share_article:
+		/* case R.id.share_article:
 			if (ap != null) {
 				shareArticle(ap.getSelectedArticle());
 			}
-			return true;
+			return true; */
 		case R.id.toggle_marked:
 			if (ap != null & ap.getSelectedArticle() != null) {
 				Article a = ap.getSelectedArticle();
