@@ -255,7 +255,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         m_prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        setDarkAppTheme(m_prefs);
+        setTheme(R.style.DarkTheme);
 
         super.onCreate(savedInstanceState);
 

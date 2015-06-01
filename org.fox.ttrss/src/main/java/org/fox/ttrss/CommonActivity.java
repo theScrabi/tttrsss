@@ -25,8 +25,8 @@ public class CommonActivity extends ActionBarActivity {
 
 	public final static String THEME_DARK = "THEME_DARK";
 	public final static String THEME_LIGHT = "THEME_LIGHT";
-	public final static String THEME_SEPIA = "THEME_SEPIA";
-    public final static String THEME_AMBER = "THEME_AMBER";
+	//public final static String THEME_SEPIA = "THEME_SEPIA";
+    //public final static String THEME_AMBER = "THEME_AMBER";
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
 
     public static final int EXCERPT_MAX_LENGTH = 256;
@@ -186,27 +186,27 @@ public class CommonActivity extends ActionBarActivity {
 		toast.show();
 	}
 
-	public boolean isDarkTheme() {
+	/* public boolean isDarkTheme() {
 		String theme = m_prefs.getString("theme", THEME_DEFAULT);
 		
-		return theme.equals(THEME_DARK) || theme.equals(THEME_AMBER);
-	}
+		return theme.equals(THEME_DARK); || theme.equals(THEME_AMBER);
+	} */
 	
 	protected void setAppTheme(SharedPreferences prefs) {
 		String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		
 		if (theme.equals(THEME_DARK)) {
             setTheme(R.style.DarkTheme);
-        } else if (theme.equals(THEME_AMBER)) {
+        /* } else if (theme.equals(THEME_AMBER)) {
             setTheme(R.style.AmberTheme);
 		} else if (theme.equals(THEME_SEPIA)) {
-			setTheme(R.style.SepiaTheme);
+			setTheme(R.style.SepiaTheme); */
 		} else {
 			setTheme(R.style.LightTheme);
 		}
 	}
 
-    protected void setDarkAppTheme(SharedPreferences prefs) {
+    /* protected void setDarkAppTheme(SharedPreferences prefs) {
         String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 
         if (theme.equals(THEME_AMBER)) {
@@ -214,7 +214,7 @@ public class CommonActivity extends ActionBarActivity {
         } else {
             setTheme(R.style.DarkTheme);
         }
-    }
+    } */
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")

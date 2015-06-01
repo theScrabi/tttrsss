@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/article_fragment"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
@@ -130,6 +131,7 @@
         android:layout_gravity="bottom|right"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="20dp"
+        app:floatingActionButtonColor="?colorAccent"
         android:src="@drawable/ic_action_web_site"
         />
 

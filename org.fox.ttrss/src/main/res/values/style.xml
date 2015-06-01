@@ -9,11 +9,11 @@
         <item name="unreadCounterColor">#909090</item>
         <item name="headlinesBackground">#f0f0f0</item>
         <item name="articleBackground">@android:color/white</item>
-        <item name="headlineSelectedBackground">?feedsSelectedBackground</item>
+        <item name="headlineSelectedBackground">#cccccc</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
-        <item name="feedsSelectedBackground">#cccccc</item>
+        <item name="feedsSelectedBackground">@android:color/transparent</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
-        <item name="feedlistSelectedTextColor">?feedlistTextColor</item>
+        <item name="feedlistSelectedTextColor">?colorAccent</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_light</item>
         <item name="headlineSelectedTextColor">@android:color/primary_text_light</item>
         <item name="headlineExcerptTextColor">@android:color/secondary_text_light</item>
@@ -35,57 +35,13 @@
 
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
-        <item name="colorAccent">?colorPrimary</item>
+        <item name="colorAccent">#F4511E</item>
 
         <item name="ic_rss_box">@drawable/ic_rss_box_dark</item>
         <item name="ic_rss">@drawable/ic_rss_dark</item>
         <item name="ic_checkbox_marked">@drawable/ic_checkbox_marked_dark</item>
         <item name="ic_star">@drawable/ic_star_dark</item>
         <item name="ic_star_outline">@drawable/ic_star_outline_dark</item>
-    </style>
-
-    <style name="SepiaTheme" parent="LightTheme">
-        <item name="feedlistBackground">#EAE2DC</item>
-        <item name="headlinesBackground">#EAE2DC</item>
-        <item name="feedlistTextColor">#35281C</item>
-        <item name="linkColor">?colorPrimary</item>
-
-        <item name="colorPrimary">#C46262</item>
-        <item name="colorPrimaryDark">#7F3F3F</item>
-        <item name="colorAccent">#E5B0A0</item>
-    </style>
-
-    <style name="AmberTheme" parent="DarkTheme">
-        <item name="articleHeader">@android:color/black</item>
-        <item name="articleNoteTextColor">?linkColor</item>
-        <item name="articleNoteBackground">#543800</item>
-
-        <item name="feedlistBackground">?colorPrimaryDark</item>
-        <item name="headlinesBackground">@android:color/black</item>
-        <item name="articleBackground">@android:color/black</item>
-
-        <item name="articleHeaderTextColor">?linkColor</item>
-        <item name="articleTextColor">#D2B944</item>
-        <item name="linkColor">?colorAccent</item>
-
-        <item name="feedsSelectedBackground">#30EACF4C</item>
-        <item name="unreadCounterColor">?colorAccent</item>
-
-        <item name="headlineUnreadTextColor">?linkColor</item>
-        <item name="headlineSelectedTextColor">?linkColor</item>
-        <item name="headlineExcerptTextColor">?linkColor</item>
-        <item name="headlineSecondaryTextColor">?linkColor</item>
-        <item name="headlineSelectedExcerptTextColor">?linkColor</item>
-        <item name="headlineSelectedSecondaryTextColor">?linkColor</item>
-
-        <item name="headlineUnreadBackground">@android:color/black</item>
-        <item name="headlineSelectedBackground">#30EACF4C</item>
-
-        <item name="headlineFooterColor">?colorAccent</item>
-
-        <item name="colorPrimary">@android:color/black</item>
-        <item name="colorPrimaryDark">@android:color/black</item>
-        <item name="colorAccent">#EACF4C</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat">
@@ -101,7 +57,7 @@
         <item name="headlineTitleHighScoreUnreadTextColor">#00FF00</item>
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
-        <item name="headlineSelectedBackground">?feedsSelectedBackground</item>
+        <item name="headlineSelectedBackground">#1c1c1c</item>
         <item name="headlineUnreadBackground">#101010</item>
         <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>
@@ -112,8 +68,8 @@
         <item name="feedlistBackground">#1c1d1e</item>
         <item name="headlinesBackground">#1c1d1e</item>
         <item name="articleBackground">#1c1d1e</item>
-        <item name="feedsSelectedBackground">#1c1c1c</item>
-        <item name="feedlistSelectedTextColor">?feedlistTextColor</item>
+        <item name="feedsSelectedBackground">@android:color/transparent</item>
+        <item name="feedlistSelectedTextColor">?colorAccent</item>
         <item name="articleHeader">@android:color/transparent</item>
         <item name="articleHeaderTextColor">@android:color/primary_text_dark</item>
         <item name="floatingActionButtonStyle">@style/FabTheme</item>
@@ -121,9 +77,9 @@
         <item name="headlineFooterColor">?colorPrimary</item>
         <item name="articleHeaderSeparator">@android:color/black</item>
 
-        <item name="colorPrimary">#51698E</item>
-        <item name="colorPrimaryDark">#445877</item>
-        <item name="colorAccent">#88b0f0</item>
+        <item name="colorPrimary">#607D8B</item>
+        <item name="colorPrimaryDark">#455A64</item>
+        <item name="colorAccent">#D84315</item>
 
         <item name="ic_rss_box">@drawable/ic_rss_box</item>
         <item name="ic_rss">@drawable/ic_rss</item>
