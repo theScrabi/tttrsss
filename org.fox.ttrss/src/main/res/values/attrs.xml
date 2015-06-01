@@ -31,4 +31,7 @@
     <attr name="articleHeaderSeparator" format="reference|color" />
     <attr name="ic_rss_box" format="reference"/>
     <attr name="ic_rss" format="reference"/>
+    <attr name="ic_checkbox_marked" format="reference" />
+    <attr name="ic_star" format="reference" />
+    <attr name="ic_star_outline" format="reference" />
 </resources>

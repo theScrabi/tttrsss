@@ -655,26 +655,32 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}
 			
 			if (holder.markedView != null) {
-				holder.markedView.setImageResource(article.getInt(article.getColumnIndex("marked")) == 1 ? R.drawable.ic_star_dark : R.drawable.ic_star_outline_dark);
+				TypedValue tv = new TypedValue();
+				m_activity.getTheme().resolveAttribute(article.getInt(article.getColumnIndex("marked")) == 1 ? R.attr.ic_star : R.attr.ic_star_outline, tv, true);
+
+				holder.markedView.setImageResource(tv.resourceId);
 				
 				holder.markedView.setOnClickListener(new OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
-                                "WHERE " + BaseColumns._ID + " = ?");
+					@Override
+					public void onClick(View v) {
+						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
+								"WHERE " + BaseColumns._ID + " = ?");
 
-                        stmtUpdate.bindLong(1, articleId);
-                        stmtUpdate.execute();
-                        stmtUpdate.close();
+						stmtUpdate.bindLong(1, articleId);
+						stmtUpdate.execute();
+						stmtUpdate.close();
 
-                        refresh();
-                    }
-                });
+						refresh();
+					}
+				});
 			}
 			
 			if (holder.publishedView != null) {
-				holder.publishedView.setImageResource(article.getInt(article.getColumnIndex("published")) == 1 ? R.drawable.ic_checkbox_marked_dark : R.drawable.ic_rss_box_dark);
+				TypedValue tv = new TypedValue();
+				m_activity.getTheme().resolveAttribute(article.getInt(article.getColumnIndex("published")) == 1 ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
+
+				holder.publishedView.setImageResource(tv.resourceId);
 				
 				holder.publishedView.setOnClickListener(new OnClickListener() {
 

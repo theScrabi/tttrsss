@@ -815,28 +815,31 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 				
 			}
-			
-			
-			
+
 			if (holder.markedView != null) {
-				holder.markedView.setImageResource(article.marked ? R.drawable.ic_star_dark : R.drawable.ic_star_outline_dark);
+				TypedValue tv = new TypedValue();
+				m_activity.getTheme().resolveAttribute(article.marked ? R.attr.ic_star : R.attr.ic_star_outline, tv, true);
+
+				holder.markedView.setImageResource(tv.resourceId);
 				
 				holder.markedView.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						article.marked = !article.marked;
 						m_adapter.notifyDataSetChanged();
-						
+
 						m_activity.saveArticleMarked(article);
 					}
 				});
 			}
-			
-			
+
 			
 			if (holder.publishedView != null) {
-				holder.publishedView.setImageResource(article.published ? R.drawable.ic_checkbox_marked_dark : R.drawable.ic_rss_box_dark);
+				TypedValue tv = new TypedValue();
+				m_activity.getTheme().resolveAttribute(article.published ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
+
+				holder.publishedView.setImageResource(tv.resourceId);
 				
 				holder.publishedView.setOnClickListener(new OnClickListener() {
 					

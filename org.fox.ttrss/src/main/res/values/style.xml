@@ -39,6 +39,9 @@
 
         <item name="ic_rss_box">@drawable/ic_rss_box_dark</item>
         <item name="ic_rss">@drawable/ic_rss_dark</item>
+        <item name="ic_checkbox_marked">@drawable/ic_checkbox_marked_dark</item>
+        <item name="ic_star">@drawable/ic_star_dark</item>
+        <item name="ic_star_outline">@drawable/ic_star_outline_dark</item>
     </style>
 
     <style name="SepiaTheme" parent="LightTheme">
@@ -124,6 +127,10 @@
 
         <item name="ic_rss_box">@drawable/ic_rss_box</item>
         <item name="ic_rss">@drawable/ic_rss</item>
+        <item name="ic_checkbox_marked">@drawable/ic_checkbox_marked</item>
+        <item name="ic_star">@drawable/ic_star</item>
+        <item name="ic_star_outline">@drawable/ic_star_outline</item>
+
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

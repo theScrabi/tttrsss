@@ -160,7 +160,7 @@
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_star_outline_dark" />
+                    android:src="?ic_star_outline" />
 
                 <ImageView
                     android:id="@+id/published"
@@ -170,7 +170,7 @@
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_rss_box_dark" />
+                    android:src="?ic_rss_box" />
 
                 <ImageView
                     android:id="@+id/article_menu_button"
