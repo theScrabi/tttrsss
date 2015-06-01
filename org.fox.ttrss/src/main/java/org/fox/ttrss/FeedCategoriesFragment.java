@@ -509,18 +509,6 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 				tu.setVisibility((cat.unread > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
 			
-			ImageView icon = (ImageView)v.findViewById(R.id.icon);
-			
-			if (icon != null) {
-                if (m_activity.isDarkTheme()) {
-                    icon.setImageResource(R.drawable.ic_published);
-                } else {
-                    icon.setImageResource(R.drawable.ic_menu_published_dark);
-                }
-
-				//icon.setImageResource(cat.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-			}
-
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {

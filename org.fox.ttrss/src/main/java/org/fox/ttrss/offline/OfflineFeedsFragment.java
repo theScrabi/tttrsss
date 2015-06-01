@@ -316,34 +316,6 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				tu.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex("unread"))));
 				tu.setVisibility((cursor.getInt(cursor.getColumnIndex("unread")) > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
-			
-			ImageView icon = (ImageView)v.findViewById(R.id.icon);
-			
-			if (icon != null) {
-				
-				if (m_enableFeedIcons) {
-					
-					try {
-						File storage = Environment.getExternalStorageDirectory();
-						
-						File iconFile = new File(storage.getAbsolutePath() + ICON_PATH + cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)) + ".ico");
-						if (iconFile.exists()) {
-							Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
-							if (bmpOrig != null) {
-								icon.setImageBitmap(bmpOrig);
-							}
-						} else {
-							icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-						}
-					} catch (NullPointerException e) {
-						icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-					}
-					
-				} else {
-					icon.setImageResource(cursor.getInt(cursor.getColumnIndex("unread")) > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-				}
-				
-			}
 
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			

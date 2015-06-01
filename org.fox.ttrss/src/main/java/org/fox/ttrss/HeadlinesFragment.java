@@ -819,7 +819,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			
 			if (holder.markedView != null) {
-				holder.markedView.setImageResource(article.marked ? R.drawable.ic_star_full : R.drawable.ic_star_empty);
+				holder.markedView.setImageResource(article.marked ? R.drawable.ic_star_dark : R.drawable.ic_star_outline_dark);
 				
 				holder.markedView.setOnClickListener(new OnClickListener() {
 					
@@ -836,7 +836,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			
 			
 			if (holder.publishedView != null) {
-				holder.publishedView.setImageResource(article.published ? R.drawable.ic_published : R.drawable.ic_unpublished);
+				holder.publishedView.setImageResource(article.published ? R.drawable.ic_checkbox_marked_dark : R.drawable.ic_rss_box_dark);
 				
 				holder.publishedView.setOnClickListener(new OnClickListener() {
 					

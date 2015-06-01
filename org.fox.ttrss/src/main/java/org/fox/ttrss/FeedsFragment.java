@@ -680,53 +680,6 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 				tu.setVisibility((feed.unread > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
 			
-			ImageView icon = (ImageView)v.findViewById(R.id.icon);
-			
-			if (icon != null) {
-
-                if ((feed.is_cat && feed.always_display_as_feed) || (!feed.is_cat && feed.id == -4)) {
-                    icon.setImageResource(R.drawable.ic_published_special);
-                /* } else if (m_enableFeedIcons) {
-					
-					try {
-						File storage = m_activity.getExternalCacheDir();
-						
-						File iconFile = new  File(storage.getAbsolutePath() + ICON_PATH + feed.id + ".ico");
-						if (iconFile.exists()) {
-							Bitmap bmpOrig = BitmapFactory.decodeFile(iconFile.getAbsolutePath());		
-							if (bmpOrig != null) {
-								icon.setImageBitmap(bmpOrig);
-							}
-						} else {
-                            if (m_activity.isDarkTheme()) {
-                                icon.setImageResource(R.drawable.ic_published);
-                            } else {
-                                icon.setImageResource(R.drawable.ic_menu_published_dark);
-                            }
-
-							//icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-						}
-					} catch (NullPointerException e) {
-						//icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-                        if (m_activity.isDarkTheme()) {
-                            icon.setImageResource(R.drawable.ic_published);
-                        } else {
-                            icon.setImageResource(R.drawable.ic_menu_published_dark);
-                        }
-					} */
-					
-				} else {
-					//icon.setImageResource(feed.unread > 0 ? R.drawable.ic_published : R.drawable.ic_unpublished);
-
-                    if (m_activity.isDarkTheme()) {
-                        icon.setImageResource(R.drawable.ic_published);
-                    } else {
-                        icon.setImageResource(R.drawable.ic_menu_published_dark);
-                    }
-				}
-				
-			}
-			
 			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {

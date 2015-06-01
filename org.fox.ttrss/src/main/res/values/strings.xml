@@ -32,6 +32,7 @@
     <string name="blank"></string>
     <string name="transport_debugging">Log sent and received data</string>
     <string name="article_toggle_marked">(Un)Star</string>
+    <string name="article_toggle_unread">(Un)Read</string>
     <string name="article_toggle_published">(Un)Publish</string>
     <string name="headlines_select">Select articles</string>
     <string name="headlines_select_dialog">Select articles</string>

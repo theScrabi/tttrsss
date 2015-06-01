@@ -2,7 +2,7 @@
 
     <item
         android:id="@+id/preferences"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/ic_settings"
         app:showAsAction=""
         android:title="@string/preferences"/>
 

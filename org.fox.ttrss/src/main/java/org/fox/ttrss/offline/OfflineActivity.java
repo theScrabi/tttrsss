@@ -586,11 +586,11 @@ public class OfflineActivity extends CommonActivity {
 					boolean marked = article.getInt(article.getColumnIndex("marked")) == 1;
 					boolean published = article.getInt(article.getColumnIndex("published")) == 1;
 
-					m_menu.findItem(R.id.toggle_marked).setIcon(marked ? R.drawable.ic_important_light :
-						R.drawable.ic_unimportant_light);
+					m_menu.findItem(R.id.toggle_marked).setIcon(marked ? R.drawable.ic_star :
+						R.drawable.ic_star_outline);
 
-					m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_menu_published_light :
-						R.drawable.ic_menu_unpublished_light);
+					m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_checkbox_marked :
+						R.drawable.ic_rss_box);
 
 					article.close();
 				}				

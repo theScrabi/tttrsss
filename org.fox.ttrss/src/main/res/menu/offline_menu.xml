@@ -3,13 +3,13 @@
     <group android:id="@+id/menu_group_feeds" >
         <item
             android:id="@+id/go_online"
-            android:icon="@drawable/ic_cloud_light"
+            android:icon="@drawable/ic_cloud_upload"
             app:showAsAction="ifRoom|withText"
             android:title="@string/go_online"
             android:visible="false"/>
         <item
             android:id="@+id/show_feeds"
-            android:icon="@drawable/ic_list_light"
+            android:icon="@drawable/ic_filter_remove"
             app:showAsAction=""
             android:title="@string/menu_all_feeds"/>
     </group>
@@ -17,71 +17,50 @@
         <item
             android:id="@+id/search"
             app:showAsAction="ifRoom"
-            android:icon="@drawable/ic_search_light"
+            android:icon="@drawable/ic_magnify"
             android:title="@string/search"/>
         <item
             android:id="@+id/headlines_mark_as_read"
-            android:icon="@drawable/ic_accept_light"
+            android:icon="@drawable/ic_check_all"
             app:showAsAction=""
             android:title="@string/headlines_mark_as_read"/>
         <item
             android:id="@+id/headlines_select"
-            android:icon="@drawable/ic_select_all_light"
-            app:showAsAction=""
+            android:icon="@drawable/ic_select"
+            app:showAsAction="ifRoom"
             android:title="@string/headlines_select"/>
 
         <item
             android:id="@+id/headlines_toggle_sort_order"
-            android:icon="@drawable/ic_action_sort_by_size"
+            android:icon="@drawable/ic_sort"
             app:showAsAction="ifRoom"
             android:title="@string/toggle_sort_order"/>
 
         <item
             android:id="@+id/headlines_view_mode"
+            android:icon="@drawable/ic_filter_outline"
             app:showAsAction=""
             android:title="@string/headlines_view_mode"/>
-        
-        <!-- <item
-                android:id="@+id/headlines_toggle_sidebar"
-                app:showAsAction=""
-                android:title="@string/toggle_sidebar"/> -->
     </group>
-    <!--
-    <group android:id="@+id/menu_group_headlines_selection" >
-        <item
-            android:id="@+id/selection_toggle_unread"
-            app:showAsAction="ifRoom"
-            android:title="@string/selection_toggle_unread"/>
-        <item
-            android:id="@+id/selection_toggle_marked"
-            android:icon="@drawable/ic_unimportant_light"
-            app:showAsAction="ifRoom"
-            android:title="@string/selection_toggle_marked"/>
-        <item
-            android:id="@+id/selection_toggle_published"
-            android:icon="@drawable/ic_menu_unpublished_light"
-            app:showAsAction="ifRoom"
-            android:title="@string/selection_toggle_published"/>
-        <item
-            android:id="@+id/selection_select_none"
-            app:showAsAction=""
-            android:title="@string/selection_select_none"/>
-    </group>
-    -->
     <group android:id="@+id/menu_group_article" >
         <item
             android:id="@+id/toggle_marked"
-            android:icon="@drawable/ic_unimportant_light"
+            android:icon="@drawable/ic_star_outline"
             app:showAsAction="ifRoom"
             android:title="@string/article_toggle_marked"/>
         <item
             android:id="@+id/toggle_published"
-            android:icon="@drawable/ic_menu_unpublished_light"
+            android:icon="@drawable/ic_rss_box"
             app:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
+        <!-- <item
+            android:id="@+id/toggle_unread"
+            android:icon="@drawable/ic_email"
+            app:showAsAction="ifRoom"
+            android:title="@string/article_toggle_unread"/> -->
         <item
             android:id="@+id/share_article"
-            android:icon="@drawable/ic_share_light"
+            android:icon="@drawable/ic_share"
             app:showAsAction="ifRoom"
             android:title="@string/share_article"/>
         <item

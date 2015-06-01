@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_row"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     tools:ignore="HardcodedText" >
 
     <TableLayout
@@ -155,22 +155,22 @@
                 <ImageView
                     android:id="@+id/marked"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_star_empty" />
+                    android:src="@drawable/ic_star_outline_dark" />
 
                 <ImageView
                     android:id="@+id/published"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_unpublished" />
+                    android:src="@drawable/ic_rss_box_dark" />
 
                 <ImageView
                     android:id="@+id/article_menu_button"

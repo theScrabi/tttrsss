@@ -920,6 +920,14 @@ public class OnlineActivity extends CommonActivity {
 				if (hf != null) hf.notifyUpdated();
 			}
 			return true;
+			case R.id.toggle_unread:
+				if (ap != null & ap.getSelectedArticle() != null) {
+					Article a = ap.getSelectedArticle();
+					a.unread = !a.unread;
+					saveArticleUnread(a);
+					if (hf != null) hf.notifyUpdated();
+				}
+				return true;
 		/* case R.id.selection_select_none:
 			if (hf != null) {
 				ArticleList selected = hf.getSelectedArticles();
@@ -1549,11 +1557,14 @@ public class OnlineActivity extends CommonActivity {
 				Article article = ap.getSelectedArticle();
 				
 				if (article != null) {
-					m_menu.findItem(R.id.toggle_marked).setIcon(article.marked ? R.drawable.ic_important_light :
-						R.drawable.ic_unimportant_light);
+					m_menu.findItem(R.id.toggle_marked).setIcon(article.marked ? R.drawable.ic_star :
+						R.drawable.ic_star_outline);
 
-					m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_menu_published_light :
-						R.drawable.ic_menu_unpublished_light);
+					m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_checkbox_marked :
+						R.drawable.ic_rss_box);
+
+					m_menu.findItem(R.id.toggle_unread).setIcon(article.unread ? R.drawable.ic_email :
+							R.drawable.ic_email_open);
 				}
 			}
 			

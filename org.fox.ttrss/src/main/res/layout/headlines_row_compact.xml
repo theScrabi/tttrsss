@@ -111,7 +111,7 @@
             android:layout_height="24dp"
             android:layout_weight="0"
             android:clickable="true"
-            android:src="@drawable/ic_star_empty" />
+            android:src="@drawable/ic_star_outline_dark" />
 
 
 

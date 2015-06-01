@@ -36,6 +36,9 @@
         <item name="colorPrimary">#6482af</item>
         <item name="colorPrimaryDark">#526A8E</item>
         <item name="colorAccent">?colorPrimary</item>
+
+        <item name="ic_rss_box">@drawable/ic_rss_box_dark</item>
+        <item name="ic_rss">@drawable/ic_rss_dark</item>
     </style>
 
     <style name="SepiaTheme" parent="LightTheme">
@@ -118,6 +121,9 @@
         <item name="colorPrimary">#51698E</item>
         <item name="colorPrimaryDark">#445877</item>
         <item name="colorAccent">#88b0f0</item>
+
+        <item name="ic_rss_box">@drawable/ic_rss_box</item>
+        <item name="ic_rss">@drawable/ic_rss</item>
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

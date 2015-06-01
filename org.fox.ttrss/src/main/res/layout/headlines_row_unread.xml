@@ -157,22 +157,22 @@
                 <ImageView
                     android:id="@+id/marked"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_star_empty" />
+                    android:src="@drawable/ic_star_outline_dark" />
 
                 <ImageView
                     android:id="@+id/published"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:layout_weight="0"
                     android:clickable="true"
-                    android:src="@drawable/ic_unpublished" />
+                    android:src="@drawable/ic_checkbox_marked_dark" />
 
                 <ImageView
                     android:id="@+id/article_menu_button"
