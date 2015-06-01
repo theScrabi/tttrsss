@@ -108,6 +108,7 @@
 
         <ImageView
             android:id="@+id/marked"
+            android:background="@drawable/ripple"
             android:tint="?headlineFooterColor"
             android:layout_width="24dp"
             android:layout_gravity="bottom|right"

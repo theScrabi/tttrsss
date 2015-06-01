@@ -106,6 +106,7 @@
 
         <ImageView
             android:id="@+id/marked"
+            android:background="@drawable/ripple"
             android:layout_width="24dp"
             android:layout_gravity="bottom|right"
             android:layout_height="24dp"

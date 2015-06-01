@@ -816,11 +816,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				
 			}
 
+			TypedValue tvAccent = new TypedValue();
+			m_activity.getTheme().resolveAttribute(R.attr.colorAccent, tvAccent, true);
+
 			if (holder.markedView != null) {
 				TypedValue tv = new TypedValue();
 				m_activity.getTheme().resolveAttribute(article.marked ? R.attr.ic_star : R.attr.ic_star_outline, tv, true);
 
 				holder.markedView.setImageResource(tv.resourceId);
+
+				if (article.marked)
+					holder.markedView.setColorFilter(tvAccent.data);
+				else
+					holder.markedView.setColorFilter(null);
 				
 				holder.markedView.setOnClickListener(new OnClickListener() {
 
@@ -840,6 +848,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				m_activity.getTheme().resolveAttribute(article.published ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
 
 				holder.publishedView.setImageResource(tv.resourceId);
+
+				if (article.published)
+					holder.publishedView.setColorFilter(tvAccent.data);
+				else
+					holder.publishedView.setColorFilter(null);
 				
 				holder.publishedView.setOnClickListener(new OnClickListener() {
 					
