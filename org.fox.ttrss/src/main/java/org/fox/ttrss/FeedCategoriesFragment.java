@@ -26,7 +26,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -241,6 +240,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
                 } catch (MalformedURLException e) {
                     server.setText("");
                 }
+
             } catch (InflateException e) {
                 // welp couldn't inflate header i guess
                 e.printStackTrace();
