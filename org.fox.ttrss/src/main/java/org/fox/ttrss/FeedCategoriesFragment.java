@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -240,6 +242,21 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
                 } catch (MalformedURLException e) {
                     server.setText("");
                 }
+
+				View account = view.findViewById(R.id.drawer_header_account);
+
+				account.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW,
+									Uri.parse(m_prefs.getString("ttrss_url", "")));
+							startActivity(intent);
+						} catch (Exception e) {
+
+						}
+					}
+				});
 
             } catch (InflateException e) {
                 // welp couldn't inflate header i guess
