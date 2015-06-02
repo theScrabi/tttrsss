@@ -55,7 +55,7 @@ public class OfflineUploadService extends IntentService {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateNotification(String msg) {
+	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, OnlineActivity.class), 0);
 
@@ -64,12 +64,15 @@ public class OfflineUploadService extends IntentService {
                 .setContentTitle(getString(R.string.notify_uploading_title))
                 .setContentIntent(contentIntent)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notification)
+				.setProgress(0, 0, true)
+                .setSmallIcon(R.drawable.ic_cloud_upload)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                         R.drawable.ic_launcher))
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setVibrate(new long[0]);
+
+		if (showProgress) builder.setProgress(max, progress, max == 0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setCategory(Notification.CATEGORY_PROGRESS)
@@ -81,8 +84,8 @@ public class OfflineUploadService extends IntentService {
         m_nmgr.notify(NOTIFY_UPLOADING, builder.build());
 	}
 	
-	private void updateNotification(int msgResId) {
-		updateNotification(getString(msgResId));
+	private void updateNotification(int msgResId, int progress, int max, boolean showProgress) {
+		updateNotification(getString(msgResId), progress, max, showProgress);
 	}
 
 	private void initDatabase() {
@@ -111,7 +114,7 @@ public class OfflineUploadService extends IntentService {
 					if (result != null) {
 						uploadMarked();
 					} else {
-						updateNotification(getErrorMessage());
+						updateNotification(getErrorMessage(), 0, 0, false);
 						uploadFailed();
 					}
 				}
@@ -182,7 +185,7 @@ public class OfflineUploadService extends IntentService {
 					if (result != null) {
 						uploadPublished();
 					} else {
-						updateNotification(getErrorMessage());
+						updateNotification(getErrorMessage(), 0, 0, false);
 						uploadFailed();
 					}
 				}
@@ -251,7 +254,7 @@ public class OfflineUploadService extends IntentService {
 					if (result != null) {
 						uploadSuccess();
 					} else {
-						updateNotification(getErrorMessage());
+						updateNotification(getErrorMessage(), 0, 0, false);
 						uploadFailed();
 					}
 				}
@@ -288,7 +291,7 @@ public class OfflineUploadService extends IntentService {
 			if (!m_uploadInProgress) {
 				m_uploadInProgress = true;
 	
-				updateNotification(R.string.notify_uploading_sending_data);
+				updateNotification(R.string.notify_uploading_sending_data, 0, 0, true);
 				
 				uploadRead();			
 			}

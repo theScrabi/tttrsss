@@ -81,6 +81,7 @@
     <string name="notify_downloading_articles">Downloading articles (%1$d)…</string>
     <string name="notify_downloading_init">Starting download…</string>
     <string name="notify_downloading_feeds">Downloading feeds…</string>
+    <string name="notify_downloading_categories">Downloading categories…</string>
     <string name="notify_uploading_sending_data">Sending data to server…</string>
     <string name="notify_downloading_title">Preparing offline mode</string>
     <string name="notify_uploading_title">Synchronizing offline data</string>

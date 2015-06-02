@@ -92,7 +92,7 @@ public class OfflineDownloadService extends Service {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void updateNotification(String msg) {
+	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
 		Intent intent = new Intent(this, OnlineActivity.class);
 		intent.setAction(INTENT_ACTION_CANCEL);
 		
@@ -104,11 +104,13 @@ public class OfflineDownloadService extends Service {
                 .setContentTitle(getString(R.string.notify_downloading_title))
                 .setContentIntent(contentIntent)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notification)
+				.setSmallIcon(R.drawable.ic_cloud_download)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                         R.drawable.ic_launcher))
                 .setOngoing(true)
                 .setOnlyAlertOnce(true);
+
+		if (showProgress) builder.setProgress(max, progress, max == 0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setCategory(Notification.CATEGORY_PROGRESS)
@@ -121,8 +123,8 @@ public class OfflineDownloadService extends Service {
         m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
-	private void updateNotification(int msgResId) {
-		updateNotification(getString(msgResId));
+	private void updateNotification(int msgResId, int progress, int max, boolean showProgress) {
+		updateNotification(getString(msgResId), progress, max, showProgress);
 	}
 
 	private void downloadFailed() {
@@ -168,7 +170,7 @@ public class OfflineDownloadService extends Service {
             	sendBroadcast(intent);
             }
         } else {
-        	updateNotification(getString(R.string.notify_downloading_images, 0));
+        	updateNotification(getString(R.string.notify_downloading_images, 0), 0, 0, true);
         }
         
         m_readableDb.close();
@@ -195,7 +197,7 @@ public class OfflineDownloadService extends Service {
 	private void downloadArticles() {
 		Log.d(TAG, "offline: downloading articles... offset=" + m_articleOffset);
 		
-		updateNotification(getString(R.string.notify_downloading_articles, m_articleOffset));
+		updateNotification(getString(R.string.notify_downloading_articles, m_articleOffset), m_articleOffset, m_syncMax, true);
 		
 		OfflineArticlesRequest req = new OfflineArticlesRequest(this);
 		
@@ -217,7 +219,7 @@ public class OfflineDownloadService extends Service {
 	
 	private void downloadFeeds() {
 
-		updateNotification(R.string.notify_downloading_feeds);
+		updateNotification(R.string.notify_downloading_feeds, 0, 0, true);
 		
 		getWritableDb().execSQL("DELETE FROM feeds;");
 		
@@ -255,7 +257,7 @@ public class OfflineDownloadService extends Service {
 						getWritableDb().execSQL("DELETE FROM articles;");
 					} catch (Exception e) {
 						e.printStackTrace();
-						updateNotification(R.string.offline_switch_error);
+						updateNotification(R.string.offline_switch_error, 0, 0, false);
 						downloadFailed();
 					}
 				}
@@ -272,7 +274,7 @@ public class OfflineDownloadService extends Service {
 						downloadFailed();
 					}
 				} else {
-					updateNotification(getErrorMessage());
+					updateNotification(getErrorMessage(), 0, 0, false);
 					downloadFailed();
 				}
 			}
@@ -294,7 +296,7 @@ public class OfflineDownloadService extends Service {
 
 	private void downloadCategories() {
 
-		updateNotification(R.string.notify_downloading_feeds);
+		updateNotification(R.string.notify_downloading_categories, 0, 0, true);
 		
 		getWritableDb().execSQL("DELETE FROM categories;");
 		
@@ -324,7 +326,7 @@ public class OfflineDownloadService extends Service {
 						
 					} catch (Exception e) {
 						e.printStackTrace();
-						updateNotification(R.string.offline_switch_error);
+						updateNotification(R.string.offline_switch_error, 0, 0, false);
 						downloadFailed();
 					}
 				}
@@ -340,7 +342,7 @@ public class OfflineDownloadService extends Service {
 						downloadFailed();
 					}
 				} else {
-					updateNotification(getErrorMessage());
+					updateNotification(getErrorMessage(), 0, 0, false);
 					downloadFailed();
 				}
 			}
@@ -456,7 +458,7 @@ public class OfflineDownloadService extends Service {
 					stmtInsert.close();
 
 				} catch (Exception e) {
-					updateNotification(R.string.offline_switch_error);
+					updateNotification(R.string.offline_switch_error, 0, 0, false);
 					Log.d(TAG, "offline: failed: exception when loading articles");
 					e.printStackTrace();
 					downloadFailed();
@@ -483,7 +485,7 @@ public class OfflineDownloadService extends Service {
 
 			} else {
 				Log.d(TAG, "offline: failed: " + getErrorMessage());
-				updateNotification(getErrorMessage());
+				updateNotification(getErrorMessage(), 0, 0, false);
 				downloadFailed();
 			}
 		}
@@ -502,7 +504,7 @@ public class OfflineDownloadService extends Service {
 			if (!m_downloadInProgress) {
 				if (m_downloadImages) ImageCacheService.cleanupCache(this, false);
 			
-				updateNotification(R.string.notify_downloading_init);
+				updateNotification(R.string.notify_downloading_init, 0, 0, true);
 				m_downloadInProgress = true;
 		
 				downloadCategories();
