@@ -1,5 +1,22 @@
 package org.fox.ttrss.util;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
+
+import org.fox.ttrss.OnlineActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.offline.OfflineDownloadService;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,20 +26,6 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-
-import org.fox.ttrss.OnlineActivity;
-import org.fox.ttrss.R;
-import org.fox.ttrss.offline.OfflineDownloadService;
-
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
 
 public class ImageCacheService extends IntentService {
 
@@ -127,19 +130,32 @@ public class ImageCacheService extends IntentService {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void updateNotification(String msg) {
-		Notification notification = new Notification(R.drawable.ic_launcher,
-				getString(R.string.notify_downloading_title), System.currentTimeMillis());
-		
+	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, OnlineActivity.class), 0);
-		
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
-		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
-		
-        notification.setLatestEventInfo(this, getString(R.string.notify_downloading_title), msg, contentIntent);
-                       
-        m_nmgr.notify(NOTIFY_DOWNLOADING, notification);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+				.setContentText(msg)
+				.setContentTitle(getString(R.string.notify_downloading_title))
+				.setContentIntent(contentIntent)
+				.setWhen(System.currentTimeMillis())
+				.setSmallIcon(R.drawable.ic_cloud_download)
+				.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+						R.drawable.ic_launcher))
+				.setOngoing(true)
+				.setOnlyAlertOnce(true);
+
+		if (showProgress) builder.setProgress(max, progress, max == 0);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			builder.setCategory(Notification.CATEGORY_PROGRESS)
+					.setVibrate(new long[0])
+					.setVisibility(Notification.VISIBILITY_PUBLIC)
+					.setColor(0x88b0f0)
+					.setGroup("org.fox.ttrss");
+		}
+
+		m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
 	/* private void updateNotification(int msgResId) {
@@ -185,7 +201,7 @@ public class ImageCacheService extends IntentService {
 						
 						m_imagesDownloaded++;
 						
-						updateNotification(getString(R.string.notify_downloading_images, m_imagesDownloaded));
+						updateNotification(getString(R.string.notify_downloading_images, m_imagesDownloaded), 0, 0, true);
 						
 					} catch (IOException e) {
 						e.printStackTrace();
