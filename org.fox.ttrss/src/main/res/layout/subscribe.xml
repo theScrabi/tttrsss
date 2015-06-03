@@ -26,13 +26,22 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/feed_url" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_below="@+id/category_spinner"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:id="@+id/subscribe_progress" />
+
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/category_spinner"
         android:layout_alignRight="@+id/category_spinner"
-        android:layout_below="@+id/category_spinner" >
+        android:layout_below="@+id/subscribe_progress" >
 
         <Button
             style="?android:attr/buttonBarButtonStyle"

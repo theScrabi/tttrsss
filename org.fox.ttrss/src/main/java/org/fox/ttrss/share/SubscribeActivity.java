@@ -1,32 +1,32 @@
 package org.fox.ttrss.share;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.R;
-import org.fox.ttrss.types.FeedCategory;
-import org.fox.ttrss.types.FeedCategoryList;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.R;
+import org.fox.ttrss.types.FeedCategory;
+import org.fox.ttrss.types.FeedCategoryList;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class SubscribeActivity extends CommonShareActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -35,6 +35,7 @@ public class SubscribeActivity extends CommonShareActivity {
 	private Button m_catButton;
 	private CatListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
+	private ProgressBar m_progressBar;
 	
 	private static final int REQ_CATS = 1;
 	private static final int REQ_POST = 2;
@@ -87,7 +88,8 @@ public class SubscribeActivity extends CommonShareActivity {
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_launcher);
 		
 		setSmallScreen(false); 
-		
+
+		m_progressBar = (ProgressBar) findViewById(R.id.subscribe_progress);
 		Spinner catList = (Spinner) findViewById(R.id.category_spinner);
 
 		if (m_cats.size() == 0) m_cats.add(new FeedCategory(0, "Uncategorized", 0));
@@ -138,7 +140,7 @@ public class SubscribeActivity extends CommonShareActivity {
 		
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				setProgressBarIndeterminateVisibility(false);
+				m_progressBar.setVisibility(View.INVISIBLE);
 
 				if (m_lastError != ApiError.NO_ERROR) {
 					toast(getErrorMessage());
@@ -206,8 +208,8 @@ public class SubscribeActivity extends CommonShareActivity {
 					}
 				}
 			};
-	
-			setProgressBarIndeterminateVisibility(true);
+
+			m_progressBar.setVisibility(View.VISIBLE);
 			
 			req.execute(map);
 		}
@@ -228,7 +230,7 @@ public class SubscribeActivity extends CommonShareActivity {
 	private void updateCats() {
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected void onPostExecute(JsonElement result) {
-				setProgressBarIndeterminateVisibility(false);
+				m_progressBar.setVisibility(View.INVISIBLE);
 
 				if (m_lastError != ApiError.NO_ERROR) {
 					toast(getErrorMessage());
@@ -266,8 +268,8 @@ public class SubscribeActivity extends CommonShareActivity {
 				put("op", "getCategories");
 			}
 		};
-	
-		setProgressBarIndeterminateVisibility(true);
+
+		m_progressBar.setVisibility(View.VISIBLE);
 			
 		req.execute(map);
 	}
