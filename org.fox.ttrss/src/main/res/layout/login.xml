@@ -1,15 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/loading_container"
     android:layout_width="fill_parent"
-    android:fitsSystemWindows="true"
-    android:gravity="center"
     android:layout_height="fill_parent" >
+
+    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
 
         <TextView
             android:id="@+id/loading_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:text="@string/loading_message" />
 
-</LinearLayout>
+</FrameLayout>

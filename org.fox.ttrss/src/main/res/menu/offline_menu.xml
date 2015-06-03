@@ -4,9 +4,9 @@
         <item
             android:id="@+id/go_online"
             android:icon="@drawable/ic_cloud_upload"
-            app:showAsAction="ifRoom|withText"
+            app:showAsAction=""
             android:title="@string/go_online"
-            android:visible="false"/>
+            android:visible="false"/> <!-- ifRoom|withText -->
         <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_filter_remove"

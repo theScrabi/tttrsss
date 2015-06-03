@@ -9,11 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.WindowCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -37,6 +36,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
         super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines_articles);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
         m_forceDisableActionMode = isPortrait() || isSmallScreen();
 

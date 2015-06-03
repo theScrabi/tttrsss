@@ -6,9 +6,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -27,7 +29,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -287,48 +288,58 @@ public class FeedsFragment extends Fragment implements OnItemClickListener, OnSh
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-        if (m_activity.isSmallScreen()) {
-            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
-            m_list.addHeaderView(layout);
-        }
+		// TODO: better check
+		if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
+			try {
+				View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
+				m_list.addHeaderView(layout, null, false);
 
-        if (m_enableParentBtn) {
-            View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
+				TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+				TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
 
-            layout.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    m_activity.getSupportFragmentManager().popBackStack();
-                }
-            });
+				login.setText(m_prefs.getString("login", ""));
+				try {
+					server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
+				} catch (MalformedURLException e) {
+					server.setText("");
+				}
 
-            m_list.addHeaderView(layout, null, false);
-        } else {
-            // TODO: better check
-            if (m_activity.findViewById(R.id.headlines_drawer) != null) {
-                try {
-                    View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
-                    m_list.addHeaderView(layout, null, false);
+				View account = view.findViewById(R.id.drawer_header_account);
 
-                    TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-                    TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+				account.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW,
+									Uri.parse(m_prefs.getString("ttrss_url", "")));
+							startActivity(intent);
+						} catch (Exception e) {
 
-                    login.setText(m_prefs.getString("login", ""));
-                    try {
-                        server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-                    } catch (MalformedURLException e) {
-                        server.setText("");
-                    }
-                } catch (InflateException e) {
-                    // welp couldn't inflate header i guess
-                    e.printStackTrace();
-                } catch (java.lang.UnsupportedOperationException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+						}
+					}
+				});
+			} catch (InflateException e) {
+				// welp couldn't inflate header i guess
+				e.printStackTrace();
+			} catch (java.lang.UnsupportedOperationException e) {
+				e.printStackTrace();
+			}
+		}
 
-        m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
+		if (m_enableParentBtn) {
+			View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
+
+			layout.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					m_activity.getSupportFragmentManager().popBackStack();
+				}
+			});
+
+			m_list.addHeaderView(layout, null, false);
+		}
+
+		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		m_list.setAdapter(m_adapter);
 		//list.setEmptyView(view.findViewById(R.id.no_feeds));
 		m_list.setOnItemClickListener(this);

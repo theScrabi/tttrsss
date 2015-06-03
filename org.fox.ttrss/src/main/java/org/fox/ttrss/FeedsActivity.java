@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -56,6 +57,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		setContentView(R.layout.headlines);
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
 		GlobalState.getInstance().load(savedInstanceState);
 
@@ -208,7 +212,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			if (m_drawerLayout != null) {
+			/* if (m_drawerLayout != null) {
                 boolean isDrawerOpen = m_drawerLayout.isDrawerOpen(Gravity.START);
 
 				m_menu.setGroupVisible(R.id.menu_group_feeds, isDrawerOpen);
@@ -218,8 +222,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
 				
 				m_menu.findItem(R.id.update_headlines).setVisible(false);
-			}
-			
+			} */
+
+			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+
 			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
@@ -375,10 +382,10 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 			invalidateOptionsMenu();
 			refresh();
 			return true;
-		case R.id.update_feeds:
+		/*case R.id.update_feeds:
 			//m_pullToRefreshAttacher.setRefreshing(true);
 			refresh();
-			return true;
+			return true;*/
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);

@@ -1,20 +1,9 @@
 package org.fox.ttrss;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class PreferencesActivity extends CommonActivity {
 	@Override
@@ -28,6 +17,9 @@ public class PreferencesActivity extends CommonActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.preferences);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

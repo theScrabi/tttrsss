@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,9 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.headlines_articles);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 

@@ -6,8 +6,8 @@
             <item
                 android:id="@+id/subscribe_to_feed"
                 android:icon="@drawable/ic_plus_circle"
-                app:showAsAction="ifRoom"
-                android:title="@string/subscribe_to_feed"/>
+                app:showAsAction=""
+                android:title="@string/subscribe_to_feed"/> <!-- iRroom -->
 
             <item
                 android:id="@+id/show_feeds"
@@ -17,25 +17,27 @@
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_cloud_download"
-                app:showAsAction="ifRoom"
-                android:title="@string/go_offline"/>            
-            <item
+                android:orderInCategory="800"
+                app:showAsAction=""
+                android:title="@string/go_offline"/> <!-- iRroom -->
+            <!-- <item
                 android:id="@+id/update_feeds"
                 android:icon="@drawable/ic_refresh"
                 app:showAsAction=""
-                android:title="@string/update_feeds"/>
+                android:title="@string/update_feeds"/> -->
             <item
+                android:orderInCategory="900"
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_logout"
                 app:showAsAction=""
                 android:title="@string/logout"/>
         </group>
         <group android:id="@+id/menu_group_headlines" >
-            <item
+            <!-- <item
                 android:id="@+id/update_headlines"
                 android:icon="@drawable/ic_refresh"
                 app:showAsAction=""
-                android:title="@string/update_headlines"/>
+                android:title="@string/update_headlines"/> -->
             <item
                 android:id="@+id/search"
                 android:icon="@drawable/ic_magnify"
@@ -114,6 +116,7 @@
     </group>
 
     <item
+        android:orderInCategory="999"
         android:id="@+id/preferences"
         android:icon="@drawable/ic_settings"
         app:showAsAction=""

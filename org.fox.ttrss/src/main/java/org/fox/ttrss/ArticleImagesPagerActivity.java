@@ -14,6 +14,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -260,6 +261,9 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.article_images_pager);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+        setSupportActionBar(toolbar);
 
         m_progress = (ProgressBar) findViewById(R.id.article_images_progress);
 

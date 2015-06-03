@@ -2,9 +2,11 @@ package org.fox.ttrss.offline;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -14,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +26,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.fox.ttrss.R;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class OfflineFeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -142,15 +147,48 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-        if (m_activity.isSmallScreen()) {
-            View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
-            m_list.addHeaderView(layout);
-        }
-
 		m_cursor = createCursor();
 		
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
+
+		// TODO: better check
+		if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
+			try {
+				View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
+				m_list.addHeaderView(layout, null, false);
+
+				TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+				TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+
+				login.setText(m_prefs.getString("login", ""));
+				try {
+					server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
+				} catch (MalformedURLException e) {
+					server.setText("");
+				}
+
+				View account = view.findViewById(R.id.drawer_header_account);
+
+				account.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW,
+									Uri.parse(m_prefs.getString("ttrss_url", "")));
+							startActivity(intent);
+						} catch (Exception e) {
+
+						}
+					}
+				});
+			} catch (InflateException e) {
+				// welp couldn't inflate header i guess
+				e.printStackTrace();
+			} catch (java.lang.UnsupportedOperationException e) {
+				e.printStackTrace();
+			}
+		}
 
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);

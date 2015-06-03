@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -170,6 +171,9 @@ public class OfflineActivity extends CommonActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.login);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
 		invalidateOptionsMenu();
 

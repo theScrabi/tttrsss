@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -163,6 +164,9 @@ public class OnlineActivity extends CommonActivity {
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
 		setContentView(R.layout.login);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
         if (!ImageLoader.getInstance().isInited()) {
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
@@ -1022,12 +1026,12 @@ public class OnlineActivity extends CommonActivity {
 								
 			}
 			return true;
-		case R.id.update_headlines:
+		/*case R.id.update_headlines:
 			if (hf != null) {
 				//m_pullToRefreshAttacher.setRefreshing(true);
 				hf.refresh(false, true);
 			}
-			return true;
+			return true;*/
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);

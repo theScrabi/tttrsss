@@ -19,8 +19,8 @@
         android:layout_height="21dp"
         android:layout_weight="0"
         android:scaleType="fitXY"
-        android:visibility="invisible"
-        android:src="?ic_rss_box" />
+        android:tint="?colorAccent"
+        android:src="?ic_keyboard_backspace" />
 
     <TextView
         android:fontFamily="sans-serif-medium"
@@ -29,7 +29,7 @@
         android:gravity="center_vertical"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:paddingLeft="30dp"
+        android:paddingLeft="35dp"
         android:singleLine="true"
         android:text=".."
         android:paddingBottom="2dp"

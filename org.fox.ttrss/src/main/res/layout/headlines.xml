@@ -8,10 +8,20 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/headlines_fragment"
+            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?headlinesBackground"></FrameLayout>
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/headlines_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?headlinesBackground"></FrameLayout>
+
+            <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+
+        </FrameLayout>
+
 
         <FrameLayout
             android:id="@+id/feeds_fragment"

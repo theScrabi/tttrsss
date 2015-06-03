@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowActionBarOverlay">true</item>
+    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
 
         <item name="statusBarHintColor">?colorPrimary</item>
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
@@ -43,10 +43,11 @@
         <item name="ic_star">@drawable/ic_star_dark</item>
         <item name="ic_star_outline">@drawable/ic_star_outline_dark</item>
         <item name="ic_share">@drawable/ic_share_dark</item>
+        <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace_dark</item>
     </style>
 
-    <style name="DarkTheme" parent="Theme.AppCompat">
-        <item name="windowActionBarOverlay">true</item>
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
 
         <item name="statusBarHintColor">?colorPrimary</item>
         <item name="unreadCounterColor">#909090</item>
@@ -88,6 +89,7 @@
         <item name="ic_star">@drawable/ic_star</item>
         <item name="ic_star_outline">@drawable/ic_star_outline</item>
         <item name="ic_share">@drawable/ic_share</item>
+        <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace</item>
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

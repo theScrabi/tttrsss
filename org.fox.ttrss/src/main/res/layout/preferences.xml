@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/preferences_container"
-    android:fitsSystemWindows="true"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</FrameLayout>
+    <FrameLayout
+        android:id="@+id/preferences_container"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="502dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/actionbar_toolbar">
+    </FrameLayout>
+
+    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+
+</RelativeLayout>

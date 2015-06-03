@@ -1,9 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines"
-    android:fitsSystemWindows="true"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent">
+
+    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
 
     <FrameLayout
         android:id="@+id/sw600dp_anchor"
@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_below="@+id/actionbar_toolbar">
 
         <FrameLayout
             android:paddingRight="4dp"
@@ -38,4 +39,4 @@
         </FrameLayout>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

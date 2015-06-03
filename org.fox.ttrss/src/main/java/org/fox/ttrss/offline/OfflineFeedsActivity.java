@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -45,6 +46,9 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.headlines);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		setSupportActionBar(toolbar);
 
         setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 
@@ -204,7 +208,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			Fragment cf = getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
-			if (m_drawerLayout != null) {
+			/* if (m_drawerLayout != null) {
                 boolean isDrawerOpen = m_drawerLayout.isDrawerOpen(Gravity.START);
 
 				m_menu.setGroupVisible(R.id.menu_group_feeds, isDrawerOpen);
@@ -212,8 +216,11 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 			} else {
 				m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
 				m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());				
-			}
-			
+			} */
+
+			m_menu.setGroupVisible(R.id.menu_group_feeds, (ff != null && ff.isAdded()) || (cf != null && cf.isAdded()));
+			m_menu.setGroupVisible(R.id.menu_group_headlines, hf != null && hf.isAdded());
+
 			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
 			MenuItem item = m_menu.findItem(R.id.show_feeds);
