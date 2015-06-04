@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -642,6 +644,36 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
+
+			}
+
+			ImageView icon = (ImageView) v.findViewById(R.id.icon);
+
+			if (icon != null) {
+				TypedValue tv = new TypedValue();
+
+				if (feed.id == 0 && !feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_archive, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else if (feed.id == -1 && !feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_star, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else if (feed.id == -2 && !feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_checkbox_marked, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else if (feed.id == -3 && !feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_coffee, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else if (feed.id == -4 && !feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_folder_outline, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else if (feed.is_cat) {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_folder_outline, tv, true);
+					icon.setImageResource(tv.resourceId);
+				} else {
+					m_activity.getTheme().resolveAttribute(R.attr.ic_rss_box, tv, true);
+					icon.setImageResource(tv.resourceId);
+				}
 
 			}
 

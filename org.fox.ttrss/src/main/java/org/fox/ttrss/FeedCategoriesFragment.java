@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -463,6 +465,16 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 				
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
+
+			}
+
+			ImageView icon = (ImageView) v.findViewById(R.id.icon);
+
+			if (icon != null) {
+				TypedValue tv = new TypedValue();
+
+				m_activity.getTheme().resolveAttribute(R.attr.ic_folder_outline, tv, true);
+				icon.setImageResource(tv.resourceId);
 
 			}
 
