@@ -327,7 +327,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
                 View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
 
                 if (loadingBar != null) {
-                    loadingBar.setVisibility(View.GONE);
+                    loadingBar.setVisibility(View.INVISIBLE);
                 }
             }
 			
