@@ -44,6 +44,7 @@
         <item name="ic_star_outline">@drawable/ic_star_outline_dark</item>
         <item name="ic_share">@drawable/ic_share_dark</item>
         <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace_dark</item>
+        <item name="ic_settings">@drawable/ic_settings_dark</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
@@ -90,6 +91,7 @@
         <item name="ic_star_outline">@drawable/ic_star_outline</item>
         <item name="ic_share">@drawable/ic_share</item>
         <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace</item>
+        <item name="ic_settings">@drawable/ic_settings</item>
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

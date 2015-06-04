@@ -180,11 +180,11 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
             dialog.show();
 
             return true;
-		case R.id.show_feeds:
+		/* case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			invalidateOptionsMenu();
 			refresh();
-			return true;
+			return true; */
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
@@ -223,13 +223,13 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
-			MenuItem item = m_menu.findItem(R.id.show_feeds);
+			/* MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {
 				item.setTitle(R.string.menu_all_feeds);
 			} else {
 				item.setTitle(R.string.menu_unread_feeds);
-			}
+			} */
 		}		
 	}
 	

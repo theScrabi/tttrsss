@@ -229,13 +229,13 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(false);
 			
-			MenuItem item = m_menu.findItem(R.id.show_feeds);
+			/* MenuItem item = m_menu.findItem(R.id.show_feeds);
 
 			if (getUnreadOnly()) {
 				item.setTitle(R.string.menu_all_feeds);
 			} else {
 				item.setTitle(R.string.menu_unread_feeds);
-			}
+			} */
 		}		
 	}
 
@@ -377,11 +377,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
             dialog.show();
 
             return true;
-        case R.id.show_feeds:
+        /* case R.id.show_feeds:
 			setUnreadOnly(!getUnreadOnly());
 			invalidateOptionsMenu();
 			refresh();
-			return true;
+			return true; */
 		/*case R.id.update_feeds:
 			//m_pullToRefreshAttacher.setRefreshing(true);
 			refresh();

@@ -9,15 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,25 +38,23 @@ import org.fox.ttrss.types.FeedCategory;
 import org.fox.ttrss.types.FeedCategoryList;
 
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class FeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
-	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
 	private FeedCategory m_selectedCat;
 	private FeedsActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
     private ListView m_list;
+	protected SharedPreferences m_prefs;
 
-    @SuppressLint("DefaultLocale")
+	@SuppressLint("DefaultLocale")
 	class CatUnreadComparator implements Comparator<FeedCategory> {
 		@Override
 		public int compare(FeedCategory a, FeedCategory b) {
@@ -222,44 +217,7 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		m_list = (ListView)view.findViewById(R.id.feeds);
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 
-        // TODO: better check
-        if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
-            try {
-                View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
-                m_list.addHeaderView(layout, null, false);
-
-                TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-                TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
-
-                login.setText(m_prefs.getString("login", ""));
-                try {
-                    server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-                } catch (MalformedURLException e) {
-                    server.setText("");
-                }
-
-				View account = view.findViewById(R.id.drawer_header_account);
-
-				account.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						try {
-							Intent intent = new Intent(Intent.ACTION_VIEW,
-									Uri.parse(m_prefs.getString("ttrss_url", "")));
-							startActivity(intent);
-						} catch (Exception e) {
-
-						}
-					}
-				});
-
-            } catch (InflateException e) {
-                // welp couldn't inflate header i guess
-                e.printStackTrace();
-            } catch (java.lang.UnsupportedOperationException e) {
-                e.printStackTrace();
-            }
-        }
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
 
         m_list.setAdapter(m_adapter);
         m_list.setOnItemClickListener(this);
@@ -552,17 +510,28 @@ public class FeedCategoriesFragment extends Fragment implements OnItemClickListe
 		Log.d(TAG, "onItemClick=" + position);
 		
 		if (list != null) {
+
+			if (position == list.getCount() - 1) {
+				Intent intent = new Intent(m_activity,
+						PreferencesActivity.class);
+				startActivityForResult(intent, 0);
+
+				return;
+			}
+
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
 
-            if (cat.id < 0) {
-                m_activity.onCatSelected(cat, false);
-            } else {
-                m_activity.onCatSelected(cat);
-            }
+			if (cat != null) {
+				if (cat.id < 0) {
+					m_activity.onCatSelected(cat, false);
+				} else {
+					m_activity.onCatSelected(cat);
+				}
 
-			m_selectedCat = cat;
-			
-			m_adapter.notifyDataSetChanged();
+				m_selectedCat = cat;
+
+				m_adapter.notifyDataSetChanged();
+			}
 		}
 	}
 

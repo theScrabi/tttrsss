@@ -6,17 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +26,11 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.fox.ttrss.BaseFeedlistFragment;
+import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-public class OfflineFeedCategoriesFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedCategoryListAdapter m_adapter;
@@ -152,43 +148,7 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
 
-		// TODO: better check
-		if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
-			try {
-				View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
-				m_list.addHeaderView(layout, null, false);
-
-				TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-				TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
-
-				login.setText(m_prefs.getString("login", ""));
-				try {
-					server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-				} catch (MalformedURLException e) {
-					server.setText("");
-				}
-
-				View account = view.findViewById(R.id.drawer_header_account);
-
-				account.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						try {
-							Intent intent = new Intent(Intent.ACTION_VIEW,
-									Uri.parse(m_prefs.getString("ttrss_url", "")));
-							startActivity(intent);
-						} catch (Exception e) {
-
-						}
-					}
-				});
-			} catch (InflateException e) {
-				// welp couldn't inflate header i guess
-				e.printStackTrace();
-			} catch (java.lang.UnsupportedOperationException e) {
-				e.printStackTrace();
-			}
-		}
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
 
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);
@@ -228,6 +188,14 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
 		
 		if (list != null) {
+			if (position == list.getCount() - 1) {
+				Intent intent = new Intent(m_activity,
+						PreferencesActivity.class);
+				startActivityForResult(intent, 0);
+
+				return;
+			}
+
 			Cursor cursor = (Cursor) list.getItemAtPosition(position);
 			
 			if (cursor != null) {
@@ -241,6 +209,11 @@ public class OfflineFeedCategoriesFragment extends Fragment implements OnItemCli
 				m_adapter.notifyDataSetChanged();
 			}
 		}
+	}
+
+	@Override
+	public void refresh(boolean background) {
+		refresh();
 	}
 
 	/* public void setLoadingStatus(int status, boolean showProgress) {

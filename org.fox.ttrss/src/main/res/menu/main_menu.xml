@@ -9,11 +9,11 @@
                 app:showAsAction=""
                 android:title="@string/subscribe_to_feed"/> <!-- iRroom -->
 
-            <item
+            <!-- <item
                 android:id="@+id/show_feeds"
                 android:icon="@drawable/ic_filter_remove"
                 app:showAsAction=""
-                android:title="@string/menu_all_feeds"/>
+                android:title="@string/menu_all_feeds"/> -->
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_cloud_download"
@@ -114,12 +114,12 @@
             app:showAsAction=""
             android:title="@string/trial_purchase"/>
 
-        <item
+        <!-- <item
             android:orderInCategory="999"
             android:id="@+id/preferences"
             android:icon="@drawable/ic_settings"
             app:showAsAction=""
-            android:title="@string/preferences"/>
+            android:title="@string/preferences"/> -->
 
     </group>
 

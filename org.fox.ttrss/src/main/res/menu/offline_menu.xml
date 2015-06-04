@@ -7,11 +7,11 @@
             app:showAsAction=""
             android:title="@string/go_online"
             android:visible="false"/> <!-- ifRoom|withText -->
-        <item
+        <!-- <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_filter_remove"
             app:showAsAction=""
-            android:title="@string/menu_all_feeds"/>
+            android:title="@string/menu_all_feeds"/> -->
     </group>
     <group android:id="@+id/menu_group_headlines" >
         <item

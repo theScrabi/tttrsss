@@ -23,6 +23,7 @@
     <string name="loading_message">Loading, please wait…</string>
     <string name="menu_unread_feeds">Show unread feeds</string>
     <string name="menu_all_feeds">Show all feeds</string>
+    <string name="unread_only">Unread only</string>
     <string name="update_feeds">Refresh</string>
     <string name="share_article">Share article</string>
     <string name="catchup">Mark read</string>

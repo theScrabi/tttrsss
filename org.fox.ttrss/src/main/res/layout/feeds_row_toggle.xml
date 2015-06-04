@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-    android:background="?feedsSelectedBackground"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="8dp"
@@ -15,7 +14,6 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:tint="?colorAccent"
         android:layout_gravity="center_vertical"
         android:layout_width="21dp"
         android:layout_height="21dp"
@@ -35,29 +33,14 @@
         android:singleLine="true"
         android:text="Feed"
         android:paddingBottom="2dp"
-        android:textColor="?feedlistSelectedTextColor"
+        android:textColor="?feedlistTextColor"
         android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/unread_counter"
-        android:fontFamily="sans-serif-medium"
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/row_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:singleLine="true"
-        android:text="3200"
-        android:layout_marginLeft="16dp"
-        android:textColor="?unreadCounterColor"
-        android:textSize="14sp" />
-
-    <ImageButton
-        android:id="@+id/feed_menu_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:background="@null"
-        android:paddingLeft="8dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_action_overflow" />
+        android:layout_marginLeft="16dp" />
 
 </LinearLayout>

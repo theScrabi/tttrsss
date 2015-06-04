@@ -52,7 +52,7 @@ public class CommonActivity extends ActionBarActivity {
             }        
         }
 	} */
-	
+
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;

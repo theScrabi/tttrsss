@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,12 +25,11 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.fox.ttrss.BaseFeedlistFragment;
+import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-public class OfflineFeedsFragment extends Fragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -111,7 +107,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				null, unreadOnly, null, null, null, order);
 		}
 	}
-	
+
 	public void refresh() {
 		try {
 			if (!isAdded()) return;
@@ -131,7 +127,7 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
@@ -154,45 +150,9 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-		// TODO: better check
-		if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
-			try {
-				View layout = inflater.inflate(R.layout.drawer_header, m_list, false);
-				m_list.addHeaderView(layout, null, false);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
 
-				TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-				TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
-
-				login.setText(m_prefs.getString("login", ""));
-				try {
-					server.setText(new URL(m_prefs.getString("ttrss_url", "")).getHost());
-				} catch (MalformedURLException e) {
-					server.setText("");
-				}
-
-				View account = view.findViewById(R.id.drawer_header_account);
-
-				account.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						try {
-							Intent intent = new Intent(Intent.ACTION_VIEW,
-									Uri.parse(m_prefs.getString("ttrss_url", "")));
-							startActivity(intent);
-						} catch (Exception e) {
-
-						}
-					}
-				});
-			} catch (InflateException e) {
-				// welp couldn't inflate header i guess
-				e.printStackTrace();
-			} catch (java.lang.UnsupportedOperationException e) {
-				e.printStackTrace();
-			}
-		}
-
-        if (m_enableParentBtn) {
+		if (m_enableParentBtn) {
             View layout = inflater.inflate(R.layout.feeds_goback, container, false);
 
             layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
@@ -255,6 +215,14 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
 		
 		if (list != null) {
+			if (position == list.getCount() - 1) {
+				Intent intent = new Intent(m_activity,
+						PreferencesActivity.class);
+				startActivityForResult(intent, 0);
+
+				return;
+			}
+
 			Cursor cursor = (Cursor) list.getItemAtPosition(position);
 			
 			if (cursor != null) {
@@ -268,6 +236,11 @@ public class OfflineFeedsFragment extends Fragment implements OnItemClickListene
 				m_adapter.notifyDataSetChanged();
 			}
 		}
+	}
+
+	@Override
+	public void refresh(boolean background) {
+		refresh();
 	}
 
 	/* public void setLoadingStatus(int status, boolean showProgress) {
