@@ -5,13 +5,11 @@
     android:background="?headlinesBackground"
     android:layout_height="fill_parent">
 
-    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
-
     <org.fox.ttrss.ArticleImagesPager
         android:id="@+id/article_images_pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/actionbar_toolbar" />
+        android:layout_alignParentTop="true" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -36,5 +34,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:visibility="invisible" />
+
+
+    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
 
 </RelativeLayout>
