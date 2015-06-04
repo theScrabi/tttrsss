@@ -64,6 +64,11 @@ public abstract class BaseFeedlistFragment extends Fragment {
                 TextView text = (TextView) footer.findViewById(R.id.title);
                 text.setText(R.string.unread_only);
 
+                ImageView icon = (ImageView) footer.findViewById(R.id.icon);
+                TypedValue tv = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.ic_filter_variant, tv, true);
+                icon.setImageResource(tv.resourceId);
+
                 final SwitchCompat rowSwitch = (SwitchCompat) footer.findViewById(R.id.row_switch);
                 rowSwitch.setChecked(activity.getUnreadOnly());
 
@@ -88,8 +93,8 @@ public abstract class BaseFeedlistFragment extends Fragment {
                 text = (TextView) footer.findViewById(R.id.title);
                 text.setText(R.string.preferences);
 
-                ImageView icon = (ImageView) footer.findViewById(R.id.icon);
-                TypedValue tv = new TypedValue();
+                icon = (ImageView) footer.findViewById(R.id.icon);
+                tv = new TypedValue();
                 getActivity().getTheme().resolveAttribute(R.attr.ic_settings, tv, true);
                 icon.setImageResource(tv.resourceId);
 
