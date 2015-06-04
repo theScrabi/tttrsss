@@ -235,7 +235,7 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 					return;
 				}
 
-				if (position == list.getCount() - 2) {
+				if (!m_enableParentBtn && position == list.getCount() - 2) {
 					m_activity.switchOnline();
 					return;
 				}

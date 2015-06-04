@@ -81,7 +81,7 @@ public abstract class BaseFeedlistFragment extends Fragment {
                     }
                 });
 
-                text.setOnClickListener(new View.OnClickListener() {
+                footer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         rowSwitch.setChecked(!rowSwitch.isChecked());

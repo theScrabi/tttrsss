@@ -381,7 +381,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 					return;
 				}
 
-				if (position == list.getCount() - 2) {
+				if (!m_enableParentBtn && position == list.getCount() - 2) {
 					m_activity.switchOffline();
 					return;
 				}
