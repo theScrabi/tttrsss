@@ -723,9 +723,9 @@ public class OnlineActivity extends CommonActivity {
 				openUnlockUrl();
 			}
 			return true;
-		case R.id.logout:
+		/*case R.id.logout:
 			logout();
-			return true;
+			return true;*/
 		case R.id.login:
 			login();
 			return true;

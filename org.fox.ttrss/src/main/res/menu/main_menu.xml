@@ -25,12 +25,12 @@
                 android:icon="@drawable/ic_refresh"
                 app:showAsAction=""
                 android:title="@string/update_feeds"/> -->
-            <item
+            <!-- <item
                 android:orderInCategory="900"
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_logout"
                 app:showAsAction=""
-                android:title="@string/logout"/>
+                android:title="@string/logout"/> -->
         </group>
         <group android:id="@+id/menu_group_headlines" >
             <!-- <item
@@ -113,14 +113,15 @@
             android:id="@+id/donate"
             app:showAsAction=""
             android:title="@string/trial_purchase"/>
-    </group>
 
-    <item
-        android:orderInCategory="999"
-        android:id="@+id/preferences"
-        android:icon="@drawable/ic_settings"
-        app:showAsAction=""
-        android:title="@string/preferences"/>
+        <item
+            android:orderInCategory="999"
+            android:id="@+id/preferences"
+            android:icon="@drawable/ic_settings"
+            app:showAsAction=""
+            android:title="@string/preferences"/>
+
+    </group>
 
     <group android:id="@+id/menu_group_logged_out" >
         <item
@@ -128,6 +129,14 @@
             android:icon="@drawable/ic_login"
             app:showAsAction="ifRoom"
             android:title="@string/login_login"/>
+
+        <item
+            android:orderInCategory="999"
+            android:id="@+id/preferences"
+            android:icon="@drawable/ic_settings"
+            app:showAsAction="ifRoom"
+            android:title="@string/preferences"/>
+
     </group>
 
 </menu>
