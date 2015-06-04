@@ -47,6 +47,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.JsonElement;
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -376,8 +377,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
+		SwingBottomInAnimationAdapter animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
 
-		m_list.setAdapter(m_adapter);
+		animationAdapter.setAbsListView(m_list);
+		m_list.setAdapter(animationAdapter);
+
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
 		registerForContextMenu(m_list);
@@ -474,12 +478,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (!append) {
 				if (getView() != null) {
 					Log.d(TAG, "scroll hack");
-					ListView list = (ListView)getView().findViewById(R.id.headlines_list);
 					m_autoCatchupDisabled = true;
-					list.setSelection(0);
+					m_list.setSelection(0);
 					m_autoCatchupDisabled = false;
-					list.setEmptyView(null);
-					m_adapter.clear();
+					//m_articles.clear();
 					m_adapter.notifyDataSetChanged();
 				}
 			}
