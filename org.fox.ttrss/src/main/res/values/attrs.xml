@@ -22,7 +22,7 @@
     <attr name="loadingBackground" format="reference|color" />
     <attr name="articleNoteBackground" format="reference|color" />
     <attr name="articleNoteTextColor" format="reference|color" />
-    <attr name="statusBarHintColor" format="reference|color" />
+    <!-- <attr name="statusBarHintColor" format="reference|color" /> -->
     <attr name="parentBtnBackground" format="reference|color" />
     <attr name="articleHeader" format="reference|color" />
     <attr name="articleHeaderTextColor" format="reference|color" />
@@ -38,4 +38,7 @@
     <attr name="ic_keyboard_backspace" format="reference" />
     <attr name="ic_settings" format="reference" />
     <attr name="ic_filter_variant" format="reference" />
+    <declare-styleable name="ScrimInsetsView">
+        <attr format="reference|color" name="insetForeground">
+        </attr></declare-styleable>
 </resources>

@@ -67,8 +67,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
         if (m_drawerLayout != null) {
 
-            View drawerList = findViewById(R.id.feeds_fragment);
-
+            /*View drawerList = findViewById(R.id.feeds_fragment);
 
             int minWidth = dpToPx(240);
             int maxWidth = dpToPx(320);
@@ -80,9 +79,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
             DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawerList.getLayoutParams();
             params.width = width;
-            drawerList.setLayoutParams(params);
+            drawerList.setLayoutParams(params); */
 
-            m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
+			m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
                 @Override
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);

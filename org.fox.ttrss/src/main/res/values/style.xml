@@ -1,13 +1,14 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="LightTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
 
     </style>
 
     <style name="LightTheme" parent="LightTheme.Base">
         <item name="windowActionModeOverlay">true</item>
 
-        <item name="statusBarHintColor">?colorPrimary</item>
+        <!-- <item name="statusBarHintColor">?colorPrimary</item> -->
         <item name="ttrssHorizontalDivider">@android:drawable/divider_horizontal_bright</item>
         <item name="feedlistBackground">#e0e0e0</item>
         <item name="unreadCounterColor">#909090</item>
@@ -59,7 +60,7 @@
     <style name="DarkTheme" parent="DarkTheme.Base">
         <item name="windowActionModeOverlay">true</item>
 
-        <item name="statusBarHintColor">?colorPrimary</item>
+        <!-- <item name="statusBarHintColor">?colorPrimary</item> -->
         <item name="unreadCounterColor">#909090</item>
         <item name="feedlistTextColor">@android:color/primary_text_dark</item>
         <item name="headlineUnreadTextColor">@android:color/primary_text_dark</item>
