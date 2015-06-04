@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
     android:id="@+id/article_images"
     android:layout_width="fill_parent"
     android:animateLayoutChanges="true"
