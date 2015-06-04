@@ -20,7 +20,8 @@ import java.net.URL;
 public abstract class BaseFeedlistFragment extends Fragment {
     abstract public void refresh(boolean background);
 
-    public void initDrawerHeader(LayoutInflater inflater, View view, ListView list, final CommonActivity activity, final SharedPreferences prefs) {
+    public void initDrawerHeader(LayoutInflater inflater, View view, ListView list, final CommonActivity activity, final SharedPreferences prefs,
+                                 boolean rootView, boolean isOffline) {
 
         if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
             try {
@@ -86,6 +87,22 @@ public abstract class BaseFeedlistFragment extends Fragment {
                         rowSwitch.setChecked(!rowSwitch.isChecked());
                     }
                 });
+
+                if (rootView) {
+                    // offline
+                    footer = inflater.inflate(R.layout.feeds_row, list, false);
+                    list.addFooterView(footer);
+                    text = (TextView) footer.findViewById(R.id.title);
+                    text.setText(isOffline ? R.string.go_online : R.string.go_offline);
+
+                    icon = (ImageView) footer.findViewById(R.id.icon);
+                    tv = new TypedValue();
+                    getActivity().getTheme().resolveAttribute(isOffline ? R.attr.ic_cloud_upload : R.attr.ic_cloud_download, tv, true);
+                    icon.setImageResource(tv.resourceId);
+
+                    TextView counter = (TextView) footer.findViewById(R.id.unread_counter);
+                    counter.setText(R.string.blank);
+                }
 
                 // settings
                 footer = inflater.inflate(R.layout.feeds_row, list, false);

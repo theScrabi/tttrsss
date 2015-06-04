@@ -51,6 +51,8 @@
         <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace_dark</item>
         <item name="ic_settings">@drawable/ic_settings_dark</item>
         <item name="ic_filter_variant">@drawable/ic_filter_variant_dark</item>
+        <item name="ic_cloud_download">@drawable/ic_cloud_download_dark</item>
+        <item name="ic_cloud_upload">@drawable/ic_cloud_upload_dark</item>
     </style>
 
     <style name="DarkTheme.Base" parent="Theme.AppCompat.NoActionBar">
@@ -103,6 +105,8 @@
         <item name="ic_keyboard_backspace">@drawable/ic_keyboard_backspace</item>
         <item name="ic_settings">@drawable/ic_settings</item>
         <item name="ic_filter_variant">@drawable/ic_filter_variant</item>
+        <item name="ic_cloud_download">@drawable/ic_cloud_download</item>
+        <item name="ic_cloud_upload">@drawable/ic_cloud_upload</item>
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

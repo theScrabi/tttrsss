@@ -148,7 +148,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, m_cursor,
 				new String[] { "title", "unread" }, new int[] { R.id.title, R.id.unread_counter }, 0);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, true, true);
 
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);
@@ -188,14 +188,6 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
 		
 		if (list != null) {
-			if (position == list.getCount() - 1) {
-				Intent intent = new Intent(m_activity,
-						PreferencesActivity.class);
-				startActivityForResult(intent, 0);
-
-				return;
-			}
-
 			Cursor cursor = (Cursor) list.getItemAtPosition(position);
 			
 			if (cursor != null) {
@@ -207,6 +199,19 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
                 m_selectedCatId = feedId;
 
 				m_adapter.notifyDataSetChanged();
+			} else {
+				if (position == list.getCount() - 1) {
+					Intent intent = new Intent(m_activity,
+							PreferencesActivity.class);
+					startActivityForResult(intent, 0);
+
+					return;
+				}
+
+				if (position == list.getCount() - 2) {
+					m_activity.switchOnline();
+					return;
+				}
 			}
 		}
 	}

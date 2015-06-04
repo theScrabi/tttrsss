@@ -271,9 +271,9 @@ public class OfflineActivity extends CommonActivity {
 				}
 			}
 			return true; */
-		case R.id.go_online:
+		/*case R.id.go_online:
 			switchOnline();
-			return true;	
+			return true;*/
 		case R.id.search:
 			if (ohf != null) {
 				Dialog dialog = new Dialog(this);
@@ -602,7 +602,7 @@ public class OfflineActivity extends CommonActivity {
 		}
 	}
 	
-	private void switchOnline() {
+	protected void switchOnline() {
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", false);

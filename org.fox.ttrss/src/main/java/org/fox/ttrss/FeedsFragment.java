@@ -283,7 +283,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn, false);
 
 		if (m_enableParentBtn) {
 			View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
@@ -358,14 +358,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		ListView list = (ListView)av;
 
 		if (list != null) {
-			if (position == list.getCount() - 1) {
-				Intent intent = new Intent(m_activity,
-						PreferencesActivity.class);
-				startActivityForResult(intent, 0);
-
-				return;
-			}
-
             Feed feed = (Feed)list.getItemAtPosition(position);
 
 			if (feed != null) {
@@ -377,6 +369,19 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 					}
 				} else {
 					m_activity.onFeedSelected(feed);
+				}
+			} else {
+				if (position == list.getCount() - 1) {
+					Intent intent = new Intent(m_activity,
+							PreferencesActivity.class);
+					startActivityForResult(intent, 0);
+
+					return;
+				}
+
+				if (position == list.getCount() - 2) {
+					m_activity.switchOffline();
+					return;
 				}
 			}
 			

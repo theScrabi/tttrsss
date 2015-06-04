@@ -14,12 +14,12 @@
                 android:icon="@drawable/ic_filter_remove"
                 app:showAsAction=""
                 android:title="@string/menu_all_feeds"/> -->
-            <item
+            <!-- <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_cloud_download"
                 android:orderInCategory="800"
                 app:showAsAction=""
-                android:title="@string/go_offline"/> <!-- iRroom -->
+                android:title="@string/go_offline"/> --><!-- iRroom -->
             <!-- <item
                 android:id="@+id/update_feeds"
                 android:icon="@drawable/ic_refresh"

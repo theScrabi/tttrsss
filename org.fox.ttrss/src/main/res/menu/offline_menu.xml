@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <group android:id="@+id/menu_group_feeds" >
-        <item
+        <!-- <item
             android:id="@+id/go_online"
             android:icon="@drawable/ic_cloud_upload"
             app:showAsAction=""
             android:title="@string/go_online"
-            android:visible="false"/> <!-- ifRoom|withText -->
+            android:visible="false"/> --> <!-- ifRoom|withText -->
         <!-- <item
             android:id="@+id/show_feeds"
             android:icon="@drawable/ic_filter_remove"

@@ -150,7 +150,7 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn, true);
 
 		if (m_enableParentBtn) {
             View layout = inflater.inflate(R.layout.feeds_goback, container, false);
@@ -215,14 +215,6 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 		ListView list = (ListView)getActivity().findViewById(R.id.feeds);
 		
 		if (list != null) {
-			if (position == list.getCount() - 1) {
-				Intent intent = new Intent(m_activity,
-						PreferencesActivity.class);
-				startActivityForResult(intent, 0);
-
-				return;
-			}
-
 			Cursor cursor = (Cursor) list.getItemAtPosition(position);
 			
 			if (cursor != null) {
@@ -234,6 +226,19 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
                 m_selectedFeedId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
+			} else {
+				if (position == list.getCount() - 1) {
+					Intent intent = new Intent(m_activity,
+							PreferencesActivity.class);
+					startActivityForResult(intent, 0);
+
+					return;
+				}
+
+				if (position == list.getCount() - 2) {
+					m_activity.switchOnline();
+					return;
+				}
 			}
 		}
 	}

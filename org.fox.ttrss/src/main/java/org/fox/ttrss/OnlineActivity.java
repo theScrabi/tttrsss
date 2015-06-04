@@ -200,7 +200,7 @@ public class OnlineActivity extends CommonActivity {
 		return GlobalState.getInstance().m_canUseProgress;
 	}
 
-	private void switchOffline() {
+	protected void switchOffline() {
 		if (m_offlineModeStatus == 2) {
 			
 			AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -729,9 +729,9 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.login:
 			login();
 			return true;
-		case R.id.go_offline:
+		/*case R.id.go_offline:
 			switchOffline();
-			return true;
+			return true;*/
 		case R.id.article_set_note:
 			if (ap != null && ap.getSelectedArticle() != null) {
 				editArticleNote(ap.getSelectedArticle());				
