@@ -47,6 +47,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.JsonElement;
+import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -90,6 +91,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
+	private AnimationAdapter m_animationAdapter;
 	private ArticleList m_articles = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
 	//private ArticleList m_selectedArticles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
@@ -377,10 +379,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
-		SwingBottomInAnimationAdapter animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
+		m_animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
 
-		animationAdapter.setAbsListView(m_list);
-		m_list.setAdapter(animationAdapter);
+		m_animationAdapter.setAbsListView(m_list);
+		m_list.setAdapter(m_animationAdapter);
 
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
@@ -481,7 +483,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_autoCatchupDisabled = true;
 					m_list.setSelection(0);
 					m_autoCatchupDisabled = false;
-					//m_articles.clear();
+					m_animationAdapter.reset();
+					m_articles.clear();
 					m_adapter.notifyDataSetChanged();
 				}
 			}
@@ -493,7 +496,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 				@Override
 				protected void onProgressUpdate(Integer... progress) {
-					m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
+					m_activity.setProgress(Math.round((((float) progress[0] / (float) progress[1]) * 10000)));
 				}
 
 				@Override
