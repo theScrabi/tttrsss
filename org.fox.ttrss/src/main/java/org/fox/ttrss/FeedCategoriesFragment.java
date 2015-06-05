@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -219,7 +218,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		m_list = (ListView)view.findViewById(R.id.feeds);
 		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, true, false);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, true);
 
         m_list.setAdapter(m_adapter);
         m_list.setOnItemClickListener(this);
@@ -535,19 +534,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 				m_selectedCat = cat;
 
 				m_adapter.notifyDataSetChanged();
-			} else {
-				if (position == list.getCount() - 1) {
-					Intent intent = new Intent(m_activity,
-							PreferencesActivity.class);
-					startActivityForResult(intent, 0);
-
-					return;
-				}
-
-				if (position == list.getCount() - 2) {
-					m_activity.switchOffline();
-					return;
-				}
 			}
 		}
 	}

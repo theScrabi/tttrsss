@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Typeface;
@@ -285,7 +284,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn, false);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn);
 
 		if (m_enableParentBtn) {
 			View layout = inflater.inflate(R.layout.feeds_goback, m_list, false);
@@ -371,19 +370,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 					}
 				} else {
 					m_activity.onFeedSelected(feed);
-				}
-			} else {
-				if (position == list.getCount() - 1) {
-					Intent intent = new Intent(m_activity,
-							PreferencesActivity.class);
-					startActivityForResult(intent, 0);
-
-					return;
-				}
-
-				if (!m_enableParentBtn && position == list.getCount() - 2) {
-					m_activity.switchOffline();
-					return;
 				}
 			}
 			

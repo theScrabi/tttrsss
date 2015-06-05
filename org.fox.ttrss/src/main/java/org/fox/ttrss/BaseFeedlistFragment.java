@@ -14,14 +14,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.fox.ttrss.offline.OfflineActivity;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public abstract class BaseFeedlistFragment extends Fragment {
     abstract public void refresh(boolean background);
 
-    public void initDrawerHeader(LayoutInflater inflater, View view, ListView list, final CommonActivity activity, final SharedPreferences prefs,
-                                 boolean rootView, boolean isOffline) {
+    public void initDrawerHeader(LayoutInflater inflater, View view, ListView list, final CommonActivity activity, final SharedPreferences prefs, boolean isRoot) {
+
+        boolean isOffline = activity instanceof OfflineActivity;
 
         if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
             try {
@@ -57,6 +60,12 @@ public abstract class BaseFeedlistFragment extends Fragment {
 
                 // divider
                 View footer = inflater.inflate(R.layout.headlines_divider, list, false);
+                footer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //
+                    }
+                });
                 list.addFooterView(footer);
 
                 // unread only checkbox
@@ -88,9 +97,21 @@ public abstract class BaseFeedlistFragment extends Fragment {
                     }
                 });
 
-                if (rootView) {
+                if (isRoot) {
                     // offline
                     footer = inflater.inflate(R.layout.feeds_row, list, false);
+                    footer.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (activity instanceof OnlineActivity) {
+                                ((OnlineActivity)activity).switchOffline();
+
+                            } else if (activity instanceof OfflineActivity) {
+                                ((OfflineActivity)activity).switchOnline();
+                            }
+                        }
+                    });
+
                     list.addFooterView(footer);
                     text = (TextView) footer.findViewById(R.id.title);
                     text.setText(isOffline ? R.string.go_online : R.string.go_offline);
@@ -106,6 +127,15 @@ public abstract class BaseFeedlistFragment extends Fragment {
 
                 // settings
                 footer = inflater.inflate(R.layout.feeds_row, list, false);
+                footer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(activity,
+                                PreferencesActivity.class);
+                        startActivityForResult(intent, 0);
+                    }
+                });
+
                 list.addFooterView(footer);
                 text = (TextView) footer.findViewById(R.id.title);
                 text.setText(R.string.preferences);

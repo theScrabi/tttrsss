@@ -2,7 +2,6 @@ package org.fox.ttrss.offline;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
@@ -26,7 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.fox.ttrss.BaseFeedlistFragment;
-import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
 public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
@@ -152,7 +150,7 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
-		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn, true);
+		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn);
 
 		if (m_enableParentBtn) {
             View layout = inflater.inflate(R.layout.feeds_goback, container, false);
@@ -228,19 +226,6 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
                 m_selectedFeedId = feedId;
 				
 				m_adapter.notifyDataSetChanged();
-			} else {
-				if (position == list.getCount() - 1) {
-					Intent intent = new Intent(m_activity,
-							PreferencesActivity.class);
-					startActivityForResult(intent, 0);
-
-					return;
-				}
-
-				if (!m_enableParentBtn && position == list.getCount() - 2) {
-					m_activity.switchOnline();
-					return;
-				}
 			}
 		}
 	}

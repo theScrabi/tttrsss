@@ -602,7 +602,7 @@ public class OfflineActivity extends CommonActivity {
 		}
 	}
 	
-	protected void switchOnline() {
+	public void switchOnline() {
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", false);
