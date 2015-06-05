@@ -657,6 +657,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
         private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
+		private final DisplayImageOptions displayImageOptions;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -666,6 +667,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			TypedValue tv = new TypedValue();
 			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
 			titleHighScoreUnreadColor = tv.data;
+
+			displayImageOptions = new DisplayImageOptions.Builder()
+					.cacheInMemory(true)
+					.resetViewBeforeLoading(true)
+					.cacheOnDisk(true)
+					.build();
 		}
 		
 		public int getViewTypeCount() {
@@ -908,7 +915,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
                 if (showFlavorImage && holder.flavorImageView != null) {
-
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
                     if (article.noValidFlavorImage) {
@@ -935,19 +941,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         }
 
                         if (article.flavorImage != null) {
-
                             String imgSrc = article.flavorImage.attr("src");
                             final String imgSrcFirst = imgSrc;
 
                             // retarded schema-less urls
                             if (imgSrc.indexOf("//") == 0)
                                 imgSrc = "http:" + imgSrc;
-
-                            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                                    .cacheInMemory(true)
-                                    .resetViewBeforeLoading(true)
-                                    .cacheOnDisk(true)
-                                    .build();
 
                             ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
@@ -974,47 +973,54 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                             final ViewGroup flavorImageHolder = holder.flavorImageHolder;
                             final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
 
-                            ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
 
-                            ImageLoader.getInstance().displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
+								holder.flavorImageView.setTag(imgSrc);
 
-                                @Override
-                                public void onLoadingCancelled(String arg0,
-                                                               View arg1) {
-                                    // TODO Auto-generated method stub
+								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
-                                }
+								ImageLoader.getInstance().displayImage(imgSrc, imageAware, displayImageOptions, new ImageLoadingListener() {
 
-                                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                                @Override
-                                public void onLoadingComplete(String arg0,
-                                                              View arg1, Bitmap arg2) {
-                                    if (!isAdded() || arg2 == null) return;
+									@Override
+									public void onLoadingCancelled(String arg0,
+																   View arg1) {
+										// TODO Auto-generated method stub
 
-                                    flavorImageLoadingBar.setVisibility(View.INVISIBLE);
+									}
 
-                                    if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
-                                        flavorImageHolder.setVisibility(View.VISIBLE);
-                                    } else {
-                                        flavorImageHolder.setVisibility(View.GONE);
-                                    }
-                                }
+									@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+									@Override
+									public void onLoadingComplete(String arg0,
+																  View arg1, Bitmap arg2) {
+										if (!isAdded() || arg2 == null) return;
 
-                                @Override
-                                public void onLoadingFailed(String arg0,
-                                                            View arg1, FailReason arg2) {
-                                    flavorImageHolder.setVisibility(View.GONE);
-                                    article.noValidFlavorImage = true;
-                                }
+										flavorImageLoadingBar.setVisibility(View.INVISIBLE);
 
-                                @Override
-                                public void onLoadingStarted(String arg0,
-                                                             View arg1) {
-                                    // TODO Auto-generated method stub
+										if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
+											flavorImageHolder.setVisibility(View.VISIBLE);
+										} else {
+											flavorImageHolder.setVisibility(View.GONE);
+										}
+									}
 
-                                }
+									@Override
+									public void onLoadingFailed(String arg0,
+																View arg1, FailReason arg2) {
+										flavorImageHolder.setVisibility(View.GONE);
+										article.noValidFlavorImage = true;
+									}
 
-                            });
+									@Override
+									public void onLoadingStarted(String arg0,
+																 View arg1) {
+										// TODO Auto-generated method stub
+
+									}
+
+								});
+
+							}
+
                         } else{
                             article.noValidFlavorImage = true;
                             holder.flavorImageHolder.setVisibility(View.GONE);
