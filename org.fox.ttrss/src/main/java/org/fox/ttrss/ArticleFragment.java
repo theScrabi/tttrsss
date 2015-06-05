@@ -319,8 +319,6 @@ public class ArticleFragment extends Fragment  {
 
         }
 
-        m_web = (WebView)view.findViewById(R.id.article_content);
-
         TextView dv = (TextView)view.findViewById(R.id.date);
 
         if (dv != null) {
@@ -372,6 +370,8 @@ public class ArticleFragment extends Fragment  {
                 tagv.setVisibility(View.GONE);
             }
         }
+
+        m_web = (WebView)view.findViewById(R.id.article_content);
 
         m_web.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
