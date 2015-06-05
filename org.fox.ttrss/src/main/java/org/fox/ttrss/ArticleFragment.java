@@ -7,11 +7,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -54,8 +54,12 @@ public class ArticleFragment extends Fragment  {
     protected View m_contentView;
     protected FSVideoChromeClient m_chromeClient;
     protected View m_fab;
+    protected int m_articleFontSize;
+    protected int m_articleSmallFontSize;
+    protected boolean m_acceleratedWebview = true;
+    private boolean m_isVisible;
 
-	public void initialize(Article article) {
+    public void initialize(Article article) {
 		m_article = article;
 	}
 
@@ -146,10 +150,19 @@ public class ArticleFragment extends Fragment  {
 			getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
 		}
 		
-		super.onCreateContextMenu(menu, v, menuInfo);		
-		
+		super.onCreateContextMenu(menu, v, menuInfo);
+
 	}
-	
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        m_isVisible = isVisibleToUser;
+
+        renderContent(null);
+    }
+
 	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
@@ -214,14 +227,14 @@ public class ArticleFragment extends Fragment  {
             }
         }
 
-        final int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
-        final int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
+        m_articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
+        m_articleSmallFontSize = Math.max(10, Math.min(18, m_articleFontSize - 2));
 
         TextView title = (TextView)view.findViewById(R.id.title);
 
         if (title != null) {
 
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, m_articleFontSize + 3));
 
             String titleStr;
 
@@ -266,7 +279,7 @@ public class ArticleFragment extends Fragment  {
 
         if (comments != null) {
             if (m_activity.getApiLevel() >= 4 && m_article.comments_count > 0) {
-                comments.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+                comments.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
 
                 String commentsTitle = getResources().getQuantityString(R.plurals.article_comments, m_article.comments_count, m_article.comments_count);
                 comments.setText(commentsTitle);
@@ -298,7 +311,7 @@ public class ArticleFragment extends Fragment  {
 
         if (note != null) {
             if (m_article.note != null && !"".equals(m_article.note)) {
-                note.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+                note.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
                 note.setText(m_article.note);
             } else {
                 note.setVisibility(View.GONE);
@@ -311,7 +324,7 @@ public class ArticleFragment extends Fragment  {
         TextView dv = (TextView)view.findViewById(R.id.date);
 
         if (dv != null) {
-            dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+            dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
 
             Date d = new Date(m_article.updated * 1000L);
             DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
@@ -323,7 +336,7 @@ public class ArticleFragment extends Fragment  {
         boolean hasAuthor = false;
 
         if (author != null) {
-            author.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+            author.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
 
             if (m_article.author != null && m_article.author.length() > 0) {
                 author.setText(getString(R.string.author_formatted, m_article.author));
@@ -336,7 +349,7 @@ public class ArticleFragment extends Fragment  {
         TextView tagv = (TextView)view.findViewById(R.id.tags);
 
         if (tagv != null) {
-            tagv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
+            tagv.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
 
             if (m_article.feed_title != null) {
                 String fTitle = m_article.feed_title;
@@ -376,17 +389,25 @@ public class ArticleFragment extends Fragment  {
             }
         });
 
-        boolean acceleratedWebview = true;
-
         // prevent flicker in ics
         if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 m_web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                acceleratedWebview = false;
+                m_acceleratedWebview = false;
             }
         }
 
-        String cssOverride = "";
+        m_web.setVisibility(View.VISIBLE);
+
+        if (savedInstanceState != null || m_isVisible) renderContent(savedInstanceState);
+
+		return view;
+	}
+
+    protected void renderContent(Bundle savedInstanceState) {
+        if (!isAdded()) return;
+
+        Log.d(TAG, "renderContent: " + m_article.title);
 
         WebSettings ws = m_web.getSettings();
         ws.setSupportZoom(false);
@@ -395,6 +416,8 @@ public class ArticleFragment extends Fragment  {
         getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
 
         String backgroundHexColor = String.format("#%06X", (0xFFFFFF & tvBackground.data));
+
+        String cssOverride = "";
 
         cssOverride = "body { background : "+ backgroundHexColor+"; }";
 
@@ -416,7 +439,7 @@ public class ArticleFragment extends Fragment  {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ws.setJavaScriptEnabled(true);
 
-            m_chromeClient = new FSVideoChromeClient(view);
+            m_chromeClient = new FSVideoChromeClient(getView());
             m_web.setWebChromeClient(m_chromeClient);
         }
 
@@ -424,20 +447,20 @@ public class ArticleFragment extends Fragment  {
             cssOverride += "body { text-align : justify; } ";
         }
 
-        ws.setDefaultFontSize(articleFontSize);
+        ws.setDefaultFontSize(m_articleFontSize);
 
         StringBuilder content = new StringBuilder("<html>" +
-                        "<head>" +
-                        "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-                        "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
-                        "<style type=\"text/css\">" +
-                        "body { padding : 0px; margin : 0px; line-height : 130%; }" +
-                        "img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
-                        " table { width : 100%; }" +
-                        cssOverride +
-                        "</style>" +
-                        "</head>" +
-                        "<body>");
+                "<head>" +
+                "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+                "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
+                "<style type=\"text/css\">" +
+                "body { padding : 0px; margin : 0px; line-height : 130%; }" +
+                "img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
+                " table { width : 100%; }" +
+                cssOverride +
+                "</style>" +
+                "</head>" +
+                "<body>");
 
         content.append(articleContent);
 
@@ -478,7 +501,7 @@ public class ArticleFragment extends Fragment  {
                 //
             }
 
-            if (savedInstanceState == null || !acceleratedWebview) {
+            if (savedInstanceState == null || !m_acceleratedWebview) {
                 m_web.loadDataWithBaseURL(baseUrl, content.toString(), "text/html", "utf-8", null);
             } else {
                 WebBackForwardList rc = m_web.restoreState(savedInstanceState);
@@ -493,10 +516,7 @@ public class ArticleFragment extends Fragment  {
             e.printStackTrace();
         }
 
-        m_web.setVisibility(View.VISIBLE);
-
-		return view;
-	}
+    }
 
     @Override
     public void onPause() {

@@ -185,18 +185,6 @@ public class OfflineArticleFragment extends Fragment {
 			TextView title = (TextView)view.findViewById(R.id.title);
 
 			if (title != null) {
-				
-				/* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
-					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", Typeface.NORMAL);
-					
-					if (tf != null && !tf.equals(title.getTypeface())) {
-						title.setTypeface(tf);
-					}
-					
-					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 5));
-				} else {
-					title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
-				} */
 
                 title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
 
