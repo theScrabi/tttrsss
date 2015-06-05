@@ -1,11 +1,18 @@
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+
     <LinearLayout
-        android:fitsSystemWindows="true"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_below="@+id/actionbar_toolbar">
 
         <FrameLayout
             android:id="@+id/sw600dp_anchor"
@@ -13,7 +20,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone" >
         </FrameLayout>
-
 
         <FrameLayout
             android:id="@+id/feeds_fragment"
@@ -23,21 +29,16 @@
             android:background="?feedlistBackground" >
         </FrameLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_weight="0.75"
+            android:id="@+id/headlines_fragment"
+            android:background="?headlinesBackground"
+            android:elevation="4dp"
             android:layout_height="match_parent">
-
-            <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
-
-            <FrameLayout
-                android:id="@+id/headlines_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?headlinesBackground"
-                android:layout_below="@+id/actionbar_toolbar">
-            </FrameLayout>
-
-        </RelativeLayout>
+        </FrameLayout>
 
     </LinearLayout>
+
+
+</RelativeLayout>

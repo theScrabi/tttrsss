@@ -225,7 +225,10 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
         registerForContextMenu(m_list);
 
         View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
-        loadingBar.setVisibility(View.VISIBLE);
+
+		if (loadingBar != null) {
+			loadingBar.setVisibility(View.VISIBLE);
+		}
 
 		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
 		

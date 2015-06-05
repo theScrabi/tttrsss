@@ -309,7 +309,10 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
         //m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
 
         View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
-        loadingBar.setVisibility(View.VISIBLE);
+
+		if (loadingBar != null) {
+			loadingBar.setVisibility(View.VISIBLE);
+		}
 
         //Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);
 		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);

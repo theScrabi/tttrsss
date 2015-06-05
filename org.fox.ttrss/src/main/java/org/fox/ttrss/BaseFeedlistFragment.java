@@ -28,33 +28,36 @@ public abstract class BaseFeedlistFragment extends Fragment {
 
         if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
             try {
-                View layout = inflater.inflate(R.layout.drawer_header, list, false);
-                list.addHeaderView(layout, null, false);
 
-                TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
-                TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
+                if (activity.isSmallScreen()) {
+                    View layout = inflater.inflate(R.layout.drawer_header, list, false);
+                    list.addHeaderView(layout, null, false);
 
-                login.setText(prefs.getString("login", ""));
-                try {
-                    server.setText(new URL(prefs.getString("ttrss_url", "")).getHost());
-                } catch (MalformedURLException e) {
-                    server.setText("");
-                }
+                    TextView login = (TextView) view.findViewById(R.id.drawer_header_login);
+                    TextView server = (TextView) view.findViewById(R.id.drawer_header_server);
 
-                View account = view.findViewById(R.id.drawer_header_account);
-
-                account.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW,
-                                    Uri.parse(prefs.getString("ttrss_url", "")));
-                            startActivity(intent);
-                        } catch (Exception e) {
-
-                        }
+                    login.setText(prefs.getString("login", ""));
+                    try {
+                        server.setText(new URL(prefs.getString("ttrss_url", "")).getHost());
+                    } catch (MalformedURLException e) {
+                        server.setText("");
                     }
-                });
+
+                    View account = view.findViewById(R.id.drawer_header_account);
+
+                    account.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse(prefs.getString("ttrss_url", "")));
+                                startActivity(intent);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    });
+                }
 
 				/* deal with ~material~ footers */
 

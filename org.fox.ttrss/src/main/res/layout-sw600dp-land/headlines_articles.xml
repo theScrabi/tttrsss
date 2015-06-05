@@ -26,7 +26,7 @@
             android:id="@+id/headlines_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.3"
             android:background="?headlinesBackground" >
         </FrameLayout>
 
@@ -34,7 +34,7 @@
             android:id="@+id/article_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.6"
+            android:layout_weight="0.7"
             android:elevation="4dp"
             android:background="?articleBackground" >
         </FrameLayout>
