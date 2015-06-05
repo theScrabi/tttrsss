@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -57,7 +58,7 @@ public class HeadlinesRequest extends ApiRequest {
 							m_articles.remove(0);
 						}
 
-						if (m_articles.get(m_articles.size()-1).id == -1) {
+						if (m_articles.get(m_articles.size()-1).id == HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE) {
 							m_articles.remove(m_articles.size()-1); // remove previous placeholder
 						}
 						
@@ -68,7 +69,7 @@ public class HeadlinesRequest extends ApiRequest {
 							m_articles.add(f);
 
 					if (articles.size() == HEADLINES_REQUEST_SIZE) {
-						Article placeholder = new Article(-1);
+						Article placeholder = new Article(HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE);
 						m_articles.add(placeholder);
 					}
 

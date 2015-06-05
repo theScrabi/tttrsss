@@ -80,6 +80,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
 
+	public static final int ARTICLE_SPECIAL_LOADMORE = -1;
+	public static final int ARTICLE_SPECIAL_SPACER = -2;
+
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
@@ -514,10 +517,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (result != null) {
 						m_refreshInProgress = false;
-						
+						m_articles.add(0, new Article(-2));
+
 						if (m_articles.indexOf(m_activeArticle) == -1)
 							m_activeArticle = null;
-						
+
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
 						
@@ -650,8 +654,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
 		public static final int VIEW_LOADMORE = 4;
+		public static final int VIEW_SPACER = 5;
 		
-		public static final int VIEW_COUNT = VIEW_LOADMORE+1;
+		public static final int VIEW_COUNT = VIEW_SPACER+1;
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
@@ -684,9 +689,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		@Override
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
-			
-			if (a.id == -1) {
+
+			// the special invisible SPACER is here because listview animations apparently glitch if there's only one headline loaded
+			// so we add an invisible second one i guess
+
+			if (a.id == ARTICLE_SPECIAL_LOADMORE) {
 				return VIEW_LOADMORE;
+			} else if (a.id == ARTICLE_SPECIAL_SPACER) {
+				return VIEW_SPACER;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
@@ -729,6 +739,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 switch (getItemViewType(position)) {
 				case VIEW_LOADMORE:
 					layoutId = R.layout.headlines_row_loadmore;
+					break;
+				case VIEW_SPACER:
+					layoutId = R.layout.dummy_fragment;
 					break;
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
@@ -1131,7 +1144,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public ArticleList getAllArticles() {
-		return m_articles;
+		ArticleList tmp = (ArticleList) m_articles.clone();
+
+		tmp.remove(0);
+
+		return tmp;
 	}
 
     // if setting active doesn't make sense, scroll to whatever is passed to us
@@ -1204,7 +1221,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (!m_refreshInProgress && m_articles.findById(-1) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
+		if (!m_refreshInProgress && m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
 
@@ -1228,7 +1245,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     m_activity.getSupportActionBar().show();
                 }
             } else {
-                m_activity.getSupportActionBar().show();
+				m_activity.getSupportActionBar().show();
             }
 
             m_listPreviousVisibleItem = firstVisibleItem;
@@ -1289,12 +1306,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		return m_feed;
 	}
 
-    public ArticleList getArticles() {
+    /*public ArticleList getArticles() {
         return m_articles;
-    }
+    }*/
 
     public void setArticles(ArticleList articles) {
         m_articles.clear();
+		m_articles.add(0, new Article(-2));
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();
     }
