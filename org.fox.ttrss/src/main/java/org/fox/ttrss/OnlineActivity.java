@@ -155,12 +155,6 @@ public class OnlineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-		// https://code.google.com/p/android/issues/detail?id=26658
-		if (!isTaskRoot()) {
-			finish();
-			return;
-		}
-
 //		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
