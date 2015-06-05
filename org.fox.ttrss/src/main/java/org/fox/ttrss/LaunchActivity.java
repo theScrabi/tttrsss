@@ -19,6 +19,7 @@ public class LaunchActivity extends Activity {
         Intent main = new Intent(LaunchActivity.this, OnlineActivity.class);
         startActivity(main);
 
+        finish();
     }
 
 }
