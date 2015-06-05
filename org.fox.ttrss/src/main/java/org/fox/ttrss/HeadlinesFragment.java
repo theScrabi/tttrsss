@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +51,7 @@ import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationA
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -102,6 +102,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private boolean m_compactLayoutMode = false;
     private int m_listPreviousVisibleItem;
     private ListView m_list;
+	private ImageLoader m_imageLoader = ImageLoader.getInstance();
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -672,6 +673,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					.cacheInMemory(true)
 					.resetViewBeforeLoading(true)
 					.cacheOnDisk(true)
+					.displayer(new FadeInBitmapDisplayer(500))
 					.build();
 		}
 		
@@ -970,8 +972,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                                 }
                             });
 
-                            final ViewGroup flavorImageHolder = holder.flavorImageHolder;
-                            final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
+                            //final ViewGroup flavorImageHolder = holder.flavorImageHolder;
+                            //final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
 
 							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
 
@@ -979,42 +981,43 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
-								ImageLoader.getInstance().displayImage(imgSrc, imageAware, displayImageOptions, new ImageLoadingListener() {
+								m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions, new ImageLoadingListener() {
 
 									@Override
 									public void onLoadingCancelled(String arg0,
 																   View arg1) {
-										// TODO Auto-generated method stub
 
+										//
 									}
 
-									@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 									@Override
 									public void onLoadingComplete(String arg0,
 																  View arg1, Bitmap arg2) {
 										if (!isAdded() || arg2 == null) return;
 
-										flavorImageLoadingBar.setVisibility(View.INVISIBLE);
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
 										if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
-											flavorImageHolder.setVisibility(View.VISIBLE);
+											holder.flavorImageHolder.setVisibility(View.VISIBLE);
 										} else {
-											flavorImageHolder.setVisibility(View.GONE);
+											holder.flavorImageHolder.setVisibility(View.GONE);
 										}
 									}
 
 									@Override
 									public void onLoadingFailed(String arg0,
 																View arg1, FailReason arg2) {
-										flavorImageHolder.setVisibility(View.GONE);
+
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
+										holder.flavorImageHolder.setVisibility(View.GONE);
+
 										article.noValidFlavorImage = true;
 									}
 
 									@Override
 									public void onLoadingStarted(String arg0,
 																 View arg1) {
-										// TODO Auto-generated method stub
-
+										holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 									}
 
 								});
@@ -1234,6 +1237,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING || scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+			m_imageLoader.pause();
+		} else {
+			m_imageLoader.resume();
+		}
+
 		if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 			if (!m_readArticles.isEmpty()) {
 				m_activity.toggleArticlesUnread(m_readArticles);
