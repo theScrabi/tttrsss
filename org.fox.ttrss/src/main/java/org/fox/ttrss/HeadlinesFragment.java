@@ -401,6 +401,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onResume() {
 		super.onResume();
 
+		if (m_adapter != null) m_adapter.notifyDataSetChanged();
+
 		/* if (GlobalState.getInstance().m_activeArticle != null) {
 			m_activeArticle = GlobalState.getInstance().m_activeArticle;
 			GlobalState.getInstance().m_activeArticle = null;
