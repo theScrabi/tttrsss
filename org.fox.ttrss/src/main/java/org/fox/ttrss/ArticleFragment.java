@@ -221,18 +221,6 @@ public class ArticleFragment extends Fragment  {
 
         if (title != null) {
 
-            /* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
-                Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", Typeface.NORMAL);
-
-                if (tf != null && !tf.equals(title.getTypeface())) {
-                    title.setTypeface(tf);
-                }
-
-                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 5));
-            } else {
-                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
-            } */
-
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, articleFontSize + 3));
 
             String titleStr;
@@ -372,159 +360,142 @@ public class ArticleFragment extends Fragment  {
             }
         }
 
-        if (m_article != null) {
+        m_web.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                HitTestResult result = ((WebView)v).getHitTestResult();
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (m_web != null) {
-
-                        m_web.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                HitTestResult result = ((WebView)v).getHitTestResult();
-
-                                if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
-                                    registerForContextMenu(m_web);
-                                    m_activity.openContextMenu(m_web);
-                                    unregisterForContextMenu(m_web);
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        });
-
-                        boolean acceleratedWebview = true;
-
-                        // prevent flicker in ics
-                        if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                                m_web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                                acceleratedWebview = false;
-                            }
-                        }
-
-                        String content;
-                        String cssOverride = "";
-
-                        WebSettings ws = m_web.getSettings();
-                        ws.setSupportZoom(false);
-
-                        TypedValue tvBackground = new TypedValue();
-                        getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
-
-                        String backgroundHexColor = String.format("#%06X", (0xFFFFFF & tvBackground.data));
-
-                        cssOverride = "body { background : "+ backgroundHexColor+"; }";
-
-                        TypedValue tvTextColor = new TypedValue();
-                        getActivity().getTheme().resolveAttribute(R.attr.articleTextColor, tvTextColor, true);
-
-                        String textColor = String.format("#%06X", (0xFFFFFF & tvTextColor.data));
-
-                        cssOverride += "body { color : "+textColor+"; }";
-
-                        TypedValue tvLinkColor = new TypedValue();
-                        getActivity().getTheme().resolveAttribute(R.attr.linkColor, tvLinkColor, true);
-
-                        String linkHexColor = String.format("#%06X", (0xFFFFFF & tvLinkColor.data));
-                        cssOverride += " a:link {color: "+linkHexColor+";} a:visited { color: "+linkHexColor+";}";
-
-                        String articleContent = m_article.content != null ? m_article.content : "";
-
-                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            ws.setJavaScriptEnabled(true);
-
-                            m_chromeClient = new FSVideoChromeClient(view);
-                            m_web.setWebChromeClient(m_chromeClient);
-                        }
-
-                        if (m_prefs.getBoolean("justify_article_text", true)) {
-                            cssOverride += "body { text-align : justify; } ";
-                        }
-
-                        ws.setDefaultFontSize(articleFontSize);
-
-                        content =
-                                "<html>" +
-                                        "<head>" +
-                                        "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
-                                        "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
-                                        "<style type=\"text/css\">" +
-                                        "body { padding : 0px; margin : 0px; line-height : 130%; }" +
-                                        "img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
-                                        " table { width : 100%; }" +
-                                        cssOverride +
-                                        "</style>" +
-                                        "</head>" +
-                                        "<body>" + articleContent;
-
-                        if (m_article.attachments != null && m_article.attachments.size() != 0) {
-                            String flatContent = articleContent.replaceAll("[\r\n]", "");
-                            boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
-
-                            for (Attachment a : m_article.attachments) {
-                                if (a.content_type != null && a.content_url != null) {
-                                    try {
-                                        if (a.content_type.indexOf("image") != -1 &&
-                                                (!hasImages || m_article.always_display_attachments)) {
-
-                                            URL url = new URL(a.content_url.trim());
-                                            String strUrl = url.toString().trim();
-
-                                            content += "<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>";
-                                        }
-
-                                    } catch (MalformedURLException e) {
-                                        //
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-
-                        content += "</body></html>";
-
-                        try {
-                            String baseUrl = null;
-
-                            try {
-                                URL url = new URL(m_article.link);
-                                baseUrl = url.getProtocol() + "://" + url.getHost();
-                            } catch (MalformedURLException e) {
-                                //
-                            }
-
-                            if (savedInstanceState == null || !acceleratedWebview) {
-                                m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
-                            } else {
-                                WebBackForwardList rc = m_web.restoreState(savedInstanceState);
-
-                                if (rc == null) {
-                                    // restore failed...
-                                    m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
-                                }
-                            }
-
-                        } catch (RuntimeException e) {
-                            e.printStackTrace();
-                        }
-
-//				if (m_activity.isSmallScreen())
-//					web.setOnTouchListener(m_gestureListener);
-
-                        m_web.setVisibility(View.VISIBLE);
-                    }
-
+                if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
+                    registerForContextMenu(m_web);
+                    m_activity.openContextMenu(m_web);
+                    unregisterForContextMenu(m_web);
+                    return true;
+                } else {
+                    return false;
                 }
-            }, 100);
+            }
+        });
 
+        boolean acceleratedWebview = true;
+
+        // prevent flicker in ics
+        if (!m_prefs.getBoolean("webview_hardware_accel", true)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                m_web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                acceleratedWebview = false;
+            }
         }
 
-		return view;    	
+        String cssOverride = "";
+
+        WebSettings ws = m_web.getSettings();
+        ws.setSupportZoom(false);
+
+        TypedValue tvBackground = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
+
+        String backgroundHexColor = String.format("#%06X", (0xFFFFFF & tvBackground.data));
+
+        cssOverride = "body { background : "+ backgroundHexColor+"; }";
+
+        TypedValue tvTextColor = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.articleTextColor, tvTextColor, true);
+
+        String textColor = String.format("#%06X", (0xFFFFFF & tvTextColor.data));
+
+        cssOverride += "body { color : "+textColor+"; }";
+
+        TypedValue tvLinkColor = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.linkColor, tvLinkColor, true);
+
+        String linkHexColor = String.format("#%06X", (0xFFFFFF & tvLinkColor.data));
+        cssOverride += " a:link {color: "+linkHexColor+";} a:visited { color: "+linkHexColor+";}";
+
+        String articleContent = m_article.content != null ? m_article.content : "";
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ws.setJavaScriptEnabled(true);
+
+            m_chromeClient = new FSVideoChromeClient(view);
+            m_web.setWebChromeClient(m_chromeClient);
+        }
+
+        if (m_prefs.getBoolean("justify_article_text", true)) {
+            cssOverride += "body { text-align : justify; } ";
+        }
+
+        ws.setDefaultFontSize(articleFontSize);
+
+        StringBuilder content = new StringBuilder("<html>" +
+                        "<head>" +
+                        "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
+                        "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
+                        "<style type=\"text/css\">" +
+                        "body { padding : 0px; margin : 0px; line-height : 130%; }" +
+                        "img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
+                        " table { width : 100%; }" +
+                        cssOverride +
+                        "</style>" +
+                        "</head>" +
+                        "<body>");
+
+        content.append(articleContent);
+
+        if (m_article.attachments != null && m_article.attachments.size() != 0) {
+            String flatContent = articleContent.replaceAll("[\r\n]", "");
+            boolean hasImages = flatContent.matches(".*?<img[^>+].*?");
+
+            for (Attachment a : m_article.attachments) {
+                if (a.content_type != null && a.content_url != null) {
+                    try {
+                        if (a.content_type.indexOf("image") != -1 &&
+                                (!hasImages || m_article.always_display_attachments)) {
+
+                            URL url = new URL(a.content_url.trim());
+                            String strUrl = url.toString().trim();
+
+                            content.append("<p><img src=\"" + strUrl.replace("\"", "\\\"") + "\"></p>");
+                        }
+
+                    } catch (MalformedURLException e) {
+                        //
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        content.append("</body></html>");
+
+        try {
+            String baseUrl = null;
+
+            try {
+                URL url = new URL(m_article.link);
+                baseUrl = url.getProtocol() + "://" + url.getHost();
+            } catch (MalformedURLException e) {
+                //
+            }
+
+            if (savedInstanceState == null || !acceleratedWebview) {
+                m_web.loadDataWithBaseURL(baseUrl, content.toString(), "text/html", "utf-8", null);
+            } else {
+                WebBackForwardList rc = m_web.restoreState(savedInstanceState);
+
+                if (rc == null) {
+                    // restore failed...
+                    m_web.loadDataWithBaseURL(baseUrl, content.toString(), "text/html", "utf-8", null);
+                }
+            }
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        m_web.setVisibility(View.VISIBLE);
+
+		return view;
 	}
 
     @Override
