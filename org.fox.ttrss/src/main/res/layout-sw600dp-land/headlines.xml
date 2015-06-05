@@ -1,31 +1,19 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
-    android:fitsSystemWindows="true"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_below="@+id/actionbar_toolbar">
-
-    <FrameLayout
-        android:id="@+id/sw600dp_anchor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" >
-    </FrameLayout>
-
     <LinearLayout
+        android:fitsSystemWindows="true"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:baselineAligned="false"
         android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/sw600dp_anchor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+        </FrameLayout>
+
 
         <FrameLayout
             android:id="@+id/feeds_fragment"
@@ -35,15 +23,21 @@
             android:background="?feedlistBackground" >
         </FrameLayout>
 
-        <FrameLayout
-            android:elevation="4dp"
-            android:id="@+id/headlines_fragment"
+        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="0.75"
-            android:background="?headlinesBackground" >
-        </FrameLayout>
-    </LinearLayout>
+            android:layout_height="match_parent">
 
-</LinearLayout>
-</RelativeLayout>
+            <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+
+            <FrameLayout
+                android:id="@+id/headlines_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?headlinesBackground"
+                android:layout_below="@+id/actionbar_toolbar">
+            </FrameLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
