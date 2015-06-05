@@ -84,7 +84,9 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 	    ContextMenuInfo menuInfo) {
 		
 		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
-		
+
+		menu.findItem(R.id.create_shortcut).setEnabled(false);
+
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		Cursor cursor = (Cursor)getFeedAtPosition(info.position);
 		
