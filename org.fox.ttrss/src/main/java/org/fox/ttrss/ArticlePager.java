@@ -278,7 +278,9 @@ public class ArticlePager extends Fragment {
 			refresh(false);
 			GlobalState.getInstance().m_activeFeed = m_feed;
 		} */
-		
+
+		if (m_adapter != null) m_adapter.notifyDataSetChanged();
+
 		m_activity.invalidateOptionsMenu();
 	}
 
