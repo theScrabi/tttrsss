@@ -80,7 +80,7 @@ public class CommonActivity extends ActionBarActivity {
 	public void setUnreadOnly(boolean unread) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("show_unread_only", unread);
-		editor.commit();
+		editor.apply();
 	}
 
 	public void toast(int msgId) {

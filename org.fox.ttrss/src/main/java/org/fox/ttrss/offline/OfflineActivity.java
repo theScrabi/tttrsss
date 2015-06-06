@@ -606,7 +606,7 @@ public class OfflineActivity extends CommonActivity {
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", false);
-		editor.commit();
+		editor.apply();
 
 		Intent refresh = new Intent(this, org.fox.ttrss.OnlineActivity.class);
 		startActivity(refresh);
@@ -808,7 +808,7 @@ public class OfflineActivity extends CommonActivity {
 	public void setViewMode(String viewMode) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putString("offline_view_mode", viewMode);
-		editor.commit();
+		editor.apply();
 	}
 
     /* public boolean getOldestFirst() {

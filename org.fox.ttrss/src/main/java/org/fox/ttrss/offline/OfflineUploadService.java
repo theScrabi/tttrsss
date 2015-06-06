@@ -225,7 +225,7 @@ public class OfflineUploadService extends IntentService {
 			SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = localPrefs.edit();
 			editor.putBoolean("offline_mode_active", false);
-			editor.commit();
+			editor.apply();
 			
 		} else {
 	        Intent intent = new Intent();

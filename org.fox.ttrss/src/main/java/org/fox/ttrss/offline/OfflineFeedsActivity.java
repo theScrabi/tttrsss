@@ -159,14 +159,14 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
                                             if (true) {
                                                 SharedPreferences.Editor editor = m_prefs.edit();
                                                 editor.putBoolean("offline_oldest_first", false);
-                                                editor.commit();
+                                                editor.apply();
                                             }
                                             break;
                                         case 1:
                                             if (true) {
                                                 SharedPreferences.Editor editor = m_prefs.edit();
                                                 editor.putBoolean("offline_oldest_first", true);
-                                                editor.commit();
+												editor.apply();
                                             }
                                             break;
                                     }

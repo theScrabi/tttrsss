@@ -216,7 +216,7 @@ public class OnlineActivity extends CommonActivity {
 									SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 									SharedPreferences.Editor editor = localPrefs.edit();
 									editor.putBoolean("offline_mode_active", true);
-									editor.commit();
+									editor.apply();
 									
 									Intent offline = new Intent(
 											OnlineActivity.this,
@@ -388,7 +388,7 @@ public class OnlineActivity extends CommonActivity {
 
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putBoolean("offline_mode_active", true);
-		editor.commit();
+		editor.apply();
 
 		Intent offline = new Intent(OnlineActivity.this, OfflineActivity.class);
 		offline.putExtra("initial", true);
@@ -483,7 +483,7 @@ public class OnlineActivity extends CommonActivity {
 
                     SharedPreferences.Editor editor = m_prefs.edit();
                     editor.putLong("date_firstlaunch_trial", firstStart);
-                    editor.commit();
+					editor.apply();
                 }
 
                 if (!notify && System.currentTimeMillis() > firstStart + (TRIAL_DAYS * 24 * 60 * 60 * 1000)) {
@@ -1723,13 +1723,13 @@ public class OnlineActivity extends CommonActivity {
     public void setSortMode(String sortMode) {
         SharedPreferences.Editor editor = m_prefs.edit();
         editor.putString("headlines_sort_mode", sortMode);
-        editor.commit();
+		editor.apply();
     }
 
     public void setViewMode(String viewMode) {
 		SharedPreferences.Editor editor = m_prefs.edit();
 		editor.putString("view_mode", viewMode);
-		editor.commit();
+		editor.apply();
 	}
 
 	public String getViewMode() {

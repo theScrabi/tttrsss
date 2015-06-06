@@ -97,7 +97,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
                     if (m_prefs.getBoolean("drawer_open_on_start", true)) {
                         SharedPreferences.Editor editor = m_prefs.edit();
                         editor.putBoolean("drawer_open_on_start", false);
-                        editor.commit();
+                        editor.apply();
                     }
 
                     invalidateOptionsMenu();
