@@ -1,19 +1,17 @@
 package org.fox.ttrss;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.util.SimpleLoginManager;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.view.View;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import org.fox.ttrss.util.SimpleLoginManager;
+
+import java.util.HashMap;
 
 public class DashClock extends DashClockExtension {
   
@@ -60,7 +58,7 @@ public class DashClock extends DashClockExtension {
 											//updatedData.expandedBody(getString(R.string.app_name));
 						
 											updatedData.clickIntent(new Intent().setClassName("org.fox.ttrss",
-													"org.fox.ttrss.OnlineActivity"));
+													"org.fox.ttrss.LaunchActivity"));
 										}
 										
 										publishUpdate(updatedData);				
