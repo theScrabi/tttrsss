@@ -18,13 +18,11 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -487,7 +485,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 				tu.setVisibility((cat.unread > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
 			
-			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
+			/*ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {
 				ib.setOnClickListener(new OnClickListener() {					
@@ -496,7 +494,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 						getActivity().openContextMenu(v);
 					}
 				});								
-			}
+			} */
 
 			
 			return v;

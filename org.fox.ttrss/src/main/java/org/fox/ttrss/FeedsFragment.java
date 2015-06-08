@@ -25,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -679,7 +678,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				tu.setVisibility((feed.unread > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
 			
-			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
+			/*ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {
 				ib.setOnClickListener(new OnClickListener() {					
@@ -688,7 +687,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 						getActivity().openContextMenu(v);
 					}
 				});								
-			}
+			}*/
 
 			return v;
 		}

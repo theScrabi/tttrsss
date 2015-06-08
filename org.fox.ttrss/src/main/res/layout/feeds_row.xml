@@ -48,7 +48,7 @@
         android:textColor="?unreadCounterColor"
         android:textSize="14sp" />
 
-    <ImageButton
+    <!-- <ImageButton
         android:id="@+id/feed_menu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,6 +56,6 @@
         android:background="@null"
         android:paddingLeft="8dp"
         android:visibility="gone"
-        android:src="@drawable/ic_action_overflow" />
+        android:src="?ic_dots_vertical" /> -->
 
 </LinearLayout>

@@ -56,6 +56,7 @@
         <item name="ic_archive">@drawable/ic_archive_dark</item>
         <item name="ic_coffee">@drawable/ic_coffee_dark</item>
         <item name="ic_folder_outline">@drawable/ic_folder_outline_dark</item>
+        <item name="ic_dots_vertical">@drawable/ic_dots_vertical_dark</item>
     </style>
 
     <style name="DarkTheme.Base" parent="Theme.AppCompat.NoActionBar">
@@ -113,6 +114,7 @@
         <item name="ic_archive">@drawable/ic_archive</item>
         <item name="ic_coffee">@drawable/ic_coffee</item>
         <item name="ic_folder_outline">@drawable/ic_folder_outline</item>
+        <item name="ic_dots_vertical">@drawable/ic_dots_vertical</item>
     </style>
 
     <style name="DarkDialogTheme" parent="android:Theme"></style>

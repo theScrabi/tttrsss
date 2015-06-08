@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -313,7 +312,7 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 				tu.setVisibility((cursor.getInt(cursor.getColumnIndex("unread")) > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
 
-			ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
+			/*ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
 			
 			if (ib != null) {
 				ib.setOnClickListener(new OnClickListener() {					
@@ -322,7 +321,7 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 						getActivity().openContextMenu(v);
 					}
 				});								
-			}
+			}*/
 
 			return v;
 		} 

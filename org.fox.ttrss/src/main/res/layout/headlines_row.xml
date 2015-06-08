@@ -178,11 +178,11 @@
                     android:id="@+id/article_menu_button"
                     android:background="@drawable/ripple"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:layout_weight="0"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:src="@drawable/ic_action_overflow" />
+                    android:src="?ic_dots_vertical" />
             </LinearLayout>
         </TableRow>
     </TableLayout>
