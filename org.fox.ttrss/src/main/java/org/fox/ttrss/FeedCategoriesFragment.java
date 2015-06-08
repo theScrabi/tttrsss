@@ -322,12 +322,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
 			if (getView() != null) {
-				ListView list = (ListView)getView().findViewById(R.id.feeds);
-			
-				if (list != null) {
-					list.setEmptyView(getView().findViewById(R.id.no_feeds));
-				}
-
                 View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
 
                 if (loadingBar != null) {

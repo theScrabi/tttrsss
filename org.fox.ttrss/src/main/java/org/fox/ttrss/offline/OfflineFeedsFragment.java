@@ -175,7 +175,6 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);
-		m_list.setEmptyView(view.findViewById(R.id.no_feeds));
 		registerForContextMenu(m_list);
 
 		m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);

@@ -301,7 +301,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
 		m_list.setAdapter(m_adapter);
-		//list.setEmptyView(view.findViewById(R.id.no_feeds));
 		m_list.setOnItemClickListener(this);
 
 		registerForContextMenu(m_list);
@@ -499,12 +498,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			if (isDetached()) return;
 
 			if (getView() != null) {
-				ListView list = (ListView)getView().findViewById(R.id.feeds);
-			
-				if (list != null) {
-					list.setEmptyView(getView().findViewById(R.id.no_feeds));
-				}
-
                 View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
 
                 if (loadingBar != null) {

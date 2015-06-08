@@ -154,7 +154,6 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);
-		m_list.setEmptyView(view.findViewById(R.id.no_feeds));
 		registerForContextMenu(m_list);
 
 		return view;    	
