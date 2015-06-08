@@ -2,6 +2,7 @@
     android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:animateLayoutChanges="true"
     android:padding="@dimen/activity_horizontal_margin" >
 
     <EditText
@@ -13,18 +14,27 @@
         android:ems="10"
         android:hint="@string/feed_url"
         android:inputType="textUri"
-        android:maxLines="3" >
+        android:maxLines="1" >
 
         <requestFocus />
     </EditText>
 
     <Spinner
-        android:id="@+id/category_spinner"
+        android:id="@+id/feed_spinner"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/feed_url"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/feed_url" />
+
+    <Spinner
+        android:id="@+id/category_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/feed_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/feed_spinner" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
