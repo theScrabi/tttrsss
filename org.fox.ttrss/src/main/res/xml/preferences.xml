@@ -24,12 +24,12 @@
         </EditTextPreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/ssl" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="ssl_trust_any"
             android:summary="@string/ssl_trust_any_long"
             android:title="@string/ssl_trust_any" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="ssl_trust_any_host"
             android:summary="@string/ssl_trust_any_host_long"
@@ -59,49 +59,49 @@
             android:key="theme"
             android:title="@string/pref_theme" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="sort_feeds_by_unread"
             android:title="@string/sort_feeds_by_unread" />
-        <!-- <CheckBoxPreference
+        <!-- <SwitchPreference
             android:defaultValue="false"
             android:key="download_feed_icons"
             android:title="@string/download_feed_icons" /> -->
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="enable_cats"
             android:title="@string/enable_cats" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:dependency="enable_cats"
             android:key="browse_cats_like_feeds"
             android:summary="@string/browse_cats_like_feeds_summary"
             android:title="@string/browse_cats_like_feeds" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="headlines_show_content"
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
 
-        <!-- <CheckBoxPreference
+        <!-- <SwitchPreference
             android:defaultValue="true"
             android:key="headlines_show_flavor_image"
             android:title="@string/prefs_headlines_show_flavor_image" /> -->
         
-        <!--  <CheckBoxPreference
+        <!--  <SwitchPreference
             android:defaultValue="false"
             android:key="headlines_full_content"
             android:summary="@string/pref_headlines_full_content_long"
             android:title="@string/pref_headlines_full_content" /> -->
         
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="headlines_mark_read_scroll"
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />
 
-        <!-- <CheckBoxPreference
+        <!-- <SwitchPreference
             android:defaultValue="false"
             android:key="enable_condensed_fonts"
             android:summary="@string/pref_headlines_use_condensed_fonts_long"
@@ -121,7 +121,7 @@
             android:summary="@string/prefs_headline_display_mode_long"
             android:title="@string/prefs_headline_display_mode" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="open_fresh_on_startup"
             android:title="@string/prefs_open_fresh_on_startup" />
@@ -133,24 +133,24 @@
             android:key="article_font_size_sp"
             android:inputType="number"
             android:title="@string/pref_font_size" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="justify_article_text"
             android:title="@string/justify_article_text" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="use_volume_keys"
             android:summary="@string/use_volume_keys_long"
             android:title="@string/use_volume_keys" />
-        <!-- <CheckBoxPreference
+        <!-- <SwitchPreference
             android:defaultValue="false"
             android:key="full_screen_mode"
             android:title="@string/prefs_fullscreen_mode" /> -->
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="confirm_headlines_catchup"
             android:title="@string/prefs_confirm_headlines_catchup" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="enable_article_fab"
             android:summary="@string/prefs_enable_fab_long"
@@ -165,26 +165,26 @@
             android:summary="@string/offline_articles_to_download_long"
             android:title="@string/offline_articles_to_download" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="offline_image_cache_enabled"
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefs_widget" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="widget_show_fresh"
             android:title="@string/prefs_widget_show_fresh"
             android:summary="@string/prefs_widget_show_fresh_summary" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="webview_hardware_accel"
             android:summary="@string/accel_webview_summary"
             android:title="@string/accel_webview_title" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="transport_debugging"
             android:title="@string/transport_debugging" />
