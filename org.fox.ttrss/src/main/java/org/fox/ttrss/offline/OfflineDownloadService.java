@@ -52,8 +52,6 @@ public class OfflineDownloadService extends Service {
 	private static final int OFFLINE_SYNC_SEQ = 50;
 	private static final int OFFLINE_SYNC_MAX = OFFLINE_SYNC_SEQ * 10;
 	
-	private SQLiteDatabase m_writableDb;
-	private SQLiteDatabase m_readableDb;
 	private int m_articleOffset = 0;
 	private String m_sessionId;
 	private NotificationManager m_nmgr;
@@ -66,8 +64,9 @@ public class OfflineDownloadService extends Service {
 	private boolean m_canProceed = true;
 	
 	private final IBinder m_binder = new LocalBinder();
-	
-    public class LocalBinder extends Binder {
+	private DatabaseHelper m_databaseHelper;
+
+	public class LocalBinder extends Binder {
         OfflineDownloadService getService() {
             return OfflineDownloadService.this;
         }
@@ -128,9 +127,6 @@ public class OfflineDownloadService extends Service {
 	}
 
 	private void downloadFailed() {
-        m_readableDb.close();
-        m_writableDb.close();
-
         m_nmgr.cancel(NOTIFY_DOWNLOADING);
         
         // TODO send notification to activity?
@@ -172,25 +168,20 @@ public class OfflineDownloadService extends Service {
         } else {
         	updateNotification(getString(R.string.notify_downloading_images, 0), 0, 0, true);
         }
-        
-        m_readableDb.close();
-        m_writableDb.close();
-        
+
         stopSelf();
 	}
 	
 	private void initDatabase() {
-		DatabaseHelper dh = DatabaseHelper.getInstance(this);
-		m_writableDb = dh.getWritableDatabase();
-		m_readableDb = dh.getReadableDatabase();
+		m_databaseHelper = DatabaseHelper.getInstance(this);
 	}
 	
 	/* private synchronized SQLiteDatabase getReadableDb() {
 		return m_readableDb;
 	} */
 	
-	private synchronized SQLiteDatabase getWritableDb() {
-		return m_writableDb;
+	private synchronized SQLiteDatabase getDatabase() {
+		return m_databaseHelper.getWritableDatabase();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -221,7 +212,7 @@ public class OfflineDownloadService extends Service {
 
 		updateNotification(R.string.notify_downloading_feeds, 0, 0, true);
 		
-		getWritableDb().execSQL("DELETE FROM feeds;");
+		getDatabase().execSQL("DELETE FROM feeds;");
 		
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			@Override
@@ -234,9 +225,9 @@ public class OfflineDownloadService extends Service {
 						Type listType = new TypeToken<List<Feed>>() {}.getType();
 						List<Feed> feeds = new Gson().fromJson(content, listType);
 						
-						SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO feeds " +
-								"("+BaseColumns._ID+", title, feed_url, has_icon, cat_id) " +
-						"VALUES (?, ?, ?, ?, ?);");
+						SQLiteStatement stmtInsert = getDatabase().compileStatement("INSERT INTO feeds " +
+								"(" + BaseColumns._ID + ", title, feed_url, has_icon, cat_id) " +
+								"VALUES (?, ?, ?, ?, ?);");
 						
 						for (Feed feed : feeds) {
 							stmtInsert.bindLong(1, feed.id);
@@ -254,7 +245,7 @@ public class OfflineDownloadService extends Service {
 						
 						m_articleOffset = 0;
 						
-						getWritableDb().execSQL("DELETE FROM articles;");
+						getDatabase().execSQL("DELETE FROM articles;");
 					} catch (Exception e) {
 						e.printStackTrace();
 						updateNotification(R.string.offline_switch_error, 0, 0, false);
@@ -298,7 +289,7 @@ public class OfflineDownloadService extends Service {
 
 		updateNotification(R.string.notify_downloading_categories, 0, 0, true);
 		
-		getWritableDb().execSQL("DELETE FROM categories;");
+		getDatabase().execSQL("DELETE FROM categories;");
 		
 		ApiRequest req = new ApiRequest(getApplicationContext()) {
 			protected JsonElement doInBackground(HashMap<String, String>... params) {
@@ -309,9 +300,9 @@ public class OfflineDownloadService extends Service {
 						Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
 						List<FeedCategory> cats = new Gson().fromJson(content, listType);
 						
-						SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO categories " +
-								"("+BaseColumns._ID+", title) " +
-						"VALUES (?, ?);");
+						SQLiteStatement stmtInsert = getDatabase().compileStatement("INSERT INTO categories " +
+								"(" + BaseColumns._ID + ", title) " +
+								"VALUES (?, ?);");
 						
 						for (FeedCategory cat : cats) {
 							stmtInsert.bindLong(1, cat.id);
@@ -370,9 +361,7 @@ public class OfflineDownloadService extends Service {
 
 		m_canProceed = false;
 		Log.d(TAG, "onDestroy");
-		
-		//m_readableDb.close();
-		//m_writableDb.close();
+
 	}
 
 	public class OfflineArticlesRequest extends ApiRequest {
@@ -392,9 +381,9 @@ public class OfflineDownloadService extends Service {
 					Type listType = new TypeToken<List<Article>>() {}.getType();
 					m_articles = new Gson().fromJson(content, listType);
 	
-					SQLiteStatement stmtInsert = getWritableDb().compileStatement("INSERT INTO articles " +
-							"("+BaseColumns._ID+", unread, marked, published, score, updated, is_updated, title, link, feed_id, tags, content, author) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+					SQLiteStatement stmtInsert = getDatabase().compileStatement("INSERT INTO articles " +
+							"(" + BaseColumns._ID + ", unread, marked, published, score, updated, is_updated, title, link, feed_id, tags, content, author) " +
+							"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 	
 					for (Article article : m_articles) {
 	
@@ -494,7 +483,7 @@ public class OfflineDownloadService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		try {
-			if (getWritableDb().isDbLockedByCurrentThread() || getWritableDb().isDbLockedByOtherThreads()) {
+			if (getDatabase().isDbLockedByCurrentThread() || getDatabase().isDbLockedByOtherThreads()) {
 				return;
 			}
 			

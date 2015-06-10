@@ -29,13 +29,12 @@ public class OfflineUploadService extends IntentService {
 	public static final int NOTIFY_UPLOADING = 2;
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.UploadComplete";
 	
-	private SQLiteDatabase m_writableDb;
-	private SQLiteDatabase m_readableDb;
 	private String m_sessionId;
 	private NotificationManager m_nmgr;
 	private boolean m_uploadInProgress = false;
 	private boolean m_batchMode = false;
-	
+	private DatabaseHelper m_databaseHelper;
+
 	public OfflineUploadService() {
 		super("OfflineUploadService");
 	}
@@ -89,17 +88,11 @@ public class OfflineUploadService extends IntentService {
 	}
 
 	private void initDatabase() {
-		DatabaseHelper dh = DatabaseHelper.getInstance(this);
-		m_writableDb = dh.getWritableDatabase();
-		m_readableDb = dh.getReadableDatabase();
+		m_databaseHelper = DatabaseHelper.getInstance(this);
 	}
-	
-	private synchronized SQLiteDatabase getReadableDb() {
-		return m_readableDb;
-	}
-	
-	private synchronized SQLiteDatabase getWritableDb() {
-		return m_writableDb;
+
+	private synchronized SQLiteDatabase getDatabase() {
+		return m_databaseHelper.getWritableDatabase();
 	}
 	
 	private void uploadRead() {
@@ -157,7 +150,7 @@ public class OfflineUploadService extends IntentService {
 			break;
 		}
 
-		Cursor c = getReadableDb().query("articles", null,
+		Cursor c = getDatabase().query("articles", null,
 				"modified = 1 AND " + criteriaStr, null, null, null, null);
 
 		String tmp = "";
@@ -209,16 +202,13 @@ public class OfflineUploadService extends IntentService {
 	}
 	
 	private void uploadFailed() {
-        m_readableDb.close();
-        m_writableDb.close();
-
         // TODO send notification to activity?
         
         m_uploadInProgress = false;
 	}
 
 	private void uploadSuccess() {
-		getWritableDb().execSQL("UPDATE articles SET modified = 0");
+		getDatabase().execSQL("UPDATE articles SET modified = 0");
 
 		if (m_batchMode) {
 			
@@ -233,10 +223,7 @@ public class OfflineUploadService extends IntentService {
 	        intent.addCategory(Intent.CATEGORY_DEFAULT);
 	        sendBroadcast(intent);
 		}
-        
-        m_readableDb.close();
-        m_writableDb.close();
-		
+
         m_uploadInProgress = false;
         
 		m_nmgr.cancel(NOTIFY_UPLOADING);
@@ -281,7 +268,7 @@ public class OfflineUploadService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		try {
-			if (getWritableDb().isDbLockedByCurrentThread() || getWritableDb().isDbLockedByOtherThreads()) {
+			if (getDatabase().isDbLockedByCurrentThread() || getDatabase().isDbLockedByOtherThreads()) {
 				return;
 			}
 	
