@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -243,7 +244,23 @@ public class OfflineArticleFragment extends Fragment {
 			final WebView web = (WebView)view.findViewById(R.id.article_content);
 			
 			if (web != null) {
-				
+
+				web.setWebViewClient(new WebViewClient() {
+					@Override
+					public boolean shouldOverrideUrlLoading(WebView view, String url) {
+						try {
+							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+							startActivity(intent);
+
+							return true;
+
+						} catch (Exception e){
+							e.printStackTrace();
+						}
+
+						return false;
+					} });
+
 				web.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
