@@ -61,7 +61,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 		
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
-		return m_activity.getReadableDb().query("cats_unread", 
+		return m_activity.getDatabase().query("cats_unread", 
 				null, unreadOnly, null, null, null, order);
 	}
 	

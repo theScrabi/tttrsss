@@ -31,8 +31,10 @@ public class CommonActivity extends ActionBarActivity {
     public static final int EXCERPT_MAX_LENGTH = 256;
     public static final int EXCERPT_MAX_QUERY_LENGTH = 2048;
 
-	private SQLiteDatabase m_readableDb;
-	private SQLiteDatabase m_writableDb;
+	private DatabaseHelper m_databaseHelper;
+
+	//private SQLiteDatabase m_readableDb;
+	//private SQLiteDatabase m_writableDb;
 
 	private boolean m_smallScreenMode = true;
 	private String m_theme;
@@ -56,7 +58,15 @@ public class CommonActivity extends ActionBarActivity {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
 		m_smallScreenMode = smallScreen;
 	}
-	
+
+	public DatabaseHelper getDatabaseHelper() {
+		return m_databaseHelper;
+	}
+
+	public SQLiteDatabase getDatabase() {
+		return m_databaseHelper.getWritableDatabase();
+	}
+
 	public boolean getUnreadOnly() {
 		return m_prefs.getBoolean("show_unread_only", true);
 	}
@@ -82,21 +92,6 @@ public class CommonActivity extends ActionBarActivity {
 		toast.show();
 	}
 
-	private void initDatabase() {
-		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
-		
-		m_writableDb = dh.getWritableDatabase();
-		m_readableDb = dh.getReadableDatabase();
-	}
-	
-	public synchronized SQLiteDatabase getReadableDb() {
-		return m_readableDb;
-	}
-
-	public synchronized SQLiteDatabase getWritableDb() {
-		return m_writableDb;
-	}
-
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -113,13 +108,12 @@ public class CommonActivity extends ActionBarActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-
-		m_readableDb.close();
-		m_writableDb.close();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		m_databaseHelper = DatabaseHelper.getInstance(this);
+
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
@@ -128,8 +122,6 @@ public class CommonActivity extends ActionBarActivity {
 		} else {
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
-		
-		initDatabase();
 
 		super.onCreate(savedInstanceState);
 	}

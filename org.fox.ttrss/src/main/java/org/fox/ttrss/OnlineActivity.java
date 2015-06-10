@@ -14,7 +14,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -277,40 +276,6 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 	
-	private boolean hasPendingOfflineData() {
-		try {
-			Cursor c = getReadableDb().query("articles",
-					new String[] { "COUNT(*)" }, "modified = 1", null, null, null,
-					null);
-			if (c.moveToFirst()) {
-				int modified = c.getInt(0);
-				c.close();
-	
-				return modified > 0;
-			}
-		} catch (IllegalStateException e) {
-			// db is closed? ugh
-		}
-
-		return false;
-	}
-
-	private boolean hasOfflineData() {
-		try {
-			Cursor c = getReadableDb().query("articles",
-					new String[] { "COUNT(*)" }, null, null, null, null, null);
-			if (c.moveToFirst()) {
-				int modified = c.getInt(0);
-				c.close();
-	
-				return modified > 0;
-			}
-		} catch (IllegalStateException e) {
-			// db is closed?
-		}
-
-		return false;
-	}
 
 	@Override
 	public void onPause() {
@@ -463,7 +428,7 @@ public class OnlineActivity extends CommonActivity {
 		startActivityForResult(intent, 0);
 		overridePendingTransition(0, 0);
 
-		if (hasPendingOfflineData())
+		if (getDatabaseHelper().hasPendingOfflineData())
 			syncOfflineData();
 		
 		finish();
@@ -1192,7 +1157,7 @@ public class OnlineActivity extends CommonActivity {
 		setSessionId(null);
 		initMenu();
 		
-		if (hasOfflineData()) {
+		if (getDatabaseHelper().hasOfflineData()) {
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					OnlineActivity.this)

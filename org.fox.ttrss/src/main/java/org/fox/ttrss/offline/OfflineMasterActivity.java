@@ -321,7 +321,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 	public void onArticleSelected(int articleId, boolean open) {
 		
 		if (!open) {
-			SQLiteStatement stmt = getWritableDb().compileStatement(
+			SQLiteStatement stmt = getDatabase().compileStatement(
 					"UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
 							+ " = ?");
 	

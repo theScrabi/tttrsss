@@ -66,11 +66,11 @@ public class OfflineArticlePager extends Fragment {
 		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
 		
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
-			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getDatabase().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles."+BaseColumns._ID, "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, orderBy);
 		} else {
-			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getDatabase().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles."+BaseColumns._ID },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, orderBy);

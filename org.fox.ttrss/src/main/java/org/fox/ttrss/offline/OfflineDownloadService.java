@@ -180,7 +180,7 @@ public class OfflineDownloadService extends Service {
 	}
 	
 	private void initDatabase() {
-		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
+		DatabaseHelper dh = DatabaseHelper.getInstance(this);
 		m_writableDb = dh.getWritableDatabase();
 		m_readableDb = dh.getReadableDatabase();
 	}

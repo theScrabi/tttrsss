@@ -87,7 +87,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	}
 	
 	public int getSelectedArticleCount() {
-		Cursor c = m_activity.getReadableDb().query("articles", 
+		Cursor c = m_activity.getDatabase().query("articles", 
 				new String[] { "COUNT(*)" }, "selected = 1", null, null, null, null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -116,7 +116,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			return true;
 		case R.id.selection_toggle_marked:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getWritableDb()
+				SQLiteStatement stmt = m_activity.getDatabase()
 				.compileStatement(
 						"UPDATE articles SET modified = 1, marked = NOT marked WHERE selected = 1");
 				stmt.execute();
@@ -124,7 +124,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			} else {
 				int articleId = getArticleIdAtPosition(info.position);
 				
-				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
 					"UPDATE articles SET modified = 1, marked = NOT marked WHERE "
 							+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
@@ -135,7 +135,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			return true;
 		case R.id.selection_toggle_published:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getWritableDb()
+				SQLiteStatement stmt = m_activity.getDatabase()
 				.compileStatement(
 						"UPDATE articles SET modified = 1, published = NOT published WHERE selected = 1");
 				stmt.execute();
@@ -143,7 +143,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			} else {
 				int articleId = getArticleIdAtPosition(info.position);
 				
-				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
 					"UPDATE articles SET modified = 1, published = NOT published WHERE "
 							+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
@@ -154,7 +154,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			return true;
 		case R.id.selection_toggle_unread:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getWritableDb()
+				SQLiteStatement stmt = m_activity.getDatabase()
 				.compileStatement(
 						"UPDATE articles SET modified = 1, unread = NOT unread WHERE selected = 1");
 				stmt.execute();
@@ -162,7 +162,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			} else {
 				int articleId = getArticleIdAtPosition(info.position);
 				
-				SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
 					"UPDATE articles SET modified = 1, unread = NOT unread WHERE "
 							+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
@@ -186,12 +186,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
 				
 				if (m_feedIsCat) {
-					stmt = m_activity.getWritableDb().compileStatement(
+					stmt = m_activity.getDatabase().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
-					stmt = m_activity.getWritableDb().compileStatement(
+					stmt = m_activity.getDatabase().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND unread = 1 AND feed_id = ?");						
@@ -285,7 +285,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		} else {
-			m_activity.getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+			m_activity.getDatabase().execSQL("UPDATE articles SET selected = 0 ");
 		}
 
         if ("HL_COMPACT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT")))
@@ -365,11 +365,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
 		
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
-			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getDatabase().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 
 					new String[] { String.valueOf(m_feedId) }, null, null, orderBy);
 		} else {
-			return m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
+			return m_activity.getDatabase().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" },
 					feedClause + " AND (articles.title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')", 
 					new String[] { String.valueOf(m_feedId), m_searchQuery, m_searchQuery }, null, null, orderBy);
@@ -596,7 +596,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                     public void onClick(View view) {
                         Log.d(TAG, "textImage : onclicked");
 
-                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = NOT selected " +
+                        SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET selected = NOT selected " +
                                 "WHERE " + BaseColumns._ID + " = ?");
 
                         stmtUpdate.bindLong(1, articleId);
@@ -651,7 +651,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
+						SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
 								"WHERE " + BaseColumns._ID + " = ?");
 
 						stmtUpdate.bindLong(1, articleId);
@@ -673,7 +673,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
                     @Override
                     public void onClick(View v) {
-                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET modified = 1, published = NOT published " +
+                        SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET modified = 1, published = NOT published " +
                                 "WHERE " + BaseColumns._ID + " = ?");
 
                         stmtUpdate.bindLong(1, articleId);
@@ -734,7 +734,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                     public void onClick(View view) {
                         CheckBox cb = (CheckBox) view;
 
-                        SQLiteStatement stmtUpdate = m_activity.getWritableDb().compileStatement("UPDATE articles SET selected = ? " +
+                        SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET selected = ? " +
                                 "WHERE " + BaseColumns._ID + " = ?");
 
                         stmtUpdate.bindLong(1, cb.isChecked() ? 1 : 0);
@@ -897,7 +897,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             if (!m_readArticleIds.isEmpty()) {
 
-                SQLiteStatement stmt = m_activity.getWritableDb().compileStatement(
+                SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
                         "UPDATE articles SET modified = 1, unread = 0 " + "WHERE " + BaseColumns._ID
                                 + " = ?");
 

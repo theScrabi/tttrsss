@@ -1,5 +1,7 @@
 package org.fox.ttrss.util;
+
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -11,11 +13,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final String TAG = this.getClass().getSimpleName();
 	public static final String DATABASE_NAME = "OfflineStorage.db";
 	public static final int DATABASE_VERSION = 4;
-	
-	public DatabaseHelper(Context context) {
+	private static DatabaseHelper m_instance;
+	private Context m_context;
+
+	private DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		m_context = context;
 	}
-	
+
+	public static synchronized DatabaseHelper getInstance(Context context) {
+
+		if (m_instance == null) {
+			m_instance = new DatabaseHelper(context.getApplicationContext());
+		}
+
+		return m_instance;
+	}
+
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("DROP VIEW IF EXISTS cats_unread;");
@@ -84,6 +98,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		onCreate(db);
+	}
+
+	public boolean hasPendingOfflineData() {
+		try {
+			Cursor c = getReadableDatabase().query("articles",
+					new String[] { "COUNT(*)" }, "modified = 1", null, null, null,
+					null);
+			if (c.moveToFirst()) {
+				int modified = c.getInt(0);
+				c.close();
+
+				return modified > 0;
+			}
+		} catch (IllegalStateException e) {
+			// db is closed? ugh
+		}
+
+		return false;
+	}
+
+	public boolean hasOfflineData() {
+		try {
+			Cursor c = getReadableDatabase().query("articles",
+					new String[] { "COUNT(*)" }, null, null, null, null, null);
+			if (c.moveToFirst()) {
+				int modified = c.getInt(0);
+				c.close();
+
+				return modified > 0;
+			}
+		} catch (IllegalStateException e) {
+			// db is closed?
+		}
+
+		return false;
 	}
 
 }

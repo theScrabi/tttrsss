@@ -99,10 +99,10 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
 		if (m_catId != -1) {
-			return m_activity.getReadableDb().query("feeds_unread", 
+			return m_activity.getDatabase().query("feeds_unread", 
 					null, unreadOnly + " AND cat_id = ?",  new String[] { String.valueOf(m_catId) }, null, null, order);
 		} else {		
-			return m_activity.getReadableDb().query("feeds_unread", 
+			return m_activity.getDatabase().query("feeds_unread", 
 				null, unreadOnly, null, null, null, order);
 		}
 	}

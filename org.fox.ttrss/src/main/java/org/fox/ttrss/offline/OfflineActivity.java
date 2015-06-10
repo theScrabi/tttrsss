@@ -207,10 +207,10 @@ public class OfflineActivity extends CommonActivity {
 			SQLiteStatement stmtSelectAll = null;
 			
 			if (isCat) {
-				stmtSelectAll = getWritableDb().compileStatement(
+				stmtSelectAll = getDatabase().compileStatement(
 						"UPDATE articles SET selected = 1 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
 			} else {
-				stmtSelectAll = getWritableDb().compileStatement(
+				stmtSelectAll = getDatabase().compileStatement(
 								"UPDATE articles SET selected = 1 WHERE feed_id = ?");
 			}
 			
@@ -224,10 +224,10 @@ public class OfflineActivity extends CommonActivity {
 			SQLiteStatement stmtSelectUnread = null;
 			
 			if (isCat) {
-				stmtSelectUnread = getWritableDb().compileStatement(
+				stmtSelectUnread = getDatabase().compileStatement(
 						"UPDATE articles SET selected = 1 WHERE feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?) AND unread = 1");
 			} else {
-				stmtSelectUnread = getWritableDb().compileStatement(
+				stmtSelectUnread = getDatabase().compileStatement(
 								"UPDATE articles SET selected = 1 WHERE feed_id = ? AND unread = 1");
 			}
 			
@@ -455,7 +455,7 @@ public class OfflineActivity extends CommonActivity {
 			if (oap != null) {
 				int articleId = oap.getSelectedArticleId();
 				
-				SQLiteStatement stmt = getWritableDb().compileStatement(
+				SQLiteStatement stmt = getDatabase().compileStatement(
 						"UPDATE articles SET modified = 1, marked = NOT marked WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
@@ -470,7 +470,7 @@ public class OfflineActivity extends CommonActivity {
 			return true; */
 		case R.id.selection_toggle_unread:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = getWritableDb()
+				SQLiteStatement stmt = getDatabase()
 						.compileStatement(
 								"UPDATE articles SET modified = 1, unread = NOT unread WHERE selected = 1");
 				stmt.execute();
@@ -481,7 +481,7 @@ public class OfflineActivity extends CommonActivity {
 			return true;
 		case R.id.selection_toggle_marked:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = getWritableDb()
+				SQLiteStatement stmt = getDatabase()
 						.compileStatement(
 								"UPDATE articles SET modified = 1, marked = NOT marked WHERE selected = 1");
 				stmt.execute();
@@ -492,7 +492,7 @@ public class OfflineActivity extends CommonActivity {
 			return true;
 		case R.id.selection_toggle_published:
 			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = getWritableDb()
+				SQLiteStatement stmt = getDatabase()
 						.compileStatement(
 								"UPDATE articles SET modified = 1, published = NOT published WHERE selected = 1");
 				stmt.execute();
@@ -505,7 +505,7 @@ public class OfflineActivity extends CommonActivity {
 			if (oap != null) {
 				int articleId = oap.getSelectedArticleId();
 				
-				SQLiteStatement stmt = getWritableDb().compileStatement(
+				SQLiteStatement stmt = getDatabase().compileStatement(
 						"UPDATE articles SET modified = 1, published = NOT published WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
@@ -524,12 +524,12 @@ public class OfflineActivity extends CommonActivity {
 				SQLiteStatement stmt = null;
 				
 				if (isCat) {
-					stmt = getWritableDb().compileStatement(
+					stmt = getDatabase().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
 				} else {
-					stmt = getWritableDb().compileStatement(
+					stmt = getDatabase().compileStatement(
 							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
 							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
 							"AND feed_id = ?");						
@@ -614,9 +614,9 @@ public class OfflineActivity extends CommonActivity {
 	}
 	
 	protected Cursor getArticleById(int articleId) {
-		Cursor c = getReadableDb().query("articles", null,
+		Cursor c = getDatabase().query("articles", null,
 				BaseColumns._ID + "=?",
-				new String[] { String.valueOf(articleId) }, null, null, null);
+				new String[]{String.valueOf(articleId)}, null, null, null);
 
 		c.moveToFirst();
 
@@ -659,9 +659,9 @@ public class OfflineActivity extends CommonActivity {
 	}
 	
 	protected Cursor getFeedById(int feedId) {
-		Cursor c = getReadableDb().query("feeds", null,
+		Cursor c = getDatabase().query("feeds", null,
 				BaseColumns._ID + "=?",
-				new String[] { String.valueOf(feedId) }, null, null, null);
+				new String[]{String.valueOf(feedId)}, null, null, null);
 
 		c.moveToFirst();
 
@@ -669,9 +669,9 @@ public class OfflineActivity extends CommonActivity {
 	}
 
 	protected Cursor getCatById(int catId) {
-		Cursor c = getReadableDb().query("categories", null,
+		Cursor c = getDatabase().query("categories", null,
 				BaseColumns._ID + "=?",
-				new String[] { String.valueOf(catId) }, null, null, null);
+				new String[]{String.valueOf(catId)}, null, null, null);
 
 		c.moveToFirst();
 
@@ -715,8 +715,8 @@ public class OfflineActivity extends CommonActivity {
 	}
 
 	protected int getSelectedArticleCount() {
-		Cursor c = getReadableDb().query("articles",
-				new String[] { "COUNT(*)" }, "selected = 1", null, null, null,
+		Cursor c = getDatabase().query("articles",
+				new String[]{"COUNT(*)"}, "selected = 1", null, null, null,
 				null);
 		c.moveToFirst();
 		int selected = c.getInt(0);
@@ -730,12 +730,12 @@ public class OfflineActivity extends CommonActivity {
 		Cursor c;
 		
 		if (isCat) {
-			c = getReadableDb().query("articles",
+			c = getDatabase().query("articles",
 				new String[] { "COUNT(*)" }, "unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)", 
 				new String[] { String.valueOf(feedId) },
 				null, null, null);
 		} else {
-			c = getReadableDb().query("articles",
+			c = getDatabase().query("articles",
 				new String[] { "COUNT(*)" }, "unread = 1 AND feed_id = ?", 
 				new String[] { String.valueOf(feedId) }, 
 				null, null, null);
@@ -749,7 +749,7 @@ public class OfflineActivity extends CommonActivity {
 	}
 	
 	protected void deselectAllArticles() {
-		getWritableDb().execSQL("UPDATE articles SET selected = 0 ");
+		getDatabase().execSQL("UPDATE articles SET selected = 0 ");
 		refresh();
 	}
 
@@ -780,14 +780,14 @@ public class OfflineActivity extends CommonActivity {
 
 	public void catchupFeed(int feedId, boolean isCat) {
 		if (isCat) {
-			SQLiteStatement stmt = getWritableDb().compileStatement(
-					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT "+
-						BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+			SQLiteStatement stmt = getDatabase().compileStatement(
+					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id IN (SELECT " +
+							BaseColumns._ID + " FROM feeds WHERE cat_id = ?)");
 			stmt.bindLong(1, feedId);
 			stmt.execute();
 			stmt.close();
 		} else {
-			SQLiteStatement stmt = getWritableDb().compileStatement(
+			SQLiteStatement stmt = getDatabase().compileStatement(
 					"UPDATE articles SET modified = 1, unread = 0 WHERE feed_id = ?");
 			stmt.bindLong(1, feedId);
 			stmt.execute();
