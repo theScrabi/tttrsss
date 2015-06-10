@@ -62,7 +62,7 @@ public abstract class BaseFeedlistFragment extends Fragment {
 				/* deal with ~material~ footers */
 
                 // divider
-                View footer = inflater.inflate(R.layout.headlines_divider, list, false);
+                View footer = inflater.inflate(R.layout.drawer_divider, list, false);
                 footer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

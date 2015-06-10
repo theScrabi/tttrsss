@@ -18,7 +18,7 @@ public class PreferencesActivity extends CommonActivity {
 
         setContentView(R.layout.preferences);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

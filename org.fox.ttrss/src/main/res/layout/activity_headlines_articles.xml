@@ -20,5 +20,5 @@
         android:background="?headlinesBackground">
     </FrameLayout>
 
-    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 </FrameLayout>

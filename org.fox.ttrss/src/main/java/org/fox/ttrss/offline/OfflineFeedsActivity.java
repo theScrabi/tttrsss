@@ -47,7 +47,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 		setContentView(R.layout.headlines);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);

@@ -172,7 +172,7 @@ public class OfflineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		invalidateOptionsMenu();

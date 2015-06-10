@@ -348,7 +348,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		Log.d(TAG, "maxImageSize=" + m_maxImageSize);
 		
-		View view = inflater.inflate(R.layout.headlines_fragment, container, false);
+		View view = inflater.inflate(R.layout.fragment_headlines, container, false);
 
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
 
@@ -741,7 +741,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					layoutId = R.layout.headlines_row_loadmore;
 					break;
 				case VIEW_SPACER:
-					layoutId = R.layout.dummy_fragment;
+					layoutId = R.layout.fragment_dummy;
 					break;
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;

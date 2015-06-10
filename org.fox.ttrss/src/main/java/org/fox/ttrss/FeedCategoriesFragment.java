@@ -202,7 +202,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 			m_cats = savedInstanceState.getParcelable("cats");
 		}	
 		
-		View view = inflater.inflate(R.layout.cats_fragment, container, false);
+		View view = inflater.inflate(R.layout.fragment_cats, container, false);
 		
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
 		

@@ -45,7 +45,7 @@ public class FontSizeDialogPreference extends DialogPreference {
 		setProgressTextSuffix(" " + context.getString(R.string.font_size_dialog_suffix));
 		
 		// set layout
-		setDialogLayoutResource(R.layout.select_font_size_dialog);
+		setDialogLayoutResource(R.layout.dialog_select_font_size);
 		setPositiveButtonText(android.R.string.ok);
 		setNegativeButtonText(android.R.string.cancel);
 		setDialogIcon(null);

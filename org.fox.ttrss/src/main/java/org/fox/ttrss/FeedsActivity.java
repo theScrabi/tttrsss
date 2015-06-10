@@ -58,7 +58,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		GlobalState.getInstance().load(savedInstanceState);
@@ -66,20 +66,6 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 
         if (m_drawerLayout != null) {
-
-            /*View drawerList = findViewById(R.id.feeds_fragment);
-
-            int minWidth = dpToPx(240);
-            int maxWidth = dpToPx(320);
-
-            int width = (int)((float)getResources().getDisplayMetrics().widthPixels * 0.7f);
-
-            if (width < minWidth) width = minWidth;
-            if (width > maxWidth) width = maxWidth;
-
-            DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawerList.getLayoutParams();
-            params.width = width;
-            drawerList.setLayoutParams(params); */
 
 			m_drawerToggle = new ActionBarDrawerToggle(this, m_drawerLayout, R.string.blank, R.string.blank) {
                 @Override

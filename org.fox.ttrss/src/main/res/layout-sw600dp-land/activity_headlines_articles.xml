@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines"
     android:fitsSystemWindows="true"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 
     <FrameLayout
         android:id="@+id/sw600dp_anchor"
@@ -18,15 +19,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:layout_below="@+id/actionbar_toolbar">
+        android:orientation="horizontal" >
 
         <FrameLayout
             android:paddingRight="4dp"
             android:id="@+id/headlines_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.3"
             android:background="?headlinesBackground" >
         </FrameLayout>
 
@@ -34,10 +34,10 @@
             android:id="@+id/article_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.6"
+            android:layout_weight="0.7"
             android:elevation="4dp"
             android:background="?articleBackground" >
         </FrameLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

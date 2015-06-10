@@ -130,7 +130,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 			m_selectedCatId = savedInstanceState.getInt("selectedFeedId");
 		}
 
-		View view = inflater.inflate(R.layout.feeds_fragment, container, false);
+		View view = inflater.inflate(R.layout.fragment_feeds, container, false);
 
         m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
 

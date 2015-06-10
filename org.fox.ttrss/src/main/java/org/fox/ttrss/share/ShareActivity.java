@@ -39,7 +39,7 @@ public class ShareActivity extends CommonShareActivity {
 			contentValue = savedInstanceState.getString("content");
 		}
 
-		setContentView(R.layout.share);
+		setContentView(R.layout.activity_share);
 		
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_launcher);
 		

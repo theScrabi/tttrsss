@@ -262,7 +262,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         setContentView(R.layout.article_images_pager);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         m_progress = (ProgressBar) findViewById(R.id.article_images_progress);

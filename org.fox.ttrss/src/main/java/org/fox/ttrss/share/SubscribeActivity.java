@@ -87,7 +87,7 @@ public class SubscribeActivity extends CommonShareActivity {
 			m_cats.addAll(list);
 		}
 
-		setContentView(R.layout.subscribe);
+		setContentView(R.layout.activity_subscribe);
 		
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_launcher);
 		

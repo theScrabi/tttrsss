@@ -124,7 +124,7 @@ public class OfflineArticleFragment extends Fragment {
 			m_articleId = savedInstanceState.getInt("articleId");
 		}
 		
-		View view = inflater.inflate(R.layout.article_fragment, container, false);
+		View view = inflater.inflate(R.layout.fragment_article, container, false);
 
 		m_cursor = m_activity.getReadableDb().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 				new String[] { "articles.*", "feeds.title AS feed_title" }, "articles." + BaseColumns._ID + "=?", 

@@ -38,9 +38,9 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines_articles);
+		setContentView(R.layout.activity_headlines_articles);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
@@ -74,11 +74,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
         getSupportActionBar().setHomeButtonEnabled(true);
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
-		
-		/* if (isPortrait() || m_prefs.getBoolean("headlines_hide_sidebar", false)) {
-			findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
-		} */
-		
+
 		if (savedInstanceState == null) {
 			Intent i = getIntent();
 			

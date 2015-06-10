@@ -173,7 +173,7 @@ public class ArticleFragment extends Fragment  {
             //m_fsviewShown = savedInstanceState.getBoolean("fsviewShown");
 		}
 
-		final View view = inflater.inflate(R.layout.article_fragment, container, false);
+		final View view = inflater.inflate(R.layout.fragment_article, container, false);
 
         /* if (m_fsviewShown) {
             view.findViewById(R.id.article_fullscreen_video).setVisibility(View.VISIBLE);

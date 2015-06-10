@@ -4,7 +4,7 @@
     android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <include layout="@layout/actionbar_toolbar" android:id="@+id/actionbar_toolbar" />
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 
     <LinearLayout
         android:id="@+id/fragment_container"
@@ -12,7 +12,7 @@
         android:layout_height="fill_parent"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:layout_below="@+id/actionbar_toolbar">
+        android:layout_below="@+id/toolbar">
 
         <FrameLayout
             android:id="@+id/sw600dp_anchor"

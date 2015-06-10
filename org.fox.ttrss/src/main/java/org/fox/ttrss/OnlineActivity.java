@@ -165,7 +165,7 @@ public class OnlineActivity extends CommonActivity {
 
 		setContentView(R.layout.login);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         if (!ImageLoader.getInstance().isInited()) {
@@ -643,22 +643,6 @@ public class OnlineActivity extends CommonActivity {
 		final ArticlePager ap = (ArticlePager)getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 
 		switch (item.getItemId()) {
-		/* case android.R.id.home:
-			finish();
-			return true; */
-		/* case R.id.headlines_toggle_sidebar:
-			if (true && !isSmallScreen()) {
-				View v = findViewById(R.id.headlines_fragment); 
-				
-				if (v != null) {
-					SharedPreferences.Editor editor = m_prefs.edit();
-					editor.putBoolean("headlines_hide_sidebar", !m_prefs.getBoolean("headlines_hide_sidebar", false));
-					editor.commit();
-
-					v.setVisibility(m_prefs.getBoolean("headlines_hide_sidebar", false) ? View.GONE : View.VISIBLE);
-				}
-			}
-			return true; */
 		case R.id.subscribe_to_feed:
 			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
 			startActivityForResult(subscribe, 0);

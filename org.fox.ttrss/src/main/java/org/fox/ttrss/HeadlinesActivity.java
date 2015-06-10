@@ -35,9 +35,9 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
         super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines_articles);
+		setContentView(R.layout.activity_headlines_articles);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         m_forceDisableActionMode = isPortrait() || isSmallScreen();
