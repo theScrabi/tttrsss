@@ -28,7 +28,7 @@ public class TaskerSettingsActivity extends Activity {
 		
 		int actionId = settings != null ? settings.getInt("actionId", -1) : -1;
 		
-		setContentView(R.layout.settings_tasker);
+		setContentView(R.layout.activity_tasker_settings);
 
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.taskerActions);
 		
