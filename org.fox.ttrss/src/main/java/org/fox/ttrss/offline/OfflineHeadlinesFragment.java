@@ -37,6 +37,8 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 
 import org.fox.ttrss.Application;
 import org.fox.ttrss.CommonActivity;
@@ -64,6 +66,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
+	private AnimationAdapter m_animationAdapter;
 	
 	private OfflineHeadlinesEventListener m_listener;
 	private OfflineActivity m_activity;
@@ -330,8 +333,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
         m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_cursor,
 				new String[] { "title" }, new int[] { R.id.title }, 0);
-		
-		m_list.setAdapter(m_adapter);
+		m_animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
+
+		m_animationAdapter.setAbsListView(m_list);
+		m_list.setAdapter(m_animationAdapter);
+
 		m_list.setOnItemClickListener(this);
         m_list.setOnScrollListener(this);
 		registerForContextMenu(m_list);
