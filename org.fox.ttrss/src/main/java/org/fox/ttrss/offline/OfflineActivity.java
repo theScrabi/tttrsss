@@ -465,6 +465,20 @@ public class OfflineActivity extends CommonActivity {
 				refresh();
 			}
 			return true;
+		case R.id.toggle_unread:
+			if (oap != null) {
+				int articleId = oap.getSelectedArticleId();
+
+				SQLiteStatement stmt = getDatabase().compileStatement(
+						"UPDATE articles SET modified = 1, unread = NOT unread WHERE "
+								+ BaseColumns._ID + " = ?");
+				stmt.bindLong(1, articleId);
+				stmt.execute();
+				stmt.close();
+
+				refresh();
+			}
+			return true;
 		/* case R.id.selection_select_none:
 			deselectAllArticles();			
 			return true; */
@@ -595,6 +609,9 @@ public class OfflineActivity extends CommonActivity {
 
 					m_menu.findItem(R.id.toggle_published).setIcon(published ? R.drawable.ic_checkbox_marked :
 						R.drawable.ic_rss_box);
+
+					m_menu.findItem(R.id.toggle_unread).setIcon(unread ? R.drawable.ic_email :
+							R.drawable.ic_email_open);
 
 					article.close();
 				}				

@@ -53,11 +53,11 @@
             android:icon="@drawable/ic_rss_box"
             app:showAsAction="ifRoom"
             android:title="@string/article_toggle_published"/>
-        <!-- <item
+        <item
             android:id="@+id/toggle_unread"
             android:icon="@drawable/ic_email"
             app:showAsAction="ifRoom"
-            android:title="@string/article_toggle_unread"/> -->
+            android:title="@string/article_toggle_unread"/>
         <!-- <item
             android:id="@+id/share_article"
             android:icon="@drawable/ic_share"
