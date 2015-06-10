@@ -34,7 +34,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 	private FeedCategoryListAdapter m_adapter;
 	private int m_selectedCatId;
 	private Cursor m_cursor;
-	private OfflineFeedsActivity m_activity;
+	private OfflineMasterActivity m_activity;
     private SwipeRefreshLayout m_swipeLayout;
     private ListView m_list;
 	
@@ -42,7 +42,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.category_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.context_category, menu);
 
 		menu.findItem(R.id.create_shortcut).setEnabled(false);
 
@@ -168,7 +168,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		m_activity = (OfflineFeedsActivity)activity;
+		m_activity = (OfflineMasterActivity)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);

@@ -14,7 +14,7 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
-        android:name=".GlobalState"
+        android:name=".Application"
         android:allowBackup="true"
         android:backupAgent=".util.PrefsBackupAgent"
         android:hardwareAccelerated="true"
@@ -39,14 +39,14 @@
             android:label="@string/preferences" >
         </activity>
         <activity
-            android:name=".FeedsActivity"
+            android:name=".MasterActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".HeadlinesActivity"
+            android:name=".DetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>
@@ -69,11 +69,11 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".offline.OfflineFeedsActivity"
+            android:name=".offline.OfflineMasterActivity"
             android:label="@string/app_name">
         </activity>
         <activity
-            android:name=".offline.OfflineHeadlinesActivity"
+            android:name=".offline.OfflineDetailActivity"
             android:label="@string/app_name">
         </activity>
         <activity

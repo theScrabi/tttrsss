@@ -87,7 +87,7 @@ public class OfflineArticleFragment extends Fragment {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		//getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+		//getActivity().getMenuInflater().inflate(R.menu.context_article_link, menu);
 		//menu.setHeaderTitle(m_cursor.getString(m_cursor.getColumnIndex("title")));
 		
 		String title = m_cursor.getString(m_cursor.getColumnIndex("title"));
@@ -97,7 +97,7 @@ public class OfflineArticleFragment extends Fragment {
 
 			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
 				menu.setHeaderTitle(result.getExtra());
-				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+				getActivity().getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 				
 				/* FIXME I have no idea how to do this correctly ;( */
 				
@@ -105,11 +105,11 @@ public class OfflineArticleFragment extends Fragment {
 				
 			} else {
 				menu.setHeaderTitle(title);
-				getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+				getActivity().getMenuInflater().inflate(R.menu.context_article_link, menu);
 			}
 		} else {
 			menu.setHeaderTitle(title);
-			getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+			getActivity().getMenuInflater().inflate(R.menu.context_article_link, menu);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);	

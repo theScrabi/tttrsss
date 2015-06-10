@@ -1,17 +1,11 @@
 package org.fox.ttrss.share;
 
-import java.util.HashMap;
-
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.SimpleLoginManager;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -127,7 +121,7 @@ public abstract class CommonShareActivity extends CommonActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.share_menu, menu);
+		inflater.inflate(R.menu.activity_share, menu);
 		return true;
 	}
 

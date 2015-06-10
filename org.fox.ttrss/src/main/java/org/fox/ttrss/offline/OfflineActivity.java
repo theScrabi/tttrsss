@@ -60,7 +60,7 @@ public class OfflineActivity extends CommonActivity {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			
 			 MenuInflater inflater = getMenuInflater();
-	            inflater.inflate(R.menu.headlines_action_menu, menu);
+	            inflater.inflate(R.menu.action_mode_headlines, menu);
 			
 			return true;
 		}
@@ -170,7 +170,7 @@ public class OfflineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.login);
+		setContentView(R.layout.activity_login);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -181,7 +181,7 @@ public class OfflineActivity extends CommonActivity {
 		
 		if (intent.getExtras() != null) {
 			if (intent.getBooleanExtra("initial", false)) {
-				intent = new Intent(OfflineActivity.this, OfflineFeedsActivity.class);
+				intent = new Intent(OfflineActivity.this, OfflineMasterActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		 	   
 				startActivityForResult(intent, 0);
@@ -552,7 +552,7 @@ public class OfflineActivity extends CommonActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.offline_menu, menu);
+		inflater.inflate(R.menu.activity_offline, menu);
 
 		m_menu = menu;
 

@@ -1,8 +1,6 @@
 package org.fox.ttrss.tasker;
 
 import org.fox.ttrss.R;
-import org.fox.ttrss.offline.OfflineDownloadService;
-import org.fox.ttrss.offline.OfflineUploadService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,7 +28,7 @@ public class TaskerSettingsActivity extends Activity {
 		
 		int actionId = settings != null ? settings.getInt("actionId", -1) : -1;
 		
-		setContentView(R.layout.tasker_settings);
+		setContentView(R.layout.settings_tasker);
 
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.taskerActions);
 		

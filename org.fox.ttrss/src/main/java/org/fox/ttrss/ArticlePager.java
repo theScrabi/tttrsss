@@ -31,7 +31,7 @@ public class ArticlePager extends Fragment {
 	private PagerAdapter m_adapter;
 	private HeadlinesEventListener m_listener;
 	private Article m_article;
-	private ArticleList m_articles = new ArticleList(); //m_articles = GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles = new ArticleList(); //m_articles = Application.getInstance().m_loadedArticles;
 	private OnlineActivity m_activity;
 	private String m_searchQuery = "";
 	private Feed m_feed;
@@ -79,7 +79,7 @@ public class ArticlePager extends Fragment {
 	
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
-            m_articles = ((HeadlinesActivity)m_activity).m_articles;
+            m_articles = ((DetailActivity)m_activity).m_articles;
 			m_feed = savedInstanceState.getParcelable("feed");
 		}
 		
@@ -138,7 +138,7 @@ public class ArticlePager extends Fragment {
 	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
 
-		/* if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+		/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
 			append = false;
 		} */
 		
@@ -274,9 +274,9 @@ public class ArticlePager extends Fragment {
 	public void onResume() {
 		super.onResume();
 		
-		/* if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+		/* if (m_articles.size() == 0 || !m_feed.equals(Application.getInstance().m_activeFeed)) {
 			refresh(false);
-			GlobalState.getInstance().m_activeFeed = m_feed;
+			Application.getInstance().m_activeFeed = m_feed;
 		} */
 
 		if (m_adapter != null) m_adapter.notifyDataSetChanged();

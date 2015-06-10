@@ -48,7 +48,7 @@ public class ArticleFragment extends Fragment  {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private HeadlinesActivity m_activity;
+	private DetailActivity m_activity;
     private WebView m_web;
     protected View m_customView;
     protected FrameLayout m_customViewContainer;
@@ -136,7 +136,7 @@ public class ArticleFragment extends Fragment  {
 			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
 
 				menu.setHeaderTitle(result.getExtra());
-				getActivity().getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+				getActivity().getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 				
 				/* FIXME I have no idea how to do this correctly ;( */
 				
@@ -144,11 +144,11 @@ public class ArticleFragment extends Fragment  {
 				
 			} else {
 				menu.setHeaderTitle(m_article.title);
-				getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+				getActivity().getMenuInflater().inflate(R.menu.context_article_link, menu);
 			}
 		} else {
 			menu.setHeaderTitle(m_article.title);
-			getActivity().getMenuInflater().inflate(R.menu.article_link_context_menu, menu);
+			getActivity().getMenuInflater().inflate(R.menu.context_article_link, menu);
 		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -586,7 +586,7 @@ public class ArticleFragment extends Fragment  {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_activity = (HeadlinesActivity)activity;
+		m_activity = (DetailActivity)activity;
 
 	}
 }

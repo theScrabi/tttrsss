@@ -95,7 +95,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	private ArticleListAdapter m_adapter;
 	private AnimationAdapter m_animationAdapter;
-	private ArticleList m_articles = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles = new ArticleList(); //Application.getInstance().m_loadedArticles;
 	//private ArticleList m_selectedArticles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
 	private HeadlinesEventListener m_listener;
@@ -301,7 +301,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.headlines_context_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
 		
 		if (getSelectedArticles().size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
@@ -327,10 +327,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         if (savedInstanceState != null) {
 			m_feed = savedInstanceState.getParcelable("feed");
 
-            if (! (m_activity instanceof HeadlinesActivity)) {
+            if (! (m_activity instanceof DetailActivity)) {
                 m_articles = savedInstanceState.getParcelable("articles");
             } else {
-                m_articles = ((HeadlinesActivity)m_activity).m_articles;
+                m_articles = ((DetailActivity)m_activity).m_articles;
             }
 
 			m_activeArticle = savedInstanceState.getParcelable("activeArticle");
@@ -407,16 +407,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		if (m_adapter != null) m_adapter.notifyDataSetChanged();
 
-		/* if (GlobalState.getInstance().m_activeArticle != null) {
-			m_activeArticle = GlobalState.getInstance().m_activeArticle;
-			GlobalState.getInstance().m_activeArticle = null;
+		/* if (Application.getInstance().m_activeArticle != null) {
+			m_activeArticle = Application.getInstance().m_activeArticle;
+			Application.getInstance().m_activeArticle = null;
 		} */
 
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
 		}
 
-        /* if (!(m_activity instanceof HeadlinesActivity)) {
+        /* if (!(m_activity instanceof DetailActivity)) {
             refresh(false);
         } */
 
@@ -424,10 +424,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             refresh(false);
         }
 
-		/* if (m_articles.size() == 0 || !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+		/* if (m_articles.size() == 0 || !m_feed.equals(Application.getInstance().m_activeFeed)) {
 			if (m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE) == null) {
 				refresh(false);
-				GlobalState.getInstance().m_activeFeed = m_feed;
+				Application.getInstance().m_activeFeed = m_feed;
 			}			
 		} else {
 			notifyUpdated();
@@ -457,8 +457,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (article != null && article.id >= 0) {
 				m_listener.onArticleSelected(article);
 				
-				// only set active article when it makes sense (in HeadlinesActivity)
-				if (getActivity() instanceof HeadlinesActivity) {
+				// only set active article when it makes sense (in DetailActivity)
+				if (getActivity() instanceof DetailActivity) {
 					m_activeArticle = article;
 				}
 				
@@ -478,7 +478,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
-			/* if (!m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+			/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
 				append = false;
 			} */
 
@@ -1155,8 +1155,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void setActiveArticle(Article article) {
 		if (article != m_activeArticle && article != null) {
 
-            // only set active article when it makes sense (in HeadlinesActivity)
-            if (getActivity() instanceof HeadlinesActivity) {
+            // only set active article when it makes sense (in DetailActivity)
+            if (getActivity() instanceof DetailActivity) {
                 m_activeArticle = article;
             }
 

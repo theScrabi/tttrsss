@@ -16,7 +16,7 @@ public class PreferencesActivity extends CommonActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.preferences);
+        setContentView(R.layout.activity_preferences);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

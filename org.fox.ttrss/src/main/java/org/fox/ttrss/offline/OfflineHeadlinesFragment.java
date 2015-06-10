@@ -38,8 +38,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import org.fox.ttrss.Application;
 import org.fox.ttrss.CommonActivity;
-import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.jsoup.Jsoup;
 
@@ -214,7 +214,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.headlines_context_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
 		
 		if (getSelectedArticleCount() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
@@ -238,9 +238,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	public void onResume() {
 		super.onResume();
 		
-		if (GlobalState.getInstance().m_selectedArticleId != 0) {			
-			m_activeArticleId = GlobalState.getInstance().m_selectedArticleId;
-			GlobalState.getInstance().m_selectedArticleId = 0;
+		if (Application.getInstance().m_selectedArticleId != 0) {
+			m_activeArticleId = Application.getInstance().m_selectedArticleId;
+			Application.getInstance().m_selectedArticleId = 0;
 		}
 
 		if (m_activeArticleId != 0) {

@@ -50,7 +50,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
 	private FeedList m_feeds = new FeedList();
-	private FeedsActivity m_activity;
+	private MasterActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
 	private static final String ICON_PATH = "/icons/";
@@ -223,7 +223,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		getActivity().getMenuInflater().inflate(R.menu.feed_menu, menu);
+		getActivity().getMenuInflater().inflate(R.menu.context_feed, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 
@@ -330,7 +330,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 		
-		m_activity = (FeedsActivity)activity;
+		m_activity = (MasterActivity)activity;
 				
 	}
 

@@ -30,7 +30,7 @@ import org.fox.ttrss.widget.SmallWidgetProvider;
 import java.util.Date;
 import java.util.HashMap;
 
-public class FeedsActivity extends OnlineActivity implements HeadlinesEventListener {
+public class MasterActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private static final int HEADLINES_REQUEST = 1;
@@ -54,14 +54,14 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.headlines);
+		setContentView(R.layout.activity_master);
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		GlobalState.getInstance().load(savedInstanceState);
+		Application.getInstance().load(savedInstanceState);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 
@@ -402,7 +402,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
         out.putBoolean("userFeedSelected", m_userFeedSelected);
 
-		GlobalState.getInstance().save(out);
+		Application.getInstance().save(out);
 	}
 	
 	@Override
@@ -417,9 +417,9 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	/* public void openFeedArticles(Feed feed) {
-		//GlobalState.getInstance().m_loadedArticles.clear();
+		//Application.getInstance().m_loadedArticles.clear();
 		
-		Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
+		Intent intent = new Intent(MasterActivity.this, DetailActivity.class);
 		intent.putExtra("feed", feed);
 		intent.putExtra("article", (Article)null);
 		intent.putExtra("searchQuery", (String)null);
@@ -432,12 +432,12 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 		if (open) {
 			HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 
-			Intent intent = new Intent(FeedsActivity.this, HeadlinesActivity.class);
+			Intent intent = new Intent(MasterActivity.this, DetailActivity.class);
 			intent.putExtra("feed", hf.getFeed());
 			intent.putExtra("article", article);
 			intent.putExtra("searchQuery", hf.getSearchQuery());
             //intent.putExtra("articles", (Parcelable)hf.getAllArticles());
-            GlobalState.getInstance().tmpArticleList = hf.getAllArticles();
+            Application.getInstance().tmpArticleList = hf.getAllArticles();
 
             /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivityForResult(intent, HEADLINES_REQUEST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
@@ -486,11 +486,11 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == HEADLINES_REQUEST && data != null) {
-			//GlobalState.getInstance().m_activeArticle = null;
+			//Application.getInstance().m_activeArticle = null;
 
             //ArrayList<Article> tmp = data.getParcelableArrayListExtra("articles");
             Article article = data.getParcelableExtra("activeArticle");
-            ArticleList articles = GlobalState.getInstance().tmpArticleList;
+            ArticleList articles = Application.getInstance().tmpArticleList;
 
             if (articles != null) {
                 HeadlinesFragment hf = (HeadlinesFragment)getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
@@ -506,7 +506,7 @@ public class FeedsActivity extends OnlineActivity implements HeadlinesEventListe
 	}
 
 	public void createFeedShortcut(Feed feed) {
-		final Intent shortcutIntent = new Intent(this, FeedsActivity.class);
+		final Intent shortcutIntent = new Intent(this, MasterActivity.class);
 		shortcutIntent.putExtra("feed_id", feed.id);
 		shortcutIntent.putExtra("feed_is_cat", feed.is_cat);
 		shortcutIntent.putExtra("feed_title", feed.title);

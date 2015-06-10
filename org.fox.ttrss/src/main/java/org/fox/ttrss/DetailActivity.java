@@ -18,7 +18,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
-public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventListener {
+public class DetailActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	protected ArticleList m_articles = new ArticleList();
 
@@ -35,7 +35,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
         super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_headlines_articles);
+		setContentView(R.layout.activity_detail);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -47,7 +47,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 		
-		GlobalState.getInstance().load(savedInstanceState);
+		Application.getInstance().load(savedInstanceState);
 
         if (isPortrait() && !isSmallScreen()) {
             findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
@@ -72,7 +72,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 					
 					tmpFeed = new Feed(feedId, feedTitle, isCat);
 
-					//GlobalState.getInstance().m_loadedArticles.clear();
+					//Application.getInstance().m_loadedArticles.clear();
 				} else {
 					tmpFeed = i.getParcelableExtra("feed");
 				}
@@ -82,7 +82,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 				final Article article = i.getParcelableExtra("article");
 				final String searchQuery = i.getStringExtra("searchQuery");
 
-                ArticleList tmp = GlobalState.getInstance().tmpArticleList;
+                ArticleList tmp = Application.getInstance().tmpArticleList;
 
                 if (tmp != null) {
                     m_articles.addAll(tmp);
@@ -153,7 +153,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
         out.putParcelable("articles", m_articles);
 
-		GlobalState.getInstance().save(out);
+		Application.getInstance().save(out);
 	}
 	
 	@Override
@@ -253,7 +253,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 
         m_activeArticle = article;
 
-		//GlobalState.getInstance().m_activeArticle = article;
+		//Application.getInstance().m_activeArticle = article;
 		
 		invalidateOptionsMenu();
 		
@@ -314,7 +314,7 @@ public class HeadlinesActivity extends OnlineActivity implements HeadlinesEventL
 	public void onBackPressed() {
         Intent resultIntent = new Intent();
 
-        GlobalState.getInstance().tmpArticleList = m_articles;
+        Application.getInstance().tmpArticleList = m_articles;
         resultIntent.putExtra("activeArticle", m_activeArticle);
 
         setResult(Activity.RESULT_OK, resultIntent);

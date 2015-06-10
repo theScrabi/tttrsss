@@ -21,10 +21,10 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.Application;
 import org.fox.ttrss.R;
 
-public class OfflineFeedsActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
+public class OfflineMasterActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	//private boolean m_actionbarUpEnabled = false;
@@ -45,14 +45,14 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.headlines);
+		setContentView(R.layout.activity_master);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 
-		GlobalState.getInstance().load(savedInstanceState);
+		Application.getInstance().load(savedInstanceState);
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 
@@ -117,7 +117,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 	public void openFeedArticles(int feedId, boolean isCat) {
 		if (isSmallScreen()) {
-			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);
+			Intent intent = new Intent(OfflineMasterActivity.this, OfflineDetailActivity.class);
 			
 			intent.putExtra("feed", feedId);
 			intent.putExtra("isCat", isCat);
@@ -197,7 +197,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 
 		out.putBoolean("feedIsSelected", m_feedIsSelected);
 
-		GlobalState.getInstance().save(out);
+		Application.getInstance().save(out);
 	}
 	
 	public void initMenu() {
@@ -335,7 +335,7 @@ public class OfflineFeedsActivity extends OfflineActivity implements OfflineHead
 		if (open) {
 			OfflineHeadlinesFragment hf = (OfflineHeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 			
-			Intent intent = new Intent(OfflineFeedsActivity.this, OfflineHeadlinesActivity.class);		
+			Intent intent = new Intent(OfflineMasterActivity.this, OfflineDetailActivity.class);
 			intent.putExtra("feed", hf.getFeedId());
 			intent.putExtra("isCat", hf.getFeedIsCat());
 			intent.putExtra("article", articleId);

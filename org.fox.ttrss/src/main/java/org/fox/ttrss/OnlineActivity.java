@@ -123,7 +123,7 @@ public class OnlineActivity extends CommonActivity {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
 			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.headlines_action_menu, menu);
+			inflater.inflate(R.menu.action_mode_headlines, menu);
 			
 			return true;
 		}
@@ -136,11 +136,11 @@ public class OnlineActivity extends CommonActivity {
 	}
 
     protected String getSessionId() {
-		return GlobalState.getInstance().m_sessionId;
+		return Application.getInstance().m_sessionId;
 	}
 
 	protected void setSessionId(String sessionId) {
-		GlobalState.getInstance().m_sessionId = sessionId;
+		Application.getInstance().m_sessionId = sessionId;
 	}
 	
 	@Override
@@ -163,7 +163,7 @@ public class OnlineActivity extends CommonActivity {
 
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
-		setContentView(R.layout.login);
+		setContentView(R.layout.activity_login);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -197,7 +197,7 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected boolean canUseProgress() {
-		return GlobalState.getInstance().m_canUseProgress;
+		return Application.getInstance().m_canUseProgress;
 	}
 
 	protected void switchOffline() {
@@ -457,7 +457,7 @@ public class OnlineActivity extends CommonActivity {
 		
 		initMenu();
 	
-		Intent intent = new Intent(OnlineActivity.this, FeedsActivity.class);
+		Intent intent = new Intent(OnlineActivity.this, MasterActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
  	   
 		startActivityForResult(intent, 0);
@@ -1252,7 +1252,7 @@ public class OnlineActivity extends CommonActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
+		inflater.inflate(R.menu.activity_main, menu);
 
 		m_menu = menu;
 
@@ -1273,11 +1273,11 @@ public class OnlineActivity extends CommonActivity {
 	}
 	
 	protected int getApiLevel() {
-		return GlobalState.getInstance().m_apiLevel;
+		return Application.getInstance().m_apiLevel;
 	}
 	
 	protected void setApiLevel(int apiLevel) {
-		GlobalState.getInstance().m_apiLevel = apiLevel;
+		Application.getInstance().m_apiLevel = apiLevel;
 	}
 	
 	@SuppressWarnings({ "unchecked", "serial" })
@@ -1623,7 +1623,7 @@ public class OnlineActivity extends CommonActivity {
 						
 						JsonElement apiLevel = content.get("api_level");
 
-						GlobalState.getInstance().m_canUseProgress = m_canUseProgress;
+						Application.getInstance().m_canUseProgress = m_canUseProgress;
 
 						Log.d(TAG, "Authenticated! canUseProgress=" + m_canUseProgress);
 						

@@ -1,6 +1,5 @@
 package org.fox.ttrss;
 
-import android.app.Application;
 import android.os.Bundle;
 
 import org.acra.ACRA;
@@ -12,8 +11,8 @@ import org.fox.ttrss.types.ArticleList;
         excludeMatchingSharedPreferencesKeys = {"password"},
         resDialogText = R.string.crash_dialog_text,
         formUri = "http://tt-rss.org/acra/submit/")
-public class GlobalState extends Application {
-	private static GlobalState m_singleton;
+public class Application extends android.app.Application {
+	private static Application m_singleton;
 	
 	public ArticleList tmpArticleList;
 	//public Feed m_activeFeed;
@@ -23,7 +22,7 @@ public class GlobalState extends Application {
 	public int m_apiLevel;
 	public boolean m_canUseProgress;
 	
-	public static GlobalState getInstance(){
+	public static Application getInstance(){
 		return m_singleton;
 	}
 	

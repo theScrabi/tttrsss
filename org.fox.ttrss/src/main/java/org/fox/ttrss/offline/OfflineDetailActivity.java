@@ -17,10 +17,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.fox.ttrss.GlobalState;
+import org.fox.ttrss.Application;
 import org.fox.ttrss.R;
 
-public class OfflineHeadlinesActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
+public class OfflineDetailActivity extends OfflineActivity implements OfflineHeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	protected SharedPreferences m_prefs;
@@ -38,7 +38,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 		
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_headlines_articles);
+		setContentView(R.layout.activity_detail);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -168,7 +168,7 @@ public class OfflineHeadlinesActivity extends OfflineActivity implements Offline
 			hf.setActiveArticleId(articleId);
 		}
 		
-		GlobalState.getInstance().m_selectedArticleId = articleId;
+		Application.getInstance().m_selectedArticleId = articleId;
 		
 		invalidateOptionsMenu();
 		refresh();

@@ -25,7 +25,7 @@ public class HeadlinesRequest extends ApiRequest {
 	
 	private int m_offset = 0;
 	private OnlineActivity m_activity;
-	private ArticleList m_articles; // = new ArticleList(); //GlobalState.getInstance().m_loadedArticles;
+	private ArticleList m_articles; // = new ArticleList(); //Application.getInstance().m_loadedArticles;
 	private Feed m_feed;
 	
 	public HeadlinesRequest(Context context, OnlineActivity activity, final Feed feed, ArticleList articles) {
@@ -41,7 +41,7 @@ public class HeadlinesRequest extends ApiRequest {
 			try {
 				
 				// check if we are returning results for correct feed
-				/* if (GlobalState.getInstance().m_activeFeed != null && !m_feed.equals(GlobalState.getInstance().m_activeFeed)) {
+				/* if (Application.getInstance().m_activeFeed != null && !m_feed.equals(Application.getInstance().m_activeFeed)) {
 					Log.d(TAG, "received results for wrong feed, bailing out.");
 					return;
 				} */

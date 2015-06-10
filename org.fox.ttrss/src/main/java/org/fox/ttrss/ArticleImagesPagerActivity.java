@@ -341,7 +341,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
 
-        getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+        getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -358,7 +358,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.article_content_img_context_menu, menu);
+        getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 
 
         return true;

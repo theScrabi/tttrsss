@@ -48,7 +48,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
 	private FeedCategory m_selectedCat;
-	private FeedsActivity m_activity;
+	private MasterActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
     private ListView m_list;
 	protected SharedPreferences m_prefs;
@@ -173,7 +173,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 		
-		m_activity.getMenuInflater().inflate(R.menu.category_menu, menu);
+		m_activity.getMenuInflater().inflate(R.menu.context_category, menu);
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		FeedCategory cat = (FeedCategory) m_list.getItemAtPosition(info.position);
@@ -237,7 +237,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);		
 
-		m_activity = (FeedsActivity)activity;
+		m_activity = (MasterActivity)activity;
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
