@@ -95,26 +95,16 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
                 hf.setSearchQuery(searchQuery);
 
                 ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
-                ft.replace(R.id.article_fragment, new LoadingFragment(), null);
 
-                ft.commit();
+				ArticlePager af = new ArticlePager();
+				af.initialize(article != null ? hf.getArticleById(article.id) : new Article(), feed, m_articles);
+				af.setSearchQuery(searchQuery);
+
+				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
+
+				ft.commit();
 				
 				setTitle(feed.title);
-
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-						ArticlePager af = new ArticlePager();
-						af.initialize(article != null ? hf.getArticleById(article.id) : new Article(), feed, m_articles);
-						af.setSearchQuery(searchQuery);
-
-						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
-						
-						ft.commit();
-					 }
-				 }, 100);
 			}
 		}
 	}
@@ -286,26 +276,11 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 				FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
 
-				ft.replace(R.id.article_fragment, new LoadingFragment(), null);
-				
+				ArticlePager af = new ArticlePager();
+				af.initialize(article, hf.getFeed(), m_articles);
+
+				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 				ft.commitAllowingStateLoss();
-				
-				final Article fArticle = article;
-				final Feed fFeed = hf.getFeed();
-				
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						FragmentTransaction ft = getSupportFragmentManager()
-								.beginTransaction();
-
-						ArticlePager af = new ArticlePager();
-						af.initialize(fArticle, fFeed, m_articles);
-
-						ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
-						ft.commitAllowingStateLoss();
-					}
-				}, 10);				
 			}
 		}
 	}
