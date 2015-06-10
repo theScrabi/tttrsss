@@ -23,6 +23,7 @@
     <string name="loading_message">読込中, お待ちください…</string>
     <string name="menu_unread_feeds">未読フィードを表示</string>
     <string name="menu_all_feeds">すべてのフィードを表示</string>
+    <string name="unread_only">未読のみ</string>
     <string name="update_feeds">更新</string>
     <string name="share_article">記事をシェア</string>
     <string name="catchup">全て既読にする</string>
@@ -32,6 +33,7 @@
     <string name="blank"></string>
     <string name="transport_debugging">送受信データをロギングする</string>
     <string name="article_toggle_marked">スターを付ける/外す</string>
+    <string name="article_toggle_unread">既読/未読</string>
     <string name="article_toggle_published">配信/解除</string>
     <string name="headlines_select">記事を選択</string>
     <string name="headlines_select_dialog">記事を選択</string>
@@ -80,6 +82,7 @@
     <string name="notify_downloading_articles">記事をダウンロード中 (%1$d)…</string>
     <string name="notify_downloading_init">ダウンロード開始…</string>
     <string name="notify_downloading_feeds">フィードをダウンロード中…</string>
+    <string name="notify_downloading_categories">カテゴリをダウンロード中…</string>
     <string name="notify_uploading_sending_data">サーバにデータを送信中…</string>
     <string name="notify_downloading_title">オフライン準備中</string>
     <string name="notify_uploading_title">オフラインデータを同期中</string>
