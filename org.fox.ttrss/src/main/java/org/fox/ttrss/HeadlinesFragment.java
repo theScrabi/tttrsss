@@ -816,19 +816,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (holder.titleView != null) {				
 				holder.titleView.setText(Html.fromHtml(article.title));
-				
-				/* if (m_prefs.getBoolean("enable_condensed_fonts", false)) {
-					Typeface tf = TypefaceCache.get(m_activity, "sans-serif-condensed", article.unread ? Typeface.BOLD : Typeface.NORMAL);
-					
-					if (tf != null && !tf.equals(holder.titleView.getTypeface())) {
-						holder.titleView.setTypeface(tf);
-					}
-					
-					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 5));
-				} else {
-					holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
-				} */
-
                 holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
 
 				adjustTitleTextView(article.score, holder.titleView, position);
