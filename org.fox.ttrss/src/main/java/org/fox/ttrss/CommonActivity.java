@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.widget.Toast;
 
 import org.fox.ttrss.util.DatabaseHelper;
@@ -61,16 +60,6 @@ public class CommonActivity extends ActionBarActivity {
 	public boolean getUnreadOnly() {
 		return m_prefs.getBoolean("show_unread_only", true);
 	}
-
-    // fuck you LG FUCK YOU
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU){
-            openOptionsMenu();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     // not the same as isSmallScreen() which is mostly about layout being loaded
     public boolean isTablet() {
