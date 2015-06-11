@@ -254,7 +254,6 @@
 
         <activity
             android:name=".ArticleImagesPagerActivity"
-            android:theme="@style/ImagePagerTheme"
             android:label="Article Images" >
         </activity>
 

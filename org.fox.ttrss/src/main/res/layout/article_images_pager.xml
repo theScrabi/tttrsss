@@ -1,7 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
     android:id="@+id/article_images"
     android:layout_width="fill_parent"
     android:animateLayoutChanges="true"
+    android:background="?headlinesBackground"
     android:layout_height="fill_parent">
 
     <org.fox.ttrss.ArticleImagesPager
@@ -34,5 +36,7 @@
         android:layout_alignParentStart="true"
         android:visibility="invisible" />
 
+
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 
 </RelativeLayout>
