@@ -123,4 +123,12 @@
         <item name="floatingActionButtonColor">?colorPrimaryDark</item>
     </style>
 
+    <style name="ImagePagerTheme" parent="Theme.AppCompat.DialogWhenLarge">
+        <item name="windowActionBarOverlay">true</item>
+
+        <item name="colorPrimary">#607D8B</item>
+        <item name="colorPrimaryDark">#455A64</item>
+        <item name="colorAccent">#D84315</item>
+    </style>
+
 </resources>
