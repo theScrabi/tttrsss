@@ -40,6 +40,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	
 	private boolean m_feedIsSelected = false;
     private boolean m_userFeedSelected = false;
+	private boolean m_catsEnabled = false;
 
     private ActionBarDrawerToggle m_drawerToggle;
     private DrawerLayout m_drawerLayout;
@@ -60,6 +61,8 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+
+		m_catsEnabled = m_prefs.getBoolean("enable_cats", false);
 
 		Application.getInstance().load(savedInstanceState);
 
@@ -409,6 +412,14 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	public void onResume() {
 		super.onResume();
 		invalidateOptionsMenu();
+
+		if (!m_catsEnabled == m_prefs.getBoolean("enable_cats", false)) {
+			Log.d(TAG, "root view settings changed, restarting");
+
+			finish();
+			startActivity(getIntent());
+		}
+
 	}
 
 	@Override
