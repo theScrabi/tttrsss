@@ -366,6 +366,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				if (feed.is_cat) {
 					if (feed.always_display_as_feed) {
 						m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread), true);
+					} else if (feed.id < 0) {
+						m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread), false);
 					} else {
 						m_activity.onCatSelected(new FeedCategory(feed.id, feed.title, feed.unread));
 					}
