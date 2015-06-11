@@ -4,7 +4,6 @@ package org.fox.ttrss;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -14,7 +13,9 @@ import android.widget.Toast;
 
 import org.fox.ttrss.util.DatabaseHelper;
 
-public class CommonActivity extends ActionBarActivity {
+import java.util.Arrays;
+
+public class CommonActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	public final static String FRAG_HEADLINES = "headlines";
@@ -38,21 +39,9 @@ public class CommonActivity extends ActionBarActivity {
 
 	private boolean m_smallScreenMode = true;
 	private String m_theme;
+	private boolean m_needRestart;
 
 	protected SharedPreferences m_prefs;
-
-	/* protected void enableHttpCaching() {
-	   // enable resource caching
-	   if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            try {
-            	File httpCacheDir = new File(getApplicationContext().getCacheDir(), "http");
-            	long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-            	HttpResponseCache.install(httpCacheDir, httpCacheSize);
-            } catch (IOException e) {
-            	e.printStackTrace();
-            }        
-        }
-	} */
 
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
@@ -96,9 +85,8 @@ public class CommonActivity extends ActionBarActivity {
 	public void onResume() {
 		super.onResume();
 	
-		if (!m_theme.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
-
-			Log.d(TAG, "theme changed, restarting");
+		if (m_needRestart) {
+			Log.d(TAG, "restart requested");
 			
 			finish();
 			startActivity(getIntent());
@@ -117,6 +105,8 @@ public class CommonActivity extends ActionBarActivity {
 		m_prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
+		m_prefs.registerOnSharedPreferenceChangeListener(this);
+
         if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
 		} else {
@@ -125,11 +115,6 @@ public class CommonActivity extends ActionBarActivity {
 
 		super.onCreate(savedInstanceState);
 	}
-
-    public int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round((float)dp * density);
-    }
 
 	@Override
 	public void onSaveInstanceState(Bundle out) {
@@ -167,48 +152,23 @@ public class CommonActivity extends ActionBarActivity {
 		toast.show();
 	}
 
-	/* public boolean isDarkTheme() {
-		String theme = m_prefs.getString("theme", THEME_DEFAULT);
-		
-		return theme.equals(THEME_DARK); || theme.equals(THEME_AMBER);
-	} */
-	
 	protected void setAppTheme(SharedPreferences prefs) {
 		String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		
 		if (theme.equals(THEME_DARK)) {
             setTheme(R.style.DarkTheme);
-        /* } else if (theme.equals(THEME_AMBER)) {
-            setTheme(R.style.AmberTheme);
-		} else if (theme.equals(THEME_SEPIA)) {
-			setTheme(R.style.SepiaTheme); */
 		} else {
 			setTheme(R.style.LightTheme);
 		}
 	}
 
-    /* protected void setDarkAppTheme(SharedPreferences prefs) {
-        String theme = prefs.getString("theme", CommonActivity.THEME_DEFAULT);
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		Log.d(TAG, "onSharedPreferenceChanged:" + key);
 
-        if (theme.equals(THEME_AMBER)) {
-            setTheme(R.style.AmberTheme);
-        } else {
-            setTheme(R.style.DarkTheme);
-        }
-    } */
+		String[] filter = new String[] { "theme", "enable_cats", "headline_mode" };
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
-	protected int getScreenWidthInPixel() {
-	    Display display = getWindowManager().getDefaultDisplay();
-
-	    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2) {
-	        Point size = new Point();
-	        display.getSize(size);
-	        int width = size.x;
-	        return width;       
-	    } else {
-	        return display.getWidth();
-	    }
+		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
 	}
 }
+
