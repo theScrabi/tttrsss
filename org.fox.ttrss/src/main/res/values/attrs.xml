@@ -47,4 +47,5 @@
     <declare-styleable name="ScrimInsetsView">
         <attr format="reference|color" name="insetForeground">
         </attr></declare-styleable>
+    <attr name="drawer_header" format="reference" />
 </resources>

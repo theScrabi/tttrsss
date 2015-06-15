@@ -11,10 +11,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
-        android:src="@drawable/drawer_header"
         android:scaleType="fitXY"
-        android:tint="?colorPrimaryDark"
-        android:tintMode="multiply" />
+        android:src="?drawer_header" />
 
     <FrameLayout
         android:layout_width="48dp"
@@ -25,7 +23,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="16dp"
-        android:elevation="4dp">
+        android:elevation="8dp">
 
         <ImageView
             android:id="@+id/drawer_header_account"
