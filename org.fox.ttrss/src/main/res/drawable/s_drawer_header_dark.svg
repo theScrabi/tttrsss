@@ -15,10 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="blahblah.svg"
-   inkscape:export-filename="C:\Users\fox\Documents\Projects\tt-rss-android\org.fox.ttrss\src\main\res\drawable-xxhdpi\drawer_header.png"
-   inkscape:export-xdpi="307.20001"
-   inkscape:export-ydpi="307.20001">
+   sodipodi:docname="blahblah_dark.svg"
+   inkscape:export-filename="C:\Users\fox\Documents\Projects\tt-rss-android\org.fox.ttrss\src\main\res\drawable-hdpi\drawer_header_dark.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180">
   <defs
      id="defs4">
     <filter
@@ -158,7 +158,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="52.474107"
+     inkscape:cx="105.15268"
      inkscape:cy="70.376366"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -194,32 +194,32 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
     <path
-       style="fill:#3a4b64;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#324048;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 198.57141,994.505 64.64286,68.9286 -126.78572,-2.5 z"
        id="path4162"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#6482af;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4234)"
+       style="fill:#607d8b;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4234)"
        d="M 219.2857,1007.3621 71.071414,1113.0764 161.78572,948.79071 Z"
        id="path4154"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <rect
-       style="opacity:1;fill:#6482af;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#607d8b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4136"
        width="18.214285"
        height="16.428572"
        x="-104.28573"
        y="839.14783" />
     <rect
-       style="opacity:1;fill:#526a8e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#455a64;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4138"
        width="18.928572"
        height="19.642857"
        x="-81.071442"
        y="834.14783" />
     <rect
-       style="opacity:1;fill:#f4511e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#d84315;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4140"
        width="15"
        height="20.357143"
@@ -237,7 +237,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:#526a8e;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4306)"
+       style="fill:#455a64;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter4306)"
        d="m 83.571414,898.07643 163.214276,159.99997 63.21429,-0.7143 -3.57143,-161.42853 z"
        id="path4142"
        inkscape:connector-curvature="0" />
