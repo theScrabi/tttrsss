@@ -12,6 +12,7 @@
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
         android:scaleType="fitXY"
+        android:background="?colorPrimaryDark"
         android:src="?drawer_header" />
 
     <FrameLayout
