@@ -39,6 +39,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
+import com.shamanland.fab.FloatingActionButton;
 
 import org.fox.ttrss.Application;
 import org.fox.ttrss.CommonActivity;
@@ -308,6 +309,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		m_cursor = createCursor();
 		
 		m_list = (ListView)view.findViewById(R.id.headlines_list);
+
+		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
+		fab.setVisibility(View.GONE);
 
         if (m_activity.isSmallScreen()) {
             View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);

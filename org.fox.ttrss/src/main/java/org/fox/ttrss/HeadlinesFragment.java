@@ -55,6 +55,8 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.shamanland.fab.FloatingActionButton;
+import com.shamanland.fab.ShowHideOnScroll;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -360,6 +362,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		});
 
 		m_list = (ListView)view.findViewById(R.id.headlines_list);
+
+		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
+		m_list.setOnTouchListener(new ShowHideOnScroll(fab));
+		fab.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				refresh(false);
+			}
+		});
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
