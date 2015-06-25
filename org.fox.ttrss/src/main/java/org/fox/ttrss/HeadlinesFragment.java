@@ -535,6 +535,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
+
+						// not sure why but listview sometimes gets positioned while ignoring the header so
+						// top headline content becomes partially obscured by the toolbar on phones
+						// (not reproducible on avd)
+						if (!fappend) m_list.smoothScrollToPosition(0);
 						
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
