@@ -458,6 +458,12 @@ public class ArticleFragment extends Fragment  {
 
             m_chromeClient = new FSVideoChromeClient(getView());
             m_web.setWebChromeClient(m_chromeClient);
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ws.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            }
+
+            ws.setMediaPlaybackRequiresUserGesture(false);
         }
 
         if (m_prefs.getBoolean("justify_article_text", true)) {
