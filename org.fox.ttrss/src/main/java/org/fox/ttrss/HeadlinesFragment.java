@@ -734,7 +734,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 
         private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
-            String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
+            String tmp = item.title.length() > 0 ? item.title.substring(0, 1).toUpperCase() : "?";
 
             if (item.selected) {
 				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
