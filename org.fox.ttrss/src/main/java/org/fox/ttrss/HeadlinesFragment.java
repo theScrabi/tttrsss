@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -341,7 +343,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		}
 
-        if ("HL_COMPACT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT")))
+		String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+
+        if ("HL_COMPACT".equals(headlineMode) || "HL_COMPACT_NOIMAGES".equals(headlineMode))
             m_compactLayoutMode = true;
 
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -680,10 +684,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 		private final DisplayImageOptions displayImageOptions;
+		boolean showFlavorImage;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
+
+			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
 
 			Theme theme = context.getTheme();
 			TypedValue tv = new TypedValue();
@@ -696,6 +704,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					.cacheOnDisk(true)
 					.displayer(new FadeInBitmapDisplayer(500))
 					.build();
+
 		}
 		
 		public int getViewTypeCount() {
@@ -725,14 +734,44 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 
         private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
-            String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
+            String tmp = item.title.length() > 0 ? item.title.substring(0, 1).toUpperCase() : "?";
 
             if (item.selected) {
-                holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+				holder.textImage.setTag(null);
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
-                holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
+				Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
+
+				if (item.flavorImage == null) {
+					holder.textImage.setImageDrawable(textDrawable);
+					holder.textImage.setTag(null);
+				} else {
+					String imgSrc = item.flavorImage.attr("src");
+
+					// retarded schema-less urls
+					if (imgSrc.indexOf("//") == 0)
+						imgSrc = "http:" + imgSrc;
+
+					if (!imgSrc.equals(holder.textImage.getTag())) {
+						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
+
+						DisplayImageOptions options = new DisplayImageOptions.Builder()
+								.cacheInMemory(true)
+								.resetViewBeforeLoading(true)
+								.cacheOnDisk(true)
+								.showImageOnLoading(textDrawable)
+								.showImageOnFail(textDrawable)
+								.showImageForEmptyUri(textDrawable)
+								.displayer(new RoundedBitmapDisplayer(100))
+								.build();
+
+
+						m_imageLoader.displayImage(imgSrc, imageAware, options);
+						holder.textImage.setTag(imgSrc);
+					}
+				}
 
                 holder.textChecked.setVisibility(View.GONE);
             }
@@ -800,7 +839,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder = (HeadlineViewHolder) v.getTag();
 			}
 
-            // block footer clicks to make button/selection clicking easier
+			String articleContent = article.content != null ? article.content : "";
+
+			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+					articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
+
+			if (article.articleDoc == null)
+				article.articleDoc = Jsoup.parse(articleContentReduced);
+
+			// block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
                 holder.headlineFooter.setOnClickListener(new OnClickListener() {
                     @Override
@@ -810,23 +857,73 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 });
             }
 
+			if (showFlavorImage && article.flavorImage == null) {
+
+				Elements imgs = article.articleDoc.select("img");
+
+				for (Element tmp : imgs) {
+					try {
+						if (tmp.attr("src") != null && tmp.attr("src").indexOf("data:") == 0) {
+							continue;
+						}
+
+						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
+							article.flavorImage = tmp;
+							break;
+						}
+
+					} catch (NumberFormatException e) {
+						//
+					}
+				}
+
+				if (article.flavorImage == null)
+					article.flavorImage = imgs.first();
+			}
+
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article);
 
-                holder.textImage.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d(TAG, "textImage : onclicked");
+				holder.textImage.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Log.d(TAG, "textImage : onclicked");
 
-                        article.selected = !article.selected;
+						article.selected = !article.selected;
 
-                        updateTextCheckedState(holder, article);
+						updateTextCheckedState(holder, article);
 
-                        m_listener.onArticleListSelectionChange(getSelectedArticles());
+						m_listener.onArticleListSelectionChange(getSelectedArticles());
 
-                        Log.d(TAG, "num selected: " + getSelectedArticles().size());
-                    }
-                });
+						Log.d(TAG, "num selected: " + getSelectedArticles().size());
+					}
+				});
+				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
+				if (article.flavorImage != null) {
+					final String imgSrcFirst = article.flavorImage.attr("src");
+
+					holder.textImage.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+
+							Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+							intent.putExtra("firstSrc", imgSrcFirst);
+							intent.putExtra("title", article.title);
+							intent.putExtra("content", article.content);
+
+							ActivityOptionsCompat options =
+									ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+											holder.textImage,   // The view which starts the transition
+											"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+									);
+							ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+							return true;
+						}
+					});
+
+				}
 
             }
 
@@ -898,14 +995,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-            String articleContent = article.content != null ? article.content : "";
-
-            String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
-                    articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
-
-            if (article.articleDoc == null)
-                article.articleDoc = Jsoup.parse(articleContentReduced);
-
             if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
@@ -930,7 +1019,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (!m_compactLayoutMode) {
-                boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
                 if (showFlavorImage && holder.flavorImageView != null) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
@@ -938,25 +1026,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     if (article.noValidFlavorImage) {
                         holder.flavorImageHolder.setVisibility(View.GONE);
                     } else if (article.articleDoc != null) {
-
-                        if (article.flavorImage == null) {
-
-                            Elements imgs = article.articleDoc.select("img");
-
-                            for (Element tmp : imgs) {
-                                try {
-                                    if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
-                                        article.flavorImage = tmp;
-                                        break;
-                                    }
-                                } catch (NumberFormatException e) {
-                                    //
-                                }
-                            }
-
-                            if (article.flavorImage == null)
-                                article.flavorImage = imgs.first();
-                        }
 
                         if (article.flavorImage != null) {
                             String imgSrc = article.flavorImage.attr("src");
@@ -1056,7 +1125,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             }
 
 			String articleAuthor = article.author != null ? article.author : "";
-
 
 			if (holder.authorView != null) {
 				holder.authorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
