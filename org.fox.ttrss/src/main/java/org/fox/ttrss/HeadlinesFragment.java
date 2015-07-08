@@ -860,15 +860,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (showFlavorImage && article.flavorImage == null) {
 
 				Elements imgs = article.articleDoc.select("img");
-				Element firstImg = null;
 
 				for (Element tmp : imgs) {
 					try {
 						if (tmp.attr("src") != null && tmp.attr("src").indexOf("data:") == 0) {
 							continue;
 						}
-
-						if (firstImg != null) firstImg = tmp;
 
 						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
 							article.flavorImage = tmp;
@@ -880,10 +877,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				}
 
-				Log.d(TAG, "" + firstImg);
-
 				if (article.flavorImage == null)
-					article.flavorImage = firstImg;
+					article.flavorImage = imgs.first();
 			}
 
             if (holder.textImage != null) {
@@ -903,6 +898,32 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						Log.d(TAG, "num selected: " + getSelectedArticles().size());
 					}
 				});
+				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
+				if (article.flavorImage != null) {
+					final String imgSrcFirst = article.flavorImage.attr("src");
+
+					holder.textImage.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+
+							Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+							intent.putExtra("firstSrc", imgSrcFirst);
+							intent.putExtra("title", article.title);
+							intent.putExtra("content", article.content);
+
+							ActivityOptionsCompat options =
+									ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+											holder.textImage,   // The view which starts the transition
+											"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+									);
+							ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+							return true;
+						}
+					});
+
+				}
 
             }
 
