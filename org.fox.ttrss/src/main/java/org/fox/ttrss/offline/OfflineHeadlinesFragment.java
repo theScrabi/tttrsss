@@ -603,9 +603,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article);
 
-				holder.textImage.getLayoutParams().width = m_activity.dpToPx(48);
-				holder.textImage.getLayoutParams().height = m_activity.dpToPx(48);
-
                 holder.textImage.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -172,11 +172,5 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
 	}
 
-	public int dpToPx(int dp) {
-		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-		int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-		return px;
-	}
-
 }
 

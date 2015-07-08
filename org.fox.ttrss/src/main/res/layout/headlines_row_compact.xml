@@ -17,8 +17,8 @@
 
         <ImageView
             android:clickable="true"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:id="@+id/text_image"/>
 

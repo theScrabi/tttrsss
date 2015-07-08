@@ -862,13 +862,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions);
 						holder.textImage.setTag(imgSrc);
 					}
-
-					holder.textImage.getLayoutParams().width = m_activity.dpToPx(64);
-					holder.textImage.getLayoutParams().height = m_activity.dpToPx(64);
-
-				} else {
-					holder.textImage.getLayoutParams().width = m_activity.dpToPx(48);
-					holder.textImage.getLayoutParams().height = m_activity.dpToPx(48);
 				}
 
 				holder.textImage.setOnClickListener(new OnClickListener() {
