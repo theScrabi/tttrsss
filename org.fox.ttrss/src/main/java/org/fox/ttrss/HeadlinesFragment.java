@@ -38,7 +38,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -53,6 +52,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -701,8 +701,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					.cacheInMemory(true)
 					.resetViewBeforeLoading(true)
 					.cacheOnDisk(true)
-					.displayer(new FadeInBitmapDisplayer(500))
+					.displayer(m_compactLayoutMode ? new RoundedBitmapDisplayer(100) : new FadeInBitmapDisplayer(500))
 					.build();
+
 		}
 		
 		public int getViewTypeCount() {
@@ -735,13 +736,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
 
             if (item.selected) {
-                if (item.flavorImage == null)
-					holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+				holder.textImage.setTag(null);
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
-				if (item.flavorImage == null)
+				if (item.flavorImage == null) {
 					holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
+					holder.textImage.setTag(null);
+				} else {
+					String imgSrc = item.flavorImage.attr("src");
+
+					// retarded schema-less urls
+					if (imgSrc.indexOf("//") == 0)
+						imgSrc = "http:" + imgSrc;
+
+					if (!imgSrc.equals(holder.textImage.getTag())) {
+						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
+						m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions);
+						holder.textImage.setTag(imgSrc);
+					}
+				}
 
                 holder.textChecked.setVisibility(View.GONE);
             }
@@ -848,21 +863,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article);
-
-				if (article.flavorImage != null) {
-					String imgSrc = article.flavorImage.attr("src");
-					final String imgSrcFirst = imgSrc;
-
-					// retarded schema-less urls
-					if (imgSrc.indexOf("//") == 0)
-						imgSrc = "http:" + imgSrc;
-
-					if (!imgSrc.equals(holder.textImage.getTag())) {
-						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
-						m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions);
-						holder.textImage.setTag(imgSrc);
-					}
-				}
 
 				holder.textImage.setOnClickListener(new OnClickListener() {
 					@Override
