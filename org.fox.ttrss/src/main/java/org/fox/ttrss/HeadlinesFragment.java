@@ -860,20 +860,30 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (showFlavorImage && article.flavorImage == null) {
 
 				Elements imgs = article.articleDoc.select("img");
+				Element firstImg = null;
 
 				for (Element tmp : imgs) {
 					try {
+						if (tmp.attr("src") != null && tmp.attr("src").indexOf("data:") == 0) {
+							continue;
+						}
+
+						if (firstImg != null) firstImg = tmp;
+
 						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
 							article.flavorImage = tmp;
 							break;
 						}
+
 					} catch (NumberFormatException e) {
 						//
 					}
 				}
 
+				Log.d(TAG, "" + firstImg);
+
 				if (article.flavorImage == null)
-					article.flavorImage = imgs.first();
+					article.flavorImage = firstImg;
 			}
 
             if (holder.textImage != null) {
