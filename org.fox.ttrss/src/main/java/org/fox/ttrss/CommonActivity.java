@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
@@ -170,5 +171,12 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
 	}
+
+	public int dpToPx(int dp) {
+		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+		int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+		return px;
+	}
+
 }
 

@@ -292,8 +292,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_activity.getDatabase().execSQL("UPDATE articles SET selected = 0 ");
 		}
 
-        if ("HL_COMPACT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT")))
-            m_compactLayoutMode = true;
+		String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+
+		if ("HL_COMPACT".equals(headlineMode) || "HL_COMPACT_NOIMAGES".equals(headlineMode))
+			m_compactLayoutMode = true;
 
 		View view = inflater.inflate(R.layout.fragment_headlines, container, false);
 
@@ -600,6 +602,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article);
+
+				holder.textImage.getLayoutParams().width = m_activity.dpToPx(48);
+				holder.textImage.getLayoutParams().height = m_activity.dpToPx(48);
 
                 holder.textImage.setOnClickListener(new OnClickListener() {
                     @Override

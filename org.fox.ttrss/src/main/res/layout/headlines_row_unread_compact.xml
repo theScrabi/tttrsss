@@ -11,22 +11,24 @@
     tools:ignore="HardcodedText" >
 
     <FrameLayout
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:layout_gravity="center_vertical|left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="64dp"
+        android:layout_height="64dp">
 
         <ImageView
             android:clickable="true"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
             android:id="@+id/text_image"/>
 
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/check_sm"
-            android:id="@+id/text_checked"/>
+            android:id="@+id/text_checked"
+            android:layout_gravity="center" />
 
     </FrameLayout>
 

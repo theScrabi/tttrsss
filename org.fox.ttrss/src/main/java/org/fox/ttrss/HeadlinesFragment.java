@@ -38,6 +38,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -341,7 +342,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 		}
 
-        if ("HL_COMPACT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT")))
+		String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+
+        if ("HL_COMPACT".equals(headlineMode) || "HL_COMPACT_NOIMAGES".equals(headlineMode))
             m_compactLayoutMode = true;
 
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -680,10 +683,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 		private final DisplayImageOptions displayImageOptions;
+		boolean showFlavorImage;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
+
+			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
 
 			Theme theme = context.getTheme();
 			TypedValue tv = new TypedValue();
@@ -728,11 +735,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1) : "?";
 
             if (item.selected) {
-                holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
+                if (item.flavorImage == null)
+					holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
-                holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
+				if (item.flavorImage == null)
+					holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
 
                 holder.textChecked.setVisibility(View.GONE);
             }
@@ -800,7 +809,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder = (HeadlineViewHolder) v.getTag();
 			}
 
-            // block footer clicks to make button/selection clicking easier
+			String articleContent = article.content != null ? article.content : "";
+
+			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+					articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
+
+			if (article.articleDoc == null)
+				article.articleDoc = Jsoup.parse(articleContentReduced);
+
+			// block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
                 holder.headlineFooter.setOnClickListener(new OnClickListener() {
                     @Override
@@ -810,23 +827,64 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 });
             }
 
+			if (showFlavorImage && article.flavorImage == null) {
+
+				Elements imgs = article.articleDoc.select("img");
+
+				for (Element tmp : imgs) {
+					try {
+						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
+							article.flavorImage = tmp;
+							break;
+						}
+					} catch (NumberFormatException e) {
+						//
+					}
+				}
+
+				if (article.flavorImage == null)
+					article.flavorImage = imgs.first();
+			}
+
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article);
 
-                holder.textImage.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d(TAG, "textImage : onclicked");
+				if (article.flavorImage != null) {
+					String imgSrc = article.flavorImage.attr("src");
+					final String imgSrcFirst = imgSrc;
 
-                        article.selected = !article.selected;
+					// retarded schema-less urls
+					if (imgSrc.indexOf("//") == 0)
+						imgSrc = "http:" + imgSrc;
 
-                        updateTextCheckedState(holder, article);
+					if (!imgSrc.equals(holder.textImage.getTag())) {
+						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
+						m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions);
+						holder.textImage.setTag(imgSrc);
+					}
 
-                        m_listener.onArticleListSelectionChange(getSelectedArticles());
+					holder.textImage.getLayoutParams().width = m_activity.dpToPx(64);
+					holder.textImage.getLayoutParams().height = m_activity.dpToPx(64);
 
-                        Log.d(TAG, "num selected: " + getSelectedArticles().size());
-                    }
-                });
+				} else {
+					holder.textImage.getLayoutParams().width = m_activity.dpToPx(48);
+					holder.textImage.getLayoutParams().height = m_activity.dpToPx(48);
+				}
+
+				holder.textImage.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Log.d(TAG, "textImage : onclicked");
+
+						article.selected = !article.selected;
+
+						updateTextCheckedState(holder, article);
+
+						m_listener.onArticleListSelectionChange(getSelectedArticles());
+
+						Log.d(TAG, "num selected: " + getSelectedArticles().size());
+					}
+				});
 
             }
 
@@ -898,14 +956,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-            String articleContent = article.content != null ? article.content : "";
-
-            String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
-                    articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
-
-            if (article.articleDoc == null)
-                article.articleDoc = Jsoup.parse(articleContentReduced);
-
             if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
@@ -930,7 +980,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (!m_compactLayoutMode) {
-                boolean showFlavorImage = "HL_DEFAULT".equals(m_prefs.getString("headline_mode", "HL_DEFAULT"));
 
                 if (showFlavorImage && holder.flavorImageView != null) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
@@ -938,25 +987,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     if (article.noValidFlavorImage) {
                         holder.flavorImageHolder.setVisibility(View.GONE);
                     } else if (article.articleDoc != null) {
-
-                        if (article.flavorImage == null) {
-
-                            Elements imgs = article.articleDoc.select("img");
-
-                            for (Element tmp : imgs) {
-                                try {
-                                    if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
-                                        article.flavorImage = tmp;
-                                        break;
-                                    }
-                                } catch (NumberFormatException e) {
-                                    //
-                                }
-                            }
-
-                            if (article.flavorImage == null)
-                                article.flavorImage = imgs.first();
-                        }
 
                         if (article.flavorImage != null) {
                             String imgSrc = article.flavorImage.attr("src");
@@ -1056,7 +1086,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             }
 
 			String articleAuthor = article.author != null ? article.author : "";
-
 
 			if (holder.authorView != null) {
 				holder.authorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
