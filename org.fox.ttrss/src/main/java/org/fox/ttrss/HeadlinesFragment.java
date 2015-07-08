@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -701,7 +702,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					.cacheInMemory(true)
 					.resetViewBeforeLoading(true)
 					.cacheOnDisk(true)
-					.displayer(m_compactLayoutMode ? new RoundedBitmapDisplayer(100) : new FadeInBitmapDisplayer(500))
+					.displayer(new FadeInBitmapDisplayer(500))
 					.build();
 
 		}
@@ -741,8 +742,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
+				Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
+
 				if (item.flavorImage == null) {
-					holder.textImage.setImageDrawable(m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title)));
+					holder.textImage.setImageDrawable(textDrawable);
 					holder.textImage.setTag(null);
 				} else {
 					String imgSrc = item.flavorImage.attr("src");
@@ -753,7 +756,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (!imgSrc.equals(holder.textImage.getTag())) {
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
-						m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions);
+
+						DisplayImageOptions options = new DisplayImageOptions.Builder()
+								.cacheInMemory(true)
+								.resetViewBeforeLoading(true)
+								.cacheOnDisk(true)
+								.showImageOnLoading(textDrawable)
+								.showImageOnFail(textDrawable)
+								.showImageForEmptyUri(textDrawable)
+								.displayer(new RoundedBitmapDisplayer(100))
+								.build();
+
+
+						m_imageLoader.displayImage(imgSrc, imageAware, options);
 						holder.textImage.setTag(imgSrc);
 					}
 				}
