@@ -658,6 +658,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public TextView excerptView;
 		public ImageView flavorImageView;
 		public VideoView flavorVideoView;
+		public ImageView flavorVideoPlayView;
 		public TextView authorView;
 		public TextView dateView;
 		public CheckBox selectionBoxView;
@@ -825,6 +826,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
 				holder.flavorVideoView = (VideoView) v.findViewById(R.id.flavor_video);
+				holder.flavorVideoPlayView = (ImageView) v.findViewById(R.id.flavor_video_play);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
 				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
@@ -1030,6 +1032,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageView.setVisibility(View.VISIBLE);
 				holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 				holder.flavorVideoView.setVisibility(View.GONE);
+				holder.flavorVideoPlayView.setVisibility(View.GONE);
 
 				boolean videoFound = false;
 
@@ -1046,6 +1049,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageLoadingBar.setVisibility(View.GONE);
 								holder.flavorVideoView.setVisibility(View.VISIBLE);
 								holder.flavorImageView.setVisibility(View.GONE);
+								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 
 								if (!streamUri.equals(holder.flavorVideoView.getTag())) {
 									holder.flavorVideoView.setTag(streamUri);
@@ -1075,8 +1079,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											if (event.getAction() == MotionEvent.ACTION_DOWN) {
 												if (video.isPlaying()) {
 													video.pause();
+													holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 												} else {
 													video.start();
+													holder.flavorVideoPlayView.setVisibility(View.GONE);
 												}
 											}
 
