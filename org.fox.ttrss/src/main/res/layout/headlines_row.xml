@@ -91,6 +91,13 @@
                     android:cropToPadding="true"
                     android:visibility="visible" />
 
+                <VideoView
+                    android:id="@+id/flavor_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
                 <org.fox.ttrss.util.ArrowRight
                     android:layout_marginRight="16dp"
                     android:id="@+id/flavorImageArrow"

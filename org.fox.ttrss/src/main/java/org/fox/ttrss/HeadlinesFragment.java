@@ -8,6 +8,7 @@ import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -654,6 +657,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView publishedView;
 		public TextView excerptView;
 		public ImageView flavorImageView;
+		public VideoView flavorVideoView;
 		public TextView authorView;
 		public TextView dateView;
 		public CheckBox selectionBoxView;
@@ -664,7 +668,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public View headlineFooter;
         public ImageView textImage;
         public ImageView textChecked;
-    }
+	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
 		private ArrayList<Article> items;
@@ -820,6 +824,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.publishedView = (ImageView)v.findViewById(R.id.published);
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+				holder.flavorVideoView = (VideoView) v.findViewById(R.id.flavor_video);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
 				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
@@ -1018,47 +1023,114 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			}
 
-            if (!m_compactLayoutMode) {
+            if (!m_compactLayoutMode && holder.flavorImageHolder != null) {
 
-                if (showFlavorImage && holder.flavorImageView != null) {
-                    holder.flavorImageArrow.setVisibility(View.GONE);
+				/* reset to default in case of convertview */
+				holder.flavorImageHolder.setVisibility(View.VISIBLE);
+				holder.flavorImageView.setVisibility(View.VISIBLE);
+				holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+				holder.flavorVideoView.setVisibility(View.GONE);
 
-                    if (article.noValidFlavorImage) {
-                        holder.flavorImageHolder.setVisibility(View.GONE);
-                    } else if (article.articleDoc != null) {
+				boolean videoFound = false;
 
-                        if (article.flavorImage != null) {
-                            String imgSrc = article.flavorImage.attr("src");
-                            final String imgSrcFirst = imgSrc;
+				if (m_prefs.getBoolean("enable_headlines_video", false) && article.articleDoc != null && holder.flavorVideoView != null) {
+					Element source = article.articleDoc.select("video > source").first();
 
-                            // retarded schema-less urls
-                            if (imgSrc.indexOf("//") == 0)
-                                imgSrc = "http:" + imgSrc;
+					if (source != null) {
+						try {
+							Uri streamUri = Uri.parse(source.attr("src"));
 
-                            ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+							if (streamUri != null) {
+								videoFound = true;
 
-                            holder.flavorImageView.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
+								holder.flavorImageLoadingBar.setVisibility(View.GONE);
+								holder.flavorVideoView.setVisibility(View.VISIBLE);
+								holder.flavorImageView.setVisibility(View.GONE);
 
-                                    Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-                                    intent.putExtra("firstSrc", imgSrcFirst);
-                                    intent.putExtra("title", article.title);
-                                    intent.putExtra("content", article.content);
+								if (!streamUri.equals(holder.flavorVideoView.getTag())) {
+									holder.flavorVideoView.setTag(streamUri);
 
-                                    ActivityOptionsCompat options =
-                                            ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-                                                    holder.flavorImageView,   // The view which starts the transition
-                                                    "TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
-                                            );
-                                    ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+									holder.flavorVideoView.setVideoURI(streamUri);
 
-                                    //startActivityForResult(intent, 0);
-                                }
-                            });
+									holder.flavorVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+										@Override
+										public void onPrepared(MediaPlayer mp) {
+											//mp.setLooping(true);
+											mp.seekTo(1000);
+										}
+									});
 
-                            //final ViewGroup flavorImageHolder = holder.flavorImageHolder;
-                            //final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
+									holder.flavorVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+										@Override
+										public void onCompletion(MediaPlayer mp) {
+											mp.seekTo(0);
+										}
+									});
+
+									holder.flavorVideoView.setOnTouchListener(new View.OnTouchListener() {
+										@Override
+										public boolean onTouch(View v, MotionEvent event) {
+											VideoView video = (VideoView) v;
+
+											if (event.getAction() == MotionEvent.ACTION_DOWN) {
+												if (video.isPlaying()) {
+													video.pause();
+												} else {
+													video.start();
+												}
+											}
+
+											return true;
+										}
+									});
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							videoFound = false;
+						}
+					}
+				}
+
+				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
+					holder.flavorImageArrow.setVisibility(View.GONE);
+
+					if (article.noValidFlavorImage) {
+						holder.flavorImageHolder.setVisibility(View.GONE);
+					} else if (article.articleDoc != null) {
+
+						if (article.flavorImage != null) {
+							String imgSrc = article.flavorImage.attr("src");
+							final String imgSrcFirst = imgSrc;
+
+							// retarded schema-less urls
+							if (imgSrc.indexOf("//") == 0)
+								imgSrc = "http:" + imgSrc;
+
+							ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+
+							holder.flavorImageView.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View view) {
+
+									Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+									intent.putExtra("firstSrc", imgSrcFirst);
+									intent.putExtra("title", article.title);
+									intent.putExtra("content", article.content);
+
+									ActivityOptionsCompat options =
+											ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+													holder.flavorImageView,   // The view which starts the transition
+													"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+											);
+									ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+									//startActivityForResult(intent, 0);
+								}
+							});
+
+							//final ViewGroup flavorImageHolder = holder.flavorImageHolder;
+							//final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
 
 							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
 
@@ -1109,20 +1181,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							}
 
-                        } else{
-                            article.noValidFlavorImage = true;
-                            holder.flavorImageHolder.setVisibility(View.GONE);
-                        }
+						} else {
+							article.noValidFlavorImage = true;
+							holder.flavorImageHolder.setVisibility(View.GONE);
+						}
 
-                    } else {
-                        article.noValidFlavorImage = true;
-                        holder.flavorImageHolder.setVisibility(View.GONE);
-                    }
+					} else {
+						article.noValidFlavorImage = true;
+						holder.flavorImageHolder.setVisibility(View.GONE);
+					}
 
-                } else if (holder.flavorImageHolder != null) {
-                    holder.flavorImageHolder.setVisibility(View.GONE);
-                }
-            }
+				} else if (!videoFound && holder.flavorImageHolder != null) {
+					holder.flavorImageHolder.setVisibility(View.GONE);
+				}
+			}
 
 			String articleAuthor = article.author != null ? article.author : "";
 
