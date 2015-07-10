@@ -8,7 +8,6 @@ import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -45,7 +43,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -657,7 +654,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView publishedView;
 		public TextView excerptView;
 		public ImageView flavorImageView;
-		public VideoView flavorVideoView;
 		public ImageView flavorVideoPlayView;
 		public TextView authorView;
 		public TextView dateView;
@@ -825,7 +821,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.publishedView = (ImageView)v.findViewById(R.id.published);
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-				holder.flavorVideoView = (VideoView) v.findViewById(R.id.flavor_video);
 				holder.flavorVideoPlayView = (ImageView) v.findViewById(R.id.flavor_video_play);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
@@ -1031,12 +1026,56 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageHolder.setVisibility(View.VISIBLE);
 				holder.flavorImageView.setVisibility(View.VISIBLE);
 				holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-				holder.flavorVideoView.setVisibility(View.GONE);
 				holder.flavorVideoPlayView.setVisibility(View.GONE);
 
 				boolean videoFound = false;
 
-				if (m_prefs.getBoolean("enable_headlines_video", false) && article.articleDoc != null && holder.flavorVideoView != null) {
+				if (article.articleDoc != null && holder.flavorVideoPlayView != null) {
+					Element video = article.articleDoc.select("video").first();
+
+					if (video != null) {
+						try {
+							Element source = video.select("source").first();
+
+							String streamUri = source.attr("src");
+							String posterUri = video.attr("poster");
+
+							if (streamUri != null && posterUri != null) {
+
+								if (!posterUri.equals(holder.flavorImageView.getTag())) {
+									holder.flavorImageView.setTag(posterUri);
+
+									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+
+									m_imageLoader.displayImage(posterUri, imageAware, displayImageOptions);
+								}
+
+								videoFound = true;
+
+								holder.flavorImageLoadingBar.setVisibility(View.GONE);
+								holder.flavorImageView.setVisibility(View.VISIBLE);
+								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+
+								holder.flavorImageView.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+
+										//
+									}
+								});
+
+								// ONCLICK open video player
+
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							videoFound = false;
+						}
+					}
+
+				}
+
+				/* if (m_prefs.getBoolean("enable_headlines_video", false) && article.articleDoc != null && holder.flavorVideoView != null) {
 					Element source = article.articleDoc.select("video > source").first();
 
 					if (source != null) {
@@ -1096,7 +1135,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							videoFound = false;
 						}
 					}
-				}
+				} */
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
 					holder.flavorImageArrow.setVisibility(View.GONE);

@@ -188,12 +188,6 @@
             android:defaultValue="false"
             android:key="transport_debugging"
             android:title="@string/transport_debugging" />
-        <org.fox.ttrss.util.LessBrokenSwitchPreference
-            android:defaultValue="false"
-            android:key="enable_headlines_video"
-            android:title="Inline video player"
-            android:summary="Enable rudimentary video player in headlines view. Tap to (un)pause." />
-
     </PreferenceCategory>
 
     <Preference
