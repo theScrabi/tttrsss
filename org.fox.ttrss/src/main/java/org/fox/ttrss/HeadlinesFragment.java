@@ -663,7 +663,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView menuButtonView;
 		public ViewGroup flavorImageHolder;
 		public ProgressBar flavorImageLoadingBar;
-        public View flavorImageArrow;
         public View headlineFooter;
         public ImageView textImage;
         public ImageView textChecked;
@@ -830,7 +829,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
 				holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
                 holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
-                holder.flavorImageArrow = v.findViewById(R.id.flavorImageArrow);
                 holder.headlineFooter = v.findViewById(R.id.headline_footer);
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
@@ -1126,7 +1124,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
-					holder.flavorImageArrow.setVisibility(View.GONE);
 
 					if (article.noValidFlavorImage) {
 						holder.flavorImageHolder.setVisibility(View.GONE);

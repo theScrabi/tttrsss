@@ -100,13 +100,6 @@
                     android:src="@drawable/flavor_video_play"
                     android:visibility="gone" />
 
-                <org.fox.ttrss.util.ArrowRight
-                    android:layout_marginRight="16dp"
-                    android:id="@+id/flavorImageArrow"
-                    android:layout_width="64dp"
-                    android:layout_gravity="center|right"
-                    android:visibility="gone"
-                    android:layout_height="64dp" />
             </FrameLayout>
         </TableRow>
 
