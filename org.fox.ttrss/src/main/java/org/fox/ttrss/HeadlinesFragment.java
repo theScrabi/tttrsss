@@ -1074,7 +1074,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             if (!m_compactLayoutMode && holder.flavorImageHolder != null) {
 
 				/* reset to default in case of convertview */
-				holder.flavorImageView.setVisibility(View.VISIBLE);
+				holder.flavorImageLoadingBar.setVisibility(View.GONE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
 
