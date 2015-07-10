@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.JsonElement;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -229,6 +230,8 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
     }
 
 	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
+
+		ImageLoader.getInstance().clearMemoryCache();
 
         FragmentTransaction ft = getSupportFragmentManager()
                 .beginTransaction();

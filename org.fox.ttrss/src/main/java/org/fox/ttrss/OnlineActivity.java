@@ -32,10 +32,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiscCache;
+import com.nostra13.universalimageloader.core.DefaultConfigurationFactory;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import org.fox.ttrss.offline.OfflineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
@@ -50,6 +50,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -168,12 +169,20 @@ public class OnlineActivity extends CommonActivity {
 		setSupportActionBar(toolbar);
 
         if (!ImageLoader.getInstance().isInited()) {
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                    .diskCache(
-                            new UnlimitedDiscCache(new File(StorageUtils.getCacheDirectory(getApplicationContext()), "article-images")))
-                    .build();
+			ImageLoaderConfiguration config;
+
+			try {
+				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+						.diskCache(
+								new LruDiscCache(new File(getCacheDir(), "article-images"),
+										DefaultConfigurationFactory.createFileNameGenerator(),
+										100 * 1024 * 1024))
+						.build();
+			} catch (IOException e) {
+				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+						.build();
+			}
             ImageLoader.getInstance().init(config);
-            ImageLoader.getInstance().clearDiskCache();
         }
 
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
