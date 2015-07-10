@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/headlines_row"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:background="?headlineUnreadBackground"
     tools:ignore="HardcodedText">
 
@@ -29,33 +29,34 @@
                     android:id="@+id/flavorImageLoadingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/flavor_video_play"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     android:scaleType="fitXY"
                     android:src="@drawable/flavor_video_play"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <org.fox.ttrss.util.EnlargingImageView
                         android:id="@+id/flavor_image"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:adjustViewBounds="true"
+                        android:background="@android:color/transparent"
                         android:cropToPadding="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/drawer_header"
-                        android:visibility="visible"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:visibility="visible" />
 
                     <RelativeLayout
                         android:id="@+id/headline_header"
@@ -141,8 +142,6 @@
                 android:lineSpacingExtra="2sp"
                 android:maxLines="5"
                 android:padding="16dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 android:textColor="?headlineExcerptTextColor"
                 android:textSize="13sp" />
@@ -202,7 +201,7 @@
                     android:clickable="true"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:src="?ic_checkbox_marked" />
+                    android:src="?ic_rss_box" />
 
                 <ImageView
                     android:id="@+id/article_menu_button"

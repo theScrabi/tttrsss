@@ -1395,8 +1395,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
-				if (w < h) lp.topMargin = dpToPx(8);
-
 			} else {
 				lp.addRule(RelativeLayout.BELOW, 0);
 				lp.topMargin = 0;

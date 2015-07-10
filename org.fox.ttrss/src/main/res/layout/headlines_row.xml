@@ -48,13 +48,14 @@
                         android:id="@+id/flavor_image"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:adjustViewBounds="true"
+                        android:background="@android:color/transparent"
                         android:cropToPadding="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/drawer_header"
-                        android:visibility="visible"
-                        android:layout_centerHorizontal="true" />
+                        android:visibility="visible" />
 
                     <RelativeLayout
                         android:id="@+id/headline_header"
