@@ -1376,6 +1376,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return dp;
 		}
 
+		public int dpToPx(int dp) {
+			DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+			int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+			return px;
+		}
+
 		private void maybeRepositionFlavorImage(View view, Bitmap bitmap) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
@@ -1388,8 +1394,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (pxToDp(bitmap.getHeight()) < 300 || r >= 1.2) {
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+
+				if (w < h) lp.topMargin = dpToPx(8);
+
 			} else {
 				lp.addRule(RelativeLayout.BELOW, 0);
+				lp.topMargin = 0;
 				//lp.removeRule(RelativeLayout.BELOW);
 			}
 

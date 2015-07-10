@@ -15,6 +15,7 @@
         <item name="headlinesBackground">#f0f0f0</item>
         <item name="articleBackground">@android:color/white</item>
         <item name="headlineSelectedBackground">#dddddd</item>
+        <item name="headlineHeaderBackground">#ccffffff</item>
         <item name="headlineUnreadBackground">@android:color/white</item>
         <item name="feedsSelectedBackground">#dddddd</item>
         <item name="feedlistTextColor">@android:color/primary_text_light</item>
@@ -79,6 +80,7 @@
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
         <item name="headlineSelectedBackground">#1c1c1c</item>
+        <item name="headlineHeaderBackground">#cc000000</item>
         <item name="headlineUnreadBackground">#101010</item>
         <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>

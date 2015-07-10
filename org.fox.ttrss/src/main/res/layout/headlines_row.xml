@@ -60,7 +60,7 @@
                         android:id="@+id/headline_header"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#ccffffff"
+                        android:background="?headlineHeaderBackground"
                         android:padding="16dp">
 
                         <TextView
@@ -117,11 +117,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="#90000000"
+                    android:background="?headlineHeaderBackground"
                     android:gravity="center"
                     android:text="@string/flavor_image_prompt"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@android:color/primary_text_dark"
+                    android:textColor="?headlineSecondaryTextColor"
                     android:visibility="visible" />
 
             </FrameLayout>
