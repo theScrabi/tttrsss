@@ -228,4 +228,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="video_player_share">Share video</string>
+    <string name="video_player_open">Open video</string>
 </resources>
