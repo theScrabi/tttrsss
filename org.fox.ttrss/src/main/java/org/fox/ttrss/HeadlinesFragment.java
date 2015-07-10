@@ -1027,9 +1027,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             if (!m_compactLayoutMode && holder.flavorImageHolder != null) {
 
 				/* reset to default in case of convertview */
-				holder.flavorImageHolder.setVisibility(View.VISIBLE);
 				holder.flavorImageView.setVisibility(View.VISIBLE);
-				holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoPlayView.setVisibility(View.GONE);
 				holder.flavorImagePrompt.setVisibility(View.GONE);
 
@@ -1046,8 +1045,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							final String streamUri = source.attr("src");
 							String posterUri = video.attr("poster");
 
-							Log.d(TAG, posterUri);
-
 							if (streamUri.length() > 0 && posterUri.length() > 0) {
 
 								if (!posterUri.equals(holder.flavorImageView.getTag())) {
@@ -1055,12 +1052,32 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
-									m_imageLoader.displayImage(posterUri, imageAware, displayImageOptions);
+									m_imageLoader.displayImage(posterUri, imageAware, displayImageOptions, new ImageLoadingListener() {
+											@Override
+											public void onLoadingStarted(String s, View view) {
+												holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+											}
+
+											@Override
+											public void onLoadingFailed(String s, View view, FailReason failReason) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+
+											@Override
+											public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+
+											@Override
+											public void onLoadingCancelled(String s, View view) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+										}
+									);
 								}
 
 								videoFound = true;
 
-								holder.flavorImageLoadingBar.setVisibility(View.GONE);
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play);
@@ -1106,13 +1123,34 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								videoFound = true;
 
-								holder.flavorImageLoadingBar.setVisibility(View.GONE);
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play_youtube);
 
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-								m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions);
+								m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
+											@Override
+											public void onLoadingStarted(String s, View view) {
+												holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+											}
+
+											@Override
+											public void onLoadingFailed(String s, View view, FailReason failReason) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+
+											@Override
+											public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+
+											@Override
+											public void onLoadingCancelled(String s, View view) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											}
+										}
+								);
+
 
 								holder.flavorImageView.setOnClickListener(new OnClickListener() {
 									@Override
@@ -1130,9 +1168,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
 
-					if (article.noValidFlavorImage) {
-						holder.flavorImageHolder.setVisibility(View.GONE);
-					} else if (article.articleDoc != null) {
+					if (article.articleDoc != null) {
 
 						if (article.flavorImage != null) {
 							String imgSrc = article.flavorImage.attr("src");
@@ -1168,9 +1204,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								}
 							});
 
-							//final ViewGroup flavorImageHolder = holder.flavorImageHolder;
-							//final ProgressBar flavorImageLoadingBar = holder.flavorImageLoadingBar;
-
 							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
 
 								holder.flavorImageView.setTag(imgSrc);
@@ -1194,9 +1227,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
 										if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
-											holder.flavorImageHolder.setVisibility(View.VISIBLE);
-										} else {
-											holder.flavorImageHolder.setVisibility(View.GONE);
+											holder.flavorImageView.setVisibility(View.VISIBLE);
 										}
 									}
 
@@ -1205,9 +1236,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 																View arg1, FailReason arg2) {
 
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										holder.flavorImageHolder.setVisibility(View.GONE);
-
-										article.noValidFlavorImage = true;
+										holder.flavorImageView.setVisibility(View.GONE);
 									}
 
 									@Override
@@ -1218,20 +1247,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								});
 
+							} else {
+								holder.flavorImageView.setVisibility(View.VISIBLE);
 							}
 
-						} else {
-							article.noValidFlavorImage = true;
-							holder.flavorImageHolder.setVisibility(View.GONE);
 						}
-
-					} else {
-						article.noValidFlavorImage = true;
-						holder.flavorImageHolder.setVisibility(View.GONE);
 					}
-
-				} else if (!videoFound && holder.flavorImageHolder != null) {
-					holder.flavorImageHolder.setVisibility(View.GONE);
 				}
 			}
 
