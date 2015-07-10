@@ -25,22 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_span="2">
 
-                <ProgressBar
-                    android:id="@+id/flavorImageLoadingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/flavor_video_play"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/flavor_video_play"
-                    android:visibility="visible" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -65,6 +49,17 @@
                         android:background="?headlineHeaderBackground"
                         android:padding="16dp">
 
+                        <ProgressBar
+                            android:id="@+id/flavorImageLoadingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="visible"
+                            android:layout_alignParentTop="false"
+                            android:layout_alignParentRight="false"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true" />
+
                         <TextView
                             android:id="@+id/title"
                             android:layout_width="match_parent"
@@ -82,7 +77,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/title"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:id="@+id/linearLayout2">
 
                             <TextView
                                 android:id="@+id/feed_title"
@@ -111,20 +107,24 @@
                                 android:textSize="12sp" />
 
                         </LinearLayout>
+
                     </RelativeLayout>
+
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/flavor_image_prompt"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/flavor_video_play"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="?headlineHeaderBackground"
-                    android:gravity="center"
-                    android:text="@string/flavor_image_prompt"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?headlineSecondaryTextColor"
-                    android:visibility="visible" />
+                    android:layout_gravity="bottom|right"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_play_circle"
+                    android:visibility="visible"
+                    android:layout_below="@+id/headline_header"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp" />
 
             </FrameLayout>
         </TableRow>

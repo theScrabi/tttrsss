@@ -658,7 +658,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public TextView excerptView;
 		public ImageView flavorImageView;
 		public ImageView flavorVideoPlayView;
-		public TextView flavorImagePrompt;
 		public TextView authorView;
 		public TextView dateView;
 		public CheckBox selectionBoxView;
@@ -850,7 +849,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.publishedView = (ImageView)v.findViewById(R.id.published);
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-				holder.flavorImagePrompt = (TextView) v.findViewById(R.id.flavor_image_prompt);
 				holder.flavorVideoPlayView = (ImageView) v.findViewById(R.id.flavor_video_play);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
@@ -1058,7 +1056,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageView.setVisibility(View.VISIBLE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoPlayView.setVisibility(View.GONE);
-				holder.flavorImagePrompt.setVisibility(View.GONE);
 
 				boolean videoFound = false;
 
@@ -1113,7 +1110,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								videoFound = true;
 
-								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play);
+								holder.flavorVideoPlayView.setImageResource(R.drawable.ic_play_circle);
 
 								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
 
@@ -1156,7 +1153,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								videoFound = true;
 
-								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play_youtube);
+								holder.flavorVideoPlayView.setImageResource(R.drawable.ic_youtube_play);
 
 								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
@@ -1267,7 +1264,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											holder.flavorImageView.setVisibility(View.VISIBLE);
 
 											if (article.flavorImageCount > 1) {
-												holder.flavorImagePrompt.setVisibility(View.VISIBLE);
+												holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+												holder.flavorVideoPlayView.setImageResource(R.drawable.ic_image_album);
 											}
 
 											maybeRepositionFlavorImage(view, bitmap);
@@ -1294,7 +1292,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 
 								if (article.flavorImageCount > 1) {
-									holder.flavorImagePrompt.setVisibility(View.VISIBLE);
+									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+									holder.flavorVideoPlayView.setImageResource(R.drawable.ic_image_album);
 								}
 
 							}
@@ -1395,10 +1394,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
+
 			} else {
 				lp.addRule(RelativeLayout.BELOW, 0);
-				lp.topMargin = 0;
-				//lp.removeRule(RelativeLayout.BELOW);
 			}
 
 			view.setLayoutParams(lp);

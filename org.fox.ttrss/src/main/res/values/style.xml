@@ -80,7 +80,7 @@
         <item name="headlineSelectedExcerptTextColor">@android:color/secondary_text_dark</item>
         <item name="headlineSelectedSecondaryTextColor">?headlineSelectedExcerptTextColor</item>
         <item name="headlineSelectedBackground">#1c1c1c</item>
-        <item name="headlineHeaderBackground">#cc000000</item>
+        <item name="headlineHeaderBackground">#99000000</item>
         <item name="headlineUnreadBackground">#101010</item>
         <item name="linkColor">?colorPrimary</item>
         <item name="loadingBackground">@android:color/black</item>
