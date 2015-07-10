@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -690,10 +691,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 		private final DisplayImageOptions displayImageOptions;
 		boolean showFlavorImage;
+		private int m_minimumHeightToEmbed;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
+
+			Display display = m_activity.getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			m_minimumHeightToEmbed = size.y/3;
 
 			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
 			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
@@ -1429,7 +1436,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			//Log.d(TAG, "XYR: " + pxToDp(w) + " " + pxToDp(h) + " " + r);
 
-			if (pxToDp(bitmap.getHeight()) < 300 || r >= 1.2) {
+			if (bitmap.getHeight() < m_minimumHeightToEmbed || r >= 1.2) {
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
