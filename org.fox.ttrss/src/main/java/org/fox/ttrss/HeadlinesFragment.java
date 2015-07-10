@@ -1043,12 +1043,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							Element source = video.select("source").first();
 
 							final String streamUri = source.attr("src");
-							String posterUri = video.attr("poster");
+							final String posterUri = video.attr("poster");
 
 							if (streamUri.length() > 0 && posterUri.length() > 0) {
 
 								if (!posterUri.equals(holder.flavorImageView.getTag())) {
-									holder.flavorImageView.setTag(posterUri);
 
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
@@ -1066,6 +1065,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											@Override
 											public void onLoadingComplete(String s, View view, Bitmap bitmap) {
 												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+												holder.flavorImageView.setTag(posterUri);
+												holder.flavorImageView.setVisibility(View.VISIBLE);
+												holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 											}
 
 											@Override
@@ -1074,12 +1076,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											}
 										}
 									);
+								} else {
+									holder.flavorImageView.setVisibility(View.VISIBLE);
+									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 								}
 
 								videoFound = true;
 
-								holder.flavorImageView.setVisibility(View.VISIBLE);
-								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play);
 
 								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
@@ -1118,38 +1121,44 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							if (matcher.find()) {
 								String vid = matcher.group(1);
-								String thumbUri = "http://img.youtube.com/vi/"+vid+"/mqdefault.jpg";
+								final String thumbUri = "http://img.youtube.com/vi/"+vid+"/mqdefault.jpg";
 								final String videoUri = "https://youtu.be/" + vid;
 
 								videoFound = true;
 
-								holder.flavorImageView.setVisibility(View.VISIBLE);
-								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play_youtube);
 
-								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-								m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
-											@Override
-											public void onLoadingStarted(String s, View view) {
-												holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-											}
+								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
+									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+									m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
+												@Override
+												public void onLoadingStarted(String s, View view) {
+													holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+												}
 
-											@Override
-											public void onLoadingFailed(String s, View view, FailReason failReason) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											}
+												@Override
+												public void onLoadingFailed(String s, View view, FailReason failReason) {
+													holder.flavorImageLoadingBar.setVisibility(View.GONE);
+												}
 
-											@Override
-											public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											}
+												@Override
+												public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+													holder.flavorImageLoadingBar.setVisibility(View.GONE);
+													holder.flavorImageView.setTag(thumbUri);
+													holder.flavorImageView.setVisibility(View.VISIBLE);
+													holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+												}
 
-											@Override
-											public void onLoadingCancelled(String s, View view) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+												@Override
+												public void onLoadingCancelled(String s, View view) {
+													holder.flavorImageLoadingBar.setVisibility(View.GONE);
+												}
 											}
-										}
-								);
+									);
+								} else {
+									holder.flavorImageView.setVisibility(View.VISIBLE);
+									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+								}
 
 
 								holder.flavorImageView.setOnClickListener(new OnClickListener() {
@@ -1206,10 +1215,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
 
-								holder.flavorImageView.setTag(imgSrc);
-
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
+								final String finalImgSrc = imgSrc;
 								m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions, new ImageLoadingListener() {
 
 									@Override
@@ -1224,6 +1232,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 																  View arg1, Bitmap arg2) {
 										if (!isAdded() || arg2 == null) return;
 
+
+										holder.flavorImageView.setTag(finalImgSrc);
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
 										if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {

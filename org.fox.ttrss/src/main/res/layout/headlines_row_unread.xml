@@ -109,7 +109,7 @@
                     android:layout_gravity="bottom"
                     android:gravity="center"
                     android:textColor="@android:color/primary_text_dark"
-                    android:text="5 more images"
+                    android:text="@string/flavor_image_prompt"
                     android:background="#90000000"
                     android:visibility="gone"
                     android:id="@+id/flavor_image_prompt" />
