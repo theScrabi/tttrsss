@@ -21,9 +21,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:theme="@android:style/Theme.NoDisplay"
             android:name=".LaunchActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoDisplay" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +40,7 @@
         </activity>
         <activity
             android:name=".MasterActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -48,7 +48,7 @@
         <activity
             android:name=".DetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -70,11 +70,11 @@
         </activity>
         <activity
             android:name=".offline.OfflineMasterActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".offline.OfflineDetailActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".share.ShareActivity"
@@ -256,13 +256,17 @@
             android:name=".ArticleImagesPagerActivity"
             android:label="Article Images" >
         </activity>
-
-        <activity android:name="org.acra.CrashReportDialog"
-            android:theme="@style/DarkDialogTheme"
-            android:launchMode="singleInstance"
+        <activity
+            android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true" />
-
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/DarkDialogTheme" />
+        <activity
+            android:name=".VideoPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_video_player" >
+        </activity>
     </application>
 
 </manifest>

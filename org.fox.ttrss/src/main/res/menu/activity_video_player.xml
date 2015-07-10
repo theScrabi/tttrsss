@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.fox.ttrss.VideoPlayerActivity">
+
+    <item
+        android:id="@+id/article_vid_open"
+        app:showAsAction=""
+        android:title="Open video"/>
+    <item
+        android:id="@+id/article_vid_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="ifRoom"
+        android:title="Share video"/>
+</menu>

@@ -1037,7 +1037,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						try {
 							Element source = video.select("source").first();
 
-							String streamUri = source.attr("src");
+							final String streamUri = source.attr("src");
 							String posterUri = video.attr("poster");
 
 							if (streamUri != null && posterUri != null) {
@@ -1056,11 +1056,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
 
+								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
+
 								holder.flavorImageView.setOnClickListener(new OnClickListener() {
 									@Override
 									public void onClick(View v) {
 
-										//
+										Intent intent = new Intent(m_activity, VideoPlayerActivity.class);
+										intent.putExtra("streamUri", streamUri);
+										intent.putExtra("title", article.title);
+
+										ActivityOptionsCompat options =
+												ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+														holder.flavorImageView,   // The view which starts the transition
+														"TRANSITION:ARTICLE_VIDEO_PLAYER" // The transitionName of the view we’re transitioning to
+												);
+										ActivityCompat.startActivity(m_activity, intent, options.toBundle());
 									}
 								});
 
@@ -1074,68 +1085,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 
 				}
-
-				/* if (m_prefs.getBoolean("enable_headlines_video", false) && article.articleDoc != null && holder.flavorVideoView != null) {
-					Element source = article.articleDoc.select("video > source").first();
-
-					if (source != null) {
-						try {
-							Uri streamUri = Uri.parse(source.attr("src"));
-
-							if (streamUri != null) {
-								videoFound = true;
-
-								holder.flavorImageLoadingBar.setVisibility(View.GONE);
-								holder.flavorVideoView.setVisibility(View.VISIBLE);
-								holder.flavorImageView.setVisibility(View.GONE);
-								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
-
-								if (!streamUri.equals(holder.flavorVideoView.getTag())) {
-									holder.flavorVideoView.setTag(streamUri);
-
-									holder.flavorVideoView.setVideoURI(streamUri);
-
-									holder.flavorVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-										@Override
-										public void onPrepared(MediaPlayer mp) {
-											//mp.setLooping(true);
-											mp.seekTo(1000);
-										}
-									});
-
-									holder.flavorVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-										@Override
-										public void onCompletion(MediaPlayer mp) {
-											mp.seekTo(0);
-										}
-									});
-
-									holder.flavorVideoView.setOnTouchListener(new View.OnTouchListener() {
-										@Override
-										public boolean onTouch(View v, MotionEvent event) {
-											VideoView video = (VideoView) v;
-
-											if (event.getAction() == MotionEvent.ACTION_DOWN) {
-												if (video.isPlaying()) {
-													video.pause();
-													holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
-												} else {
-													video.start();
-													holder.flavorVideoPlayView.setVisibility(View.GONE);
-												}
-											}
-
-											return true;
-										}
-									});
-								}
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-							videoFound = false;
-						}
-					}
-				} */
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
 					holder.flavorImageArrow.setVisibility(View.GONE);

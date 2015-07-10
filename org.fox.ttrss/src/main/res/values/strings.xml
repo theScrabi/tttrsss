@@ -224,4 +224,8 @@
     <string name="prefs_widget_show_fresh">Show Fresh articles</string>
     <string name="prefs_widget_show_fresh_summary">Instead of total unread display amount of Fresh articles</string>
     <string name="prefs_widget">Widget</string>
+    <string name="title_activity_video_player">Video Player</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
