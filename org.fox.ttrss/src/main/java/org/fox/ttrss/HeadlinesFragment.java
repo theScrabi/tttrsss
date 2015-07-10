@@ -1077,6 +1077,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageLoadingBar.setVisibility(View.GONE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
+				holder.headlineHeader.setBackgroundDrawable(null);
 
 				boolean videoFound = false;
 
@@ -1115,7 +1116,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 												holder.flavorImageView.setVisibility(View.VISIBLE);
 												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 
-												maybeRepositionFlavorImage(view, bitmap);
+												maybeRepositionFlavorImage(view, bitmap, holder);
 											}
 
 											@Override
@@ -1209,7 +1210,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											holder.flavorImageView.setVisibility(View.VISIBLE);
 											holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 
-											maybeRepositionFlavorImage(view, bitmap);
+											maybeRepositionFlavorImage(view, bitmap, holder);
 										}
 
 										@Override
@@ -1314,7 +1315,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 												holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 											}
 
-											maybeRepositionFlavorImage(view, bitmap);
+											maybeRepositionFlavorImage(view, bitmap, holder);
 										}
 									}
 
@@ -1427,7 +1428,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return px;
 		}
 
-		private void maybeRepositionFlavorImage(View view, Bitmap bitmap) {
+		private void maybeRepositionFlavorImage(View view, Bitmap bitmap, HeadlineViewHolder holder) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
 			int w = bitmap.getWidth();
@@ -1440,9 +1441,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
+				holder.headlineHeader.setBackgroundDrawable(null);
 
 			} else {
 				lp.addRule(RelativeLayout.BELOW, 0);
+
+				TypedValue tv = new TypedValue();
+
+				if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+					holder.headlineHeader.setBackgroundColor(tv.data);
+				}
 			}
 
 			view.setLayoutParams(lp);

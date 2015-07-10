@@ -462,6 +462,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         public ImageView textImage;
         public ImageView textChecked;
 		public ImageView flavorVideoKindView;
+		public View headlineHeader;
 	}
 
     private class ArticleListAdapter extends SimpleCursorAdapter {
@@ -581,6 +582,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
+				holder.headlineHeader = v.findViewById(R.id.headline_header);
 
                 v.setTag(holder);
 
@@ -768,6 +770,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				holder.flavorImageLoadingBar.setVisibility(View.GONE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
+
+				holder.headlineHeader.setBackgroundDrawable(null);
             }
 			
 			if (holder.menuButtonView != null) {
