@@ -1035,7 +1035,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				boolean videoFound = false;
 
-				if (article.articleDoc != null && holder.flavorVideoPlayView != null) {
+				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoPlayView != null) {
 					Element video = article.articleDoc.select("video").first();
 					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
 
