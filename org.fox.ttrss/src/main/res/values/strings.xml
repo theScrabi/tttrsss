@@ -230,4 +230,10 @@
     <string name="action_settings">Settings</string>
     <string name="video_player_share">Share video</string>
     <string name="video_player_open">Open video</string>
+
+    <plurals name="flavor_image_prompt">
+        <item quantity="zero"></item>
+        <item quantity="one">(one more image)</item>
+        <item quantity="other">(%1$d more images)</item>
+    </plurals>
 </resources>

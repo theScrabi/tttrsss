@@ -100,6 +100,18 @@
                     android:src="@drawable/flavor_video_play"
                     android:visibility="gone" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:textColor="@android:color/primary_text_dark"
+                    android:text="5 more images"
+                    android:background="#90000000"
+                    android:visibility="gone"
+                    android:id="@+id/flavor_image_prompt" />
+
             </FrameLayout>
         </TableRow>
 

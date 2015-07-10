@@ -657,6 +657,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public TextView excerptView;
 		public ImageView flavorImageView;
 		public ImageView flavorVideoPlayView;
+		public TextView flavorImagePrompt;
 		public TextView authorView;
 		public TextView dateView;
 		public CheckBox selectionBoxView;
@@ -822,6 +823,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.publishedView = (ImageView)v.findViewById(R.id.published);
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+				holder.flavorImagePrompt = (TextView) v.findViewById(R.id.flavor_image_prompt);
 				holder.flavorVideoPlayView = (ImageView) v.findViewById(R.id.flavor_video_play);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
@@ -881,6 +883,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				if (article.flavorImage == null)
 					article.flavorImage = imgs.first();
+
+				article.flavorImageCount = imgs.size();
 			}
 
             if (holder.textImage != null) {
@@ -1027,6 +1031,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageView.setVisibility(View.VISIBLE);
 				holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 				holder.flavorVideoPlayView.setVisibility(View.GONE);
+				holder.flavorImagePrompt.setVisibility(View.GONE);
 
 				boolean videoFound = false;
 
@@ -1136,6 +1141,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							// retarded schema-less urls
 							if (imgSrc.indexOf("//") == 0)
 								imgSrc = "http:" + imgSrc;
+
+							if (article.flavorImageCount > 1) {
+								holder.flavorImagePrompt.setText(getResources().getQuantityString(R.plurals.flavor_image_prompt, article.flavorImageCount-1, article.flavorImageCount-1));
+								holder.flavorImagePrompt.setVisibility(View.VISIBLE);
+							}
 
 							ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
