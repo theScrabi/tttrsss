@@ -80,8 +80,8 @@ import java.util.regex.Pattern;
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
     public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
-    public static final int FLAVOR_IMG_MIN_WIDTH = 128;
-    public static final int FLAVOR_IMG_MIN_HEIGHT = 128;
+    public static final int FLAVOR_IMG_MIN_SIZE = 128;
+	public static final int THUMB_IMG_MIN_SIZE = 32;
 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
@@ -736,7 +736,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}			
 		}
 
-        private void updateTextCheckedState(HeadlineViewHolder holder, Article item) {
+        private void updateTextCheckedState(final HeadlineViewHolder holder, Article item) {
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1).toUpperCase() : "?";
 
             if (item.selected) {
@@ -745,7 +745,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
-				Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
+				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
 
 				if (item.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
@@ -770,9 +770,34 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								.displayer(new RoundedBitmapDisplayer(100))
 								.build();
 
+						final String finalImgSrc = imgSrc;
+						m_imageLoader.displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
+									@Override
+									public void onLoadingStarted(String s, View view) {
 
-						m_imageLoader.displayImage(imgSrc, imageAware, options);
-						holder.textImage.setTag(imgSrc);
+									}
+
+									@Override
+									public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+									}
+
+									@Override
+									public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+										if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
+											holder.textImage.setImageDrawable(textDrawable);
+										}
+
+										holder.textImage.setTag(finalImgSrc);
+									}
+
+									@Override
+									public void onLoadingCancelled(String s, View view) {
+
+									}
+								}
+						);
+
 					}
 				}
 
@@ -871,7 +896,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							continue;
 						}
 
-						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_WIDTH && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_HEIGHT) {
+						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE) {
 							article.flavorImage = tmp;
 							break;
 						}
@@ -1229,14 +1254,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									@Override
 									public void onLoadingComplete(String arg0,
-																  View arg1, Bitmap arg2) {
-										if (!isAdded() || arg2 == null) return;
-
+																  View view, Bitmap bitmap) {
+										if (!isAdded() || bitmap == null) return;
 
 										holder.flavorImageView.setTag(finalImgSrc);
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
-										if (arg2.getWidth() > FLAVOR_IMG_MIN_WIDTH && arg2.getHeight() > FLAVOR_IMG_MIN_HEIGHT) {
+										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 											holder.flavorImageView.setVisibility(View.VISIBLE);
 										}
 									}
