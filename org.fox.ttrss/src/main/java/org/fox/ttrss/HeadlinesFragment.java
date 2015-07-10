@@ -667,6 +667,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public View headlineFooter;
         public ImageView textImage;
         public ImageView textChecked;
+		public View headlineHeader;
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -859,6 +860,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.headlineFooter = v.findViewById(R.id.headline_footer);
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
+				holder.headlineHeader = v.findViewById(R.id.headline_header);
 				
 				v.setTag(holder);
 				
@@ -1283,6 +1285,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							} else {
 								holder.flavorImageView.setVisibility(View.VISIBLE);
+
 							}
 
 						}

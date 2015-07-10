@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headlines_row"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    tools:ignore="HardcodedText" >
+    tools:ignore="HardcodedText">
 
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
         android:baselineAligned="false"
         android:shrinkColumns="0,1"
         android:stretchColumns="0,1">
@@ -20,75 +18,28 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:singleLine="false"
-                android:text="Sample entry title"
-                android:textColor="?headlineExcerptTextColor"
-                android:textSize="18sp"
-                android:paddingBottom="8dp"
-                android:layout_span="2" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/feed_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
-                android:textColor="?headlineSecondaryTextColor"
-                android:textSize="12sp"
-                android:layout_weight="0.5" />
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:gravity="right|center_vertical"
-                android:singleLine="true"
-                android:ellipsize="none"
-                android:text="Jan 01, 12:00, 1970"
-                android:textColor="?headlineSecondaryTextColor"
-                android:textSize="12sp"
-                android:layout_weight="0.5" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
             <FrameLayout
                 android:id="@+id/flavorImageHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_span="2"
-                android:paddingTop="8dp">
+                android:layout_span="2">
 
                 <ProgressBar
+                    android:id="@+id/flavorImageLoadingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:id="@+id/flavorImageLoadingBar" />
+                    android:layout_gravity="center" />
 
                 <org.fox.ttrss.util.EnlargingImageView
                     android:id="@+id/flavor_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/headline_header"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
                     android:cropToPadding="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/drawer_header"
                     android:visibility="visible" />
 
                 <ImageView
@@ -101,16 +52,71 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/flavor_image_prompt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:layout_gravity="bottom"
-                    android:gravity="center"
-                    android:textColor="@android:color/primary_text_dark"
-                    android:text="@string/flavor_image_prompt"
                     android:background="#90000000"
-                    android:visibility="gone"
-                    android:id="@+id/flavor_image_prompt" />
+                    android:gravity="center"
+                    android:text="@string/flavor_image_prompt"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/primary_text_dark"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/headline_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ccffffff"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_span="2"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp"
+                        android:singleLine="false"
+                        android:text="Sample entry title"
+                        android:textColor="?headlineExcerptTextColor"
+                        android:textSize="18sp"
+                        android:textStyle="normal" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/title"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/feed_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
+                            android:textColor="?headlineSecondaryTextColor"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:ellipsize="none"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="right|center_vertical"
+                            android:singleLine="true"
+                            android:text="Jan 01, 12:00, 1970"
+                            android:textColor="?headlineSecondaryTextColor"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+                </RelativeLayout>
 
             </FrameLayout>
         </TableRow>
@@ -123,15 +129,14 @@
                 android:id="@+id/excerpt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_span="2"
+                android:ellipsize="end"
                 android:lineSpacingExtra="2sp"
                 android:maxLines="5"
-                android:ellipsize="end"
+                android:padding="16dp"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 android:textColor="?headlineExcerptTextColor"
-                android:textSize="13sp"
-                android:layout_span="2"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp" />
+                android:textSize="13sp" />
         </TableRow>
 
         <TableRow
@@ -142,8 +147,10 @@
                 android:id="@+id/headline_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_span="2"
                 android:gravity="center_vertical"
-                android:layout_span="2">
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp">
 
                 <CheckBox
                     android:id="@+id/selected"
@@ -168,32 +175,32 @@
 
                 <ImageView
                     android:id="@+id/marked"
-                    android:background="@drawable/ripple"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/ripple"
+                    android:clickable="true"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:layout_weight="0"
-                    android:clickable="true"
                     android:src="?ic_star_outline" />
 
                 <ImageView
                     android:id="@+id/published"
-                    android:background="@drawable/ripple"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/ripple"
+                    android:clickable="true"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:layout_weight="0"
-                    android:clickable="true"
                     android:src="?ic_rss_box" />
 
                 <ImageView
                     android:id="@+id/article_menu_button"
-                    android:background="@drawable/ripple"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:layout_weight="0"
+                    android:background="@drawable/ripple"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:src="?ic_dots_vertical" />
