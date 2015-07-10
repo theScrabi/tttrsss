@@ -93,10 +93,11 @@
 
                 <ImageView
                     android:id="@+id/flavor_video_play"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_youtube_play"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/flavor_video_play"
                     android:visibility="gone" />
 
                 <org.fox.ttrss.util.ArrowRight

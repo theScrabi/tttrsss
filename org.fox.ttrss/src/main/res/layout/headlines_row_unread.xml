@@ -98,7 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_youtube_play"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/flavor_video_play"
                     android:visibility="gone" />
 
                 <org.fox.ttrss.util.ArrowRight

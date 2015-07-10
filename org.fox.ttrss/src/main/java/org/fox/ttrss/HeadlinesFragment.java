@@ -74,6 +74,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
     public static enum ArticlesSelection { ALL, NONE, UNREAD }
@@ -1032,6 +1034,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				if (article.articleDoc != null && holder.flavorVideoPlayView != null) {
 					Element video = article.articleDoc.select("video").first();
+					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
 
 					if (video != null) {
 						try {
@@ -1040,7 +1043,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							final String streamUri = source.attr("src");
 							String posterUri = video.attr("poster");
 
-							if (streamUri != null && posterUri != null) {
+							Log.d(TAG, posterUri);
+
+							if (streamUri.length() > 0 && posterUri.length() > 0) {
 
 								if (!posterUri.equals(holder.flavorImageView.getTag())) {
 									holder.flavorImageView.setTag(posterUri);
@@ -1055,6 +1060,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageLoadingBar.setVisibility(View.GONE);
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play);
 
 								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
 
@@ -1081,6 +1087,39 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						} catch (Exception e) {
 							e.printStackTrace();
 							videoFound = false;
+						}
+					} else if (ytframe != null) {
+						// thumb: http://img.youtube.com/vi/{VID}/mqdefault.jpg
+						String srcEmbed = ytframe.attr("src");
+
+						if (srcEmbed.length() > 0) {
+							Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
+							Matcher matcher = pattern.matcher(srcEmbed);
+
+							if (matcher.find()) {
+								String vid = matcher.group(1);
+								String thumbUri = "http://img.youtube.com/vi/"+vid+"/mqdefault.jpg";
+								final String videoUri = "https://youtu.be/" + vid;
+
+								videoFound = true;
+
+								holder.flavorImageLoadingBar.setVisibility(View.GONE);
+								holder.flavorImageView.setVisibility(View.VISIBLE);
+								holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+								holder.flavorVideoPlayView.setImageResource(R.drawable.flavor_video_play_youtube);
+
+								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+								m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions);
+
+								holder.flavorImageView.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent = new Intent(Intent.ACTION_VIEW,
+												Uri.parse(videoUri));
+										startActivity(intent);
+									}
+								});
+							}
 						}
 					}
 
