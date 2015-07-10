@@ -1143,7 +1143,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								imgSrc = "http:" + imgSrc;
 
 							if (article.flavorImageCount > 1) {
-								holder.flavorImagePrompt.setText(getResources().getQuantityString(R.plurals.flavor_image_prompt, article.flavorImageCount-1, article.flavorImageCount-1));
 								holder.flavorImagePrompt.setVisibility(View.VISIBLE);
 							}
 
