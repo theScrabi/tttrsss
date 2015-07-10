@@ -58,6 +58,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.shamanland.fab.FloatingActionButton;
 import com.shamanland.fab.ShowHideOnScroll;
 
@@ -657,7 +658,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public ImageView publishedView;
 		public TextView excerptView;
 		public ImageView flavorImageView;
-		public ImageView flavorVideoPlayView;
+		public ImageView flavorVideoKindView;
 		public TextView authorView;
 		public TextView dateView;
 		public CheckBox selectionBoxView;
@@ -797,7 +798,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									}
 								}
-						);
+						, new ImageLoadingProgressListener() {
+							@Override
+							public void onProgressUpdate(String s, View view, int current, int total) {
+								if (total != 0) {
+									int p = (int)((float)current/total*100);
+
+									holder.flavorImageLoadingBar.setIndeterminate(false);
+									holder.flavorImageLoadingBar.setProgress(p);
+								} else {
+									holder.flavorImageLoadingBar.setIndeterminate(true);
+								}
+							}
+						});
+
 
 					}
 				}
@@ -849,7 +863,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.publishedView = (ImageView)v.findViewById(R.id.published);
 				holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
 				holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-				holder.flavorVideoPlayView = (ImageView) v.findViewById(R.id.flavor_video_play);
+				holder.flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
 				holder.authorView = (TextView)v.findViewById(R.id.author);
 				holder.dateView = (TextView) v.findViewById(R.id.date);
 				holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
@@ -1055,11 +1069,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				/* reset to default in case of convertview */
 				holder.flavorImageView.setVisibility(View.VISIBLE);
 				holder.flavorImageView.setVisibility(View.GONE);
-				holder.flavorVideoPlayView.setVisibility(View.GONE);
+				holder.flavorVideoKindView.setVisibility(View.GONE);
 
 				boolean videoFound = false;
 
-				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoPlayView != null) {
+				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoKindView != null) {
 					Element video = article.articleDoc.select("video").first();
 					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
 
@@ -1092,7 +1106,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 												holder.flavorImageLoadingBar.setVisibility(View.GONE);
 												holder.flavorImageView.setTag(posterUri);
 												holder.flavorImageView.setVisibility(View.VISIBLE);
-												holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 
 												maybeRepositionFlavorImage(view, bitmap);
 											}
@@ -1102,15 +1116,28 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 												holder.flavorImageLoadingBar.setVisibility(View.GONE);
 											}
 										}
-									);
+									, new ImageLoadingProgressListener() {
+										@Override
+										public void onProgressUpdate(String s, View view, int current, int total) {
+											if (total != 0) {
+												int p = (int)((float)current/total*100);
+
+												holder.flavorImageLoadingBar.setIndeterminate(false);
+												holder.flavorImageLoadingBar.setProgress(p);
+											} else {
+												holder.flavorImageLoadingBar.setIndeterminate(true);
+											}
+										}
+									});
+
 								} else {
 									holder.flavorImageView.setVisibility(View.VISIBLE);
-									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 								}
 
 								videoFound = true;
 
-								holder.flavorVideoPlayView.setImageResource(R.drawable.ic_play_circle);
+								holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
 
 								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
 
@@ -1153,40 +1180,52 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								videoFound = true;
 
-								holder.flavorVideoPlayView.setImageResource(R.drawable.ic_youtube_play);
+								holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
 
 								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 									m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
-												@Override
-												public void onLoadingStarted(String s, View view) {
-													holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-												}
+										@Override
+										public void onLoadingStarted(String s, View view) {
+											holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+										}
 
-												@Override
-												public void onLoadingFailed(String s, View view, FailReason failReason) {
-													holder.flavorImageLoadingBar.setVisibility(View.GONE);
-												}
+										@Override
+										public void onLoadingFailed(String s, View view, FailReason failReason) {
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
+										}
 
-												@Override
-												public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-													holder.flavorImageLoadingBar.setVisibility(View.GONE);
-													holder.flavorImageView.setTag(thumbUri);
-													holder.flavorImageView.setVisibility(View.VISIBLE);
-													holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+										@Override
+										public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											holder.flavorImageView.setTag(thumbUri);
+											holder.flavorImageView.setVisibility(View.VISIBLE);
+											holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 
-													maybeRepositionFlavorImage(view, bitmap);
-												}
+											maybeRepositionFlavorImage(view, bitmap);
+										}
 
-												@Override
-												public void onLoadingCancelled(String s, View view) {
-													holder.flavorImageLoadingBar.setVisibility(View.GONE);
-												}
+										@Override
+										public void onLoadingCancelled(String s, View view) {
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
+										}
+									}
+									, new ImageLoadingProgressListener() {
+										@Override
+										public void onProgressUpdate(String s, View view, int current, int total) {
+											if (total != 0) {
+												int p = (int)((float)current/total*100);
+
+												holder.flavorImageLoadingBar.setIndeterminate(false);
+												holder.flavorImageLoadingBar.setProgress(p);
+											} else {
+												holder.flavorImageLoadingBar.setIndeterminate(true);
 											}
-									);
+										}
+									});
 								} else {
 									holder.flavorImageView.setVisibility(View.VISIBLE);
-									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 								}
 
 
@@ -1264,8 +1303,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											holder.flavorImageView.setVisibility(View.VISIBLE);
 
 											if (article.flavorImageCount > 1) {
-												holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
-												holder.flavorVideoPlayView.setImageResource(R.drawable.ic_image_album);
+												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+												holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 											}
 
 											maybeRepositionFlavorImage(view, bitmap);
@@ -1292,8 +1331,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 
 								if (article.flavorImageCount > 1) {
-									holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
-									holder.flavorVideoPlayView.setImageResource(R.drawable.ic_image_album);
+									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+									holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 								}
 
 							}

@@ -28,6 +28,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <ProgressBar
+                        android:id="@+id/flavorImageLoadingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_alignParentTop="false"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentLeft="true"
+                        android:max="100"
+                        android:indeterminate="false" />
+
                     <org.fox.ttrss.util.EnlargingImageView
                         android:id="@+id/flavor_image"
                         android:layout_width="match_parent"
@@ -47,17 +61,6 @@
                         android:layout_height="wrap_content"
                         android:background="?headlineHeaderBackground"
                         android:padding="16dp">
-
-                        <ProgressBar
-                            android:id="@+id/flavorImageLoadingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="visible"
-                            android:layout_alignParentTop="false"
-                            android:layout_alignParentRight="false"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true" />
 
                         <TextView
                             android:id="@+id/title"
@@ -112,7 +115,7 @@
                 </RelativeLayout>
 
                 <ImageView
-                    android:id="@+id/flavor_video_play"
+                    android:id="@+id/flavor_video_kind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
