@@ -31,17 +31,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
 
-                <org.fox.ttrss.util.EnlargingImageView
-                    android:id="@+id/flavor_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:cropToPadding="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/drawer_header"
-                    android:visibility="visible" />
-
                 <ImageView
                     android:id="@+id/flavor_video_play"
                     android:layout_width="match_parent"
@@ -50,6 +39,79 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/flavor_video_play"
                     android:visibility="gone" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <org.fox.ttrss.util.EnlargingImageView
+                        android:id="@+id/flavor_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/drawer_header"
+                        android:visibility="visible"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <RelativeLayout
+                        android:id="@+id/headline_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ccffffff"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_span="2"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="8dp"
+                            android:singleLine="false"
+                            android:text="Sample entry title"
+                            android:textColor="?headlineUnreadTextColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/title"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/feed_title"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="center_vertical"
+                                android:singleLine="true"
+                                android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
+                                android:textColor="?headlineSecondaryTextColor"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/date"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:ellipsize="none"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="right|center_vertical"
+                                android:singleLine="true"
+                                android:text="Jan 01, 12:00, 1970"
+                                android:textColor="?headlineSecondaryTextColor"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/flavor_image_prompt"
@@ -61,62 +123,8 @@
                     android:text="@string/flavor_image_prompt"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/primary_text_dark"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
-                <RelativeLayout
-                    android:id="@+id/headline_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ccffffff"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_span="2"
-                        android:gravity="center_vertical"
-                        android:paddingBottom="8dp"
-                        android:singleLine="false"
-                        android:text="Sample entry title"
-                        android:textColor="?headlineUnreadTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/title"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/feed_title"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-light"
-                            android:gravity="center_vertical"
-                            android:singleLine="true"
-                            android:text="Example Feed AAA AAA AAAAAA AAAA AAAAA AA A A AA AA"
-                            android:textColor="?headlineSecondaryTextColor"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/date"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:ellipsize="none"
-                            android:fontFamily="sans-serif-light"
-                            android:gravity="right|center_vertical"
-                            android:singleLine="true"
-                            android:text="Jan 01, 12:00, 1970"
-                            android:textColor="?headlineSecondaryTextColor"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-                </RelativeLayout>
             </FrameLayout>
         </TableRow>
 

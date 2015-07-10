@@ -42,6 +42,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -1095,6 +1096,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 												holder.flavorImageView.setTag(posterUri);
 												holder.flavorImageView.setVisibility(View.VISIBLE);
 												holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+
+												maybeRepositionFlavorImage(view, bitmap);
 											}
 
 											@Override
@@ -1174,6 +1177,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 													holder.flavorImageView.setTag(thumbUri);
 													holder.flavorImageView.setVisibility(View.VISIBLE);
 													holder.flavorVideoPlayView.setVisibility(View.VISIBLE);
+
+													maybeRepositionFlavorImage(view, bitmap);
 												}
 
 												@Override
@@ -1213,10 +1218,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							// retarded schema-less urls
 							if (imgSrc.indexOf("//") == 0)
 								imgSrc = "http:" + imgSrc;
-
-							if (article.flavorImageCount > 1) {
-								holder.flavorImagePrompt.setVisibility(View.VISIBLE);
-							}
 
 							ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
@@ -1264,6 +1265,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 											holder.flavorImageView.setVisibility(View.VISIBLE);
+
+											if (article.flavorImageCount > 1) {
+												holder.flavorImagePrompt.setVisibility(View.VISIBLE);
+											}
+
+											maybeRepositionFlavorImage(view, bitmap);
 										}
 									}
 
@@ -1286,8 +1293,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							} else {
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 
-							}
+								if (article.flavorImageCount > 1) {
+									holder.flavorImagePrompt.setVisibility(View.VISIBLE);
+								}
 
+							}
 						}
 					}
 				}
@@ -1358,6 +1368,32 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			return v;
+		}
+
+		public int pxToDp(int px) {
+			DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+			int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+			return dp;
+		}
+
+		private void maybeRepositionFlavorImage(View view, Bitmap bitmap) {
+			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+			int w = bitmap.getWidth();
+			int h = bitmap.getHeight();
+			float r = h != 0 ? (float)w/h : 0;
+
+			//Log.d(TAG, "XYR: " + pxToDp(w) + " " + pxToDp(h) + " " + r);
+
+			if (pxToDp(bitmap.getHeight()) < 300 || r >= 1.2) {
+
+				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+			} else {
+				lp.addRule(RelativeLayout.BELOW, 0);
+				//lp.removeRule(RelativeLayout.BELOW);
+			}
+
+			view.setLayoutParams(lp);
 		}
 
 		private void adjustTitleTextView(int score, TextView tv, int position) {
