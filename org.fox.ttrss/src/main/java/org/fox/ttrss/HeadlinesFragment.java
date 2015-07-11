@@ -816,19 +816,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									}
 								}
-						, new ImageLoadingProgressListener() {
-							@Override
-							public void onProgressUpdate(String s, View view, int current, int total) {
-								if (total != 0) {
-									int p = (int)((float)current/total*100);
-
-									holder.flavorImageLoadingBar.setIndeterminate(false);
-									holder.flavorImageLoadingBar.setProgress(p);
-								} else {
-									holder.flavorImageLoadingBar.setIndeterminate(true);
-								}
-							}
-						});
+						);
 
 
 					}
@@ -1370,6 +1358,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 									}
 
+								}, new ImageLoadingProgressListener() {
+									@Override
+									public void onProgressUpdate(String s, View view, int current, int total) {
+										if (total != 0) {
+											int p = (int)((float)current/total*100);
+
+											holder.flavorImageLoadingBar.setIndeterminate(false);
+											holder.flavorImageLoadingBar.setProgress(p);
+										} else {
+											holder.flavorImageLoadingBar.setIndeterminate(true);
+										}
+									}
 								});
 
 							} else {
