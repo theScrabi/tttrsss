@@ -38,4 +38,5 @@ dependencies {
     compile 'com.viewpagerindicator:library:2.4.1'
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
     compile files('libs/nineoldandroids-2.4.0.jar')
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

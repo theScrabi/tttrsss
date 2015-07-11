@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
@@ -76,6 +77,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -693,6 +695,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		private final DisplayImageOptions displayImageOptions;
 		boolean showFlavorImage;
 		private int m_minimumHeightToEmbed;
+		boolean m_youtubeInstalled;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -718,6 +721,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					.displayer(new FadeInBitmapDisplayer(500))
 					.build();
 
+			List<ApplicationInfo> packages = m_activity.getPackageManager().getInstalledApplications(0);
+			for (ApplicationInfo pi : packages) {
+				if (pi.packageName.equals("com.google.android.youtube")) {
+					m_youtubeInstalled = true;
+					break;
+				}
+			}
 		}
 		
 		public int getViewTypeCount() {
@@ -1191,7 +1201,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							Matcher matcher = pattern.matcher(srcEmbed);
 
 							if (matcher.find()) {
-								String vid = matcher.group(1);
+								final String vid = matcher.group(1);
 								final String thumbUri = "http://img.youtube.com/vi/"+vid+"/mqdefault.jpg";
 								final String videoUri = "https://youtu.be/" + vid;
 
@@ -1257,9 +1267,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorImageView.setOnClickListener(new OnClickListener() {
 									@Override
 									public void onClick(View v) {
-										Intent intent = new Intent(Intent.ACTION_VIEW,
-												Uri.parse(videoUri));
-										startActivity(intent);
+
+										if (m_youtubeInstalled) {
+											Intent intent = new Intent(m_activity, YoutubePlayerActivity.class);
+											intent.putExtra("streamUri", videoUri);
+											intent.putExtra("vid", vid);
+											intent.putExtra("title", article.title);
+
+											startActivity(intent);
+										} else {
+											Intent intent = new Intent(Intent.ACTION_VIEW,
+													Uri.parse(videoUri));
+											startActivity(intent);
+										}
 									}
 								});
 							}

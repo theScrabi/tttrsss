@@ -238,7 +238,6 @@ public class VideoPlayerActivity extends CommonActivity {
                 if (m_streamUri != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
 
-                    intent.setType("video/mp4");
                     intent.putExtra(Intent.EXTRA_SUBJECT, m_streamUri);
                     intent.putExtra(Intent.EXTRA_TEXT, m_streamUri);
 

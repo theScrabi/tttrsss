@@ -267,6 +267,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_video_player" >
         </activity>
+        <activity
+            android:name=".YoutubePlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_video_player" >
+        </activity>
     </application>
 
 </manifest>
