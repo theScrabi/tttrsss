@@ -68,29 +68,29 @@
     <string name="error_api_incorrect_usage">Erreur&#160;: utilisation incorrecte de l\'API</string>
     <string name="error_login_failed">Erreur&#160;: identifiant ou mot de passe incorrect</string>
     <string name="error_invalid_api_url">Erreur&#160;: API URL invalide</string>
-	<string name="go_offline">Passer hors connexion</string>
-	<string name="go_online">Quitter le mode hors connexion</string>
-	<string name="offline_switch_error">Échec de la préparation en mode hors connexion (voir journal)</string>
-	<string name="no_feeds">Aucun flux à afficher</string>
-	<string name="dialog_offline_prompt">Échec de la connexion, mais certaines données sont disponibles hors connexion. Voulez-vous passer en mode hors connexion&#160;?</string>
-	<string name="dialog_offline_success">Le mode hors connexion est prêt</string>
-	<string name="dialog_offline_go">Passer hors connexion</string>
-	<string name="dialog_cancel">Annuler</string>
-	<string name="dialog_offline_switch_prompt">Télécharger les articles non lus et passer hors connexion&#160;?</string>
-	<string name="notify_downloading_articles">Téléchargement des articles (%1$d)…</string>
-	<string name="notify_downloading_init">Démarrage du téléchargement…</string>
-	<string name="notify_downloading_feeds">Téléchargement des flux…</string>
-	<string name="notify_uploading_sending_data">Envoi des données au serveur…</string>
-	<string name="notify_downloading_title">Préparation du mode hors connexion</string>
-	<string name="notify_uploading_title">Synchronisation des données hors connexion</string>
-	<string name="offline_sync_success">Synchronisation de vos données hors connexion terminée</string>
-	<string name="offline_mode">Mode hors connexion</string>
-	<string name="offline_image_cache_enabled">Pré-chargement des images</string>
-	<string name="offline_image_cache_enabled_summary">Télécharger les images sur la carte SD. Cela pourrait augmenter de manière significative le temps de passage hors connexion.</string>
-	<string name="notify_downloading_images">Téléchargement des images (%1$d)…</string>
-	<string name="article_set_labels">Modifier les tags</string>
-	<string name="search">Rechercher</string>
-	<string name="cancel">Annuler</string>
+    <string name="go_offline">Passer hors connexion</string>
+    <string name="go_online">Quitter le mode hors connexion</string>
+    <string name="offline_switch_error">Échec de la préparation en mode hors connexion (voir journal)</string>
+    <string name="no_feeds">Aucun flux à afficher</string>
+    <string name="dialog_offline_prompt">Échec de la connexion, mais certaines données sont disponibles hors connexion. Voulez-vous passer en mode hors connexion&#160;?</string>
+    <string name="dialog_offline_success">Le mode hors connexion est prêt</string>
+    <string name="dialog_offline_go">Passer hors connexion</string>
+    <string name="dialog_cancel">Annuler</string>
+    <string name="dialog_offline_switch_prompt">Télécharger les articles non lus et passer hors connexion&#160;?</string>
+    <string name="notify_downloading_articles">Téléchargement des articles (%1$d)…</string>
+    <string name="notify_downloading_init">Démarrage du téléchargement…</string>
+    <string name="notify_downloading_feeds">Téléchargement des flux…</string>
+    <string name="notify_uploading_sending_data">Envoi des données au serveur…</string>
+    <string name="notify_downloading_title">Préparation du mode hors connexion</string>
+    <string name="notify_uploading_title">Synchronisation des données hors connexion</string>
+    <string name="offline_sync_success">Synchronisation de vos données hors connexion terminée</string>
+    <string name="offline_mode">Mode hors connexion</string>
+    <string name="offline_image_cache_enabled">Pré-chargement des images</string>
+    <string name="offline_image_cache_enabled_summary">Télécharger les images sur la carte SD. Cela pourrait augmenter de manière significative le temps de passage hors connexion.</string>
+    <string name="notify_downloading_images">Téléchargement des images (%1$d)…</string>
+    <string name="article_set_labels">Modifier les tags</string>
+    <string name="search">Rechercher</string>
+    <string name="cancel">Annuler</string>
     <string name="pref_font_size">Taille du texte des articles</string>
     <string name="dialog_close">Fermer</string>
     <string name="article_link_copy">Copier le lien dans le presse-papier</string>
@@ -126,6 +126,7 @@
         <item quantity="one">Mode évaluation, un seul jour restant.</item>
         <item quantity="other">Mode évaluation, %1$d jours restants.</item>
     </plurals>
+
     <string name="trial_purchase">Débloquer la version complète</string>
     <string name="trial_expired">La période d\'évaluation a expiré</string>
     <string name="trial_expired_message">Pour continuer à utiliser Tiny Tiny RSS merci de débloquer la version complète en achetant la clé.</string>
@@ -165,19 +166,22 @@
     <string name="article_img_view_caption">Montrer le sous-titre</string>
     <string name="pref_headlines_mark_read_scroll">Automatiquement marquer les articles comme lus</string>
     <string name="pref_headlines_mark_read_scroll_long">Cette option permet de marquer automatiquement les articles comme lus lorsque vous naviguez dans la liste d\'articles.</string>
+
     <plurals name="mark_num_headlines_as_read">
         <item quantity="one">Marquer %1$d article comme lu ?</item>
         <item quantity="other">Marquer %1$d articles comme lus ?</item>
     </plurals>
+
     <string name="prefs_confirm_headlines_catchup">Confirmer marquer comme lu</string>
     <string name="author_formatted">par %1$s</string>
+
     <plurals name="n_unread_articles">
         <item quantity="zero">Aucun article non lu</item>
         <item quantity="one">Un article non lu</item>
         <item quantity="other">%1$d articles non lus</item>
     </plurals>
-    <string name="pref_headline_font_size">Taille du texte des titres</string>
 
+    <string name="pref_headline_font_size">Taille du texte des titres</string>
     <string name="context_confirm_catchup">Marquer tous les articles de %1$s comme lus ?</string>
     <string name="accel_webview_summary">Désactivez si vous voyez des défauts visuels ou des clignotements.</string>
     <string name="accel_webview_title">Utiliser l\'accélération web (3.0+)</string>
@@ -190,8 +194,7 @@
     <string name="server_function_not_available">Désolé, cette fonction n\'est pas disponible pour votre version de tt-rss.</string>
     <string name="unsubscribe">Se désabonner</string>
     <string name="unsubscribe_from_prompt">Se désabonner de %1$s ?</string>
-	<string name="open_article_in_web_browser">Ouvrir dans le navigateur</string>
-
+    <string name="open_article_in_web_browser">Ouvrir dans le navigateur</string>
     <string name="error_loading_image">Erreur de chargemement de l\'image.</string>
     <string name="toggle_sort_order">Inverser l\'ordre de tri</string>
     <string name="headlines_sort_default">Par défaut</string>
@@ -209,6 +212,7 @@
     <string name="headline_display_mode_default">Par défaut</string>
     <string name="headline_display_mode_no_images">Pas d\'images</string>
     <string name="headline_display_mode_compact">Compact</string>
+    <string name="headline_display_mode_compact_noimages">Compact (sans images)</string>
     <string name="prefs_version">%1$s (%2$d)</string>
     <string name="prefs_version_title">Version</string>
     <string name="prefs_build_timestamp">%1$s</string>
@@ -217,4 +221,12 @@
     <string name="prefs_widget_show_fresh">Afficher les articles récents</string>
     <string name="prefs_widget_show_fresh_summary">Afficher le nombre d\'articles récents plutôt que le total d\'articles non lus</string>
     <string name="prefs_widget">Widget</string>
+    <string name="title_activity_video_player">Lecteur Vidéo</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="video_player_share">Partager la vidéo</string>
+    <string name="video_player_open">Ouvrir la vidéo</string>
+
+    <string name="flavor_image_prompt">(plus d\'images...)</string>
 </resources>
