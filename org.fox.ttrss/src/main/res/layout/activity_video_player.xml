@@ -16,6 +16,13 @@
             android:layout_gravity="center"
             android:id="@+id/video_player"
             android:transitionName="TRANSITION:ARTICLE_VIDEO_PLAYER" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/video_loading"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
     </FrameLayout>
 
     <include layout="@layout/toolbar" android:id="@+id/toolbar" />

@@ -147,6 +147,10 @@ public class VideoPlayerActivity extends CommonActivity {
                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                       @Override
                       public void onPrepared(MediaPlayer mp) {
+
+                          View loadingBar = findViewById(R.id.video_loading);
+                          if (loadingBar != null) loadingBar.setVisibility(View.GONE);
+
                           resizeSurface();
                           mp.setLooping(true);
                           mp.start();
