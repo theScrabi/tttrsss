@@ -38,7 +38,6 @@ public class Article implements Parcelable {
     public Document articleDoc;
     public Element flavorImage;
 	public int flavorImageCount;
-    public boolean noValidFlavorImage;
 
 	public Article(Parcel in) {
 		readFromParcel(in);

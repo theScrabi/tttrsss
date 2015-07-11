@@ -670,6 +670,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public ImageView textImage;
         public ImageView textChecked;
 		public View headlineHeader;
+		public boolean flavorImageEmbedded;
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -1141,6 +1142,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								} else {
 									holder.flavorImageView.setVisibility(View.VISIBLE);
 									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+
+									if (holder.flavorImageEmbedded) {
+										TypedValue tv = new TypedValue();
+										if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+											holder.headlineHeader.setBackgroundColor(tv.data);
+										}
+									}
+
 								}
 
 								videoFound = true;
@@ -1234,6 +1243,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								} else {
 									holder.flavorImageView.setVisibility(View.VISIBLE);
 									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+
+									if (holder.flavorImageEmbedded) {
+										TypedValue tv = new TypedValue();
+										if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+											holder.headlineHeader.setBackgroundColor(tv.data);
+										}
+									}
+
 								}
 
 
@@ -1285,7 +1302,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								}
 							});
 
-							if (holder.flavorImageView.getTag() == null || !holder.flavorImageView.getTag().equals(imgSrc)) {
+							if (!imgSrc.equals(holder.flavorImageView.getTag())) {
 
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
@@ -1304,11 +1321,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 																  View view, Bitmap bitmap) {
 										if (!isAdded() || bitmap == null) return;
 
-										holder.flavorImageView.setTag(finalImgSrc);
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
 										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 											holder.flavorImageView.setVisibility(View.VISIBLE);
+											holder.flavorImageView.setTag(finalImgSrc);
 
 											if (article.flavorImageCount > 1) {
 												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
@@ -1341,6 +1358,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								if (article.flavorImageCount > 1) {
 									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 									holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
+								}
+
+								if (holder.flavorImageEmbedded) {
+									TypedValue tv = new TypedValue();
+									if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+										holder.headlineHeader.setBackgroundColor(tv.data);
+									}
 								}
 
 							}
@@ -1442,15 +1466,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
 				holder.headlineHeader.setBackgroundDrawable(null);
+				holder.flavorImageEmbedded = false;
 
 			} else {
 				lp.addRule(RelativeLayout.BELOW, 0);
 
 				TypedValue tv = new TypedValue();
-
 				if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
 					holder.headlineHeader.setBackgroundColor(tv.data);
 				}
+
+				holder.flavorImageEmbedded = true;
 			}
 
 			view.setLayoutParams(lp);
