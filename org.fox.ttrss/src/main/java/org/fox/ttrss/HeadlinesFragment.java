@@ -1099,6 +1099,29 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorVideoKindView.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
+				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
+					@Override
+					public boolean onLongClick(View v) {
+						m_activity.openContextMenu(v);
+						return true;
+					}
+				});
+
+				holder.headlineHeader.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						m_listener.onArticleSelected(article);
+					}
+				});
+
+				holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
+					@Override
+					public boolean onLongClick(View v) {
+						m_activity.openContextMenu(v);
+						return true;
+					}
+				});
+
 				boolean videoFound = false;
 
 				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoKindView != null) {
