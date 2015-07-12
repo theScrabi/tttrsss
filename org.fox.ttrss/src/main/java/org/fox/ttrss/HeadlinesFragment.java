@@ -313,22 +313,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-		
+
 		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
-		
+
 		if (getSelectedArticles().size() > 0) {
 			menu.setHeaderTitle(R.string.headline_context_multiple);
 			menu.setGroupVisible(R.id.menu_group_single_article, false);
 		} else {
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 			Article article = getArticleAtPosition(info.position);
 
-            menu.setHeaderTitle(Html.fromHtml(article.title));
-            menu.setGroupVisible(R.id.menu_group_single_article, true);
+			menu.setHeaderTitle(Html.fromHtml(article.title));
+			menu.setGroupVisible(R.id.menu_group_single_article, true);
 		}
-		
+
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
-		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1); 
+		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
@@ -1198,7 +1198,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
 
-								ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
+								//ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
 
 								holder.flavorImageView.setOnClickListener(new OnClickListener() {
 									@Override
@@ -1208,12 +1208,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										intent.putExtra("streamUri", streamUri);
 										intent.putExtra("title", article.title);
 
-										ActivityOptionsCompat options =
+										/*ActivityOptionsCompat options =
 												ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
 														holder.flavorImageView,   // The view which starts the transition
 														"TRANSITION:ARTICLE_VIDEO_PLAYER" // The transitionName of the view we’re transitioning to
 												);
-										ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+										ActivityCompat.startActivity(m_activity, intent, options.toBundle());*/
+
+										startActivity(intent);
 									}
 								});
 
