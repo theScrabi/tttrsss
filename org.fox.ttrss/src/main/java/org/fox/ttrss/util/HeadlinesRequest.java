@@ -62,7 +62,11 @@ public class HeadlinesRequest extends ApiRequest {
 						//Log.d(TAG, "headerID:" + header.get("top_id_changed"));
 
 						m_firstIdChanged = header.get("first_id_changed") != null;
-						m_firstId = header.get("first_id").getAsInt();
+						try {
+							m_firstId = header.get("first_id").getAsInt();
+						} catch (NumberFormatException e) {
+							m_firstId = 0;
+						}
 
 						Log.d(TAG, "firstID=" + m_firstId + " firstIdChanged=" + m_firstIdChanged);
 
