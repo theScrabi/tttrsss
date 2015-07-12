@@ -36,7 +36,8 @@ public class ArticlePager extends Fragment {
 	private String m_searchQuery = "";
 	private Feed m_feed;
 	private SharedPreferences m_prefs;
-	
+	private int m_firstId = 0;
+
 	private class PagerAdapter extends ClassloaderWorkaroundFragmentStatePagerAdapter {
 		
 		public PagerAdapter(FragmentManager fm) {
@@ -81,6 +82,7 @@ public class ArticlePager extends Fragment {
 			m_article = savedInstanceState.getParcelable("article");
             m_articles = ((DetailActivity)m_activity).m_articles;
 			m_feed = savedInstanceState.getParcelable("feed");
+			m_firstId = savedInstanceState.getInt("firstId");
 		}
 		
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
@@ -156,9 +158,11 @@ public class ArticlePager extends Fragment {
 				
 				if (result != null) {
 
-					if (m_topIdChanged) {
+					if (m_firstIdChanged) {
 						m_articles.add(new Article(HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED));
 					}
+
+					ArticlePager.this.m_firstId = m_firstId;
 
 					try {
 						m_adapter.notifyDataSetChanged();
@@ -223,16 +227,6 @@ public class ArticlePager extends Fragment {
 		
 		req.setOffset(skip);
 
-		final int checkTopId;
-
-		if (skip != 0 && m_articles.size() > 1) {
-			// m_articles[0] is the special spacer (id -2)
-			//Log.d(TAG, "TOPID:" + m_articles.get(1).id);
-			checkTopId = m_articles.get(1).id;
-		} else {
-			checkTopId = 0;
-		}
-		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
 				put("op", "getHeadlines");
@@ -258,7 +252,7 @@ public class ArticlePager extends Fragment {
 					put("match_on", "both");
 				}
 
-				if (checkTopId > 0) put("check_top_id", String.valueOf(checkTopId));
+				if (m_firstId > 0) put("check_first_id", String.valueOf(m_firstId));
 
 				if (m_activity.getApiLevel() >= 12) {
 					put("include_header", "true");
@@ -267,7 +261,7 @@ public class ArticlePager extends Fragment {
 			}			 
 		};
 
-        Log.d(TAG, "[AP] request more headlines, topId=" + checkTopId);
+        Log.d(TAG, "[AP] request more headlines, firstId=" + m_firstId);
 
 		req.execute(map);
 	}
@@ -275,10 +269,11 @@ public class ArticlePager extends Fragment {
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
+
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("article", m_article);
 		out.putParcelable("feed", m_feed);
+		out.putInt("firstId", m_firstId);
 	}
 	
 	@Override

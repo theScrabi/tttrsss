@@ -83,7 +83,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
-    public static enum ArticlesSelection { ALL, NONE, UNREAD }
+	public static enum ArticlesSelection { ALL, NONE, UNREAD }
 
     public static final int FLAVOR_IMG_MIN_SIZE = 128;
 	public static final int THUMB_IMG_MIN_SIZE = 32;
@@ -102,7 +102,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private String m_searchQuery = "";
 	private boolean m_refreshInProgress = false;
 	private boolean m_autoCatchupDisabled = false;
-	
+	private int m_firstId = 0;
+
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
@@ -349,6 +350,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			//m_selectedArticles = savedInstanceState.getParcelable("selectedArticles");
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
+			m_firstId = savedInstanceState.getInt("firstId");
 		}
 
 		String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
@@ -545,9 +547,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_articles.indexOf(m_activeArticle) == -1)
 							m_activeArticle = null;
 
-						if (m_topIdChanged) {
+						if (m_firstIdChanged) {
 							m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
 						}
+
+						HeadlinesFragment.this.m_firstId = m_firstId;
 
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
@@ -608,16 +612,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			req.setOffset(skip);
 
-			final int checkTopId;
-
-			if (skip != 0 && m_articles.size() > 1) {
-				// m_articles[0] is the special spacer (id -2)
-				//Log.d(TAG, "TOPID:" + m_articles.get(1).id);
-				checkTopId = m_articles.get(1).id;
-			} else {
-				checkTopId = 0;
-			}
-
 			HashMap<String,String> map = new HashMap<String,String>() {
 				{
 					put("op", "getHeadlines");
@@ -647,7 +641,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						put("match_on", "both");
 					}
 
-					if (checkTopId > 0) put("check_top_id", String.valueOf(checkTopId));
+					if (m_firstId > 0) put("check_first_id", String.valueOf(m_firstId));
 
 					if (m_activity.getApiLevel() >= 12) {
 						put("include_header", "true");
@@ -655,7 +649,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 			};
 
-            Log.d(TAG, "[HP] request more headlines, topId=" + checkTopId);
+            Log.d(TAG, "[HP] request more headlines, firstId=" + m_firstId);
 
 			req.execute(map);
 		}
@@ -672,6 +666,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		//out.putParcelable("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
         out.putBoolean("compactLayoutMode", m_compactLayoutMode);
+		out.putInt("firstId", m_firstId);
 	}
 
 	static class HeadlineViewHolder {

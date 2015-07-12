@@ -15,7 +15,6 @@ import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -31,7 +30,8 @@ public class HeadlinesRequest extends ApiRequest {
 	private ArticleList m_articles; // = new ArticleList(); //Application.getInstance().m_loadedArticles;
 	private Feed m_feed;
 
-	protected boolean m_topIdChanged = false;
+	protected boolean m_firstIdChanged = false;
+	protected int m_firstId = 0;
 
 	public HeadlinesRequest(Context context, OnlineActivity activity, final Feed feed, ArticleList articles) {
 		super(context);
@@ -61,7 +61,10 @@ public class HeadlinesRequest extends ApiRequest {
 
 						//Log.d(TAG, "headerID:" + header.get("top_id_changed"));
 
-						m_topIdChanged = header.get("top_id_changed") != null;
+						m_firstIdChanged = header.get("first_id_changed") != null;
+						m_firstId = header.get("first_id").getAsInt();
+
+						Log.d(TAG, "firstID=" + m_firstId + " firstIdChanged=" + m_firstIdChanged);
 
 						Type listType = new TypeToken<List<Article>>() {}.getType();
 						articles = new Gson().fromJson(content.get(1), listType);
