@@ -217,6 +217,16 @@ public class ArticlePager extends Fragment {
 		final int fskip = skip;
 		
 		req.setOffset(skip);
+
+		final int checkTopId;
+
+		if (skip != 0 && m_articles.size() > 1) {
+			// m_articles[0] is the special spacer (id -2)
+			//Log.d(TAG, "TOPID:" + m_articles.get(1).id);
+			checkTopId = m_articles.get(1).id;
+		} else {
+			checkTopId = 0;
+		}
 		
 		HashMap<String,String> map = new HashMap<String,String>() {
 			{
@@ -242,10 +252,12 @@ public class ArticlePager extends Fragment {
 					put("search_mode", "");
 					put("match_on", "both");
 				}
+
+				if (checkTopId > 0) put("check_top_id", String.valueOf(checkTopId));
 			}			 
 		};
 
-        Log.d(TAG, "[AP] request more headlines...");
+        Log.d(TAG, "[AP] request more headlines, topId=" + checkTopId);
 
 		req.execute(map);
 	}
