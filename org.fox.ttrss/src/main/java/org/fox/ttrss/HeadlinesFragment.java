@@ -93,6 +93,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	public static final int ARTICLE_SPECIAL_LOADMORE = -1;
 	public static final int ARTICLE_SPECIAL_SPACER = -2;
+	public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
 
 	private final String TAG = this.getClass().getSimpleName();
 	
@@ -390,7 +391,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             View layout = inflater.inflate(R.layout.headlines_footer, container, false);
 
-            layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
+			layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
             m_list.addFooterView(layout, null, false);
         }
@@ -539,10 +540,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (result != null) {
 						m_refreshInProgress = false;
-						m_articles.add(0, new Article(-2));
+						m_articles.add(0, new Article(ARTICLE_SPECIAL_SPACER));
 
 						if (m_articles.indexOf(m_activeArticle) == -1)
 							m_activeArticle = null;
+
+						if (m_topIdChanged) {
+							m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
+						}
 
 						m_adapter.notifyDataSetChanged();
 						m_listener.onHeadlinesLoaded(fappend);
@@ -551,7 +556,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						// top headline content becomes partially obscured by the toolbar on phones
 						// (not reproducible on avd)
 						if (!fappend) m_list.smoothScrollToPosition(0);
-						
+
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
 							m_activity.login(true);
@@ -643,6 +648,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 
 					if (checkTopId > 0) put("check_top_id", String.valueOf(checkTopId));
+
+					if (m_activity.getApiLevel() >= 12) {
+						put("include_header", "true");
+					}
 				}
 			};
 
@@ -695,8 +704,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_SELECTED_UNREAD = 3;
 		public static final int VIEW_LOADMORE = 4;
 		public static final int VIEW_SPACER = 5;
+		public static final int VIEW_TOP_CHANGED = 6;
 		
-		public static final int VIEW_COUNT = VIEW_SPACER+1;
+		public static final int VIEW_COUNT = VIEW_TOP_CHANGED+1;
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
@@ -754,6 +764,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (a.id == ARTICLE_SPECIAL_LOADMORE) {
 				return VIEW_LOADMORE;
+			} else if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
+				return VIEW_TOP_CHANGED;
 			} else if (a.id == ARTICLE_SPECIAL_SPACER) {
 				return VIEW_SPACER;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
@@ -857,6 +869,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					break;
 				case VIEW_SPACER:
 					layoutId = R.layout.fragment_dummy;
+					break;
+				case VIEW_TOP_CHANGED:
+					layoutId = R.layout.headlines_row_top_changed;
 					break;
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
@@ -1705,7 +1720,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
     public void setArticles(ArticleList articles) {
         m_articles.clear();
-		m_articles.add(0, new Article(-2));
+		m_articles.add(0, new Article(ARTICLE_SPECIAL_SPACER));
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();
     }

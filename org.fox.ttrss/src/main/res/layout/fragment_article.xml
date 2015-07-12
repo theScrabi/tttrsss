@@ -154,4 +154,12 @@
         android:src="@drawable/ic_action_web_site"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="[status message]"
+        android:id="@+id/article_status_message"
+        android:gravity="center"
+        android:visibility="gone" />
+
 </FrameLayout>

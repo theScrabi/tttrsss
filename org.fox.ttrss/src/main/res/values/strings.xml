@@ -232,4 +232,5 @@
     <string name="video_player_open">Open video</string>
 
     <string name="flavor_image_prompt">(more images...)</string>
+    <string name="headlines_row_top_changed">New articles found, reload feed to continue.</string>
 </resources>

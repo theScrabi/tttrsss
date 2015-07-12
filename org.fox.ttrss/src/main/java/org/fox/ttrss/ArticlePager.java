@@ -155,6 +155,11 @@ public class ArticlePager extends Fragment {
 				super.onPostExecute(result);
 				
 				if (result != null) {
+
+					if (m_topIdChanged) {
+						m_articles.add(new Article(HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED));
+					}
+
 					try {
 						m_adapter.notifyDataSetChanged();
 					} catch (BadParcelableException e) {
@@ -172,7 +177,7 @@ public class ArticlePager extends Fragment {
 							}
 						}
 					}
-					
+
 				} else {
 					if (m_lastError == ApiError.LOGIN_FAILED) {
 						m_activity.login(true);
@@ -254,6 +259,11 @@ public class ArticlePager extends Fragment {
 				}
 
 				if (checkTopId > 0) put("check_top_id", String.valueOf(checkTopId));
+
+				if (m_activity.getApiLevel() >= 12) {
+					put("include_header", "true");
+				}
+
 			}			 
 		};
 

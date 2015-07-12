@@ -1246,7 +1246,7 @@ public class OnlineActivity extends CommonActivity {
 		return true;
 	}
 	
-	protected int getApiLevel() {
+	public int getApiLevel() {
 		return Application.getInstance().m_apiLevel;
 	}
 	

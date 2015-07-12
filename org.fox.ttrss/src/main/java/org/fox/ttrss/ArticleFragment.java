@@ -183,6 +183,17 @@ public class ArticleFragment extends Fragment  {
         m_contentView = view.findViewById(R.id.article_scrollview);
         m_customViewContainer = (FrameLayout) view.findViewById(R.id.article_fullscreen_video);
 
+        if (m_article.id == HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED) {
+            TextView statusMessage = (TextView) view.findViewById(R.id.article_status_message);
+            statusMessage.setText(R.string.headlines_row_top_changed);
+            statusMessage.setVisibility(View.VISIBLE);
+
+            view.findViewById(R.id.article_scrollview).setVisibility(View.GONE);
+            view.findViewById(R.id.article_fab).setVisibility(View.GONE);
+
+            return view;
+        }
+
         NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
         m_fab = view.findViewById(R.id.article_fab);
 
@@ -422,7 +433,7 @@ public class ArticleFragment extends Fragment  {
 	}
 
     protected void renderContent(Bundle savedInstanceState) {
-        if (!isAdded()) return;
+        if (!isAdded() || m_web == null) return;
 
         Log.d(TAG, "renderContent: " + m_article.title);
 
@@ -545,14 +556,14 @@ public class ArticleFragment extends Fragment  {
     public void onPause() {
         super.onPause();
 
-        m_web.onPause();
+        if (m_web != null) m_web.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        m_web.onResume();
+        if (m_web != null) m_web.onResume();
     }
 
     public boolean inCustomView() {
