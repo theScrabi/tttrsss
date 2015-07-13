@@ -1094,6 +1094,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
+
+					if (!showFlavorImage) {
+						holder.excerptView.setPadding(holder.excerptView.getPaddingLeft(),
+								0,
+								holder.excerptView.getPaddingRight(),
+								holder.excerptView.getPaddingBottom());
+					}
 				}
 			}
 
