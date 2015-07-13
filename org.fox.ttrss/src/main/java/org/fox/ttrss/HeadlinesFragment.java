@@ -69,6 +69,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -687,7 +688,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public ImageView textImage;
         public ImageView textChecked;
 		public View headlineHeader;
+
 		public boolean flavorImageEmbedded;
+		public Document articleDoc;
+		public Element flavorImage;
+		public int flavorImageCount;
+
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -785,11 +791,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             } else {
 				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
 
-				if (item.flavorImage == null) {
+				if (holder.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
 					holder.textImage.setTag(null);
 				} else {
-					String imgSrc = item.flavorImage.attr("src");
+					String imgSrc = holder.flavorImage.attr("src");
 
 					// retarded schema-less urls
 					if (imgSrc.indexOf("//") == 0)
@@ -915,8 +921,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
 					articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
 
-			if (article.articleDoc == null)
-				article.articleDoc = Jsoup.parse(articleContentReduced);
+			if (holder.articleDoc == null)
+				holder.articleDoc = Jsoup.parse(articleContentReduced);
 
 			// block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
@@ -928,9 +934,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 });
             }
 
-			if (showFlavorImage && article.flavorImage == null) {
+			if (showFlavorImage && holder.flavorImage == null) {
 
-				Elements imgs = article.articleDoc.select("img");
+				Elements imgs = holder.articleDoc.select("img");
 
 				for (Element tmp : imgs) {
 					try {
@@ -939,7 +945,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						}
 
 						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE) {
-							article.flavorImage = tmp;
+							holder.flavorImage = tmp;
 							break;
 						}
 
@@ -948,10 +954,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				}
 
-				if (article.flavorImage == null)
-					article.flavorImage = imgs.first();
+				if (holder.flavorImage == null)
+					holder.flavorImage = imgs.first();
 
-				article.flavorImageCount = imgs.size();
+				holder.flavorImageCount = imgs.size();
 			}
 
             if (holder.textImage != null) {
@@ -973,8 +979,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
-				if (article.flavorImage != null) {
-					final String imgSrcFirst = article.flavorImage.attr("src");
+				if (holder.flavorImage != null) {
+					final String imgSrcFirst = holder.flavorImage.attr("src");
 
 					holder.textImage.setOnLongClickListener(new View.OnLongClickListener() {
 						@Override
@@ -1080,7 +1086,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         excerpt = excerpt.replace("]]>", "");
                         excerpt = Jsoup.parse(excerpt).text();
                     } else {
-                        excerpt = article.articleDoc.text();
+                        excerpt = holder.articleDoc.text();
 
                         if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
                             excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
@@ -1124,9 +1130,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				boolean videoFound = false;
 
-				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoKindView != null) {
-					Element video = article.articleDoc.select("video").first();
-					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
+				if (showFlavorImage && holder.articleDoc != null && holder.flavorVideoKindView != null) {
+					Element video = holder.articleDoc.select("video").first();
+					Element ytframe = holder.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
 
 					if (video != null) {
 						try {
@@ -1324,10 +1330,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
 
-					if (article.articleDoc != null) {
+					if (holder.articleDoc != null) {
 
-						if (article.flavorImage != null) {
-							String imgSrc = article.flavorImage.attr("src");
+						if (holder.flavorImage != null) {
+							String imgSrc = holder.flavorImage.attr("src");
 							final String imgSrcFirst = imgSrc;
 
 							// retarded schema-less urls
@@ -1376,17 +1382,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										if (!isAdded() || bitmap == null) return;
 
 										holder.flavorImageLoadingBar.setVisibility(View.GONE);
+										holder.flavorImageView.setTag(finalImgSrc);
 
 										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 											holder.flavorImageView.setVisibility(View.VISIBLE);
-											holder.flavorImageView.setTag(finalImgSrc);
 
-											if (article.flavorImageCount > 1) {
+											if (holder.flavorImageCount > 1) {
 												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 												holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 											}
 
 											maybeRepositionFlavorImage(view, bitmap, holder);
+										} else {
+											holder.flavorImageView.setImageDrawable(null);
 										}
 									}
 
@@ -1421,7 +1429,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							} else {
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 
-								if (article.flavorImageCount > 1) {
+								if (holder.flavorImageCount > 1) {
 									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 									holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 								}

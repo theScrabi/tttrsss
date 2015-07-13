@@ -3,9 +3,6 @@ package org.fox.ttrss.types;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +30,6 @@ public class Article implements Parcelable {
 	public String author;
 	public String note;
     public boolean selected;
-
-    /* not serialized */
-    public Document articleDoc;
-    public Element flavorImage;
-	public int flavorImageCount;
 
 	public Article(Parcel in) {
 		readFromParcel(in);
