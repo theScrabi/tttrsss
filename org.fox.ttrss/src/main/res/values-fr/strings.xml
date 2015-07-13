@@ -14,15 +14,16 @@
     <string name="look_and_feel">Interface</string>
     <string name="pref_theme">Thème</string>
     <string name="ttrss_url">Tiny Tiny RSS URL</string>
+    <string name="theme_light">Clair</string>
     <string name="theme_dark">Sombre</string>
     <string name="preferences">Préférences</string>
-    <string name="theme_light">Clair</string>
     <string name="connection">Connexion</string>
     <string name="headline_context_multiple">Articles sélectionnés</string>
     <string name="http_authentication">Authentification HTTP</string>
     <string name="loading_message">Chargement, patientez s\'il-vous-plaît…</string>
     <string name="menu_unread_feeds">Afficher les flux non-lus</string>
     <string name="menu_all_feeds">Afficher tous les flux</string>
+    <string name="unread_only">Non lus seulement</string>
     <string name="update_feeds">Rafraichir</string>
     <string name="share_article">Partager l\'article</string>
     <string name="catchup">Marquer comme lu</string>
@@ -30,8 +31,9 @@
     <string name="ssl_trust_any">Accepter n\'importe quel certificat</string>
     <string name="category_browse_feeds">Parcourir les flux</string>
     <string name="blank"></string>
-    <string name="transport_debugging">Enregistrement des données envoyées et reçues</string>
+    <string name="transport_debugging">Journal des données envoyées et reçues</string>
     <string name="article_toggle_marked">Basculer Marqué</string>
+    <string name="article_toggle_unread">Basculer Lu</string>
     <string name="article_toggle_published">Basculer Publié</string>
     <string name="headlines_select">Sélectionner des articles</string>
     <string name="headlines_select_dialog">Sélectionner les articles</string>
@@ -80,6 +82,7 @@
     <string name="notify_downloading_articles">Téléchargement des articles (%1$d)…</string>
     <string name="notify_downloading_init">Démarrage du téléchargement…</string>
     <string name="notify_downloading_feeds">Téléchargement des flux…</string>
+    <string name="notify_downloading_categories">Téléchargement des catégories…</string>
     <string name="notify_uploading_sending_data">Envoi des données au serveur…</string>
     <string name="notify_downloading_title">Préparation du mode hors connexion</string>
     <string name="notify_uploading_title">Synchronisation des données hors connexion</string>
@@ -229,4 +232,5 @@
     <string name="video_player_open">Ouvrir la vidéo</string>
 
     <string name="flavor_image_prompt">(plus d\'images...)</string>
+    <string name="headlines_row_top_changed">Nouveaux articles trouvés, rechargez le flux pour continuer.</string>
 </resources>
