@@ -69,7 +69,6 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -690,10 +689,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public View headlineHeader;
 
 		public boolean flavorImageEmbedded;
-		public Document articleDoc;
-		public Element flavorImage;
-		public int flavorImageCount;
-
 	}
 	
 	private class ArticleListAdapter extends ArrayAdapter<Article> {
@@ -791,11 +786,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             } else {
 				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
 
-				if (holder.flavorImage == null) {
+				if (item.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
 					holder.textImage.setTag(null);
 				} else {
-					String imgSrc = holder.flavorImage.attr("src");
+					String imgSrc = item.flavorImage.attr("src");
 
 					// retarded schema-less urls
 					if (imgSrc.indexOf("//") == 0)
@@ -854,13 +849,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			View v = convertView;
-			
+
 			final Article article = items.get(position);
 			final HeadlineViewHolder holder;
-			
+
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
-			
+
 			if (v == null) {
                 int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
@@ -884,7 +879,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_selected_unread_compact : R.layout.headlines_row_unread;
 					break;
 				}
-				
+
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
 
@@ -907,9 +902,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
-				
+
 				v.setTag(holder);
-				
+
 				// http://code.google.com/p/android/issues/detail?id=3414
 				((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 			} else {
@@ -921,8 +916,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
 					articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
 
-			if (holder.articleDoc == null)
-				holder.articleDoc = Jsoup.parse(articleContentReduced);
+			if (article.articleDoc == null)
+				article.articleDoc = Jsoup.parse(articleContentReduced);
 
 			// block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
@@ -934,9 +929,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 });
             }
 
-			if (showFlavorImage && holder.flavorImage == null) {
+			if (showFlavorImage && article.flavorImage == null) {
 
-				Elements imgs = holder.articleDoc.select("img");
+				Elements imgs = article.articleDoc.select("img");
 
 				for (Element tmp : imgs) {
 					try {
@@ -945,7 +940,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						}
 
 						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE) {
-							holder.flavorImage = tmp;
+							article.flavorImage = tmp;
 							break;
 						}
 
@@ -954,10 +949,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				}
 
-				if (holder.flavorImage == null)
-					holder.flavorImage = imgs.first();
+				if (article.flavorImage == null)
+					article.flavorImage = imgs.first();
 
-				holder.flavorImageCount = imgs.size();
+				article.flavorImageCount = imgs.size();
 			}
 
             if (holder.textImage != null) {
@@ -979,8 +974,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
-				if (holder.flavorImage != null) {
-					final String imgSrcFirst = holder.flavorImage.attr("src");
+				if (article.flavorImage != null) {
+					final String imgSrcFirst = article.flavorImage.attr("src");
 
 					holder.textImage.setOnLongClickListener(new View.OnLongClickListener() {
 						@Override
@@ -1006,22 +1001,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             }
 
-			if (holder.titleView != null) {				
+			if (holder.titleView != null) {
 				holder.titleView.setText(Html.fromHtml(article.title));
                 holder.titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(21, headlineFontSize + 3));
 
 				adjustTitleTextView(article.score, holder.titleView, position);
 			}
 
-			if (holder.feedTitleView != null) {				
+			if (holder.feedTitleView != null) {
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
 					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 					holder.feedTitleView.setText(article.feed_title);
-					
+
 				} else {
 					holder.feedTitleView.setVisibility(View.GONE);
 				}
-				
+
 			}
 
 			TypedValue tvAccent = new TypedValue();
@@ -1037,7 +1032,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					holder.markedView.setColorFilter(tvAccent.data);
 				else
 					holder.markedView.setColorFilter(null);
-				
+
 				holder.markedView.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -1050,7 +1045,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-			
+
 			if (holder.publishedView != null) {
 				TypedValue tv = new TypedValue();
 				m_activity.getTheme().resolveAttribute(article.published ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
@@ -1061,14 +1056,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					holder.publishedView.setColorFilter(tvAccent.data);
 				else
 					holder.publishedView.setColorFilter(null);
-				
+
 				holder.publishedView.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						article.published = !article.published;
 						m_adapter.notifyDataSetChanged();
-						
+
 						m_activity.saveArticlePublished(article);
 					}
 				});
@@ -1086,7 +1081,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                         excerpt = excerpt.replace("]]>", "");
                         excerpt = Jsoup.parse(excerpt).text();
                     } else {
-                        excerpt = holder.articleDoc.text();
+                        excerpt = article.articleDoc.text();
 
                         if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
                             excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
@@ -1137,9 +1132,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				boolean videoFound = false;
 
-				if (showFlavorImage && holder.articleDoc != null && holder.flavorVideoKindView != null) {
-					Element video = holder.articleDoc.select("video").first();
-					Element ytframe = holder.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
+				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoKindView != null) {
+					Element video = article.articleDoc.select("video").first();
+					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
 
 					if (video != null) {
 						try {
@@ -1337,10 +1332,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
 
-					if (holder.articleDoc != null) {
+					if (article.articleDoc != null) {
 
-						if (holder.flavorImage != null) {
-							String imgSrc = holder.flavorImage.attr("src");
+						if (article.flavorImage != null) {
+							String imgSrc = article.flavorImage.attr("src");
 							final String imgSrcFirst = imgSrc;
 
 							// retarded schema-less urls
@@ -1394,7 +1389,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 											holder.flavorImageView.setVisibility(View.VISIBLE);
 
-											if (holder.flavorImageCount > 1) {
+											if (article.flavorImageCount > 1) {
 												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 												holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 											}
@@ -1436,7 +1431,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							} else {
 								holder.flavorImageView.setVisibility(View.VISIBLE);
 
-								if (holder.flavorImageCount > 1) {
+								if (article.flavorImageCount > 1) {
 									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 									holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
 								}
@@ -1465,10 +1460,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					holder.authorView.setText("");
 				}
 			}
-					
+
 			if (holder.dateView != null) {
 				holder.dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
-				
+
 				Date d = new Date((long)article.updated * 1000);
                 Date now = new Date();
 
@@ -1483,24 +1478,24 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				df.setTimeZone(TimeZone.getDefault());
 				holder.dateView.setText(df.format(d));
 			}
-			
+
 
 			if (holder.selectionBoxView != null) {
 				holder.selectionBoxView.setChecked(article.selected);
 				holder.selectionBoxView.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
-						
+
 						if (cb.isChecked()) {
 							article.selected = true;
 						} else {
 							article.selected = false;
 						}
-						
+
 						m_listener.onArticleListSelectionChange(getSelectedArticles());
-						
+
 						Log.d(TAG, "num selected: " + getSelectedArticles().size());
 					}
 				});
@@ -1509,13 +1504,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			if (holder.menuButtonView != null) {
 				//if (m_activity.isDarkTheme())
 				//	ib.setImageResource(R.drawable.ic_mailbox_collapsed_holo_dark);
-				
-				holder.menuButtonView.setOnClickListener(new OnClickListener() {					
+
+				holder.menuButtonView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						getActivity().openContextMenu(v);
 					}
-				});								
+				});
 			}
 
 			return v;
