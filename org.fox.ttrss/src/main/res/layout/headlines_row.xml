@@ -73,7 +73,9 @@
                             android:text="Sample entry title"
                             android:textColor="?headlineExcerptTextColor"
                             android:textSize="18sp"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:maxLines="3"
+                            android:ellipsize="end" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
