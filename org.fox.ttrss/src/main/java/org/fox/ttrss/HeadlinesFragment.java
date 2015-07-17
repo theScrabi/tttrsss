@@ -1147,6 +1147,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								if (!posterUri.equals(holder.flavorImageView.getTag())) {
 
+									holder.flavorImageView.setTag("LOADING:" + posterUri);
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
 									m_imageLoader.displayImage(posterUri, imageAware, displayImageOptions, new ImageLoadingListener() {
@@ -1161,13 +1162,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											}
 
 											@Override
-											public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-												holder.flavorImageView.setTag(posterUri);
-												holder.flavorImageView.setVisibility(View.VISIBLE);
-												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+											public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+												if (("LOADING:" + imageUri).equals(view.getTag())) {
 
-												maybeRepositionFlavorImage(view, bitmap, holder);
+													holder.flavorImageLoadingBar.setVisibility(View.GONE);
+													holder.flavorImageView.setTag(posterUri);
+													holder.flavorImageView.setVisibility(View.VISIBLE);
+													holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+
+													maybeRepositionFlavorImage(view, bitmap, holder);
+												}
 											}
 
 											@Override
@@ -1252,6 +1256,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
 
 								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
+									holder.flavorImageView.setTag("LOADING:" + thumbUri);
+
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 									m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
 										@Override
@@ -1265,13 +1271,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										}
 
 										@Override
-										public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-											holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											holder.flavorImageView.setTag(thumbUri);
-											holder.flavorImageView.setVisibility(View.VISIBLE);
-											holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+										public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+											if (("LOADING:" + imageUri).equals(view.getTag())) {
+												holder.flavorImageLoadingBar.setVisibility(View.GONE);
+												holder.flavorImageView.setTag(thumbUri);
+												holder.flavorImageView.setVisibility(View.VISIBLE);
+												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
 
-											maybeRepositionFlavorImage(view, bitmap, holder);
+												maybeRepositionFlavorImage(view, bitmap, holder);
+											}
 										}
 
 										@Override
@@ -1366,6 +1374,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							if (!imgSrc.equals(holder.flavorImageView.getTag())) {
 
+								holder.flavorImageView.setTag("LOADING:" + imgSrc);
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 
 								final String finalImgSrc = imgSrc;
@@ -1379,24 +1388,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									}
 
 									@Override
-									public void onLoadingComplete(String arg0,
+									public void onLoadingComplete(String imageUri,
 																  View view, Bitmap bitmap) {
-										if (!isAdded() || bitmap == null) return;
 
-										holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										holder.flavorImageView.setTag(finalImgSrc);
+										if (("LOADING:" + imageUri).equals(view.getTag())) {
 
-										if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
-											holder.flavorImageView.setVisibility(View.VISIBLE);
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											holder.flavorImageView.setTag(finalImgSrc);
 
-											if (article.flavorImageCount > 1) {
-												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-												holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
+											if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
+												holder.flavorImageView.setVisibility(View.VISIBLE);
+
+												if (article.flavorImageCount > 1) {
+													holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+													holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
+												}
+
+												maybeRepositionFlavorImage(view, bitmap, holder);
+											} else {
+												holder.flavorImageView.setImageDrawable(null);
 											}
-
-											maybeRepositionFlavorImage(view, bitmap, holder);
-										} else {
-											holder.flavorImageView.setImageDrawable(null);
 										}
 									}
 
