@@ -438,10 +438,11 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 			Intent intent = new Intent(MasterActivity.this, DetailActivity.class);
 			intent.putExtra("feed", hf.getFeed());
-			intent.putExtra("article", article);
+			//intent.putExtra("article", article);
 			intent.putExtra("searchQuery", hf.getSearchQuery());
             //intent.putExtra("articles", (Parcelable)hf.getAllArticles());
             Application.getInstance().tmpArticleList = hf.getAllArticles();
+			Application.getInstance().tmpArticle = article;
 
             /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 startActivityForResult(intent, HEADLINES_REQUEST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());

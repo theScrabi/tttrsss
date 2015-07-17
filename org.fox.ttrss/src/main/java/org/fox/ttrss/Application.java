@@ -5,6 +5,7 @@ import android.os.Bundle;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 
 @ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
@@ -15,13 +16,14 @@ public class Application extends android.app.Application {
 	private static Application m_singleton;
 	
 	public ArticleList tmpArticleList;
+	public Article tmpArticle;
+
 	//public Feed m_activeFeed;
 	//public Article m_activeArticle;
 	public int m_selectedArticleId;
 	public String m_sessionId;
 	public int m_apiLevel;
 	public boolean m_canUseProgress;
-	
 	public static Application getInstance(){
 		return m_singleton;
 	}

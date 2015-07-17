@@ -79,7 +79,8 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 				
 				final Feed feed = tmpFeed;
 				
-				final Article article = i.getParcelableExtra("article");
+				//final Article article = i.getParcelableExtra("article");
+				final Article article = Application.getInstance().tmpArticle;
 				final String searchQuery = i.getStringExtra("searchQuery");
 
                 ArticleList tmp = Application.getInstance().tmpArticleList;
