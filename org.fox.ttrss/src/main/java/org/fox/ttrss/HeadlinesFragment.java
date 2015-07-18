@@ -797,6 +797,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						imgSrc = "http:" + imgSrc;
 
 					if (!imgSrc.equals(holder.textImage.getTag())) {
+
+						holder.textImage.setTag("LOADING:" + imgSrc);
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
 
 						DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -822,12 +824,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									}
 
 									@Override
-									public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-										if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
-											holder.textImage.setImageDrawable(textDrawable);
-										}
+									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+										if (("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
+											holder.textImage.setTag(finalImgSrc);
 
-										holder.textImage.setTag(finalImgSrc);
+											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
+												holder.textImage.setImageDrawable(textDrawable);
+											}
+										}
 									}
 
 									@Override
@@ -1163,7 +1167,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 											@Override
 											public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-												if (("LOADING:" + imageUri).equals(view.getTag())) {
+												if (("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
 
 													holder.flavorImageLoadingBar.setVisibility(View.GONE);
 													holder.flavorImageView.setTag(posterUri);
@@ -1272,7 +1276,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 										@Override
 										public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-											if (("LOADING:" + imageUri).equals(view.getTag())) {
+											if (("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
 												holder.flavorImageLoadingBar.setVisibility(View.GONE);
 												holder.flavorImageView.setTag(thumbUri);
 												holder.flavorImageView.setVisibility(View.VISIBLE);
@@ -1391,7 +1395,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									public void onLoadingComplete(String imageUri,
 																  View view, Bitmap bitmap) {
 
-										if (("LOADING:" + imageUri).equals(view.getTag())) {
+										if (("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
 
 											holder.flavorImageLoadingBar.setVisibility(View.GONE);
 											holder.flavorImageView.setTag(finalImgSrc);
