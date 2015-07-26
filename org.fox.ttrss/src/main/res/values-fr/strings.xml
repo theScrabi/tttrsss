@@ -108,7 +108,7 @@
     <string name="article_set_note">Publier avec une note</string>
     <string name="dialog_open_preferences">Ouvrir les préférences</string>
     <string name="dialog_need_configure_prompt">Merci d\'indiquer les paramètres de votre serveur tt-rss tels que URL, identifiant et mot de passe.</string>
-    <string name="update_headlines">Rafraichir</string>
+    <string name="update_headlines">Rafraîchir</string>
     <string name="error_network_unavailable">Erreur&#160;: réseau indisponible</string>
     <string name="category_browse_headlines">Parcourir les titres</string>
     <string name="use_volume_keys">Utiliser les boutons de volume</string>
@@ -133,7 +133,7 @@
     <string name="trial_purchase">Débloquer la version complète</string>
     <string name="trial_expired">La période d\'évaluation a expiré</string>
     <string name="trial_expired_message">Pour continuer à utiliser Tiny Tiny RSS merci de débloquer la version complète en achetant la clé.</string>
-    <string name="theme_sepia">Sepia</string>
+    <string name="theme_sepia">Sépia</string>
     <string name="theme_amber">Ambre</string>
     <string name="reading">Lecture</string>
     <string name="offline_articles_to_download">Quantité d\'articles à télécharger</string>
@@ -198,7 +198,7 @@
     <string name="unsubscribe">Se désabonner</string>
     <string name="unsubscribe_from_prompt">Se désabonner de %1$s ?</string>
     <string name="open_article_in_web_browser">Ouvrir dans le navigateur</string>
-    <string name="error_loading_image">Erreur de chargemement de l\'image.</string>
+    <string name="error_loading_image">Erreur de chargement de l\'image.</string>
     <string name="toggle_sort_order">Inverser l\'ordre de tri</string>
     <string name="headlines_sort_default">Par défaut</string>
     <string name="headlines_sort_newest_first">Récents en premier</string>
@@ -208,7 +208,7 @@
     <string name="fresh_articles">Articles récents</string>
     <string name="feed_all_articles">Tous les articles</string>
     <string name="prefs_enable_fab">Activer le bouton d\'action</string>
-    <string name="prefs_enable_fab_long">Affficher un bouton d\'action flottant en cours de lecture</string>
+    <string name="prefs_enable_fab_long">Afficher un bouton d\'action flottant en cours de lecture</string>
     <string name="prefs_open_fresh_on_startup">Afficher les articles récents au démarrage</string>
     <string name="prefs_headline_display_mode">Mode d\'affichage des titres</string>
     <string name="prefs_headline_display_mode_long">Par défaut, pas d\'images ou compact</string>
@@ -220,7 +220,7 @@
     <string name="prefs_version_title">Version</string>
     <string name="prefs_build_timestamp">%1$s</string>
     <string name="prefs_build_timestamp_title">Build timestamp</string>
-    <string name="crash_dialog_text">Malheuresement, Tiny Tiny RSS s\'est arrêté. Envoyer un rapport de crash à tt-rss.org?</string>
+    <string name="crash_dialog_text">Malheureusement, Tiny Tiny RSS s\'est arrêté. Envoyer un rapport de crash à tt-rss.org?</string>
     <string name="prefs_widget_show_fresh">Afficher les articles récents</string>
     <string name="prefs_widget_show_fresh_summary">Afficher le nombre d\'articles récents plutôt que le total d\'articles non lus</string>
     <string name="prefs_widget">Widget</string>
