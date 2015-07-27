@@ -687,6 +687,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public ImageView textImage;
         public ImageView textChecked;
 		public View headlineHeader;
+		public View topChangedMessage;
 
 		public boolean flavorImageEmbedded;
 	}
@@ -906,6 +907,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
+				holder.topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 
 				v.setTag(holder);
 
@@ -932,6 +934,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     }
                 });
             }
+
+			if (holder.topChangedMessage != null) {
+				holder.topChangedMessage.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						refresh(false, true);
+					}
+				});
+			}
 
 			if (showFlavorImage && article.flavorImage == null) {
 
