@@ -1169,6 +1169,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 											@Override
 											public void onLoadingStarted(String s, View view) {
 												holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+												holder.flavorImageLoadingBar.setIndeterminate(false);
+												holder.flavorImageLoadingBar.setProgress(0);
 											}
 
 											@Override
@@ -1278,6 +1280,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										@Override
 										public void onLoadingStarted(String s, View view) {
 											holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+											holder.flavorImageLoadingBar.setIndeterminate(false);
+											holder.flavorImageLoadingBar.setProgress(0);
 										}
 
 										@Override
@@ -1438,6 +1442,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									public void onLoadingStarted(String arg0,
 																 View arg1) {
 										holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+										holder.flavorImageLoadingBar.setIndeterminate(false);
+										holder.flavorImageLoadingBar.setProgress(0);
 									}
 
 								}, new ImageLoadingProgressListener() {
