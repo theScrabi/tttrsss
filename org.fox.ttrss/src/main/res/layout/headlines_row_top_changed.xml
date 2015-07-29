@@ -9,6 +9,8 @@
 
 
     <TextView
+        android:background="@drawable/ripple"
+        android:clickable="true"
         android:id="@+id/top_changed_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
