@@ -51,20 +51,21 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	protected boolean m_canUseProgress = false;
 	protected Context m_context;
 	private SharedPreferences m_prefs;
-	
+	protected String m_lastErrorMessage;
+
 	protected ApiError m_lastError;
 
 	public ApiRequest(Context context) {
 		m_context = context;
 
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
-		
+
 		m_api = m_prefs.getString("ttrss_url", "").trim();
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
 		m_lastError = ApiError.NO_ERROR;
-		
+
 	}
-	
+
 	@SuppressLint("NewApi")
 	@SuppressWarnings("unchecked")
 	public void execute(HashMap<String,String> map) {
@@ -73,7 +74,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		else
 			super.execute(map);
 	}
-	
+
 	public int getErrorMessage() {
 		switch (m_lastError) {
 		case NO_ERROR:
@@ -117,7 +118,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			return R.string.error_unknown;
 		}
 	}
-	
+
 	@Override
 	protected JsonElement doInBackground(HashMap<String, String>... params) {
 
@@ -125,12 +126,12 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			m_lastError = ApiError.NETWORK_UNAVAILABLE;
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
-		
+
 		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
 		byte[] postData = null;
-		
+
 		try {
 			postData = requestStr.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -138,50 +139,50 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		/* disableConnectionReuseIfNecessary(); */
-		
+
 		if (m_transportDebugging) Log.d(TAG, ">>> (" + requestStr + ") " + m_api);
-		
+
 		/* ApiRequest.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
-				m_prefs.getBoolean("ssl_trust_any_host", false)); */				
-		
+				m_prefs.getBoolean("ssl_trust_any_host", false)); */
+
 		URL url;
-		
+
 		try {
-			url = new URL(m_api + "/api/");			
+			url = new URL(m_api + "/api/");
 		} catch (Exception e) {
 			m_lastError = ApiError.INVALID_URL;
 			e.printStackTrace();
 			return null;
 		}
-		
-		try {		
+
+		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		
+
 			String httpLogin = m_prefs.getString("http_login", "").trim();
 			String httpPassword = m_prefs.getString("http_password", "").trim();
-			
+
 			if (httpLogin.length() > 0) {
 				if (m_transportDebugging) Log.d(TAG, "Using HTTP Basic authentication.");
-				
-				conn.setRequestProperty("Authorization", "Basic " + 
-						Base64.encodeToString((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
+
+				conn.setRequestProperty("Authorization", "Basic " +
+						Base64.encodeToString((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP));
 			}
-			
-			conn.setDoInput(true); 
-            conn.setDoOutput(true); 
-            conn.setUseCaches(false); 
-            conn.setRequestMethod("POST"); 
+
+			conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
 		    conn.setRequestProperty("Content-Length", Integer.toString(postData.length));
 
 		    OutputStream out = conn.getOutputStream();
 		    out.write(postData);
 		    out.close();
-		    
+
 		    m_responseCode = conn.getResponseCode();
 		    m_responseMessage = conn.getResponseMessage();
-		    
+
 		    switch (m_responseCode) {
 			case HttpURLConnection.HTTP_OK:
 				StringBuffer response = new StringBuffer();
@@ -193,31 +194,31 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				int contentLength = conn.getHeaderFieldInt("Api-Content-Length", -1);
 
 				m_canUseProgress = (contentLength != -1);
-				
+
 				while ((read = in.read(buf)) >= 0) {
 					response.append(buf, 0, read);
 					total += read;
 					publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
 				}
-				
+
 				if (m_transportDebugging) Log.d(TAG, "<<< " + response);
-	
+
 				JsonParser parser = new JsonParser();
-				
+
 				JsonElement result = parser.parse(response.toString());
 				JsonObject resultObj = result.getAsJsonObject();
-				
+
 				m_apiStatusCode = resultObj.get("status").getAsInt();
-				
+
 				conn.disconnect();
-				
+
 				switch (m_apiStatusCode) {
 				case API_STATUS_OK:
 					return result.getAsJsonObject().get("content");
 				case API_STATUS_ERR:
 					JsonObject contentObj = resultObj.get("content").getAsJsonObject();
 					String error = contentObj.get("error").getAsString();
-					
+
 					if (error.equals("LOGIN_ERROR")) {
 						m_lastError = ApiError.LOGIN_FAILED;
 					} else if (error.equals("API_DISABLED")) {
@@ -231,7 +232,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 					} else {
 						Log.d(TAG, "Unknown API error: " + error);
 						m_lastError = ApiError.API_UNKNOWN;
-					}		
+					}
 				}
 
 				return null;
@@ -252,27 +253,31 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				m_lastError = ApiError.HTTP_OTHER_ERROR;
 				break;
 			}
-		    
+
 		    conn.disconnect();
 		    return null;
 		} catch (javax.net.ssl.SSLPeerUnverifiedException e) {
 			m_lastError = ApiError.SSL_REJECTED;
+			m_lastErrorMessage = e.getMessage();
 			e.printStackTrace();
 		} catch (IOException e) {
 			m_lastError = ApiError.IO_ERROR;
+			m_lastErrorMessage = e.getMessage();
 
 			if (e.getMessage() != null) {
 				if (e.getMessage().matches("Hostname [^ ]+ was not verified")) {
 					m_lastError = ApiError.SSL_HOSTNAME_REJECTED;
 				}
 			}
-			
+
 			e.printStackTrace();
 		} catch (com.google.gson.JsonSyntaxException e) {
 			m_lastError = ApiError.PARSE_ERROR;
+			m_lastErrorMessage = e.getMessage();
 			e.printStackTrace();
 		} catch (Exception e) {
 			m_lastError = ApiError.OTHER_ERROR;
+			m_lastErrorMessage = e.getMessage();
 			e.printStackTrace();
 		}
 		

@@ -118,7 +118,12 @@ public class HeadlinesRequest extends ApiRequest {
 		if (m_lastError == ApiError.LOGIN_FAILED) {
 			m_activity.login();
 		} else {
-            m_activity.toast(getErrorMessage());
+
+			if (m_lastErrorMessage != null) {
+				m_activity.toast(m_activity.getString(getErrorMessage()) + "\n" + m_lastErrorMessage);
+			} else {
+				m_activity.toast(getErrorMessage());
+			}
 			//m_activity.setLoadingStatus(getErrorMessage(), false);
 		}
     }

@@ -1148,6 +1148,20 @@ public class OnlineActivity extends CommonActivity {
         }
     }
 
+	private void setLoadingStatus(String status, boolean showProgress) {
+		TextView tv = (TextView) findViewById(R.id.loading_message);
+
+		if (tv != null) {
+			tv.setText(status);
+		}
+
+		View loadingContainer = findViewById(R.id.loading_container);
+
+		if (loadingContainer != null) {
+			loadingContainer.setVisibility(status.equals("") ? View.GONE : View.VISIBLE);
+		}
+	}
+
     protected void logout() {
 		setSessionId(null);
 
@@ -1627,6 +1641,12 @@ public class OnlineActivity extends CommonActivity {
 										// Unknown method means old tt-rss, in that case we assume API 0 and continue
 										
 										setLoadingStatus(getErrorMessage(), false);
+
+										if (m_lastErrorMessage != null) {
+											setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage, false);
+										} else {
+											setLoadingStatus(getErrorMessage(), false);
+										}
 										
 										if (m_listener != null) {
 											m_listener.OnLoginFailed();
@@ -1667,7 +1687,12 @@ public class OnlineActivity extends CommonActivity {
 			}
 
 			setSessionId(null);
-			setLoadingStatus(getErrorMessage(), false);
+
+			if (m_lastErrorMessage != null) {
+				setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage, false);
+			} else {
+				setLoadingStatus(getErrorMessage(), false);
+			}
 			
 			loginFailure();
 		}
