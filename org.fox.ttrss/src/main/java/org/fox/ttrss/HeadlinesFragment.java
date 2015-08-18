@@ -69,8 +69,6 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -79,8 +77,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public static enum ArticlesSelection { ALL, NONE, UNREAD }
@@ -782,28 +778,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}			
 		}
 
-        private void updateTextCheckedState(final HeadlineViewHolder holder, Article item, int position) {
-            String tmp = item.title.length() > 0 ? item.title.substring(0, 1).toUpperCase() : "?";
+        private void updateTextCheckedState(final HeadlineViewHolder holder, final Article article, int position) {
+            String tmp = article.title.length() > 0 ? article.title.substring(0, 1).toUpperCase() : "?";
 
-            if (item.selected) {
+            if (article.selected) {
 				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
 				holder.textImage.setTag(null);
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
-				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(item.title));
+				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(article.title));
 
-				if (item.flavorImage == null) {
+				holder.textImage.setImageDrawable(textDrawable);
+				holder.textImage.setTag(null);
+
+				//holder.textChecked.setVisibility(View.GONE);
+
+				if (article.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
 					holder.textImage.setTag(null);
 				} else {
-					String imgSrc = item.flavorImage.attr("src");
-
-					// retarded schema-less urls
-					if (imgSrc.indexOf("//") == 0)
-						imgSrc = "http:" + imgSrc;
-
-					if (!imgSrc.equals(holder.textImage.getTag())) {
+					if (!article.flavorImageUri.equals(holder.textImage.getTag())) {
 
 						final int loadingPosition = position;
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
@@ -818,8 +813,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								.displayer(new RoundedBitmapDisplayer(100))
 								.build();
 
-						final String finalImgSrc = imgSrc;
-						m_imageLoader.displayImage(imgSrc, imageAware, options, new ImageLoadingListener() {
+						m_imageLoader.displayImage(article.flavorImageUri, imageAware, options, new ImageLoadingListener() {
 									@Override
 									public void onLoadingStarted(String s, View view) {
 
@@ -833,7 +827,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									@Override
 									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
 										if (loadingPosition == holder.position && bitmap != null) {
-											holder.textImage.setTag(finalImgSrc);
+											holder.textImage.setTag(article.flavorImageUri);
 
 											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
 												holder.textImage.setImageDrawable(textDrawable);
@@ -847,7 +841,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									}
 								}
 						);
-
 
 					}
 				}
@@ -952,32 +945,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-			if (showFlavorImage && article.flavorImage == null) {
-
-				Elements imgs = article.articleDoc.select("img");
-
-				for (Element tmp : imgs) {
-					try {
-						if (tmp.attr("src") != null && tmp.attr("src").indexOf("data:") == 0) {
-							continue;
-						}
-
-						if (Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE && Integer.valueOf(tmp.attr("width")) > FLAVOR_IMG_MIN_SIZE) {
-							article.flavorImage = tmp;
-							break;
-						}
-
-					} catch (NumberFormatException e) {
-						//
-					}
-				}
-
-				if (article.flavorImage == null)
-					article.flavorImage = imgs.first();
-
-				article.flavorImageCount = imgs.size();
-			}
-
             if (holder.textImage != null) {
                 updateTextCheckedState(holder, article, position);
 
@@ -998,30 +965,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
 
 				if (article.flavorImage != null) {
-					final String imgSrcFirst = article.flavorImage.attr("src");
 
 					holder.textImage.setOnLongClickListener(new View.OnLongClickListener() {
 						@Override
 						public boolean onLongClick(View v) {
 
-							Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-							intent.putExtra("firstSrc", imgSrcFirst);
-							intent.putExtra("title", article.title);
-							intent.putExtra("content", article.content);
-
-							ActivityOptionsCompat options =
-									ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-											holder.textImage,   // The view which starts the transition
-											"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
-									);
-							ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+							openGalleryForType(article, holder, holder.textImage);
 
 							return true;
 						}
 					});
 
 				}
-
             }
 
 			if (holder.titleView != null) {
@@ -1153,341 +1108,87 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});
 
-				boolean videoFound = false;
+				if (article.flavorImageUri != null && holder.flavorImageView != null) {
 
-				if (showFlavorImage && article.articleDoc != null && holder.flavorVideoKindView != null) {
-					Element video = article.articleDoc.select("video").first();
-					Element ytframe = article.articleDoc.select("iframe[src*=youtube.com/embed/]").first();
+					if (!article.flavorImageUri.equals(holder.flavorImageView.getTag())) {
 
-					if (video != null) {
-						try {
-							Element source = video.select("source").first();
+						//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
 
-							final String streamUri = source.attr("src");
-							final String posterUri = video.attr("poster");
+						ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+						final int loadingPosition = position;
 
-							if (streamUri.length() > 0 && posterUri.length() > 0) {
-
-								if (!posterUri.equals(holder.flavorImageView.getTag())) {
-
-									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-									final int loadingPosition = position;
-
-									m_imageLoader.displayImage(posterUri, imageAware, displayImageOptions, new ImageLoadingListener() {
-											@Override
-											public void onLoadingStarted(String s, View view) {
-												holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-												holder.flavorImageLoadingBar.setIndeterminate(false);
-												holder.flavorImageLoadingBar.setProgress(0);
-											}
-
-											@Override
-											public void onLoadingFailed(String s, View view, FailReason failReason) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											}
-
-											@Override
-											public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-												if (loadingPosition == holder.position && bitmap != null) {
-
-													holder.flavorImageLoadingBar.setVisibility(View.GONE);
-													holder.flavorImageView.setTag(posterUri);
-													holder.flavorImageView.setVisibility(View.VISIBLE);
-													holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-
-													maybeRepositionFlavorImage(view, bitmap, holder);
-												}
-											}
-
-											@Override
-											public void onLoadingCancelled(String s, View view) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											}
-										}
-									, new ImageLoadingProgressListener() {
-										@Override
-										public void onProgressUpdate(String s, View view, int current, int total) {
-											if (total != 0) {
-												int p = (int)((float)current/total*100);
-
-												holder.flavorImageLoadingBar.setIndeterminate(false);
-												holder.flavorImageLoadingBar.setProgress(p);
-											} else {
-												holder.flavorImageLoadingBar.setIndeterminate(true);
-											}
-										}
-									});
-
-								} else {
-									holder.flavorImageView.setVisibility(View.VISIBLE);
-									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-
-									if (holder.flavorImageEmbedded) {
-										TypedValue tv = new TypedValue();
-										if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
-											holder.headlineHeader.setBackgroundColor(tv.data);
-										}
-									}
-
-								}
-
-								videoFound = true;
-
-								holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
-
-								//ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_VIDEO_PLAYER");
-
-								holder.flavorImageView.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-
-										Intent intent = new Intent(m_activity, VideoPlayerActivity.class);
-										intent.putExtra("streamUri", streamUri);
-										intent.putExtra("title", article.title);
-
-										/*ActivityOptionsCompat options =
-												ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-														holder.flavorImageView,   // The view which starts the transition
-														"TRANSITION:ARTICLE_VIDEO_PLAYER" // The transitionName of the view we’re transitioning to
-												);
-										ActivityCompat.startActivity(m_activity, intent, options.toBundle());*/
-
-										startActivity(intent);
-									}
-								});
-
-								// ONCLICK open video player
-
+						m_imageLoader.displayImage(article.flavorImageUri, imageAware, displayImageOptions, new ImageLoadingListener() {
+							@Override
+							public void onLoadingStarted(String s, View view) {
+								holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+								holder.flavorImageLoadingBar.setIndeterminate(false);
+								holder.flavorImageLoadingBar.setProgress(0);
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
-							videoFound = false;
-						}
-					} else if (ytframe != null) {
-						// thumb: http://img.youtube.com/vi/{VID}/mqdefault.jpg
-						String srcEmbed = ytframe.attr("src");
 
-						if (srcEmbed.length() > 0) {
-							Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
-							Matcher matcher = pattern.matcher(srcEmbed);
-
-							if (matcher.find()) {
-								final String vid = matcher.group(1);
-								final String thumbUri = "http://img.youtube.com/vi/"+vid+"/mqdefault.jpg";
-								final String videoUri = "https://youtu.be/" + vid;
-
-								videoFound = true;
-
-								holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
-
-								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
-									final int loadingPosition = position;
-
-									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-									m_imageLoader.displayImage(thumbUri, imageAware, displayImageOptions, new ImageLoadingListener() {
-										@Override
-										public void onLoadingStarted(String s, View view) {
-											holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-											holder.flavorImageLoadingBar.setIndeterminate(false);
-											holder.flavorImageLoadingBar.setProgress(0);
-										}
-
-										@Override
-										public void onLoadingFailed(String s, View view, FailReason failReason) {
-											holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										}
-
-										@Override
-										public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-											if (loadingPosition == holder.position) {
-												holder.flavorImageLoadingBar.setVisibility(View.GONE);
-												holder.flavorImageView.setTag(thumbUri);
-												holder.flavorImageView.setVisibility(View.VISIBLE);
-												holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-
-												maybeRepositionFlavorImage(view, bitmap, holder);
-											}
-										}
-
-										@Override
-										public void onLoadingCancelled(String s, View view) {
-											holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										}
-									}
-									, new ImageLoadingProgressListener() {
-										@Override
-										public void onProgressUpdate(String s, View view, int current, int total) {
-											if (total != 0) {
-												int p = (int)((float)current/total*100);
-
-												holder.flavorImageLoadingBar.setIndeterminate(false);
-												holder.flavorImageLoadingBar.setProgress(p);
-											} else {
-												holder.flavorImageLoadingBar.setIndeterminate(true);
-											}
-										}
-									});
-								} else {
-									holder.flavorImageView.setVisibility(View.VISIBLE);
-									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-
-									if (holder.flavorImageEmbedded) {
-										TypedValue tv = new TypedValue();
-										if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
-											holder.headlineHeader.setBackgroundColor(tv.data);
-										}
-									}
-
-								}
-
-
-								holder.flavorImageView.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-
-										if (m_youtubeInstalled) {
-											Intent intent = new Intent(m_activity, YoutubePlayerActivity.class);
-											intent.putExtra("streamUri", videoUri);
-											intent.putExtra("vid", vid);
-											intent.putExtra("title", article.title);
-
-											startActivity(intent);
-										} else {
-											Intent intent = new Intent(Intent.ACTION_VIEW,
-													Uri.parse(videoUri));
-											startActivity(intent);
-										}
-									}
-								});
+							@Override
+							public void onLoadingFailed(String s, View view, FailReason failReason) {
+								holder.flavorImageLoadingBar.setVisibility(View.GONE);
 							}
-						}
-					}
 
-				}
+							@Override
+							public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+								if (loadingPosition == holder.position && bitmap != null) {
 
-				if (!videoFound && showFlavorImage && holder.flavorImageView != null) {
+									holder.flavorImageLoadingBar.setVisibility(View.GONE);
+									holder.flavorImageView.setTag(article.flavorImageUri);
 
-					if (article.articleDoc != null) {
+									if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
+										holder.flavorImageView.setVisibility(View.VISIBLE);
 
-						if (article.flavorImage != null) {
-							String imgSrc = article.flavorImage.attr("src");
-							final String imgSrcFirst = imgSrc;
+										maybeRepositionFlavorImage(view, bitmap, holder);
+										adjustVideoKindView(holder, article);
 
-							// retarded schema-less urls
-							if (imgSrc.indexOf("//") == 0)
-								imgSrc = "http:" + imgSrc;
-
-							ViewCompat.setTransitionName(holder.flavorImageView, "TRANSITION:ARTICLE_IMAGES_PAGER");
-
-							holder.flavorImageView.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View view) {
-
-									Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-									intent.putExtra("firstSrc", imgSrcFirst);
-									intent.putExtra("title", article.title);
-									intent.putExtra("content", article.content);
-
-									ActivityOptionsCompat options =
-											ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-													holder.flavorImageView,   // The view which starts the transition
-													"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
-											);
-									ActivityCompat.startActivity(m_activity, intent, options.toBundle());
-
-									//startActivityForResult(intent, 0);
-								}
-							});
-
-							if (!imgSrc.equals(holder.flavorImageView.getTag())) {
-
-								final int loadingPosition = position;
-
-								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-
-								final String finalImgSrc = imgSrc;
-								m_imageLoader.displayImage(imgSrc, imageAware, displayImageOptions, new ImageLoadingListener() {
-
-									@Override
-									public void onLoadingCancelled(String arg0,
-																   View arg1) {
-
-										//
-									}
-
-									@Override
-									public void onLoadingComplete(String imageUri,
-																  View view, Bitmap bitmap) {
-
-										if (loadingPosition == holder.position && bitmap != null) {
-
-											holder.flavorImageLoadingBar.setVisibility(View.GONE);
-											holder.flavorImageView.setTag(finalImgSrc);
-
-											if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
-												holder.flavorImageView.setVisibility(View.VISIBLE);
-
-												if (article.flavorImageCount > 1) {
-													holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-													holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
-												}
-
-												maybeRepositionFlavorImage(view, bitmap, holder);
-											} else {
-												holder.flavorImageView.setImageDrawable(null);
-											}
-										}
-									}
-
-									@Override
-									public void onLoadingFailed(String arg0,
-																View arg1, FailReason arg2) {
-
-										holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										holder.flavorImageView.setVisibility(View.GONE);
-									}
-
-									@Override
-									public void onLoadingStarted(String arg0,
-																 View arg1) {
-										holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-										holder.flavorImageLoadingBar.setIndeterminate(false);
-										holder.flavorImageLoadingBar.setProgress(0);
-									}
-
-								}, new ImageLoadingProgressListener() {
-									@Override
-									public void onProgressUpdate(String s, View view, int current, int total) {
-										if (total != 0) {
-											int p = (int)((float)current/total*100);
-
-											holder.flavorImageLoadingBar.setIndeterminate(false);
-											holder.flavorImageLoadingBar.setProgress(p);
-										} else {
-											holder.flavorImageLoadingBar.setIndeterminate(true);
-										}
-									}
-								});
-
-							} else {
-								holder.flavorImageView.setVisibility(View.VISIBLE);
-
-								if (article.flavorImageCount > 1) {
-									holder.flavorVideoKindView.setVisibility(View.VISIBLE);
-									holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
-								}
-
-								if (holder.flavorImageEmbedded) {
-									TypedValue tv = new TypedValue();
-									if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
-										holder.headlineHeader.setBackgroundColor(tv.data);
+									} else {
+										holder.flavorImageView.setImageDrawable(null);
 									}
 								}
+							}
 
+							@Override
+							public void onLoadingCancelled(String s, View view) {
+								holder.flavorImageLoadingBar.setVisibility(View.GONE);
+							}
+						}, new ImageLoadingProgressListener() {
+							@Override
+							public void onProgressUpdate(String s, View view, int current, int total) {
+								if (total != 0) {
+									int p = (int)((float)current/total*100);
+
+									holder.flavorImageLoadingBar.setIndeterminate(false);
+									holder.flavorImageLoadingBar.setProgress(p);
+								} else {
+									holder.flavorImageLoadingBar.setIndeterminate(true);
+								}
+							}
+						});
+
+					} else { // already tagged
+						holder.flavorImageView.setVisibility(View.VISIBLE);
+
+						adjustVideoKindView(holder, article);
+
+						if (holder.flavorImageEmbedded) {
+							TypedValue tv = new TypedValue();
+							if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+								holder.headlineHeader.setBackgroundColor(tv.data);
 							}
 						}
 					}
 				}
+
+				holder.flavorImageView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+
+						openGalleryForType(article, holder, null);
+
+					}
+				});
 			}
 
 			String articleAuthor = article.author != null ? article.author : "";
@@ -1555,6 +1256,67 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			return v;
+		}
+
+		private void openGalleryForType(Article article, HeadlineViewHolder holder, View transitionView) {
+			if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
+
+				if (m_youtubeInstalled) {
+					Intent intent = new Intent(m_activity, YoutubePlayerActivity.class);
+					intent.putExtra("streamUri", article.flavorStreamUri);
+					intent.putExtra("vid", article.youtubeVid);
+					intent.putExtra("title", article.title);
+
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(Intent.ACTION_VIEW,
+							Uri.parse(article.flavorStreamUri));
+					startActivity(intent);
+				}
+
+			} else if ("video".equals(article.flavorImage.tagName().toLowerCase())) {
+
+				Intent intent = new Intent(m_activity, VideoPlayerActivity.class);
+				intent.putExtra("streamUri", article.flavorStreamUri);
+				intent.putExtra("title", article.title);
+
+				startActivity(intent);
+
+			} else {
+
+				Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+
+				intent.putExtra("firstSrc", article.flavorImageUri);
+				intent.putExtra("title", article.title);
+				intent.putExtra("content", article.content);
+
+				ActivityOptionsCompat options =
+						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+								transitionView != null ? transitionView : holder.flavorImageView,   // The view which starts the transition
+								"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
+						);
+				ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+			}
+
+		}
+
+		private void adjustVideoKindView(HeadlineViewHolder holder, Article article) {
+			if (article.flavorImage != null) {
+				if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
+					holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
+					holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+				} else if ("video".equals(article.flavorImage.tagName().toLowerCase())) {
+					holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
+					holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+				} else if (article.mediaList.size() > 1) {
+					holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
+					holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+				} else {
+					holder.flavorVideoKindView.setVisibility(View.INVISIBLE);
+				}
+			} else {
+				holder.flavorVideoKindView.setVisibility(View.INVISIBLE);
+			}
 		}
 
 		public int pxToDp(int px) {

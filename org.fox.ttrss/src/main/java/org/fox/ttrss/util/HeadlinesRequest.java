@@ -93,8 +93,10 @@ public class HeadlinesRequest extends ApiRequest {
 					}
 					
 					for (Article f : articles)
-						if (!m_articles.containsId(f.id))
+						if (!m_articles.containsId(f.id)) {
+							f.collectMediaInfo();
 							m_articles.add(f);
+						}
 
 					if (articles.size() == HEADLINES_REQUEST_SIZE) {
 						Article placeholder = new Article(HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE);

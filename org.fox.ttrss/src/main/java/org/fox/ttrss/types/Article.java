@@ -2,12 +2,16 @@ package org.fox.ttrss.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // TODO: serialize Labels
 public class Article implements Parcelable {
@@ -37,7 +41,14 @@ public class Article implements Parcelable {
 	/* not serialized */
 	public Document articleDoc;
 	public Element flavorImage;
-	public int flavorImageCount;
+
+	public String flavorImageUri;
+	public String flavorStreamUri;
+	public String youtubeVid;
+
+	//public int flavorImageCount;
+
+	public List<Element> mediaList = new ArrayList<>();
 
 	public Article(Parcel in) {
 		readFromParcel(in);
@@ -46,7 +57,62 @@ public class Article implements Parcelable {
 	public Article() {
 		
 	}
-	
+
+	public void collectMediaInfo() {
+		articleDoc = Jsoup.parse(content);
+
+		if (articleDoc != null) {
+			mediaList = articleDoc.select("img,video,iframe[src*=youtube.com/embed/]");
+
+			for (Element e : mediaList) {
+				if ("iframe".equals(e.tagName().toLowerCase())) {
+					flavorImage = e;
+					break;
+				} else if ("video".equals(e.tagName().toLowerCase())) {
+					flavorImage = e;
+					break;
+				}
+			}
+
+			if (flavorImage == null) {
+				for (Element e : mediaList) {
+					flavorImage = e;
+					break;
+				}
+			}
+
+			if (flavorImage != null) {
+
+				if ("video".equals(flavorImage.tagName().toLowerCase())) {
+					Element source = flavorImage.select("source").first();
+					flavorStreamUri = source.attr("src");
+
+					flavorImageUri = flavorImage.attr("poster");
+				} else if ("iframe".equals(flavorImage.tagName().toLowerCase())) {
+
+					String srcEmbed = flavorImage.attr("src");
+
+					if (srcEmbed.length() > 0) {
+						Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
+						Matcher matcher = pattern.matcher(srcEmbed);
+
+						if (matcher.find()) {
+							youtubeVid = matcher.group(1);
+
+							flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/mqdefault.jpg";
+							flavorStreamUri = "https://youtu.be/" + youtubeVid;
+						}
+					}
+				} else {
+					flavorImageUri = flavorImage.attr("src");
+					flavorStreamUri = null;
+				}
+			}
+		}
+
+		Log.d("Article", "collectMediaInfo: " + flavorImage);
+	}
+
 	public Article(int id) {
 		this.id = id;
 		this.title = "";
