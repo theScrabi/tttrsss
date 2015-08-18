@@ -694,7 +694,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public ImageView textChecked;
 		public View headlineHeader;
 		public View topChangedMessage;
-
+		public int position;
 		public boolean flavorImageEmbedded;
 	}
 	
@@ -782,7 +782,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}			
 		}
 
-        private void updateTextCheckedState(final HeadlineViewHolder holder, Article item) {
+        private void updateTextCheckedState(final HeadlineViewHolder holder, Article item, int position) {
             String tmp = item.title.length() > 0 ? item.title.substring(0, 1).toUpperCase() : "?";
 
             if (item.selected) {
@@ -805,7 +805,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (!imgSrc.equals(holder.textImage.getTag())) {
 
-						holder.textImage.setTag("LOADING:" + imgSrc);
+						final int loadingPosition = position;
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
 
 						DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -832,7 +832,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									@Override
 									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-										if (("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
+										if (loadingPosition == holder.position && bitmap != null) {
 											holder.textImage.setTag(finalImgSrc);
 
 											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
@@ -923,6 +923,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder = (HeadlineViewHolder) v.getTag();
 			}
 
+			holder.position = position;
+
 			String articleContent = article.content != null ? article.content : "";
 
 			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
@@ -977,7 +979,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
             if (holder.textImage != null) {
-                updateTextCheckedState(holder, article);
+                updateTextCheckedState(holder, article, position);
 
 				holder.textImage.setOnClickListener(new OnClickListener() {
 					@Override
@@ -986,7 +988,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 						article.selected = !article.selected;
 
-						updateTextCheckedState(holder, article);
+						updateTextCheckedState(holder, article, position);
 
 						m_listener.onArticleListSelectionChange(getSelectedArticles());
 
@@ -1168,7 +1170,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 								if (!posterUri.equals(holder.flavorImageView.getTag())) {
 
-									holder.flavorImageView.setTag("LOADING:" + posterUri);
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
 									final int loadingPosition = position;
 
@@ -1187,7 +1188,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 											@Override
 											public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-												if (loadingPosition == position && ("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
+												if (loadingPosition == holder.position && bitmap != null) {
 
 													holder.flavorImageLoadingBar.setVisibility(View.GONE);
 													holder.flavorImageView.setTag(posterUri);
@@ -1280,7 +1281,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
 
 								if (!thumbUri.equals(holder.flavorImageView.getTag())) {
-									holder.flavorImageView.setTag("LOADING:" + thumbUri);
 									final int loadingPosition = position;
 
 									ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
@@ -1299,7 +1299,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 										@Override
 										public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-											if (loadingPosition == position && ("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
+											if (loadingPosition == holder.position) {
 												holder.flavorImageLoadingBar.setVisibility(View.GONE);
 												holder.flavorImageView.setTag(thumbUri);
 												holder.flavorImageView.setVisibility(View.VISIBLE);
@@ -1401,7 +1401,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							if (!imgSrc.equals(holder.flavorImageView.getTag())) {
 
-								holder.flavorImageView.setTag("LOADING:" + imgSrc);
 								final int loadingPosition = position;
 
 								ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
@@ -1420,7 +1419,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									public void onLoadingComplete(String imageUri,
 																  View view, Bitmap bitmap) {
 
-										if (loadingPosition == position && ("LOADING:" + imageUri).equals(view.getTag()) && bitmap != null) {
+										if (loadingPosition == holder.position && bitmap != null) {
 
 											holder.flavorImageLoadingBar.setVisibility(View.GONE);
 											holder.flavorImageView.setTag(finalImgSrc);
