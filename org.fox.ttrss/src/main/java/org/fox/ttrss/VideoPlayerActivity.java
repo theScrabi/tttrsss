@@ -143,7 +143,11 @@ public class VideoPlayerActivity extends CommonActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 mediaPlayer.setDisplay(holder);
-                mediaPlayer.prepareAsync();
+                try {
+                    mediaPlayer.prepareAsync();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                       @Override
                       public void onPrepared(MediaPlayer mp) {
@@ -238,6 +242,7 @@ public class VideoPlayerActivity extends CommonActivity {
                 if (m_streamUri != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
 
+                    intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, m_streamUri);
                     intent.putExtra(Intent.EXTRA_TEXT, m_streamUri);
 
