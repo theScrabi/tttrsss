@@ -116,6 +116,7 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
                 if (m_streamUri != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
 
+                    intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, m_streamUri);
                     intent.putExtra(Intent.EXTRA_TEXT, m_streamUri);
 
