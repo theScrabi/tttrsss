@@ -906,7 +906,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.textImage = (ImageView) v.findViewById(R.id.text_image);
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
-				holder.topChangedMessage = v.findViewById(R.id.top_changed_label);
+				holder.topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 
 				v.setTag(holder);
 
