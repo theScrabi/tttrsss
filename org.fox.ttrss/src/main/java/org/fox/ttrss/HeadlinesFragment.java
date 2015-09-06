@@ -794,7 +794,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				//holder.textChecked.setVisibility(View.GONE);
 
-				if (article.flavorImage == null) {
+				if (!showFlavorImage || article.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
 					holder.textImage.setTag(null);
 				} else {
@@ -917,14 +917,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 
 			holder.position = position;
-
-			String articleContent = article.content != null ? article.content : "";
-
-			String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
-					articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
-
-			if (article.articleDoc == null)
-				article.articleDoc = Jsoup.parse(articleContentReduced);
 
 			// block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
@@ -1108,7 +1100,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});
 
-				if (article.flavorImageUri != null && holder.flavorImageView != null) {
+				if (showFlavorImage && article.flavorImageUri != null && holder.flavorImageView != null) {
 
 					if (!article.flavorImageUri.equals(holder.flavorImageView.getTag())) {
 
