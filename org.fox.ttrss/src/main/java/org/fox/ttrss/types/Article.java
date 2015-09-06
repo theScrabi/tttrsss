@@ -83,28 +83,37 @@ public class Article implements Parcelable {
 
 			if (flavorImage != null) {
 
-				if ("video".equals(flavorImage.tagName().toLowerCase())) {
-					Element source = flavorImage.select("source").first();
-					flavorStreamUri = source.attr("src");
+				try {
 
-					flavorImageUri = flavorImage.attr("poster");
-				} else if ("iframe".equals(flavorImage.tagName().toLowerCase())) {
+					if ("video".equals(flavorImage.tagName().toLowerCase())) {
+						Element source = flavorImage.select("source").first();
+						flavorStreamUri = source.attr("src");
 
-					String srcEmbed = flavorImage.attr("src");
+						flavorImageUri = flavorImage.attr("poster");
+					} else if ("iframe".equals(flavorImage.tagName().toLowerCase())) {
 
-					if (srcEmbed.length() > 0) {
-						Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
-						Matcher matcher = pattern.matcher(srcEmbed);
+						String srcEmbed = flavorImage.attr("src");
 
-						if (matcher.find()) {
-							youtubeVid = matcher.group(1);
+						if (srcEmbed.length() > 0) {
+							Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
+							Matcher matcher = pattern.matcher(srcEmbed);
 
-							flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/mqdefault.jpg";
-							flavorStreamUri = "https://youtu.be/" + youtubeVid;
+							if (matcher.find()) {
+								youtubeVid = matcher.group(1);
+
+								flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/mqdefault.jpg";
+								flavorStreamUri = "https://youtu.be/" + youtubeVid;
+							}
 						}
+					} else {
+						flavorImageUri = flavorImage.attr("src");
+						flavorStreamUri = null;
 					}
-				} else {
-					flavorImageUri = flavorImage.attr("src");
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					flavorImage = null;
+					flavorImageUri = null;
 					flavorStreamUri = null;
 				}
 			}
