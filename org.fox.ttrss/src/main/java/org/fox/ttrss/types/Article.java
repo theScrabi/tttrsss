@@ -119,7 +119,7 @@ public class Article implements Parcelable {
 			}
 		}
 
-		Log.d("Article", "collectMediaInfo: " + flavorImage);
+		//Log.d("Article", "collectMediaInfo: " + flavorImage);
 	}
 
 	public Article(int id) {
