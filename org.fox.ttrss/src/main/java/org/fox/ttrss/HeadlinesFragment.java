@@ -88,7 +88,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public static final int HEADLINES_BUFFER_MAX = 500;
 
 	public static final int ARTICLE_SPECIAL_LOADMORE = -1;
-	public static final int ARTICLE_SPECIAL_SPACER = -2;
 	public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
 
 	private final String TAG = this.getClass().getSimpleName();
@@ -538,7 +537,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (result != null) {
 						m_refreshInProgress = false;
-						m_articles.add(0, new Article(ARTICLE_SPECIAL_SPACER));
 
 						if (m_articles.indexOf(m_activeArticle) == -1)
 							m_activeArticle = null;
@@ -702,8 +700,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
 		public static final int VIEW_LOADMORE = 4;
-		public static final int VIEW_SPACER = 5;
-		public static final int VIEW_TOP_CHANGED = 6;
+		public static final int VIEW_TOP_CHANGED = 5;
 		
 		public static final int VIEW_COUNT = VIEW_TOP_CHANGED+1;
 		
@@ -758,15 +755,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 
-			// the special invisible SPACER is here because listview animations apparently glitch if there's only one headline loaded
-			// so we add an invisible second one i guess
-
 			if (a.id == ARTICLE_SPECIAL_LOADMORE) {
 				return VIEW_LOADMORE;
 			} else if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
 				return VIEW_TOP_CHANGED;
-			} else if (a.id == ARTICLE_SPECIAL_SPACER) {
-				return VIEW_SPACER;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
@@ -866,9 +858,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 switch (getItemViewType(position)) {
 				case VIEW_LOADMORE:
 					layoutId = R.layout.headlines_row_loadmore;
-					break;
-				case VIEW_SPACER:
-					layoutId = R.layout.fragment_dummy;
 					break;
 				case VIEW_TOP_CHANGED:
 					layoutId = R.layout.headlines_row_top_changed;
@@ -1382,11 +1371,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	}
 
 	public ArticleList getAllArticles() {
-		ArticleList tmp = (ArticleList) m_articles.clone();
-
-		tmp.remove(0);
-
-		return tmp;
+		return (ArticleList) m_articles.clone();
 	}
 
     // if setting active doesn't make sense, scroll to whatever is passed to us
@@ -1550,7 +1535,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
     public void setArticles(ArticleList articles) {
         m_articles.clear();
-		m_articles.add(0, new Article(ARTICLE_SPECIAL_SPACER));
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();
     }
