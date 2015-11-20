@@ -23,32 +23,34 @@
     <string name="loading_message">Lade, bitte warten…</string>
     <string name="menu_unread_feeds">Zeige ungelesene Feeds</string>
     <string name="menu_all_feeds">Zeige alle Feeds</string>
+    <string name="unread_only">Nur Ungelesene</string>
     <string name="update_feeds">Feeds neu laden</string>
     <string name="share_article">Artikel teilen</string>
     <string name="catchup">Als gelesen markieren</string>
     <string name="sort_feeds_by_unread">Sortiere Feeds nach ungelesenen Artikeln</string>
-    <string name="ssl_trust_any">Alle SSL Zertifikate akzeptieren</string>
+    <string name="ssl_trust_any">Jedes SSL Zertifikat akzeptieren</string>
     <string name="category_browse_feeds">Feeds anzeigen</string>
     <string name="blank"></string>
     <string name="transport_debugging">Gesendete und empfangene Daten aufzeichnen</string>
-    <string name="article_toggle_marked">Markieren (rückgängig machen)</string>
-    <string name="article_toggle_published">Veröffentlichen (rückgängig machen)</string>
+    <string name="article_toggle_marked">Markierung ein-/ausschalten</string>
+    <string name="article_toggle_unread">Als (un)gelesen markieren</string>
+    <string name="article_toggle_published">Veröffentlichung ein-/ausschalten</string>
     <string name="headlines_select">Artikel auswählen</string>
     <string name="headlines_select_dialog">Artikel auswählen</string>
-    <string name="headlines_select_all">Alle</string>
+    <string name="headlines_select_all">Alle auswählen</string>
     <string name="headlines_select_unread">Ungelesen</string>
     <string name="headlines_select_none">Alle abwählen</string>
-    <string name="selection_toggle_marked">Markieren (rückgängig machen)</string>
-    <string name="selection_toggle_published">Veröffentlichen (rückgängig machen)</string>
-    <string name="selection_toggle_unread">Als (Un)gelesen markieren</string>
-    <string name="context_selection_toggle_marked">Markieren (rückgängig machen)</string>
-    <string name="context_selection_toggle_published">Veröffentlichen (rückgängig machen)</string>
-    <string name="context_selection_toggle_unread">Als (Un)gelesen markieren</string>
-    <string name="article_mark_read_above">Obige als gelesen markieren.</string>
-    <string name="http_login_summary">Optional. Bitte ausfüllen wenn die TinyTiny RSS Installation durch HTTP Basic Authentication geschützt ist.</string>
-    <string name="login_summary">Dein tt-rss Benutzername. Nicht notwendig im Einbenutzermodus</string>
-    <string name="ttrss_url_summary">URL deiner tt-rss Installation, Bsp.: http://site.com/tt-rss/</string>
-    <string name="enable_cats">Feedkategorien anzeigen</string>
+    <string name="selection_toggle_marked">Markierung ein-/ausschalten</string>
+    <string name="selection_toggle_published">Veröffentlichung ein-/ausschalten</string>
+    <string name="selection_toggle_unread">Als (un)gelesen markieren</string>
+    <string name="context_selection_toggle_marked">Markierung ein-/ausschalten</string>
+    <string name="context_selection_toggle_published">Veröffentlichung ein-/ausschalten</string>
+    <string name="context_selection_toggle_unread">Als (un)gelesen markieren</string>
+    <string name="article_mark_read_above">Obige als gelesen markieren</string>
+    <string name="http_login_summary">Optional. Bitte ausfüllen, wenn die tt-rss Installation durch HTTP Basic Authentication geschützt ist</string>
+    <string name="login_summary">Im Einbenutzermodus nicht nötig</string>
+    <string name="ttrss_url_summary">http://example.org/tt-rss</string>
+    <string name="enable_cats">Feedkategorien aktivieren</string>
     <string name="no_caption_to_display">Keine Bildunterschrift vorhanden</string>
     <string name="browse_cats_like_feeds">Kategorien als Feeds anzeigen</string>
     <string name="browse_cats_like_feeds_summary">Kann im Kontextmenü jeder Kategorie angepasst werden.</string>
@@ -70,7 +72,7 @@
     <string name="error_invalid_api_url">Fehler: API URL ungültig</string>
     <string name="go_offline">Offline gehen</string>
     <string name="go_online">Online gehen</string>
-    <string name="offline_switch_error">Vorbereitungen für den Offlinemodus fehlgeschlagen</string>
+    <string name="offline_switch_error">Vorbereitungen für den Offlinemodus fehlgeschlagen (siehe Log)</string>
     <string name="no_feeds">Keine Feeds zum Anzeigen</string>
     <string name="dialog_offline_prompt">Anmeldung fehlgeschlagen, Offlinedaten vorhanden. In den Offlinemodus wechseln?</string>
     <string name="dialog_offline_success">Offlinemodus bereit</string>
@@ -80,13 +82,14 @@
     <string name="notify_downloading_articles">Lade Artikel herunter (%1$d)…</string>
     <string name="notify_downloading_init">Starte Download…</string>
     <string name="notify_downloading_feeds">Lade Feeds herunter…</string>
+    <string name="notify_downloading_categories">Lade Kategorien…</string>
     <string name="notify_uploading_sending_data">Sende Daten an Server…</string>
     <string name="notify_downloading_title">Bereite Offlinemodus vor</string>
-    <string name="notify_uploading_title">Synchronisiere Offlinedaten…</string>
+    <string name="notify_uploading_title">Synchronisiere Offlinedaten</string>
     <string name="offline_sync_success">Synchronisierung der Offlinedaten abgeschlossen</string>
     <string name="offline_mode">Offlinemodus</string>
     <string name="offline_image_cache_enabled">Bilder herunterladen</string>
-    <string name="offline_image_cache_enabled_summary">Bilder auf die SD-Karte herunterladen. Dies kann den Wechsel in den Offlinemodus deutlich verlängern.</string>
+    <string name="offline_image_cache_enabled_summary">Bilder auf die SD-Karte herunterladen. Dies kann den Wechsel in den Offlinemodus deutlich verlangsamen</string>
     <string name="notify_downloading_images">Lade Bilder herunter (%1$d)…</string>
     <string name="article_set_labels">Setze Label</string>
     <string name="search">Suchen</string>
@@ -97,19 +100,19 @@
     <string name="text_copied_to_clipboard">Text in die Zwischenablage kopiert</string>
     <string name="attachments_prompt">Anhang auswählen</string>
     <string name="attachment_view">Ansicht</string>
-    <string name="attachment_copy">Kopiere URL</string>
+    <string name="attachment_copy">URL kopieren</string>
     <string name="justify_article_text">Artikeltext als Blocksatz</string>
     <string name="dialog_offline_sync_in_progress">Offlinesynchronisation läuft</string>
     <string name="dialog_offline_sync_stop">Synchronisation abbrechen</string>
     <string name="dialog_offline_sync_continue">Weiter</string>
     <string name="article_set_note">Mit Notiz veröffentlichen</string>
-    <string name="dialog_open_preferences">Einstellungen öffnen</string>
+    <string name="dialog_open_preferences">Einstellungen</string>
     <string name="dialog_need_configure_prompt">Bitte die tt-rss Serverdaten wie URL, Benutzername und Passwort eintragen.</string>
     <string name="update_headlines">Aktualisieren</string>
     <string name="error_network_unavailable">Fehler: Keine Netzwerkverbindung</string>
     <string name="category_browse_headlines">Überschriften anzeigen</string>
     <string name="use_volume_keys">Benutze Lautstärkeknöpfe</string>
-    <string name="use_volume_keys_long">Mit den Hardware-Lautstärketasten zwischen einzelnen Artikeln wechseln.</string>
+    <string name="use_volume_keys_long">Mit den Hardware-Lautstärketasten zwischen einzelnen Artikeln wechseln</string>
     <string name="ssl_trust_any_host">Keine Überprüfung des Hostnamens</string>
     <string name="error_api_unknown_method">Fehler: Unbekannte API-Methode</string>
     <string name="ssl_trust_any_long">Akzeptiert jedes SSL Zertifikat ohne Überprüfung!</string>
@@ -118,11 +121,12 @@
     <string name="error_ssl_hostname_rejected">Fehler: SSL-Hostname nicht korrekt</string>
 
     <plurals name="article_comments">
+        <item quantity="one">%1$d Kommentar</item>
         <item quantity="other">%1$d Kommentare</item>
     </plurals>
 
     <plurals name="trial_mode_prompt">
-        <item quantity="one">Testversion, noch ein Tag übrig.</item>
+        <item quantity="one">Testversion, nur noch ein Tag übrig.</item>
         <item quantity="other">Testversion, %1$d Tage übrig.</item>
     </plurals>
 
@@ -130,9 +134,10 @@
     <string name="trial_expired">Testzeitraum abgelaufen</string>
     <string name="trial_expired_message">Um Tiny Tiny RSS weiterhin nutzen zu können kaufen Sie bitte den Schlüssel.</string>
     <string name="theme_sepia">Sepia</string>
+    <string name="theme_amber">Bernstein</string>
     <string name="reading">Lesen</string>
     <string name="offline_articles_to_download">Anzahl der Artikel</string>
-    <string name="offline_articles_to_download_long">Anzahl der Artikel die für den Offlinemodus heruntergeladen werden. (Neueste zuerst)</string>
+    <string name="offline_articles_to_download_long">Anzahl der Artikel, die für den Offlinemodus heruntergeladen werden (Neueste zuerst)</string>
     <string name="pref_headlines_show_content_long">Zeige Artikelvorschau in der Listenansicht</string>
     <string name="pref_headlines_show_content">Zeige Artikelvorschau</string>
     <string name="api_too_low">Dafür benötigen Sie eine neuere Version von Tiny Tiny RSS</string>
@@ -156,42 +161,75 @@
     <string name="headlines_set_view_mode">Setze Anzeigemodus</string>
     <string name="headlines_adaptive">Adaptiv</string>
     <string name="headlines_all_articles">Alle Artikel</string>
-    <string name="headlines_starred">Markiert</string>
-    <string name="headlines_published">Veröffentlicht</string>
-    <string name="headlines_unread">Ungelesen</string>
+    <string name="headlines_starred">Markierte</string>
+    <string name="headlines_published">Veröffentlichte</string>
+    <string name="headlines_unread">Ungelesene</string>
     <string name="article_img_open">Bild öffnen</string>
     <string name="article_img_share">Bild teilen</string>
     <string name="article_img_view_caption">Bildunterschrift zeigen</string>
-    <string name="pref_headlines_mark_read_scroll">Beim scrollen als gelesen markieren</string>
+    <string name="pref_headlines_mark_read_scroll">Beim Scrollen als gelesen markieren</string>
     <string name="pref_headlines_mark_read_scroll_long">Überschriften werden beim Vorbeiscrollen als gelesen markiert</string>
 
     <plurals name="mark_num_headlines_as_read">
         <item quantity="other">%1$d Artikel als gelesen markieren?</item>
     </plurals>
 
-    <string name="prefs_confirm_headlines_catchup">Nachfragen, bevor Artikel als gelesen markiert werden</string>
+    <string name="prefs_confirm_headlines_catchup">Nachfrage bei "als gelesen markieren"</string>
     <string name="author_formatted">von %1$s</string>
 
     <plurals name="n_unread_articles">
-        <item quantity="zero">Kein ungelesener Artikel</item>
+        <item quantity="zero">Keine ungelesenen Artikel</item>
         <item quantity="one">Ein ungelesener Artikel</item>
         <item quantity="other">%1$d ungelesene Artikel</item>
     </plurals>
 
-    <string name="pref_headline_font_size">Schriftgröße Überschriften</string>
+    <string name="pref_headline_font_size">Schriftgröße der Überschriften</string>
     <string name="context_confirm_catchup">Alle Artikel in %1$s als gelesen markieren?</string>
-    <string name="accel_webview_summary">Deaktivieren, falls es zu Flackern oder anderen sichtbaren Störungen kommt.</string>
+    <string name="accel_webview_summary">Deaktivieren, falls es zu Flackern oder anderen sichtbaren Störungen kommt</string>
     <string name="accel_webview_title">Webansicht beschleunigen (3.0+)</string>
     <string name="place_shortcut">Verknüpfung erstellen</string>
     <string name="shortcut_has_been_placed_on_the_home_screen">Eine Verknüpfung wurde auf dem Startbildschirm erstellt</string>
-    <string name="download_articles_and_go_offline">Artikel herunterladen und offline gehen</string>
+    <string name="download_articles_and_go_offline">Artikel herunterladen und Offline gehen</string>
     <string name="tasker_save_and_close">Speichern und schließen</string>
-    <string name="synchronize_read_articles_and_go_online">Gelesene Artikel synchronisieren und online gehen</string>
+    <string name="synchronize_read_articles_and_go_online">Gelesene Artikel synchronisieren und Online gehen</string>
     <string name="font_size_dialog_suffix">sp</string>
-    <string name="server_function_not_available">Diese Funktion ist für deine Version von tt-rss leider nicht verfügbar.</string>
-    <string name="unsubscribe">Nicht mehr abonnieren</string>
-    <string name="unsubscribe_from_prompt">Feed %1$s wirklich abbestellen?</string>
+    <string name="server_function_not_available">Diese Funktion ist für deine tt-rss Version leider nicht verfügbar.</string>
+    <string name="unsubscribe">Abonnement beenden</string>
+    <string name="unsubscribe_from_prompt">Abonnement von %1$s beenden?</string>
     <string name="open_article_in_web_browser">In Webbrowser öffnen</string>
     <string name="error_loading_image">Bild konnte nicht geladen werden.</string>
+    <string name="toggle_sort_order">Sortierung ändern</string>
+    <string name="headlines_sort_default">Standard</string>
+    <string name="headlines_sort_newest_first">Neueste zuerst</string>
+    <string name="headlines_sort_oldest_first">Älteste zuerst</string>
+    <string name="headlines_sort_title">Überschriften</string>
+    <string name="headlines_sort_articles_title">Artikel sortieren</string>
+    <string name="fresh_articles">Neue Artikel</string>
+    <string name="feed_all_articles">Alle Artikel</string>
+    <string name="prefs_enable_fab">Aktionsknopf anzeigen</string>
+    <string name="prefs_enable_fab_long">Schwebenden Aktionsknopf beim Lesen anzeigen</string>
+    <string name="prefs_open_fresh_on_startup">Neue Artikel beim Start anzeigen</string>
+    <string name="prefs_headline_display_mode">Anzeigemodus der Überschriften</string>
+    <string name="prefs_headline_display_mode_long">Standard, keine Bilder oder Kompaktmodus</string>
+    <string name="headline_display_mode_default">Standard</string>
+    <string name="headline_display_mode_no_images">Keine Bilder</string>
+    <string name="headline_display_mode_compact">Kompakt</string>
+    <string name="headline_display_mode_compact_noimages">Kompakt (keine Bilder)</string>
+    <string name="prefs_version">%1$s (%2$d)</string>
+    <string name="prefs_version_title">Version</string>
+    <string name="prefs_build_timestamp">%1$s</string>
+    <string name="prefs_build_timestamp_title">Zeitpunkt des Kompilierens</string>
+    <string name="crash_dialog_text">Tiny Tiny RSS ist leider abgestürzt. Absturzbericht an tt-rss.org senden?</string>
+    <string name="prefs_widget_show_fresh">Zeige Anzahl neuer Artikel</string>
+    <string name="prefs_widget_show_fresh_summary">Zeigt die Anzahl neuer Artikel anstatt aller ungelesener Artikel</string>
+    <string name="prefs_widget">Widget</string>
+    <string name="title_activity_video_player">Video Player</string>
 
+    <string name="hello_world">Hallo Welt!</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="video_player_share">Video teilen</string>
+    <string name="video_player_open">Video öffnen</string>
+
+    <string name="flavor_image_prompt">(mehr Bilder...)</string>
+    <string name="headlines_row_top_changed">Neue Artikel gefunden, aktualisieren um fortzufahren.</string>
 </resources>
