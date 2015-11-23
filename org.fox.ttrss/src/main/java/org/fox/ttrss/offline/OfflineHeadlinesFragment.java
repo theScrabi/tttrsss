@@ -321,7 +321,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
             m_swipeLayout.setProgressViewOffset(false, 0,
                     m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) +
-                            m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_material));
+                            m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_end_material));
         }
 
         if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {

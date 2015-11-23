@@ -399,7 +399,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             m_swipeLayout.setProgressViewOffset(false, 0,
                     m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) +
-                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_material));
+                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_end_material));
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
