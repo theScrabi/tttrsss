@@ -290,6 +290,11 @@ public class OfflineArticleFragment extends Fragment {
                 WebSettings ws = web.getSettings();
                 ws.setSupportZoom(false);
 
+				// we need to show "insecure" file:// urls
+				if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
+					ws.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+				}
+
                 TypedValue tvBackground = new TypedValue();
                 getActivity().getTheme().resolveAttribute(R.attr.articleBackground, tvBackground, true);
 
