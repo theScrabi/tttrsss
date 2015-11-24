@@ -107,6 +107,11 @@ public class Article implements Parcelable {
 						}
 					} else {
 						flavorImageUri = flavorImage.attr("src");
+
+						if (flavorImageUri != null && flavorImageUri.startsWith("//")) {
+							flavorImageUri = "https:" + flavorImageUri;
+						}
+
 						flavorStreamUri = null;
 					}
 				} catch (Exception e) {
