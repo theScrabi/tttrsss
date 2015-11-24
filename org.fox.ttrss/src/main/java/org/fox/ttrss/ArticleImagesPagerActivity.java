@@ -287,13 +287,14 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             for (Element img : imgs) {
                 String imgSrc = img.attr("src");
 
+                if (imgSrc.startsWith("//")) {
+                    imgSrc = "https:" + imgSrc;
+                }
+
                 if (imgSrcFirst.equals(imgSrc))
                     firstFound = true;
 
                 if (firstFound) {
-                    if (imgSrc.indexOf("//") == 0)
-                        imgSrc = "http:" + imgSrc;
-
                     m_urls.add(imgSrc);
                 }
             }
