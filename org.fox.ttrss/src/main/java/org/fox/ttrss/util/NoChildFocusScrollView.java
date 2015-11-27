@@ -1,12 +1,13 @@
 package org.fox.ttrss.util;
 
 import android.content.Context;
+import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ScrollView;
 
-public class NoChildFocusScrollView extends NotifyingScrollView {
+public class NoChildFocusScrollView extends NestedScrollView {
 
 	public NoChildFocusScrollView(Context context) {
 		super(context);
