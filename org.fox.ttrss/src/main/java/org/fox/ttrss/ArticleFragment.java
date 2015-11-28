@@ -226,8 +226,9 @@ public class ArticleFragment extends Fragment  {
                             URL url = new URL(m_article.link.trim());
                             String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
                                     url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                            startActivity(intent);
+
+                            m_activity.openUri(Uri.parse(uri));
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             m_activity.toast(R.string.error_other_error);
@@ -264,8 +265,8 @@ public class ArticleFragment extends Fragment  {
                         URL url = new URL(m_article.link.trim());
                         String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
                                 url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                        startActivity(intent);
+
+                        m_activity.openUri(Uri.parse(uri));
                     } catch (Exception e) {
                         e.printStackTrace();
                         m_activity.toast(R.string.error_other_error);
@@ -304,9 +305,8 @@ public class ArticleFragment extends Fragment  {
                                     m_article.comments_link : m_article.link);
                             String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
                                     url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-                            Intent intent = new Intent(Intent.ACTION_VIEW,
-                                    Uri.parse(uri));
-                            startActivity(intent);
+
+                            m_activity.openUri(Uri.parse(uri));
                         } catch (Exception e) {
                             e.printStackTrace();
                             m_activity.toast(R.string.error_other_error);
@@ -389,8 +389,7 @@ public class ArticleFragment extends Fragment  {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             try {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
+                m_activity.openUri(Uri.parse(url));
 
                 return true;
 

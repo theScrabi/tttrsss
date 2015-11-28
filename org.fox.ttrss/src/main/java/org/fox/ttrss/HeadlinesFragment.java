@@ -185,8 +185,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				Article article = getArticleAtPosition(info.position);
 			
 				if (article != null) {
-					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(article.link));
-					startActivity(browserIntent);
+					m_activity.openUri(Uri.parse(article.link));
 
 					if (article.unread) {
 						article.unread = false;
@@ -1255,9 +1254,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					startActivity(intent);
 				} else {
-					Intent intent = new Intent(Intent.ACTION_VIEW,
-							Uri.parse(article.flavorStreamUri));
-					startActivity(intent);
+					m_activity.openUri(Uri.parse(article.flavorStreamUri));
 				}
 
 			} else if ("video".equals(article.flavorImage.tagName().toLowerCase())) {

@@ -83,9 +83,7 @@ public class OfflineActivity extends CommonActivity {
 		case R.id.article_img_open:
 			if (getLastContentImageHitTestUrl() != null) {
 				try {
-					Intent intent = new Intent(Intent.ACTION_VIEW, 
-							Uri.parse(getLastContentImageHitTestUrl()));
-					startActivity(intent);
+					openUri(Uri.parse(getLastContentImageHitTestUrl()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					toast(R.string.error_other_error);

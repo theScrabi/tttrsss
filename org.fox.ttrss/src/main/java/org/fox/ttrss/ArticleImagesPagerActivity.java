@@ -387,9 +387,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             case R.id.article_img_open:
                 if (url != null) {
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(url));
-                        startActivity(intent);
+                        openUri(Uri.parse(url));
                     } catch (Exception e) {
                         e.printStackTrace();
                         toast(R.string.error_other_error);

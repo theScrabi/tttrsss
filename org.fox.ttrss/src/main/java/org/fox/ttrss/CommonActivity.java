@@ -2,13 +2,23 @@ package org.fox.ttrss;
 
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.customtabs.CustomTabsCallback;
+import android.support.customtabs.CustomTabsClient;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.v7.app.ActionBarActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.widget.Toast;
 
@@ -41,6 +51,21 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	private boolean m_smallScreenMode = true;
 	private String m_theme;
 	private boolean m_needRestart;
+
+	protected CustomTabsClient m_customTabClient;
+	protected CustomTabsServiceConnection m_customTabServiceConnection = new CustomTabsServiceConnection() {
+		@Override
+		public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient customTabsClient) {
+			m_customTabClient = customTabsClient;
+
+			m_customTabClient.warmup(0);
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName componentName) {
+			m_customTabClient = null;
+		}
+	};
 
 	protected SharedPreferences m_prefs;
 
@@ -85,7 +110,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	@Override
 	public void onResume() {
 		super.onResume();
-	
+
 		if (m_needRestart) {
 			Log.d(TAG, "restart requested");
 			
@@ -96,6 +121,11 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 	@Override
 	public void onDestroy() {
+
+		if (m_customTabServiceConnection != null) {
+			unbindService(m_customTabServiceConnection);
+		}
+
 		super.onDestroy();
 	}
 
@@ -113,6 +143,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		} else {
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
+
+		CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", m_customTabServiceConnection);
 
 		super.onCreate(savedInstanceState);
 	}
@@ -170,6 +202,49 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		String[] filter = new String[] { "theme", "enable_cats", "headline_mode" };
 
 		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
+	}
+
+	private CustomTabsSession getCustomTabSession() {
+		return m_customTabClient.newSession(new CustomTabsCallback() {
+			@Override
+			public void onNavigationEvent(int navigationEvent, Bundle extras) {
+				super.onNavigationEvent(navigationEvent, extras);
+			}
+		});
+	}
+
+	// uses chrome custom tabs when available
+	public void openUri(Uri uri) {
+		if (m_customTabClient != null) {
+
+			TypedValue tvBackground = new TypedValue();
+			getTheme().resolveAttribute(R.attr.colorPrimary, tvBackground, true);
+
+			CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(getCustomTabSession());
+
+			builder.setStartAnimations(this, R.anim.slide_in_right, R.anim.slide_out_left);
+			builder.setExitAnimations(this, R.anim.slide_in_left, R.anim.slide_out_right);
+
+			builder.setToolbarColor(tvBackground.data);
+
+			Intent shareIntent = new Intent(Intent.ACTION_SEND);
+			shareIntent.setType("text/plain");
+			shareIntent.putExtra(Intent.EXTRA_SUBJECT, uri.toString());
+			shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
+
+			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, shareIntent, 0);
+
+			builder.setActionButton(BitmapFactory.decodeResource(getResources(), R.drawable.ic_share),
+					getString(R.string.share_article), pendingIntent);
+
+			CustomTabsIntent intent = builder.build();
+
+			intent.launchUrl(this, uri);
+		} else {
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+			startActivity(intent);
+		}
 	}
 
 }

@@ -532,9 +532,7 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.article_img_open:
 			if (getLastContentImageHitTestUrl() != null) {
 				try {
-					Intent intent = new Intent(Intent.ACTION_VIEW, 
-							Uri.parse(getLastContentImageHitTestUrl()));
-					startActivity(intent);
+					openUri(Uri.parse(getLastContentImageHitTestUrl()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					toast(R.string.error_other_error);
@@ -658,8 +656,7 @@ public class OnlineActivity extends CommonActivity {
 								public void onClick(DialogInterface dialog, int id) {
 									int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
 									
-									Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse((String)itemUrls[selectedPosition]));
-									startActivity(browserIntent);
+									openUri(Uri.parse((String)itemUrls[selectedPosition]));
 
 									dialog.cancel();
 								}

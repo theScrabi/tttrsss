@@ -103,9 +103,7 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
             case R.id.article_vid_open:
                 if (m_streamUri != null) {
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(m_streamUri));
-                        startActivity(intent);
+                        openUri(Uri.parse(m_streamUri));
                     } catch (Exception e) {
                         e.printStackTrace();
                         toast(R.string.error_other_error);
