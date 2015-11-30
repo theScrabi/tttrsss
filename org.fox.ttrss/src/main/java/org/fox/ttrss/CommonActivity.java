@@ -260,10 +260,10 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						CommonActivity.this)
-						.setTitle("Open link")
+						.setTitle(R.string.open_link)
 						.setView(dialogView)
 						.setMessage(uri.toString())
-						.setPositiveButton("Quick preview",
+						.setPositiveButton(R.string.quick_preview,
 								new Dialog.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 														int which) {
@@ -278,7 +278,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 									}
 								})
-						.setNegativeButton("Open with app",
+						.setNegativeButton(R.string.open_with_app,
 								new Dialog.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 														int which) {

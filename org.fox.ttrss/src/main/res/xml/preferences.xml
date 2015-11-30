@@ -160,12 +160,12 @@
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="enable_custom_tabs"
-            android:summary="Open external links with Chrome custom tabs (faster, used if available)"
-            android:title="Use quick preview" />
+            android:summary="@string/prefs_custom_tabs_summary"
+            android:title="@string/prefs_use_custom_tabs" />
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="custom_tabs_ask_always"
-            android:title="Ask me every time" />
+            android:title="@string/ask_me_every_time" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference
