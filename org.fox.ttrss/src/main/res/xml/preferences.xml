@@ -156,7 +156,7 @@
             android:summary="@string/prefs_enable_fab_long"
             android:title="@string/prefs_enable_fab" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Opening links" >
+    <PreferenceCategory android:title="@string/prefs_opening_links" >
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="enable_custom_tabs"

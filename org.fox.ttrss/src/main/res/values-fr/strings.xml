@@ -234,7 +234,7 @@
     <string name="flavor_image_prompt">(plus d\'images...)</string>
     <string name="headlines_row_top_changed">Nouveaux articles trouvés, rechargez le flux pour continuer.</string>
     <string name="prefs_custom_tabs_summary">Ouvrir les liens externes avec les onglets rapides de Chrome (plus rapide, si disponible)</string>
-    <string name="prefs_use_custom_tabs">Utiliser l'aperçu rapide</string>
+    <string name="prefs_use_custom_tabs">Utiliser l\'aperçu rapide</string>
     <string name="ask_me_every_time">Me demander à chaque fois</string>
     <string name="open_link">Ouvrir le lien</string>
     <string name="quick_preview">Aperçu rapide</string>
