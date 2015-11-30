@@ -115,7 +115,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
         if (m_drawerToggle != null) m_drawerToggle.syncState();
     }
 
-	public void openFeedArticles(int feedId, boolean isCat) {
+	/*public void openFeedArticles(int feedId, boolean isCat) {
 		if (isSmallScreen()) {
 			Intent intent = new Intent(OfflineMasterActivity.this, OfflineDetailActivity.class);
 			
@@ -124,7 +124,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 			intent.putExtra("article", 0);
 			startActivityForResult(intent, 0);
 		}
-	}
+	}*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -341,6 +341,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 			intent.putExtra("article", articleId);
 	 	   
 			startActivityForResult(intent, 0);
+			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
 		} else {
 			refresh();

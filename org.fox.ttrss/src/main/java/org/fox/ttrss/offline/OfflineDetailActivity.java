@@ -203,4 +203,14 @@ public class OfflineDetailActivity extends OfflineActivity implements OfflineHea
 	public void onBackPressed() {
 		super.onBackPressed();
 	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		if (isFinishing()) {
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		}
+
+	}
 }

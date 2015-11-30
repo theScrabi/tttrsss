@@ -452,6 +452,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
             // mysterious crashes somewhere in gl layer (?) on some feeds if we use activitycompat transitions here on LP so welp
             startActivityForResult(intent, HEADLINES_REQUEST);
+			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
 
 		} else {
