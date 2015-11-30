@@ -248,8 +248,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 	// uses chrome custom tabs when available
 	public void openUri(final Uri uri) {
-		boolean enableCustomTabs = m_prefs.getBoolean("enable_custom_tabs", false);
-		final boolean askEveryTime = m_prefs.getBoolean("custom_tabs_ask_always", false);
+		boolean enableCustomTabs = m_prefs.getBoolean("enable_custom_tabs", true);
+		final boolean askEveryTime = m_prefs.getBoolean("custom_tabs_ask_always", true);
 
 		if (enableCustomTabs && m_customTabClient != null) {
 
