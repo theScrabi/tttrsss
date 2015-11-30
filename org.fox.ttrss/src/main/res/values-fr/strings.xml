@@ -239,4 +239,5 @@
     <string name="open_link">Ouvrir le lien</string>
     <string name="quick_preview">Aperçu rapide</string>
     <string name="open_with_app">Ouvrir avec une app</string>
+    <string name="prefs_opening_links">Ouverture des liens</string>
 </resources>
