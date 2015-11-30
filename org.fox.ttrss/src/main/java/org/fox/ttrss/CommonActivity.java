@@ -2,8 +2,11 @@ package org.fox.ttrss;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +23,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import org.fox.ttrss.util.DatabaseHelper;
@@ -213,10 +218,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		});
 	}
 
-	// uses chrome custom tabs when available
-	public void openUri(Uri uri) {
+	private void openUriWithCustomTab(Uri uri) {
 		if (m_customTabClient != null) {
-
 			TypedValue tvBackground = new TypedValue();
 			getTheme().resolveAttribute(R.attr.colorPrimary, tvBackground, true);
 
@@ -240,6 +243,80 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 			CustomTabsIntent intent = builder.build();
 
 			intent.launchUrl(this, uri);
+		}
+	}
+
+	// uses chrome custom tabs when available
+	public void openUri(final Uri uri) {
+		boolean enableCustomTabs = m_prefs.getBoolean("enable_custom_tabs", false);
+		final boolean askEveryTime = m_prefs.getBoolean("custom_tabs_ask_always", false);
+
+		if (enableCustomTabs && m_customTabClient != null) {
+
+			if (askEveryTime) {
+
+				View dialogView = View.inflate(this, R.layout.dialog_open_link_askcb, null);
+				final CheckBox askEveryTimeCB = (CheckBox) dialogView.findViewById(R.id.open_link_ask_checkbox);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						CommonActivity.this)
+						.setTitle("Open link")
+						.setView(dialogView)
+						.setMessage(uri.toString())
+						.setPositiveButton("Quick preview",
+								new Dialog.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+														int which) {
+
+										if (!askEveryTimeCB.isChecked()) {
+											SharedPreferences.Editor editor = m_prefs.edit();
+											editor.putBoolean("custom_tabs_ask_always", false);
+											editor.apply();
+										}
+
+										openUriWithCustomTab(uri);
+
+									}
+								})
+						.setNegativeButton("Open with app",
+								new Dialog.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+														int which) {
+
+										if (!askEveryTimeCB.isChecked()) {
+											SharedPreferences.Editor editor = m_prefs.edit();
+											editor.putBoolean("custom_tabs_ask_always", false);
+											editor.putBoolean("enable_custom_tabs", false);
+											editor.apply();
+										}
+
+										Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+										startActivity(intent);
+
+									}
+								});
+						/*.setNegativeButton(R.string.cancel,
+							new Dialog.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+													int which) {
+
+									if (!askEveryTimeCB.isChecked()) {
+										SharedPreferences.Editor editor = m_prefs.edit();
+										editor.putBoolean("custom_tabs_ask_always", false);
+										editor.apply();
+									}
+
+								}
+							});*/
+
+				AlertDialog dlg = builder.create();
+				dlg.show();
+
+			} else {
+				openUriWithCustomTab(uri);
+			}
+
 		} else {
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 

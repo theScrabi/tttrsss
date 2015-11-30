@@ -156,6 +156,17 @@
             android:summary="@string/prefs_enable_fab_long"
             android:title="@string/prefs_enable_fab" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Opening links" >
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="false"
+            android:key="enable_custom_tabs"
+            android:summary="Open external links with Chrome custom tabs (faster, used if available)"
+            android:title="Use quick preview" />
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="false"
+            android:key="custom_tabs_ask_always"
+            android:title="Ask me every time" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/offline_mode" >
         <ListPreference
             android:defaultValue="250"
