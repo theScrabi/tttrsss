@@ -1,75 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="120dp"
     android:orientation="vertical"
     android:weightSum="1"
     android:clickable="false">
 
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/imageView"
-        android:scaleType="fitXY"
-        android:background="?colorPrimaryDark"
-        android:src="?drawer_header" />
-
     <FrameLayout
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/circle_bg"
-        android:clickable="true"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="16dp"
-        android:elevation="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/drawer_header_account"
-            android:background="@drawable/ripple"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:tint="?colorAccent"
-            android:src="@drawable/ic_account"
-            android:layout_gravity="center" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView"
+            android:scaleType="fitXY"
+            android:background="?colorPrimaryDark"
+            android:src="?drawer_header" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_settings"
+            android:id="@+id/drawer_settings_btn"
+            android:layout_gravity="bottom|right"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="12dp"
+            android:background="?attr/selectableItemBackground" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/linearLayout"
+            android:layout_gravity="center_horizontal|bottom">
+
+            <TextView
+                android:id="@+id/drawer_header_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textColor="@android:color/primary_text_dark"
+                android:text="test"
+                android:textSize="14sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                android:id="@+id/drawer_header_server"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/primary_text_dark"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:text="example.org"
+                android:textSize="14sp"
+                android:textStyle="normal"
+
+                />
+        </LinearLayout>
     </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout">
-
-        <TextView
-            android:id="@+id/drawer_header_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textColor="@android:color/primary_text_dark"
-            android:text="test"
-            android:textSize="14sp"
-            android:textStyle="bold"
-
-            />
-
-        <TextView
-            android:id="@+id/drawer_header_server"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_dark"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="5dp"
-            android:text="example.org"
-            android:textSize="14sp"
-            android:textStyle="normal"
-
-            />
-    </LinearLayout>
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -79,5 +75,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/feeds_loading_bar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true" />
-</RelativeLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom" />
+</FrameLayout>

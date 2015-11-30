@@ -43,15 +43,15 @@ public abstract class BaseFeedlistFragment extends Fragment {
                         server.setText("");
                     }
 
-                    View account = view.findViewById(R.id.drawer_header_account);
+                    View settings = view.findViewById(R.id.drawer_settings_btn);
 
-                    account.setOnClickListener(new View.OnClickListener() {
+                    settings.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             try {
-                                Intent intent = new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse(prefs.getString("ttrss_url", "")));
-                                startActivity(intent);
+                                Intent intent = new Intent(getActivity(),
+                                        PreferencesActivity.class);
+                                startActivityForResult(intent, 0);
                             } catch (Exception e) {
 
                             }
@@ -127,29 +127,6 @@ public abstract class BaseFeedlistFragment extends Fragment {
                     TextView counter = (TextView) footer.findViewById(R.id.unread_counter);
                     counter.setText(R.string.blank);
                 }
-
-                // settings
-                footer = inflater.inflate(R.layout.feeds_row, list, false);
-                footer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(activity,
-                                PreferencesActivity.class);
-                        startActivityForResult(intent, 0);
-                    }
-                });
-
-                list.addFooterView(footer);
-                text = (TextView) footer.findViewById(R.id.title);
-                text.setText(R.string.preferences);
-
-                icon = (ImageView) footer.findViewById(R.id.icon);
-                tv = new TypedValue();
-                getActivity().getTheme().resolveAttribute(R.attr.ic_settings, tv, true);
-                icon.setImageResource(tv.resourceId);
-
-                TextView counter = (TextView) footer.findViewById(R.id.unread_counter);
-                counter.setText(R.string.blank);
 
             } catch (InflateException e) {
                 // welp couldn't inflate header i guess
