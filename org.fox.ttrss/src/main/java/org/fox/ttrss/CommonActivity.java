@@ -6,11 +6,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -216,6 +219,22 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 				super.onNavigationEvent(navigationEvent, extras);
 			}
 		});
+	}
+
+	protected void preloadUriIfAllowed(Uri uri) {
+		boolean enableCustomTabs = m_prefs.getBoolean("enable_custom_tabs", true);
+
+		if (m_customTabClient != null && enableCustomTabs) {
+			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo info = cm.getActiveNetworkInfo();
+
+			if (info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI) {
+				CustomTabsSession session = getCustomTabSession();
+				session.mayLaunchUrl(uri, null, null);
+
+				//toast("Preloading: " + uri.toString());
+			}
+		}
 	}
 
 	private void openUriWithCustomTab(Uri uri) {

@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -121,7 +122,7 @@ public class ArticlePager extends Fragment {
 						article.unread = false;
 						m_activity.saveArticleUnread(article);
 					} */
-					
+
 					m_listener.onArticleSelected(article, false);
 					
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());

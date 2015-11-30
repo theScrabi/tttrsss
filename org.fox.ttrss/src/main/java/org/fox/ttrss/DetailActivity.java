@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -17,6 +18,8 @@ import android.view.View;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
+
+import java.net.URISyntaxException;
 
 public class DetailActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -218,7 +221,13 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 			saveArticleUnread(article);
 		}
 
-        if (!getSupportActionBar().isShowing()) getSupportActionBar().show();
+		try {
+			preloadUriIfAllowed(Uri.parse(article.link));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (!getSupportActionBar().isShowing()) getSupportActionBar().show();
 
 		if (open) {
 			
