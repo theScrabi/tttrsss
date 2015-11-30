@@ -146,4 +146,14 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
 
         toast(result.toString());
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (isFinishing()) {
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
+    }
 }

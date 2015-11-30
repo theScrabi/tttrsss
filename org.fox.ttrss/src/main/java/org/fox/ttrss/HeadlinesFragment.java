@@ -1253,6 +1253,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					intent.putExtra("title", article.title);
 
 					startActivity(intent);
+					m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
 				} else {
 					m_activity.openUri(Uri.parse(article.flavorStreamUri));
 				}
@@ -1264,6 +1266,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				intent.putExtra("title", article.title);
 
 				startActivity(intent);
+				m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
 			} else {
 

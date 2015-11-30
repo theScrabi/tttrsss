@@ -278,4 +278,14 @@ public class VideoPlayerActivity extends CommonActivity {
         surfaceView.setLayoutParams(lp);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (isFinishing()) {
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
+    }
+
 }
