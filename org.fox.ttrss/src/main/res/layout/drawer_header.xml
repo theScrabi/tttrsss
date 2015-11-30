@@ -6,17 +6,18 @@
     android:weightSum="1"
     android:clickable="false">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView"
+        android:scaleType="fitXY"
+        android:background="?colorPrimaryDark"
+        android:src="?drawer_header" />
+
     <FrameLayout
         android:layout_width="match_parent"
+        android:background="@android:color/transparent"
         android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/imageView"
-            android:scaleType="fitXY"
-            android:background="?colorPrimaryDark"
-            android:src="?drawer_header" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -25,10 +26,9 @@
             android:id="@+id/drawer_settings_btn"
             android:layout_gravity="bottom|right"
             android:clickable="true"
-            android:focusable="true"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="12dp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/ripple" />
 
         <LinearLayout
             android:layout_width="match_parent"
