@@ -240,6 +240,5 @@
     <string name="quick_preview">Preview rapida</string>
     <string name="open_with_app">Apri con app</string>
     <string name="prefs_opening_links">Apertura link</string>
-
-
+    <string name="open_with">Apri con…</string>
 </resources>
