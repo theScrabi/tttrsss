@@ -223,12 +223,7 @@ public class ArticleFragment extends Fragment  {
                     @Override
                     public void onClick(View view) {
                         try {
-                            URL url = new URL(m_article.link.trim());
-                            String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-                                    url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-
-                            m_activity.openUri(Uri.parse(uri));
-
+                            m_activity.openUri(Uri.parse(m_article.link));
                         } catch (Exception e) {
                             e.printStackTrace();
                             m_activity.toast(R.string.error_other_error);
@@ -262,11 +257,7 @@ public class ArticleFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     try {
-                        URL url = new URL(m_article.link.trim());
-                        String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-                                url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-
-                        m_activity.openUri(Uri.parse(uri));
+                        m_activity.openUri(Uri.parse(m_article.link));
                     } catch (Exception e) {
                         e.printStackTrace();
                         m_activity.toast(R.string.error_other_error);
@@ -274,7 +265,6 @@ public class ArticleFragment extends Fragment  {
                 }
             });
 
-            registerForContextMenu(title);
         }
 
         ImageView share = (ImageView)view.findViewById(R.id.share);
@@ -301,12 +291,10 @@ public class ArticleFragment extends Fragment  {
                     @Override
                     public void onClick(View v) {
                         try {
-                            URL url = new URL((m_article.comments_link != null && m_article.comments_link.length() > 0) ?
-                                    m_article.comments_link : m_article.link);
-                            String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-                                    url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
+                            String url = (m_article.comments_link != null && m_article.comments_link.length() > 0) ?
+                                    m_article.comments_link : m_article.link;
 
-                            m_activity.openUri(Uri.parse(uri));
+                            m_activity.openUri(Uri.parse(url));
                         } catch (Exception e) {
                             e.printStackTrace();
                             m_activity.toast(R.string.error_other_error);

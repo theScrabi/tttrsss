@@ -203,19 +203,14 @@ public class OfflineArticleFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						try {
-							URL url = new URL(link.trim());
-							String uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(),
-								url.getPort(), url.getPath(), url.getQuery(), url.getRef()).toString();
-
-							m_activity.openUri(Uri.parse(uri));
+							m_activity.openUri(Uri.parse(link));
 						} catch (Exception e) {
 							e.printStackTrace();
 							m_activity.toast(R.string.error_other_error);
 						}
 					}
 				});
-				
-				registerForContextMenu(title);
+
 			}
 
 			ImageView share = (ImageView)view.findViewById(R.id.share);

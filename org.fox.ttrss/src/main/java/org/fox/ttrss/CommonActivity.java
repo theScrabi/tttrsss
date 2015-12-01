@@ -355,24 +355,21 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		Elements es = doc.getElementsByAttributeValue("src", url);
 		if (es.size() > 0) {
 			if (es.get(0).hasAttr("title")) {
-				Dialog dia = new Dialog(this);
-				if (es.get(0).hasAttr("alt")) {
-					dia.setTitle(es.get(0).attr("alt"));
-				} else {
-					dia.setTitle(es.get(0).attr("title"));
-				}
-				TextView titleText = new TextView(this);
 
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-					titleText.setPaddingRelative(24, 24, 24, 24);
-				} else {
-					titleText.setPadding(24, 24, 24, 24);
-				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+					.setCancelable(true)
+					.setMessage(es.get(0).attr("title"))
+					.setPositiveButton(R.string.dialog_close, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+								}
+							}
+					);
 
-				titleText.setTextSize(16);
-				titleText.setText(es.get(0).attr("title"));
-				dia.setContentView(titleText);
-				dia.show();
+				AlertDialog dialog = builder.create();
+				dialog.show();
+
 			} else {
 				toast(R.string.no_caption_to_display);
 			}
