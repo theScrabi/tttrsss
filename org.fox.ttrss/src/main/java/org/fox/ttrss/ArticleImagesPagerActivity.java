@@ -131,7 +131,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             });
 
             if (position == 0) {
-                ViewCompat.setTransitionName(imgView, "TRANSITION:ARTICLE_IMAGES_PAGER");
+                ViewCompat.setTransitionName(imgView, "gallery:" + url);
             }
 
             registerForContextMenu(imgView);

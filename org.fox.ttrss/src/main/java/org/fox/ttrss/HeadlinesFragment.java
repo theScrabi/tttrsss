@@ -1002,7 +1002,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						Log.d(TAG, "num selected: " + getSelectedArticles().size());
 					}
 				});
-				ViewCompat.setTransitionName(holder.textImage, "TRANSITION:ARTICLE_IMAGES_PAGER");
+				ViewCompat.setTransitionName(holder.textImage, "gallery:" + article.flavorImageUri);
 
 				if (article.flavorImage != null) {
 
@@ -1368,9 +1368,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 				ActivityOptionsCompat options =
 						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-								transitionView != null ? transitionView : holder.flavorImageView,   // The view which starts the transition
-								"TRANSITION:ARTICLE_IMAGES_PAGER" // The transitionName of the view we’re transitioning to
-						);
+								transitionView != null ? transitionView : holder.flavorImageView,
+								"gallery:" + article.flavorImageUri);
+
 				ActivityCompat.startActivity(m_activity, intent, options.toBundle());
 			}
 
