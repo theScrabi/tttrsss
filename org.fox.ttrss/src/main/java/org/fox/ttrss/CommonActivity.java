@@ -55,6 +55,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
     public static final int EXCERPT_MAX_LENGTH = 256;
     public static final int EXCERPT_MAX_QUERY_LENGTH = 2048;
 
+	public static final int PENDING_INTENT_CHROME_SHARE = 1;
+
 	private DatabaseHelper m_databaseHelper;
 
 	//private SQLiteDatabase m_readableDb;
@@ -255,10 +257,10 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 			Intent shareIntent = new Intent(Intent.ACTION_SEND);
 			shareIntent.setType("text/plain");
-			shareIntent.putExtra(Intent.EXTRA_SUBJECT, uri.toString());
 			shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
 
-			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, shareIntent, 0);
+			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+					CommonActivity.PENDING_INTENT_CHROME_SHARE, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			builder.setActionButton(BitmapFactory.decodeResource(getResources(), R.drawable.ic_share),
 					getString(R.string.share_article), pendingIntent);

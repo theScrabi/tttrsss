@@ -241,7 +241,6 @@ public class VideoPlayerActivity extends CommonActivity {
                     Intent intent = new Intent(Intent.ACTION_SEND);
 
                     intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_SUBJECT, m_streamUri);
                     intent.putExtra(Intent.EXTRA_TEXT, m_streamUri);
 
                     startActivity(Intent.createChooser(intent, m_streamUri));

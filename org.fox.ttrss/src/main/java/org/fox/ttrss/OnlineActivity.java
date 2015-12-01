@@ -549,7 +549,6 @@ public class OnlineActivity extends CommonActivity {
 				Intent intent = new Intent(Intent.ACTION_SEND);
 
 				intent.setType("image/png");
-				intent.putExtra(Intent.EXTRA_SUBJECT, getLastContentImageHitTestUrl());
 				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
 
 				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
@@ -1353,7 +1352,6 @@ public class OnlineActivity extends CommonActivity {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 
 		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_SUBJECT, article.title);
 		intent.putExtra(Intent.EXTRA_TEXT, article.link);
 
 		return intent;

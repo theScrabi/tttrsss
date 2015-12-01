@@ -403,8 +403,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 if (url != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
 
-                    intent.setType("image/png");
-                    intent.putExtra(Intent.EXTRA_SUBJECT, url);
+                    intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, url);
 
                     startActivity(Intent.createChooser(intent, url));

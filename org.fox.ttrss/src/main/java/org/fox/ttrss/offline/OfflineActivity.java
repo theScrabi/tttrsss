@@ -99,8 +99,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getLastContentImageHitTestUrl() != null) {
 				Intent intent = new Intent(Intent.ACTION_SEND);
 
-				intent.setType("image/png");
-				intent.putExtra(Intent.EXTRA_SUBJECT, getLastContentImageHitTestUrl());
+				intent.setType("text/plain");
 				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
 
 				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
@@ -670,7 +669,6 @@ public class OfflineActivity extends CommonActivity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 	
 			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, title);
 			intent.putExtra(Intent.EXTRA_TEXT, link);
 	
 			return intent;
