@@ -81,7 +81,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
-	public static enum ArticlesSelection { ALL, NONE, UNREAD }
+	public enum ArticlesSelection { ALL, NONE, UNREAD }
 
     public static final int FLAVOR_IMG_MIN_SIZE = 128;
 	public static final int THUMB_IMG_MIN_SIZE = 32;
@@ -154,6 +154,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				return true;
 			case R.id.article_set_note:
 				m_activity.editArticleNote(article);
+				return true;
+			case R.id.headlines_article_unread:
+				article.unread = !article.unread;
+				m_activity.saveArticleUnread(article);
+				m_adapter.notifyDataSetChanged();
 				return true;
 			case R.id.headlines_article_link_copy:
 				m_activity.copyToClipboard(article.link);
@@ -456,7 +461,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_end_material));
         }
 
-		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, (ArrayList<Article>)m_articles);
+		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_articles);
 		m_animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
 
 		m_animationAdapter.setAbsListView(m_list);
@@ -1289,11 +1294,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					public void onClick(View view) {
 						CheckBox cb = (CheckBox)view;
 
-						if (cb.isChecked()) {
-							article.selected = true;
-						} else {
-							article.selected = false;
-						}
+						article.selected = cb.isChecked();
 
 						m_listener.onArticleListSelectionChange(getSelectedArticles());
 

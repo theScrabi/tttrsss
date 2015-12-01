@@ -1,28 +1,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <item
-            android:id="@+id/headlines_article_link_open"
-            app:showAsAction=""
-            android:title="@string/open_with"/>
-        <item
-            android:id="@+id/headlines_share_article"
-            app:showAsAction=""
-            android:title="@string/share_article"/>
+    <item
+        android:id="@+id/headlines_article_link_open"
+        app:showAsAction=""
+        android:title="@string/open_with"/>
+    <item
+        android:id="@+id/headlines_share_article"
+        app:showAsAction=""
+        android:title="@string/share_article"/>
 
-        <item
-            android:id="@+id/headlines_article_link_copy"
-            app:showAsAction=""
-            android:title="@string/article_link_copy"/>
-        <item
-            android:id="@+id/catchup_above"
-            app:showAsAction=""
-            android:title="@string/article_mark_read_above"/>
-        <item
-            android:id="@+id/set_labels"
-            android:title="@string/article_set_labels"/>
-        <item
-            android:id="@+id/article_set_note"
-            app:showAsAction=""
-            android:title="@string/article_set_note"/>
+    <item
+        android:id="@+id/headlines_article_link_copy"
+        app:showAsAction=""
+        android:title="@string/article_link_copy"/>
+    <item
+        android:id="@+id/catchup_above"
+        app:showAsAction=""
+        android:title="@string/article_mark_read_above"/>
+    <item
+        android:id="@+id/set_labels"
+        android:title="@string/article_set_labels"/>
+    <item
+        android:id="@+id/article_set_note"
+        app:showAsAction=""
+        android:title="@string/article_set_note"/>
+    <item
+        android:id="@+id/headlines_article_unread"
+        app:showAsAction=""
+        android:title="@string/context_selection_toggle_unread"/>
 
 </menu>

@@ -56,7 +56,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener, AbsListView.OnScrollListener {
-	public static enum ArticlesSelection { ALL, NONE, UNREAD }
+	public enum ArticlesSelection { ALL, NONE, UNREAD }
 
     private final String TAG = this.getClass().getSimpleName();
 	
@@ -712,6 +712,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 						popup.getMenu().findItem(R.id.set_labels).setVisible(false);
 						popup.getMenu().findItem(R.id.article_set_note).setVisible(false);
+						popup.getMenu().findItem(R.id.headlines_article_unread).setVisible(false); // TODO: implement
 
 						popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 							@Override
