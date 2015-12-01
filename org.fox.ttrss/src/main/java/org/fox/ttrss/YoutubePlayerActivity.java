@@ -112,12 +112,7 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
                 return true;
             case R.id.article_vid_share:
                 if (m_streamUri != null) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, m_streamUri);
-
-                    startActivity(Intent.createChooser(intent, m_streamUri));
+                    shareText(m_streamUri);
                 }
                 return true;
             default:

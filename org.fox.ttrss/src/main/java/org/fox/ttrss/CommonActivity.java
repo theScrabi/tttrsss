@@ -243,6 +243,26 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		}
 	}
 
+	protected Intent getShareIntent(String text, String subject) {
+		Intent shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType("text/plain");
+		shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+
+		if (subject != null) {
+			shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		}
+
+		return shareIntent;
+	}
+
+	protected void shareText(String text) {
+		startActivity(getShareIntent(text, null));
+	}
+
+	protected void shareText(String text, String subject) {
+		startActivity(getShareIntent(text, subject));
+	}
+
 	private void openUriWithCustomTab(Uri uri) {
 		if (m_customTabClient != null) {
 			TypedValue tvBackground = new TypedValue();
@@ -255,9 +275,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 			builder.setToolbarColor(tvBackground.data);
 
-			Intent shareIntent = new Intent(Intent.ACTION_SEND);
-			shareIntent.setType("text/plain");
-			shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
+			Intent shareIntent = getShareIntent(uri.toString(), null);
 
 			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
 					CommonActivity.PENDING_INTENT_CHROME_SHARE, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);

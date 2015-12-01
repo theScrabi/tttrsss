@@ -401,12 +401,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 return true;
             case R.id.article_img_share:
                 if (url != null) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, url);
-
-                    startActivity(Intent.createChooser(intent, url));
+                    shareText(url);
                 }
                 return true;
             // TODO: this needs access to article text, I'm afraid

@@ -546,12 +546,7 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.article_img_share:
 			if (getLastContentImageHitTestUrl() != null) {
-				Intent intent = new Intent(Intent.ACTION_SEND);
-
-				intent.setType("image/png");
-				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
-
-				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
+				shareText(getLastContentImageHitTestUrl());
 			}
 			return true;
 		case R.id.article_img_view_caption:
@@ -1328,35 +1323,12 @@ public class OnlineActivity extends CommonActivity {
 		return tmp.replaceAll(",$", "");
 	}
 	
-	public void shareText(String text) {
-
-		Intent intent = new Intent(Intent.ACTION_SEND);
-
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_TEXT, text);
-
-		startActivity(Intent.createChooser(intent, text));
-	}
-	
 	public void shareArticle(Article article) {
 		if (article != null) {
-
-			Intent intent = getShareIntent(article);
-			
-			startActivity(Intent.createChooser(intent,
-					getString(R.string.share_article)));
+			shareText(article.link, article.title);
 		}
 	}
-	
-	protected Intent getShareIntent(Article article) {
-		Intent intent = new Intent(Intent.ACTION_SEND);
 
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_TEXT, article.link);
-
-		return intent;
-	}
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {		
 		if (m_prefs.getBoolean("use_volume_keys", false)) {

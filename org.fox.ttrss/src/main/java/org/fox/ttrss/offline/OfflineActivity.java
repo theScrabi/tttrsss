@@ -97,12 +97,7 @@ public class OfflineActivity extends CommonActivity {
 			return true;
 		case R.id.article_img_share:
 			if (getLastContentImageHitTestUrl() != null) {
-				Intent intent = new Intent(Intent.ACTION_SEND);
-
-				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_TEXT, getLastContentImageHitTestUrl());
-
-				startActivity(Intent.createChooser(intent, getLastContentImageHitTestUrl()));
+				shareText(getLastContentImageHitTestUrl());
 			}
 			return true;
 		case R.id.article_img_view_caption:
@@ -665,13 +660,8 @@ public class OfflineActivity extends CommonActivity {
 		if (article != null) {
 			String title = article.getString(article.getColumnIndex("title"));
 			String link = article.getString(article.getColumnIndex("link"));
-	
-			Intent intent = new Intent(Intent.ACTION_SEND);
-	
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_TEXT, link);
-	
-			return intent;
+
+			return getShareIntent(link, title);
 		} else {
 			return null;
 		}
