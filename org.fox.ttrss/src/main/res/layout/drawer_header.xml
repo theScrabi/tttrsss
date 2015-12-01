@@ -28,6 +28,7 @@
             android:clickable="true"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="12dp"
+            android:transitionName="SETTINGS_REVEAL"
             android:background="@drawable/ripple" />
 
         <LinearLayout

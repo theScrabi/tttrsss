@@ -3,6 +3,8 @@ package org.fox.ttrss;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
 import android.util.TypedValue;
@@ -51,7 +53,12 @@ public abstract class BaseFeedlistFragment extends Fragment {
                             try {
                                 Intent intent = new Intent(getActivity(),
                                         PreferencesActivity.class);
-                                startActivityForResult(intent, 0);
+
+                                ActivityOptionsCompat options = ActivityOptionsCompat
+                                        .makeSceneTransitionAnimation(getActivity(), v, "SETTINGS_REVEAL");
+
+                                ActivityCompat.startActivityForResult(getActivity(), intent, 0, options.toBundle());
+
                             } catch (Exception e) {
 
                             }
