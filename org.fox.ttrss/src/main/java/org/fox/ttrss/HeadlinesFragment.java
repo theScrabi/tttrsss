@@ -29,6 +29,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +44,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -142,7 +144,60 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 	}
 
-	@Override
+	public boolean onArticleMenuItemSelected(MenuItem item, Article article) {
+
+		if (article == null) return false;
+
+		switch (item.getItemId()) {
+			case R.id.set_labels:
+				m_activity.editArticleLabels(article);
+				return true;
+			case R.id.article_set_note:
+				m_activity.editArticleNote(article);
+				return true;
+			case R.id.headlines_article_link_copy:
+				m_activity.copyToClipboard(article.link);
+				return true;
+			case R.id.headlines_article_link_open:
+				m_activity.openUri(Uri.parse(article.link));
+
+				if (article.unread) {
+					article.unread = false;
+					m_activity.saveArticleUnread(article);
+
+					m_adapter.notifyDataSetChanged();
+				}
+				return true;
+			case R.id.headlines_share_article:
+				m_activity.shareArticle(article);
+				return true;
+			case R.id.catchup_above:
+				if (true) {
+					ArticleList articles = getAllArticles();
+					ArticleList tmp = new ArticleList();
+					for (Article a : articles) {
+						if (article.id == a.id)
+							break;
+
+						if (a.unread) {
+							a.unread = false;
+							tmp.add(a);
+						}
+					}
+					if (tmp.size() > 0) {
+						m_activity.toggleArticlesUnread(tmp);
+						//updateHeadlines();
+					}
+					m_adapter.notifyDataSetChanged();
+				}
+				return true;
+			default:
+				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
+				return false;
+		}
+	}
+
+	/*@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
@@ -291,7 +346,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
 			return super.onContextItemSelected(item);
 		}
-	}
+	} */
 
     public HeadlinesFragment() {
         super();
@@ -304,7 +359,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
     }
 	
-	@Override
+	/*@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 
@@ -326,7 +381,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
 		
-	}
+	}*/
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -409,7 +464,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
-		registerForContextMenu(m_list);
+		//registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
@@ -1070,14 +1125,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorVideoKindView.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
-				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
-					@Override
-					public boolean onLongClick(View v) {
-						m_activity.openContextMenu(v);
-						return true;
-					}
-				});
-
 				holder.headlineHeader.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -1085,15 +1132,42 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 				});
 
-				holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
-					@Override
-					public boolean onLongClick(View v) {
-						m_activity.openContextMenu(v);
-						return true;
-					}
-				});
-
 				if (showFlavorImage && article.flavorImageUri != null && holder.flavorImageView != null) {
+					holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							PopupMenu popup = new PopupMenu(getActivity(), holder.titleView);
+							MenuInflater inflater = popup.getMenuInflater();
+							inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
+
+							popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+								@Override
+								public boolean onMenuItemClick(MenuItem item) {
+									switch (item.getItemId()) {
+										case R.id.article_img_open:
+											m_activity.openUri(Uri.parse(article.flavorImageUri));
+											return true;
+										case R.id.article_img_copy:
+											m_activity.copyToClipboard(article.flavorImageUri);
+											return true;
+										case R.id.article_img_share:
+											m_activity.shareText(article.flavorImageUri);
+											return true;
+										case R.id.article_img_view_caption:
+											m_activity.displayImageCaption(article.flavorImageUri, article.content);
+											return true;
+										default:
+											return false;
+									}
+								}
+							});
+
+							popup.show();
+
+							return true;
+						}
+					});
+
 
 					if (!article.flavorImageUri.equals(holder.flavorImageView.getTag())) {
 
@@ -1142,7 +1216,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							@Override
 							public void onProgressUpdate(String s, View view, int current, int total) {
 								if (total != 0) {
-									int p = (int)((float)current/total*100);
+									int p = (int) ((float) current / total * 100);
 
 									holder.flavorImageLoadingBar.setIndeterminate(false);
 									holder.flavorImageLoadingBar.setProgress(p);
@@ -1235,7 +1309,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.menuButtonView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						getActivity().openContextMenu(v);
+
+						PopupMenu popup = new PopupMenu(getActivity(), v);
+						MenuInflater inflater = popup.getMenuInflater();
+						inflater.inflate(R.menu.context_headlines, popup.getMenu());
+
+						popup.getMenu().findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
+						popup.getMenu().findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
+
+						popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+								return onArticleMenuItemSelected(item, article);
+							}
+						});
+
+						popup.show();
 					}
 				});
 			}

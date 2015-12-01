@@ -7,6 +7,7 @@ import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -20,6 +21,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -100,144 +103,66 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		return selected;
 	}
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		
+	private boolean onArticleMenuItemSelected(MenuItem item, int articleId) {
 		switch (item.getItemId()) {
-		case R.id.article_link_copy:
-			if (true) {
-				int articleId = getArticleIdAtPosition(info.position);
-				
-				Cursor article = m_activity.getArticleById(articleId);
-				
-				if (article != null) {				
-					m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
-					article.close();
+			case R.id.headlines_article_link_copy:
+				if (true) {
+					Cursor article = m_activity.getArticleById(articleId);
+
+					if (article != null) {
+						m_activity.copyToClipboard(article.getString(article.getColumnIndex("link")));
+						article.close();
+					}
 				}
-			}
-			return true;
-		case R.id.selection_toggle_marked:
-			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getDatabase()
-				.compileStatement(
-						"UPDATE articles SET modified = 1, marked = NOT marked WHERE selected = 1");
-				stmt.execute();
-				stmt.close();
-			} else {
-				int articleId = getArticleIdAtPosition(info.position);
-				
-				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
-					"UPDATE articles SET modified = 1, marked = NOT marked WHERE "
-							+ BaseColumns._ID + " = ?");
-				stmt.bindLong(1, articleId);
-				stmt.execute();
-				stmt.close();
-			}
-			refresh();
-			return true;
-		case R.id.selection_toggle_published:
-			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getDatabase()
-				.compileStatement(
-						"UPDATE articles SET modified = 1, published = NOT published WHERE selected = 1");
-				stmt.execute();
-				stmt.close();
-			} else {
-				int articleId = getArticleIdAtPosition(info.position);
-				
-				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
-					"UPDATE articles SET modified = 1, published = NOT published WHERE "
-							+ BaseColumns._ID + " = ?");
-				stmt.bindLong(1, articleId);
-				stmt.execute();
-				stmt.close();
-			}
-			refresh();
-			return true;
-		case R.id.selection_toggle_unread:
-			if (getSelectedArticleCount() > 0) {
-				SQLiteStatement stmt = m_activity.getDatabase()
-				.compileStatement(
-						"UPDATE articles SET modified = 1, unread = NOT unread WHERE selected = 1");
-				stmt.execute();
-				stmt.close();
-			} else {
-				int articleId = getArticleIdAtPosition(info.position);
-				
-				SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
-					"UPDATE articles SET modified = 1, unread = NOT unread WHERE "
-							+ BaseColumns._ID + " = ?");
-				stmt.bindLong(1, articleId);
-				stmt.execute();
-				stmt.close();
-			}
-			refresh();			
-			return true;
-		case R.id.headlines_share_article:
-			if (true) {
-				int articleId = getArticleIdAtPosition(info.position);
+				return true;
+			case R.id.headlines_article_link_open:
+				if (true) {
+					Cursor article = m_activity.getArticleById(articleId);
+
+					if (article != null) {
+						m_activity.openUri(Uri.parse(article.getString(article.getColumnIndex("link"))));
+
+						// TODO: mark article as read, set modified = 1, refresh
+
+						article.close();
+					}
+				}
+				return true;
+			case R.id.headlines_share_article:
 				m_activity.shareArticle(articleId);
-			}
-			return true;
-		case R.id.catchup_above:
-			if (true) {
-				int articleId = getArticleIdAtPosition(info.position);
-				
-				SQLiteStatement stmt = null;
-				
-				String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
-				
-				if (m_feedIsCat) {
-					stmt = m_activity.getDatabase().compileStatement(
-							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
-				} else {
-					stmt = m_activity.getDatabase().compileStatement(
-							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND unread = 1 AND feed_id = ?");						
+				return true;
+			case R.id.catchup_above:
+				if (true) {
+					SQLiteStatement stmt = null;
+
+					String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
+
+					if (m_feedIsCat) {
+						stmt = m_activity.getDatabase().compileStatement(
+								"UPDATE articles SET modified = 1, unread = 0 WHERE " +
+										"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+										"AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+					} else {
+						stmt = m_activity.getDatabase().compileStatement(
+								"UPDATE articles SET modified = 1, unread = 0 WHERE " +
+										"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+										"AND unread = 1 AND feed_id = ?");
+					}
+
+					stmt.bindLong(1, articleId);
+					stmt.bindLong(2, m_feedId);
+					stmt.execute();
+					stmt.close();
 				}
-				
-				stmt.bindLong(1, articleId);
-				stmt.bindLong(2, m_feedId);
-				stmt.execute();
-				stmt.close();
-			}			
-			refresh();
-			return true;
-		default:
-			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
-			return super.onContextItemSelected(item);
+				refresh();
+				return true;
+			default:
+				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
+				return super.onContextItemSelected(item);
 		}
+
 	}
-	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	    ContextMenuInfo menuInfo) {
-		
-		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
-		
-		if (getSelectedArticleCount() > 0) {
-			menu.setHeaderTitle(R.string.headline_context_multiple);
-			menu.setGroupVisible(R.id.menu_group_single_article, false);
-		} else {
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
-			Cursor c = getArticleAtPosition(info.position);
-			menu.setHeaderTitle(c.getString(c.getColumnIndex("title")));
-			//c.close();
-			menu.setGroupVisible(R.id.menu_group_single_article, true);
-			
-			menu.findItem(R.id.set_labels).setVisible(false);
-			menu.findItem(R.id.article_set_note).setVisible(false);
-		}
-		
-		super.onCreateContextMenu(menu, v, menuInfo);		
-		
-	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -346,7 +271,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		m_list.setOnItemClickListener(this);
         m_list.setOnScrollListener(this);
-		registerForContextMenu(m_list);
 
 		return view;    	
 	}
@@ -781,7 +705,22 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				holder.menuButtonView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getActivity().openContextMenu(v);
+
+						PopupMenu popup = new PopupMenu(getActivity(), v);
+						MenuInflater inflater = popup.getMenuInflater();
+						inflater.inflate(R.menu.context_headlines, popup.getMenu());
+
+						popup.getMenu().findItem(R.id.set_labels).setVisible(false);
+						popup.getMenu().findItem(R.id.article_set_note).setVisible(false);
+
+						popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+								return onArticleMenuItemSelected(item, articleId);
+							}
+						});
+
+						popup.show();
                     }
                 });								
 			}

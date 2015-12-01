@@ -557,39 +557,7 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.article_img_view_caption:
 			if (getLastContentImageHitTestUrl() != null) {
-
-                // Android doesn't give us an easy way to access title tags;
-                // we'll use Jsoup on the body text to grab the title text
-                // from the first image tag with this url. This will show
-                // the wrong text if an image is used multiple times.
-                Document doc = Jsoup.parse(ap.getSelectedArticle().content);
-                Elements es = doc.getElementsByAttributeValue("src", getLastContentImageHitTestUrl());
-                if (es.size() > 0){
-                    if (es.get(0).hasAttr("title")){
-                        Dialog dia = new Dialog(this);
-                        if (es.get(0).hasAttr("alt")){
-                            dia.setTitle(es.get(0).attr("alt"));
-                        } else {
-                            dia.setTitle(es.get(0).attr("title"));
-                        }
-                        TextView titleText = new TextView(this);
-                        
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        	titleText.setPaddingRelative(24, 24, 24, 24);
-                        } else {
-                        	titleText.setPadding(24, 24, 24, 24);
-                        }
-                        
-                        titleText.setTextSize(16);
-                        titleText.setText(es.get(0).attr("title"));
-                        dia.setContentView(titleText);
-                        dia.show();
-                    } else {
-                        toast(R.string.no_caption_to_display);
-                    }
-                } else {
-                    toast(R.string.no_caption_to_display);
-                }
+				displayImageCaption(getLastContentImageHitTestUrl(), ap.getSelectedArticle().content);
             }
             return true;
 		case R.id.article_link_share:
@@ -598,7 +566,6 @@ public class OnlineActivity extends CommonActivity {
 			}
 			return true;
 		case R.id.article_link_copy:
-			Log.d(TAG, "article_link_copy");
 			if (ap != null && ap.getSelectedArticle() != null) {
 				copyToClipboard(ap.getSelectedArticle().link);
 			}
