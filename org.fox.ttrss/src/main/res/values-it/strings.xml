@@ -233,4 +233,13 @@
 
     <string name="flavor_image_prompt">(più immagini…)</string>
     <string name="headlines_row_top_changed">Nuovi articoli trovati, ricarica il notiziario per visualizzarli.</string>
+    <string name="prefs_custom_tabs_summary">Apri i link esterni con una Chrome custom tabs (più veloce, usato se disponibile)</string>
+    <string name="prefs_use_custom_tabs">Usa preview rapida</string>
+    <string name="ask_me_every_time">Chiedimelo ogni volta</string>
+    <string name="open_link">Apri link</string>
+    <string name="quick_preview">Preview rapida</string>
+    <string name="open_with_app">Apri con app</string>
+    <string name="prefs_opening_links">Apertura link</string>
+
+
 </resources>
