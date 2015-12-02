@@ -1126,6 +1126,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageLoadingBar.setVisibility(View.GONE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
+				holder.flavorImageOverflow.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
 				holder.headlineHeader.setOnClickListener(new OnClickListener() {
@@ -1199,6 +1200,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
 										holder.flavorImageView.setVisibility(View.VISIBLE);
+										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
 										maybeRepositionFlavorImage(view, bitmap, holder);
 										adjustVideoKindView(holder, article);
@@ -1229,6 +1231,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					} else { // already tagged
 						holder.flavorImageView.setVisibility(View.VISIBLE);
+						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
 						adjustVideoKindView(holder, article);
 
