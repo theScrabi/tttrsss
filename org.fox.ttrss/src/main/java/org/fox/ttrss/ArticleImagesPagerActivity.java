@@ -20,11 +20,13 @@ import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -60,13 +62,13 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-        ActionBar bar = getSupportActionBar();
+        /*ActionBar bar = getSupportActionBar();
 
         if (bar.isShowing()) {
             bar.hide();
         } else {
             bar.show();
-        }
+        }*/
 
         return false;
     }
@@ -106,7 +108,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            String url = m_urls.get(position);
+            final String url = m_urls.get(position);
 
             Log.d(TAG, "called for URL: " + url);
 
@@ -134,7 +136,26 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 ViewCompat.setTransitionName(imgView, "gallery:" + url);
             }
 
-            registerForContextMenu(imgView);
+            //registerForContextMenu(imgView);
+
+            view.findViewById(R.id.flavor_image_overflow).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popup = new PopupMenu(ArticleImagesPagerActivity.this, v);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            return onImageMenuItemSelected(item, url);
+                        }
+                    });
+
+                    popup.show();
+
+                }
+            });
 
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
@@ -173,7 +194,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 }
             });
 
-            ((ViewPager) container).addView(view, 0);
+            container.addView(view, 0);
 
             if (position == 0) {
                 ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
@@ -338,14 +359,14 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     }
 
 
-    @Override
+    /*@Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
 
         getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 
         super.onCreateContextMenu(menu, v, menuInfo);
-    }
+    }*/
 
 
     @Override
@@ -357,7 +378,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         out.putString("content", m_content);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 
@@ -368,22 +389,13 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return onContextItemSelected(item); // this is really bad :()
-    }
+    }*/
 
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        ViewPager pager = (ViewPager) findViewById(R.id.article_images_pager);
-        String url = null;
-
-        if (pager != null) {
-            int currentItem = pager.getCurrentItem();
-            url = m_urls.get(currentItem);
-        }
-
+    public boolean onImageMenuItemSelected(MenuItem item, String url) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            /*case android.R.id.home:
                 onBackPressed();
-                return true;
+                return true;*/
             case R.id.article_img_open:
                 if (url != null) {
                     try {
