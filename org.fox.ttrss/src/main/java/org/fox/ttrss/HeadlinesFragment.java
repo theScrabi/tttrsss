@@ -1355,6 +1355,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				Intent intent = new Intent(m_activity, VideoPlayerActivity.class);
 				intent.putExtra("streamUri", article.flavorStreamUri);
 				intent.putExtra("title", article.title);
+				intent.putExtra("coverSrc", article.flavorImageUri);
 
 				startActivity(intent);
 				m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

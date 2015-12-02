@@ -17,8 +17,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 
@@ -29,6 +32,7 @@ public class VideoPlayerActivity extends CommonActivity {
     private String m_streamUri;
     private MediaPlayer mediaPlayer;
     private SurfaceView surfaceView;
+    private String m_coverUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,14 +49,24 @@ public class VideoPlayerActivity extends CommonActivity {
         getSupportActionBar().hide();
 
         surfaceView = (SurfaceView) findViewById(R.id.video_player);
-        registerForContextMenu(surfaceView);
 
         setTitle(getIntent().getStringExtra("title"));
 
         if (savedInstanceState == null) {
             m_streamUri = getIntent().getStringExtra("streamUri");
+            m_coverUri = getIntent().getStringExtra("coverSrc");
         } else {
             m_streamUri = savedInstanceState.getString("streamUri");
+            m_coverUri = savedInstanceState.getString("coverSrc");
+        }
+
+        ImageView coverView = (ImageView)findViewById(R.id.video_player_cover);
+
+        if (m_coverUri != null) {
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(m_coverUri, coverView);
+        } else {
+            coverView.setVisibility(View.GONE);
         }
 
         findViewById(R.id.video_player_overflow).setOnClickListener(new View.OnClickListener() {
@@ -174,6 +188,9 @@ public class VideoPlayerActivity extends CommonActivity {
                           View loadingBar = findViewById(R.id.video_loading);
                           if (loadingBar != null) loadingBar.setVisibility(View.GONE);
 
+                          View coverView = findViewById(R.id.video_player_cover);
+                          if (coverView != null) coverView.setVisibility(View.GONE);
+
                           resizeSurface();
                           mp.setLooping(true);
                           mp.start();
@@ -209,6 +226,7 @@ public class VideoPlayerActivity extends CommonActivity {
         super.onSaveInstanceState(out);
 
         out.putString("streamUri", m_streamUri);
+        out.putString("coverSrc", m_coverUri);
     }
 
 

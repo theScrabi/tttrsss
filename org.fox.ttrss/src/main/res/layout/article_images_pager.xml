@@ -3,7 +3,7 @@
     android:id="@+id/article_images"
     android:layout_width="fill_parent"
     android:animateLayoutChanges="true"
-    android:background="?headlinesBackground"
+    android:background="@android:color/black"
     android:layout_height="fill_parent">
 
     <org.fox.ttrss.ArticleImagesPager
