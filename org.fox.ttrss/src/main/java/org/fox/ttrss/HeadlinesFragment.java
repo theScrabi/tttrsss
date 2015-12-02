@@ -965,6 +965,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder = (HeadlineViewHolder) v.getTag();
 			}
 
+			//Log.d(TAG, "getView: " + position + ":" + article.title);
+
 			holder.position = position;
 
 			// block footer clicks to make button/selection clicking easier
@@ -1196,9 +1198,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								if (position == holder.position && bitmap != null) {
 
 									holder.flavorImageLoadingBar.setVisibility(View.GONE);
-									holder.flavorImageView.setTag(article.flavorImageUri);
 
 									if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
+										holder.flavorImageView.setTag(article.flavorImageUri);
+
 										holder.flavorImageView.setVisibility(View.VISIBLE);
 										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
