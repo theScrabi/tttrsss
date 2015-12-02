@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:id="@+id/video_player"
-            android:transitionName="TRANSITION:ARTICLE_VIDEO_PLAYER" />
+            android:id="@+id/video_player" />
 
         <ImageView
             android:id="@+id/video_player_cover"

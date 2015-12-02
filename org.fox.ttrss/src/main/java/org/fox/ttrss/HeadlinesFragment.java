@@ -1357,8 +1357,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				intent.putExtra("title", article.title);
 				intent.putExtra("coverSrc", article.flavorImageUri);
 
-				startActivity(intent);
-				m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				//startActivity(intent);
+				//m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+				ActivityOptionsCompat options =
+						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+								transitionView != null ? transitionView : holder.flavorImageView,
+								"gallery:" + article.flavorImageUri);
+
+				ActivityCompat.startActivity(m_activity, intent, options.toBundle());
 
 			} else {
 

@@ -2,11 +2,16 @@ package org.fox.ttrss;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowCompat;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -22,6 +27,8 @@ import android.widget.MediaController;
 import android.widget.PopupMenu;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.IOException;
 
@@ -63,8 +70,34 @@ public class VideoPlayerActivity extends CommonActivity {
         ImageView coverView = (ImageView)findViewById(R.id.video_player_cover);
 
         if (m_coverUri != null) {
+            ActivityCompat.postponeEnterTransition(VideoPlayerActivity.this);
+
+            ViewCompat.setTransitionName(coverView, "gallery:" + m_coverUri);
+
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(m_coverUri, coverView);
+            imageLoader.displayImage(m_coverUri, coverView, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String s, View view) {
+                    ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                }
+
+                @Override
+                public void onLoadingFailed(String s, View view, FailReason failReason) {
+                    ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                }
+
+                @Override
+                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                    ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                }
+
+                @Override
+                public void onLoadingCancelled(String s, View view) {
+                    ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                }
+            });
+
+
         } else {
             coverView.setVisibility(View.GONE);
         }
@@ -305,14 +338,13 @@ public class VideoPlayerActivity extends CommonActivity {
         surfaceView.setLayoutParams(lp);
     }
 
-    @Override
+    /*@Override
     public void onPause() {
         super.onPause();
 
         if (isFinishing()) {
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
         }
 
-    }
-
+    }*/
 }
