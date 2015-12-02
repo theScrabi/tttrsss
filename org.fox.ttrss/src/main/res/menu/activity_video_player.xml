@@ -6,7 +6,12 @@
     <item
         android:id="@+id/article_vid_open"
         app:showAsAction=""
-        android:title="@string/video_player_open"/>
+        android:title="@string/open_with"/>
+    <item
+        android:id="@+id/article_vid_copy"
+        app:showAsAction=""
+        android:icon="@drawable/ic_content_copy"
+        android:title="@string/article_link_copy"/>
     <item
         android:id="@+id/article_vid_share"
         android:icon="@drawable/ic_share"

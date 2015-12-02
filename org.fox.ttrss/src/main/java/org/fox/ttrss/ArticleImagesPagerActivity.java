@@ -393,9 +393,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
     public boolean onImageMenuItemSelected(MenuItem item, String url) {
         switch (item.getItemId()) {
-            /*case android.R.id.home:
-                onBackPressed();
-                return true;*/
             case R.id.article_img_open:
                 if (url != null) {
                     try {
@@ -416,15 +413,14 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                     shareText(url);
                 }
                 return true;
-            // TODO: this needs access to article text, I'm afraid
             case R.id.article_img_view_caption:
                 if (url != null) {
                     displayImageCaption(url, m_content);
                 }
                 return true;
             default:
-                Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
-                return super.onContextItemSelected(item);
+                Log.d(TAG, "onImageMenuItemSelected, unhandled id=" + item.getItemId());
+                return false;
         }
     }
 

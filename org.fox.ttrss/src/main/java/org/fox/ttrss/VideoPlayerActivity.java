@@ -11,12 +11,14 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.MediaController;
+import android.widget.PopupMenu;
 
 import java.io.IOException;
 
@@ -40,9 +42,7 @@ public class VideoPlayerActivity extends CommonActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (!isPortrait())
-            getSupportActionBar().hide();
+        getSupportActionBar().hide();
 
         surfaceView = (SurfaceView) findViewById(R.id.video_player);
         registerForContextMenu(surfaceView);
@@ -54,6 +54,25 @@ public class VideoPlayerActivity extends CommonActivity {
         } else {
             m_streamUri = savedInstanceState.getString("streamUri");
         }
+
+        findViewById(R.id.video_player_overflow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(VideoPlayerActivity.this, v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.activity_video_player, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        return onVideoMenuItemSelected(item);
+                    }
+                });
+
+                popup.show();
+
+            }
+        });
 
         final MediaController mediaController = new MediaController(this);
 
@@ -182,11 +201,6 @@ public class VideoPlayerActivity extends CommonActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (!isPortrait())
-            getSupportActionBar().hide();
-        else
-            getSupportActionBar().show();
-
         resizeSurface();
     }
 
@@ -198,7 +212,7 @@ public class VideoPlayerActivity extends CommonActivity {
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_video_player, menu);
         return true;
@@ -218,14 +232,10 @@ public class VideoPlayerActivity extends CommonActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return onContextItemSelected(item); // this is really bad :()
-    }
+    } */
 
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
+    public boolean onVideoMenuItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
             case R.id.article_vid_open:
                 if (m_streamUri != null) {
                     try {
@@ -236,14 +246,19 @@ public class VideoPlayerActivity extends CommonActivity {
                     }
                 }
                 return true;
+            case R.id.article_vid_copy:
+                if (m_streamUri != null) {
+                    copyToClipboard(m_streamUri);
+                }
+                return true;
             case R.id.article_vid_share:
                 if (m_streamUri != null) {
                     shareText(m_streamUri);
                 }
                 return true;
             default:
-                Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
-                return super.onContextItemSelected(item);
+                Log.d(TAG, "onVideoMenuItemSelected, unhandled id=" + item.getItemId());
+                return false;
         }
     }
 

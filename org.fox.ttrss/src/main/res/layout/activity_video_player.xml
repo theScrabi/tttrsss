@@ -23,6 +23,19 @@
             android:id="@+id/video_loading"
             android:layout_gravity="center"
             android:indeterminate="true" />
+
+        <ImageView
+            android:id="@+id/video_player_overflow"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_weight="0"
+            android:background="@drawable/ripple"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:src="@drawable/ic_dots_vertical"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="8dp" />
     </FrameLayout>
 
     <include layout="@layout/toolbar" android:id="@+id/toolbar" />
