@@ -69,7 +69,6 @@ import com.shamanland.fab.ShowHideOnScroll;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.util.EnlargingImageView;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
 
@@ -774,7 +773,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		boolean showFlavorImage;
 		private int m_minimumHeightToEmbed;
 		boolean m_youtubeInstalled;
-		private int m_maxFlavorImageHeight;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -784,8 +782,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			Point size = new Point();
 			display.getSize(size);
 			m_minimumHeightToEmbed = size.y/3;
-
-			m_maxFlavorImageHeight = (int)(size.y * 0.8f);
 
 			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
 			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
@@ -960,10 +956,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
 				holder.topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 				holder.flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
-
-				if (holder.flavorImageView != null) {
-					holder.flavorImageView.setMaxHeight(m_maxFlavorImageHeight);
-				}
 
 				v.setTag(holder);
 
