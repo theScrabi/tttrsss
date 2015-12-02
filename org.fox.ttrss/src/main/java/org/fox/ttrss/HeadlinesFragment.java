@@ -1237,6 +1237,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
 								holder.headlineHeader.setBackgroundColor(tv.data);
 							}
+						} else {
+							holder.headlineHeader.setBackgroundDrawable(null);
 						}
 					}
 				}
