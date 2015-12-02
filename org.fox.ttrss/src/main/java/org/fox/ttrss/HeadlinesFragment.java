@@ -747,6 +747,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         public ImageView textChecked;
 		public View headlineHeader;
 		public View topChangedMessage;
+		public View flavorImageOverflow;
 		public int position;
 		public boolean flavorImageEmbedded;
 	}
@@ -829,7 +830,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}			
 		}
 
-        private void updateTextCheckedState(final HeadlineViewHolder holder, final Article article, int position) {
+        private void updateTextCheckedState(final HeadlineViewHolder holder, final Article article, final int position) {
             String tmp = article.title.length() > 0 ? article.title.substring(0, 1).toUpperCase() : "?";
 
             if (article.selected) {
@@ -851,7 +852,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				} else {
 					if (!article.flavorImageUri.equals(holder.textImage.getTag())) {
 
-						final int loadingPosition = position;
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
 
 						DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -877,7 +877,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 									@Override
 									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-										if (loadingPosition == holder.position && bitmap != null) {
+										if (position == holder.position && bitmap != null) {
 											holder.textImage.setTag(article.flavorImageUri);
 
 											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
@@ -955,6 +955,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
 				holder.topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
+				holder.flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
 
 				v.setTag(holder);
 
@@ -1135,48 +1136,46 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 
 				if (showFlavorImage && article.flavorImageUri != null && holder.flavorImageView != null) {
-					holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
-						@Override
-						public boolean onLongClick(View v) {
-							PopupMenu popup = new PopupMenu(getActivity(), holder.titleView);
-							MenuInflater inflater = popup.getMenuInflater();
-							inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
+					if (holder.flavorImageOverflow != null) {
+						holder.flavorImageOverflow.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								PopupMenu popup = new PopupMenu(getActivity(), holder.flavorImageOverflow);
+								MenuInflater inflater = popup.getMenuInflater();
+								inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
 
-							popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-								@Override
-								public boolean onMenuItemClick(MenuItem item) {
-									switch (item.getItemId()) {
-										case R.id.article_img_open:
-											m_activity.openUri(Uri.parse(article.flavorImageUri));
-											return true;
-										case R.id.article_img_copy:
-											m_activity.copyToClipboard(article.flavorImageUri);
-											return true;
-										case R.id.article_img_share:
-											m_activity.shareText(article.flavorImageUri);
-											return true;
-										case R.id.article_img_view_caption:
-											m_activity.displayImageCaption(article.flavorImageUri, article.content);
-											return true;
-										default:
-											return false;
+								popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+									@Override
+									public boolean onMenuItemClick(MenuItem item) {
+										switch (item.getItemId()) {
+											case R.id.article_img_open:
+												m_activity.openUri(Uri.parse(article.flavorImageUri));
+												return true;
+											case R.id.article_img_copy:
+												m_activity.copyToClipboard(article.flavorImageUri);
+												return true;
+											case R.id.article_img_share:
+												m_activity.shareText(article.flavorImageUri);
+												return true;
+											case R.id.article_img_view_caption:
+												m_activity.displayImageCaption(article.flavorImageUri, article.content);
+												return true;
+											default:
+												return false;
+										}
 									}
-								}
-							});
+								});
 
-							popup.show();
-
-							return true;
-						}
-					});
-
+								popup.show();
+							}
+						});
+					}
 
 					if (!article.flavorImageUri.equals(holder.flavorImageView.getTag())) {
 
 						//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
 
 						ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
-						final int loadingPosition = position;
 
 						m_imageLoader.displayImage(article.flavorImageUri, imageAware, displayImageOptions, new ImageLoadingListener() {
 							@Override
@@ -1193,7 +1192,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							@Override
 							public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-								if (loadingPosition == holder.position && bitmap != null) {
+								if (position == holder.position && bitmap != null) {
 
 									holder.flavorImageLoadingBar.setVisibility(View.GONE);
 									holder.flavorImageView.setTag(article.flavorImageUri);

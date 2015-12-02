@@ -121,15 +121,28 @@
                     android:id="@+id/flavor_video_kind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
+                    android:layout_gravity="bottom|left"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_play_circle"
                     android:visibility="visible"
                     android:layout_below="@+id/headline_header"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginBottom="8dp" />
+
+                <ImageView
+                    android:id="@+id/flavor_image_overflow"
+                    android:clickable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/ripple"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:src="@drawable/ic_dots_vertical"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="10dp" />
 
             </FrameLayout>
         </TableRow>
