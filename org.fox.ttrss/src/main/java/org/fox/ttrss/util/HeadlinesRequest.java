@@ -95,6 +95,7 @@ public class HeadlinesRequest extends ApiRequest {
 					for (Article f : articles)
 						if (!m_articles.containsId(f.id)) {
 							f.collectMediaInfo();
+							f.cleanupExcerpt();
 							m_articles.add(f);
 						}
 

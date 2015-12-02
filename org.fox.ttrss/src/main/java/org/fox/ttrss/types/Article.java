@@ -58,6 +58,14 @@ public class Article implements Parcelable {
 		
 	}
 
+	public void cleanupExcerpt() {
+		if (excerpt != null) {
+			excerpt = excerpt.replace("&hellip;", "…");
+			excerpt = excerpt.replace("]]>", "");
+			excerpt = Jsoup.parse(excerpt).text();
+		}
+	}
+
 	public void collectMediaInfo() {
 		articleDoc = Jsoup.parse(content);
 

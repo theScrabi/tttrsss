@@ -1094,11 +1094,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                     String excerpt;
 
 					try {
-						if (m_activity.getApiLevel() >= 11) {
-							excerpt = article.excerpt != null ? article.excerpt : "";
-							excerpt = excerpt.replace("&hellip;", "…");
-							excerpt = excerpt.replace("]]>", "");
-							excerpt = Jsoup.parse(excerpt).text();
+						if (article.excerpt != null) {
+							excerpt = article.excerpt;
 						} else {
 							excerpt = article.articleDoc.text();
 
