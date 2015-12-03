@@ -263,13 +263,6 @@ public class VideoPlayerActivity extends CommonActivity {
     }
 
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_video_player, menu);
-        return true;
-    }
-
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -281,9 +274,9 @@ public class VideoPlayerActivity extends CommonActivity {
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return onContextItemSelected(item); // this is really bad :()
-    } */
+    public boolean onContextItemSelected(MenuItem item) {
+        return onVideoMenuItemSelected(item);
+    }
 
     public boolean onVideoMenuItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {

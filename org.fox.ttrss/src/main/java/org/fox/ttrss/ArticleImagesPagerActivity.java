@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -62,14 +63,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-        /*ActionBar bar = getSupportActionBar();
-
-        if (bar.isShowing()) {
-            bar.hide();
-        } else {
-            bar.show();
-        }*/
-
         return false;
     }
 
@@ -90,10 +83,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             super();
 
             m_urls = urls;
-        }
-
-        public ArticleImagesPagerAdapter() {
-            super();
         }
 
         @Override
@@ -136,7 +125,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 ViewCompat.setTransitionName(imgView, "gallery:" + url);
             }
 
-            //registerForContextMenu(imgView);
+            registerForContextMenu(imgView);
 
             view.findViewById(R.id.flavor_image_overflow).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -350,6 +339,7 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         m_pager = (ViewPager) findViewById(R.id.article_images_pager);
         m_pager.setAdapter(m_adapter);
         m_pager.setPageTransformer(true, new DepthPageTransformer());
+
     }
 
     @SuppressLint("NewApi")
@@ -358,16 +348,14 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         super.onResume();
     }
 
-
-    /*@Override
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
 
         getMenuInflater().inflate(R.menu.context_article_content_img, menu);
 
         super.onCreateContextMenu(menu, v, menuInfo);
-    }*/
-
+    }
 
     @Override
     public void onSaveInstanceState(Bundle out) {
@@ -378,18 +366,13 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         out.putString("content", m_content);
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.context_article_content_img, menu);
-
-
-        return true;
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return onContextItemSelected(item); // this is really bad :()
-    }*/
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = m_pager.getCurrentItem();
+        String url = m_checkedUrls.get(position);
+
+        return onImageMenuItemSelected(item, url);
+    }
 
     public boolean onImageMenuItemSelected(MenuItem item, String url) {
         switch (item.getItemId()) {
