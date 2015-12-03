@@ -56,6 +56,7 @@ public class VideoPlayerActivity extends CommonActivity {
         getSupportActionBar().hide();
 
         surfaceView = (SurfaceView) findViewById(R.id.video_player);
+        registerForContextMenu(surfaceView);
 
         setTitle(getIntent().getStringExtra("title"));
 
@@ -215,20 +216,22 @@ public class VideoPlayerActivity extends CommonActivity {
                     e.printStackTrace();
                 }
                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                      @Override
-                      public void onPrepared(MediaPlayer mp) {
+                                                      @Override
+                                                      public void onPrepared(MediaPlayer mp) {
 
-                          View loadingBar = findViewById(R.id.video_loading);
-                          if (loadingBar != null) loadingBar.setVisibility(View.GONE);
+                                                          View loadingBar = findViewById(R.id.video_loading);
+                                                          if (loadingBar != null)
+                                                              loadingBar.setVisibility(View.GONE);
 
-                          View coverView = findViewById(R.id.video_player_cover);
-                          if (coverView != null) coverView.setVisibility(View.GONE);
+                                                          View coverView = findViewById(R.id.video_player_cover);
+                                                          if (coverView != null)
+                                                              coverView.setVisibility(View.GONE);
 
-                          resizeSurface();
-                          mp.setLooping(true);
-                          mp.start();
-                      }
-                  }
+                                                          resizeSurface();
+                                                          mp.setLooping(true);
+                                                          mp.start();
+                                                      }
+                                                  }
 
                 );
             }
@@ -245,7 +248,8 @@ public class VideoPlayerActivity extends CommonActivity {
         });
 
 
-            mediaController.setAnchorView(surfaceView);
+        mediaController.setAnchorView(surfaceView);
+
         }
 
     public void onConfigurationChanged(Configuration newConfig) {
