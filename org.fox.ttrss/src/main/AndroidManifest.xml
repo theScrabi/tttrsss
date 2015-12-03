@@ -254,6 +254,7 @@
 
         <activity
             android:name=".ArticleImagesPagerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Article Images" >
         </activity>
         <activity
