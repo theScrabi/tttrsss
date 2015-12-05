@@ -371,7 +371,10 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
         int position = m_pager.getCurrentItem();
         String url = m_checkedUrls.get(position);
 
-        return onImageMenuItemSelected(item, url);
+        if (!onImageMenuItemSelected(item, url))
+            return super.onContextItemSelected(item);
+        else
+            return true;
     }
 
     public boolean onImageMenuItemSelected(MenuItem item, String url) {

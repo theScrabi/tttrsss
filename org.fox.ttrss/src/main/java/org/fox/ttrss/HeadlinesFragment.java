@@ -69,6 +69,7 @@ import com.shamanland.fab.ShowHideOnScroll;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
+import org.fox.ttrss.util.EnlargingImageView;
 import org.fox.ttrss.util.HeadlinesRequest;
 import org.jsoup.Jsoup;
 
@@ -200,6 +201,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
 				return false;
 		}
+	}
+
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+
+		Article article = getArticleAtPosition(info.position);
+
+		if (!onArticleMenuItemSelected(item, article))
+			return super.onContextItemSelected(item);
+		else
+			return true;
 	}
 
 	/*@Override
@@ -364,29 +377,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
     }
 	
-	/*@Override
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 
 		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
 
-		if (getSelectedArticles().size() > 0) {
-			menu.setHeaderTitle(R.string.headline_context_multiple);
-			menu.setGroupVisible(R.id.menu_group_single_article, false);
-		} else {
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-			Article article = getArticleAtPosition(info.position);
-
-			menu.setHeaderTitle(Html.fromHtml(article.title));
-			menu.setGroupVisible(R.id.menu_group_single_article, true);
-		}
-
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
 		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
-		
-	}*/
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -469,7 +470,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
-		//registerForContextMenu(m_list);
+		registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
@@ -901,7 +902,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 
 		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, final View convertView, ViewGroup parent) {
 
 			View v = convertView;
 
@@ -1131,10 +1132,20 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageOverflow.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
+				// this is needed if our flavor image goes behind base listview element
 				holder.headlineHeader.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						m_listener.onArticleSelected(article);
+					}
+				});
+
+				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
+					@Override
+					public boolean onLongClick(View v) {
+						m_activity.openContextMenu(v);
+
+						return true;
 					}
 				});
 
@@ -1170,6 +1181,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								});
 
 								popup.show();
+							}
+						});
+
+						holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
+							@Override
+							public boolean onLongClick(View v) {
+
+								m_activity.openContextMenu(v);
+
+								return true;
 							}
 						});
 					}

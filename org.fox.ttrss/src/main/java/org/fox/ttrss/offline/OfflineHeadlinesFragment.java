@@ -103,6 +103,32 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		return selected;
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+									ContextMenuInfo menuInfo) {
+
+		getActivity().getMenuInflater().inflate(R.menu.context_headlines, menu);
+
+		menu.findItem(R.id.set_labels).setVisible(false);
+		menu.findItem(R.id.article_set_note).setVisible(false);
+		menu.findItem(R.id.headlines_article_unread).setVisible(false); // TODO: implement
+
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+
+		int articleId = getArticleIdAtPosition(info.position);
+
+		if (!onArticleMenuItemSelected(item, articleId))
+			return super.onContextItemSelected(item);
+		else
+			return true;
+	}
+
 	private boolean onArticleMenuItemSelected(MenuItem item, int articleId) {
 		switch (item.getItemId()) {
 			case R.id.headlines_article_link_copy:
@@ -158,7 +184,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				return true;
 			default:
 				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
-				return super.onContextItemSelected(item);
+				return false;
 		}
 
 	}
@@ -271,6 +297,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		m_list.setOnItemClickListener(this);
         m_list.setOnScrollListener(this);
+		registerForContextMenu(m_list);
 
 		return view;    	
 	}

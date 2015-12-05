@@ -57,6 +57,7 @@
 
                     <RelativeLayout
                         android:id="@+id/headline_header"
+                        android:clickable="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?headlineHeaderBackground"
@@ -64,6 +65,7 @@
 
                         <TextView
                             android:id="@+id/title"
+                            android:background="@drawable/ripple"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_span="2"

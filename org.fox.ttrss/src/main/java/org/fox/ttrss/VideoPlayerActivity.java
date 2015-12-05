@@ -279,7 +279,10 @@ public class VideoPlayerActivity extends CommonActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        return onVideoMenuItemSelected(item);
+        if (!onVideoMenuItemSelected(item))
+            return super.onContextItemSelected(item);
+        else
+            return true;
     }
 
     public boolean onVideoMenuItemSelected(android.view.MenuItem item) {
