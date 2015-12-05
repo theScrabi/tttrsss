@@ -49,4 +49,7 @@
         <attr format="reference|color" name="insetForeground">
         </attr></declare-styleable>
     <attr name="drawer_header" format="reference" />
+    <declare-styleable name="ForegroundImageView">
+        <attr name="android:foreground"/>
+    </declare-styleable>
 </resources>

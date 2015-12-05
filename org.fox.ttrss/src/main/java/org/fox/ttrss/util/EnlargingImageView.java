@@ -34,7 +34,7 @@ import android.view.View;
  * @author TomÃ¡Å¡ ProchÃ¡zka &lt;<a href="mailto:tomas.prochazka@inmite.eu">tomas.prochazka@gmail.com</a>&gt;
  * @version $Revision: 0$ ($Date: 6.6.2011 18:16:52$)
  */
-public class EnlargingImageView extends android.widget.ImageView {
+public class EnlargingImageView extends ForegroundImageView {
 
 	private int mDrawableWidth;
 	private int mDrawableHeight;
