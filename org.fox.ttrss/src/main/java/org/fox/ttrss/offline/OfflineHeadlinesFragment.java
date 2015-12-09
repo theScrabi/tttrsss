@@ -413,6 +413,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         public ImageView textImage;
         public ImageView textChecked;
 		public ImageView flavorVideoKindView;
+		public View flavorImageOverflow;
 		public View headlineHeader;
 	}
 
@@ -534,6 +535,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
+				holder.flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
 
                 v.setTag(holder);
 
@@ -721,8 +723,26 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				holder.flavorImageLoadingBar.setVisibility(View.GONE);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
+				holder.flavorImageOverflow.setVisibility(View.GONE);
 
 				holder.headlineHeader.setBackgroundDrawable(null);
+
+				// this is needed if our flavor image goes behind base listview element
+				holder.headlineHeader.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						m_listener.onArticleSelected(articleId);
+					}
+				});
+
+				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
+					@Override
+					public boolean onLongClick(View v) {
+						m_activity.openContextMenu(v);
+
+						return true;
+					}
+				});
             }
 			
 			if (holder.menuButtonView != null) {

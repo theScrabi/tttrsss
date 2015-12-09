@@ -2,7 +2,6 @@ package org.fox.ttrss.offline;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,7 +25,6 @@ import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
@@ -199,7 +197,7 @@ public class OfflineArticleFragment extends Fragment {
 								
 				title.setText(titleStr);
 				//title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-				title.setOnClickListener(new OnClickListener() {					
+				title.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						try {
@@ -386,22 +384,6 @@ public class OfflineArticleFragment extends Fragment {
 				dv.setText(df.format(d));
 			}
 
-			TextView author = (TextView)view.findViewById(R.id.author);
-
-			boolean hasAuthor = false;
-			
-			if (author != null) {
-				author.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
-				
-				int authorIndex = m_cursor.getColumnIndex("author");
-				if (authorIndex >= 0)
-					author.setText(m_cursor.getString(authorIndex));
-				else
-					author.setVisibility(View.GONE);
-				
-				hasAuthor = true;
-			}
-
 			TextView tagv = (TextView)view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
@@ -414,8 +396,12 @@ public class OfflineArticleFragment extends Fragment {
 					
 					int authorIndex = m_cursor.getColumnIndex("author");
 					
-					if (!hasAuthor && authorIndex >= 0) {
-						fTitle += " (" + getString(R.string.author_formatted, m_cursor.getString(authorIndex)) + ")";
+					if (authorIndex >= 0) {
+						String authorStr = m_cursor.getString(authorIndex);
+
+						if (authorStr != null && authorStr.length() > 0) {
+							fTitle += " (" + getString(R.string.author_formatted, m_cursor.getString(authorIndex)) + ")";
+						}
 					}
 					
 					tagv.setText(fTitle);

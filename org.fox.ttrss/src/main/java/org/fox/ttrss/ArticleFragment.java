@@ -2,7 +2,6 @@ package org.fox.ttrss;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -37,7 +36,6 @@ import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.util.NoChildFocusScrollView;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -329,21 +327,6 @@ public class ArticleFragment extends Fragment  {
             dv.setText(df.format(d));
         }
 
-        TextView author = (TextView)view.findViewById(R.id.author);
-
-        boolean hasAuthor = false;
-
-        if (author != null) {
-            author.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
-
-            if (m_article.author != null && m_article.author.length() > 0) {
-                author.setText(getString(R.string.author_formatted, m_article.author));
-            } else {
-                author.setVisibility(View.GONE);
-            }
-            hasAuthor = true;
-        }
-
         TextView tagv = (TextView)view.findViewById(R.id.tags);
 
         if (tagv != null) {
@@ -352,7 +335,7 @@ public class ArticleFragment extends Fragment  {
             if (m_article.feed_title != null) {
                 String fTitle = m_article.feed_title;
 
-                if (!hasAuthor && m_article.author != null && m_article.author.length() > 0) {
+                if (m_article.author != null && m_article.author.length() > 0) {
                     fTitle += " (" + getString(R.string.author_formatted, m_article.author) + ")";
                 }
 
