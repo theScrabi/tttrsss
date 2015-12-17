@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,13 +24,14 @@ import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
 
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
-import org.fox.ttrss.util.NoChildFocusScrollView;
+import org.fox.ttrss.util.NotifyingScrollView;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -134,25 +134,25 @@ public class OfflineArticleFragment extends Fragment {
 		if (m_cursor.isFirst()) {
             final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 
-			NoChildFocusScrollView scrollView = (NoChildFocusScrollView) view.findViewById(R.id.article_scrollview);
+            NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
             View fab = view.findViewById(R.id.article_fab);
 
             if (scrollView != null && m_activity.isSmallScreen()) {
                 view.findViewById(R.id.article_heading_spacer).setVisibility(View.VISIBLE);
 
-                scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-					@Override
-					public void onScrollChange(NestedScrollView who, int l, int t, int oldl, int oldt) {
-						ActionBar ab = m_activity.getSupportActionBar();
+                scrollView.setOnScrollChangedListener(new NotifyingScrollView.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                        ActionBar ab = m_activity.getSupportActionBar();
 
-						if (t >= oldt && t >= ab.getHeight()) {
-							ab.hide();
-						} else if (t <= ab.getHeight() || oldt - t >= 10) {
-							ab.show();
-						}
+                        if (t >= oldt && t >= ab.getHeight()) {
+                            ab.hide();
+                        } else if (t <= ab.getHeight() || oldt - t >= 10) {
+                            ab.show();
+                        }
 
-					}
-				});
+                    }
+                });
             }
 
             if (scrollView != null && fab != null) {
