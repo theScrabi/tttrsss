@@ -168,23 +168,6 @@ public class OnlineActivity extends CommonActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-        if (!ImageLoader.getInstance().isInited()) {
-			ImageLoaderConfiguration config;
-
-			try {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.diskCache(
-								new LruDiscCache(new File(getCacheDir(), "article-images"),
-										DefaultConfigurationFactory.createFileNameGenerator(),
-										100 * 1024 * 1024))
-						.build();
-			} catch (IOException e) {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.build();
-			}
-            ImageLoader.getInstance().init(config);
-        }
-
 		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
 		if (isOffline) {

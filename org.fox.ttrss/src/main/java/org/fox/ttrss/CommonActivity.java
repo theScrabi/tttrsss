@@ -31,11 +31,18 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiscCache;
+import com.nostra13.universalimageloader.core.DefaultConfigurationFactory;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import org.fox.ttrss.util.DatabaseHelper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class CommonActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -159,6 +166,23 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		}
 
 		CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", m_customTabServiceConnection);
+
+		if (!ImageLoader.getInstance().isInited()) {
+			ImageLoaderConfiguration config;
+
+			try {
+				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+						.diskCache(
+								new LruDiscCache(new File(getCacheDir(), "article-images"),
+										DefaultConfigurationFactory.createFileNameGenerator(),
+										100 * 1024 * 1024))
+						.build();
+			} catch (IOException e) {
+				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+						.build();
+			}
+			ImageLoader.getInstance().init(config);
+		}
 
 		super.onCreate(savedInstanceState);
 	}
