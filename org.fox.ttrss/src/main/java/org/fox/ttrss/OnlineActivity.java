@@ -289,8 +289,12 @@ public class OnlineActivity extends CommonActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		
-		unregisterReceiver(m_broadcastReceiver);
+
+		try {
+			unregisterReceiver(m_broadcastReceiver);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
