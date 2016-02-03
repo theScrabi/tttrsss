@@ -387,7 +387,12 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
             m_drawerLayout.openDrawer(Gravity.START);
         } else {
-            super.onBackPressed();
+			try {
+				super.onBackPressed();
+			} catch (IllegalStateException e) {
+				// java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+				e.printStackTrace();
+			}
         }
     }
 

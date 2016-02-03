@@ -304,7 +304,12 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 
         setResult(Activity.RESULT_OK, resultIntent);
 
-        super.onBackPressed();
+		try {
+			super.onBackPressed();
+		} catch (IllegalStateException e) {
+			// java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+			e.printStackTrace();
+		}
     }
 
 	@Override

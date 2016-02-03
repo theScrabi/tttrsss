@@ -201,7 +201,12 @@ public class OfflineDetailActivity extends OfflineActivity implements OfflineHea
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		try {
+			super.onBackPressed();
+		} catch (IllegalStateException e) {
+			// java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
+			e.printStackTrace();
+		}
 	}
 
 	@Override
