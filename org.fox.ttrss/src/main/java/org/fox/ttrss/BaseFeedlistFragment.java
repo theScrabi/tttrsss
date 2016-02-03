@@ -31,6 +31,8 @@ public abstract class BaseFeedlistFragment extends Fragment {
         if (true /*m_activity.findViewById(R.id.headlines_drawer) != null*/) {
             try {
 
+                boolean needSettingsFooter = false;
+
                 if (activity.isSmallScreen()) {
                     View layout = inflater.inflate(R.layout.drawer_header, list, false);
                     list.addHeaderView(layout, null, false);
@@ -60,10 +62,12 @@ public abstract class BaseFeedlistFragment extends Fragment {
                                 ActivityCompat.startActivityForResult(getActivity(), intent, 0, options.toBundle());
 
                             } catch (Exception e) {
-
+                                e.printStackTrace();
                             }
                         }
                     });
+                } else {
+                    needSettingsFooter = true;
                 }
 
 				/* deal with ~material~ footers */
@@ -108,6 +112,41 @@ public abstract class BaseFeedlistFragment extends Fragment {
                 });
 
                 if (isRoot) {
+                    if (needSettingsFooter) {
+                        // settings (as a list footer row)
+
+                        footer = inflater.inflate(R.layout.feeds_row, list, false);
+                        footer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                                    Intent intent = new Intent(getActivity(),
+                                            PreferencesActivity.class);
+
+                                    ActivityOptionsCompat options = ActivityOptionsCompat
+                                            .makeSceneTransitionAnimation(getActivity(), v, "SETTINGS_REVEAL");
+
+                                    ActivityCompat.startActivityForResult(getActivity(), intent, 0, options.toBundle());
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        list.addFooterView(footer);
+                        text = (TextView) footer.findViewById(R.id.title);
+                        text.setText(R.string.action_settings);
+
+                        icon = (ImageView) footer.findViewById(R.id.icon);
+                        tv = new TypedValue();
+                        getActivity().getTheme().resolveAttribute(R.attr.ic_settings, tv, true);
+                        icon.setImageResource(tv.resourceId);
+
+                        TextView counter = (TextView) footer.findViewById(R.id.unread_counter);
+                        counter.setText(R.string.blank);
+                    }
+
                     // offline
                     footer = inflater.inflate(R.layout.feeds_row, list, false);
                     footer.setOnClickListener(new View.OnClickListener() {
