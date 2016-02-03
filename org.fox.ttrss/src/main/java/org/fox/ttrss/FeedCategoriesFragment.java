@@ -315,7 +315,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		
 		@Override
 		protected void onPostExecute(JsonElement result) {
-			if (isDetached()) return;
+			if (isDetached() || !isAdded()) return;
 			
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 

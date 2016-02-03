@@ -496,7 +496,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 		@Override
 		protected void onPostExecute(JsonElement result) {
-			if (isDetached()) return;
+			if (isDetached() || !isAdded()) return;
 
 			if (getView() != null) {
                 View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
