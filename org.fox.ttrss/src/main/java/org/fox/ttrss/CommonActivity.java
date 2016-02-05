@@ -309,7 +309,12 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 			CustomTabsIntent intent = builder.build();
 
-			intent.launchUrl(this, uri);
+			try {
+				intent.launchUrl(this, uri);
+			} catch (Exception e) {
+				e.printStackTrace();
+				toast(e.getMessage());
+			}
 		}
 	}
 
@@ -358,7 +363,12 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 										Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
-										startActivity(intent);
+										try {
+											startActivity(intent);
+										} catch (Exception e) {
+											e.printStackTrace();
+											toast(e.getMessage());
+										}
 
 									}
 								});
@@ -386,7 +396,11 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		} else {
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
-			startActivity(intent);
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				toast(e.getMessage());
+			}
 		}
 	}
 
