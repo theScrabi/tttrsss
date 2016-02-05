@@ -319,9 +319,19 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	}
 
 	// uses chrome custom tabs when available
-	public void openUri(final Uri uri) {
+	public void openUri(Uri uri) {
 		boolean enableCustomTabs = m_prefs.getBoolean("enable_custom_tabs", true);
 		final boolean askEveryTime = m_prefs.getBoolean("custom_tabs_ask_always", true);
+
+		if (uri.getScheme() == null) {
+			try {
+				uri = Uri.parse("https:" + uri.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		final Uri finalUri = uri;
 
 		if (enableCustomTabs && m_customTabClient != null) {
 
@@ -345,7 +355,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 											editor.apply();
 										}
 
-										openUriWithCustomTab(uri);
+										openUriWithCustomTab(finalUri);
 
 									}
 								})
@@ -361,7 +371,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 											editor.apply();
 										}
 
-										Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+										Intent intent = new Intent(Intent.ACTION_VIEW, finalUri);
 
 										try {
 											startActivity(intent);
