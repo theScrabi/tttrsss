@@ -280,11 +280,11 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	}
 
 	protected void shareText(String text) {
-		startActivity(getShareIntent(text, null));
+		startActivity(Intent.createChooser(getShareIntent(text, null), text));
 	}
 
 	protected void shareText(String text, String subject) {
-		startActivity(getShareIntent(text, subject));
+		startActivity(Intent.createChooser(getShareIntent(text, subject), text));
 	}
 
 	private void openUriWithCustomTab(Uri uri) {
