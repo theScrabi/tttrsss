@@ -2,7 +2,6 @@ package org.fox.ttrss.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,16 +38,13 @@ public class Article implements Parcelable {
     public boolean selected;
 
 	/* not serialized */
-	public Document articleDoc;
-	public Element flavorImage;
+	transient public Document articleDoc;
+	transient public Element flavorImage;
 
-	public String flavorImageUri;
-	public String flavorStreamUri;
-	public String youtubeVid;
-
-	//public int flavorImageCount;
-
-	public List<Element> mediaList = new ArrayList<>();
+	transient public String flavorImageUri;
+	transient public String flavorStreamUri;
+	transient public String youtubeVid;
+	transient public List<Element> mediaList = new ArrayList<>();
 
 	public Article(Parcel in) {
 		readFromParcel(in);
