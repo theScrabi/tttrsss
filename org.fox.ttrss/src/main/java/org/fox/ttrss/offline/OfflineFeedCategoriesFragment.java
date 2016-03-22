@@ -47,7 +47,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 		menu.findItem(R.id.create_shortcut).setEnabled(false);
 
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		Cursor cursor = (Cursor)getCatAtPosition(info.position);
+		Cursor cursor = getCatAtPosition(info.position);
 		
 		if (cursor != null) 
 			menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex("title")));
@@ -57,7 +57,7 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 	}
 	
 	public Cursor createCursor() {
-		String unreadOnly = BaseColumns._ID + "> 0 AND " + (m_activity.getUnreadOnly() ? "unread > 0" : "1");
+		String unreadOnly = BaseColumns._ID + ">= 0 AND " + (m_activity.getUnreadOnly() ? "unread > 0" : "1");
 		
 		String order = m_prefs.getBoolean("sort_feeds_by_unread", false) ? "unread DESC, title" : "title";
 		
