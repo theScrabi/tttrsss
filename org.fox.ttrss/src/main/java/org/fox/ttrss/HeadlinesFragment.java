@@ -598,8 +598,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					if (result != null) {
 						m_refreshInProgress = false;
 
-						if (m_articles.indexOf(m_activeArticle) == -1)
+						if (m_activeArticle != null && !m_articles.containsId(m_activeArticle.id)) {
 							m_activeArticle = null;
+						}
 
 						if (m_firstIdChanged) {
 							m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
@@ -613,7 +614,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						// not sure why but listview sometimes gets positioned while ignoring the header so
 						// top headline content becomes partially obscured by the toolbar on phones
 						// (not reproducible on avd)
-						if (!fappend) m_list.smoothScrollToPosition(0);
+						if (!fappend) {
+							m_list.smoothScrollToPosition(0);
+						}
 
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {

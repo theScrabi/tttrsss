@@ -279,6 +279,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 			Article article = hf.getActiveArticle();
 						
 			if (article == null && hf.getAllArticles().size() > 0) {
+
 				article = hf.getAllArticles().get(0);
 
 				hf.setActiveArticle(article);
