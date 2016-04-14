@@ -434,13 +434,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_list = (ListView)view.findViewById(R.id.headlines_list);
 
 		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
-		m_list.setOnTouchListener(new ShowHideOnScroll(fab));
-		fab.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				refresh(false);
-			}
-		});
+
+		if (! (getActivity() instanceof DetailActivity)) {
+
+			m_list.setOnTouchListener(new ShowHideOnScroll(fab));
+			fab.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					refresh(false);
+				}
+			});
+		} else {
+			fab.setVisibility(View.GONE);
+		}
 
 		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
 		m_list.addFooterView(m_listLoadingView, null, false);

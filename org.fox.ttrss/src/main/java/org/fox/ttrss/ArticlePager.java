@@ -81,7 +81,13 @@ public class ArticlePager extends Fragment {
 	
 		if (savedInstanceState != null) {
 			m_article = savedInstanceState.getParcelable("article");
-            m_articles = ((DetailActivity)m_activity).m_articles;
+
+			if (! (m_activity instanceof DetailActivity)) {
+				m_articles = savedInstanceState.getParcelable("articles");
+			} else {
+				m_articles = ((DetailActivity)m_activity).m_articles;
+			}
+
 			m_feed = savedInstanceState.getParcelable("feed");
 			m_firstId = savedInstanceState.getInt("firstId");
 		}
