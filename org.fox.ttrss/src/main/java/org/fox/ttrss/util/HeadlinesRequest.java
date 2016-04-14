@@ -32,6 +32,7 @@ public class HeadlinesRequest extends ApiRequest {
 
 	protected boolean m_firstIdChanged = false;
 	protected int m_firstId = 0;
+	protected int m_amountLoaded = 0;
 
 	public HeadlinesRequest(Context context, OnlineActivity activity, final Feed feed, ArticleList articles) {
 		super(context);
@@ -86,12 +87,14 @@ public class HeadlinesRequest extends ApiRequest {
 							m_articles.remove(0);
 						}
 
-						if (m_articles.get(m_articles.size()-1).id == HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE) {
+						/*if (m_articles.get(m_articles.size()-1).id == HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE) {
 							m_articles.remove(m_articles.size()-1); // remove previous placeholder
-						}
+						}*/
 						
 					}
-					
+
+					m_amountLoaded = articles.size();
+
 					for (Article f : articles)
 						if (!m_articles.containsId(f.id)) {
 							f.collectMediaInfo();
@@ -99,10 +102,10 @@ public class HeadlinesRequest extends ApiRequest {
 							m_articles.add(f);
 						}
 
-					if (articles.size() == HEADLINES_REQUEST_SIZE) {
+					/*if (articles.size() == HEADLINES_REQUEST_SIZE) {
 						Article placeholder = new Article(HeadlinesFragment.ARTICLE_SPECIAL_LOADMORE);
 						m_articles.add(placeholder);
-					}
+					}*/
 
 					/* if (m_articles.size() == 0)
 						m_activity.setLoadingStatus(R.string.no_headlines_to_display, false);

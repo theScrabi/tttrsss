@@ -90,7 +90,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
 
-	public static final int ARTICLE_SPECIAL_LOADMORE = -1;
+	//public static final int ARTICLE_SPECIAL_LOADMORE = -1;
 	public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
 
 	private final String TAG = this.getClass().getSimpleName();
@@ -117,6 +117,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private int m_listPreviousVisibleItem;
     private ListView m_list;
 	private ImageLoader m_imageLoader = ImageLoader.getInstance();
+	private View m_listLoadingView;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -441,7 +442,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-        if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
+		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
+		m_list.addFooterView(m_listLoadingView, null, false);
+
+		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             int screenHeight = display.getHeight();
@@ -558,6 +562,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
+			m_listLoadingView.setVisibility(View.INVISIBLE);
+
 			/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
 				append = false;
 			} */
@@ -617,6 +623,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (!fappend) {
 							m_list.smoothScrollToPosition(0);
 						}
+
+						m_listLoadingView.setVisibility(m_amountLoaded == HEADLINES_REQUEST_SIZE ? View.VISIBLE : View.GONE);
 
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
@@ -763,8 +771,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
-		public static final int VIEW_LOADMORE = 4;
-		public static final int VIEW_TOP_CHANGED = 5;
+		//public static final int VIEW_LOADMORE = 4;
+		public static final int VIEW_TOP_CHANGED = 4;
 		
 		public static final int VIEW_COUNT = VIEW_TOP_CHANGED+1;
 		
@@ -819,9 +827,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 
-			if (a.id == ARTICLE_SPECIAL_LOADMORE) {
-				return VIEW_LOADMORE;
-			} else if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
+			/*if (a.id == ARTICLE_SPECIAL_LOADMORE) {
+				return VIEW_LOADMORE; */
+			if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
 				return VIEW_TOP_CHANGED;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
@@ -919,9 +927,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
                 switch (getItemViewType(position)) {
-				case VIEW_LOADMORE:
+				/*case VIEW_LOADMORE:
 					layoutId = R.layout.headlines_row_loadmore;
-					break;
+					break;*/
 				case VIEW_TOP_CHANGED:
 					layoutId = R.layout.headlines_row_top_changed;
 					break;
@@ -1570,7 +1578,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (!m_refreshInProgress && m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null && firstVisibleItem + visibleItemCount == m_articles.size()) {
+		if (!m_refreshInProgress && /*m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null &&*/ firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
 
