@@ -279,6 +279,7 @@ public class ArticlePager extends Fragment {
 
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("article", m_article);
+		out.putParcelable("articles", m_articles);
 		out.putParcelable("feed", m_feed);
 		out.putInt("firstId", m_firstId);
 	}
