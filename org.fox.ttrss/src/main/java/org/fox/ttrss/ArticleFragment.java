@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -445,6 +446,10 @@ public class ArticleFragment extends Fragment  {
             }
 
             ws.setMediaPlaybackRequiresUserGesture(false);
+        }
+
+        if (CommonActivity.THEME_DARK.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
+            m_web.setBackgroundColor(Color.BLACK);
         }
 
         if (m_prefs.getBoolean("justify_article_text", true)) {

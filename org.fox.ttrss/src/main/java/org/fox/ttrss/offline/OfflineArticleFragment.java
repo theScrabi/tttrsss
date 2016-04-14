@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
 
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
 import org.fox.ttrss.util.NotifyingScrollView;
@@ -238,6 +240,9 @@ public class OfflineArticleFragment extends Fragment {
 			final WebView web = (WebView)view.findViewById(R.id.article_content);
 			
 			if (web != null) {
+				if (CommonActivity.THEME_DARK.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
+					web.setBackgroundColor(Color.BLACK);
+				}
 
 				web.setWebViewClient(new WebViewClient() {
 					@Override
