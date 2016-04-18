@@ -69,9 +69,7 @@ import com.shamanland.fab.ShowHideOnScroll;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
-import org.fox.ttrss.util.EnlargingImageView;
 import org.fox.ttrss.util.HeadlinesRequest;
-import org.jsoup.Jsoup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -568,7 +566,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
-			m_listLoadingView.setVisibility(View.INVISIBLE);
+			m_listLoadingView.setVisibility(View.VISIBLE);
 
 			/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
 				append = false;
@@ -603,9 +601,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					
 					super.onPostExecute(result);
 
-					if (isAdded()) {
-                        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
-					} 
+					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
+
+					m_listLoadingView.setVisibility(View.INVISIBLE);
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -630,7 +628,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							m_list.smoothScrollToPosition(0);
 						}
 
-						m_listLoadingView.setVisibility(m_amountLoaded == HEADLINES_REQUEST_SIZE ? View.VISIBLE : View.GONE);
+						//m_listLoadingView.setVisibility(m_amountLoaded == HEADLINES_REQUEST_SIZE ? View.VISIBLE : View.GONE);
 
 					} else {
 						if (m_lastError == ApiError.LOGIN_FAILED) {
