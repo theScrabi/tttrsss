@@ -89,7 +89,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public static final int HEADLINES_BUFFER_MAX = 500;
 
 	//public static final int ARTICLE_SPECIAL_LOADMORE = -1;
-	public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
+	//public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
 
 	private final String TAG = this.getClass().getSimpleName();
 	
@@ -99,6 +99,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private boolean m_refreshInProgress = false;
 	private boolean m_autoCatchupDisabled = false;
 	private int m_firstId = 0;
+	private boolean m_lazyLoadDisabled = false;
 
 	private SharedPreferences m_prefs;
 	
@@ -116,6 +117,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private ListView m_list;
 	private ImageLoader m_imageLoader = ImageLoader.getInstance();
 	private View m_listLoadingView;
+	//private View m_topChangedView;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -405,6 +407,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
 			m_firstId = savedInstanceState.getInt("firstId");
+			m_lazyLoadDisabled = savedInstanceState.getBoolean("lazyLoadDisabled");
 		}
 
 		String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
@@ -448,6 +451,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
 		m_list.addFooterView(m_listLoadingView, null, false);
+		m_listLoadingView.setVisibility(View.GONE);
+
+		/*m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);
+		m_list.addFooterView(m_topChangedView, null, false);
+		m_topChangedView.setVisibility(View.GONE);*/
 
 		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -561,12 +569,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	@SuppressWarnings({ "serial" })
 	public void refresh(boolean append, boolean userInitiated) {
+
+		if (!append) m_lazyLoadDisabled = false;
+
 		if (m_activity != null && m_feed != null) {
 			m_refreshInProgress = true;
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
-
-			m_listLoadingView.setVisibility(View.VISIBLE);
 
 			/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
 				append = false;
@@ -603,7 +612,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-					m_listLoadingView.setVisibility(View.INVISIBLE);
+					m_listLoadingView.setVisibility(View.GONE);
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -613,7 +622,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						}
 
 						if (m_firstIdChanged) {
-							m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
+							m_lazyLoadDisabled = true;
+
+							m_activity.toast(R.string.headlines_row_top_changed);
+
+							//m_topChangedView.setVisibility(View.VISIBLE);
+							//m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
 						}
 
 						HeadlinesFragment.this.m_firstId = m_firstId;
@@ -672,7 +686,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				} else {
 					skip = numAll;
 				}
-				
+
+				if (skip > 0) {
+					m_listLoadingView.setVisibility(View.VISIBLE);
+				}
+
 			} else {
 				//m_activity.setLoadingStatus(R.string.blank, true);
 			}
@@ -742,6 +760,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		out.putCharSequence("searchQuery", m_searchQuery);
         out.putBoolean("compactLayoutMode", m_compactLayoutMode);
 		out.putInt("firstId", m_firstId);
+		out.putBoolean("lazyLoadDisabled", m_lazyLoadDisabled);
 	}
 
 	static class HeadlineViewHolder {
@@ -776,9 +795,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
 		//public static final int VIEW_LOADMORE = 4;
-		public static final int VIEW_TOP_CHANGED = 4;
+		//public static final int VIEW_TOP_CHANGED = 4;
 		
-		public static final int VIEW_COUNT = VIEW_TOP_CHANGED+1;
+		public static final int VIEW_COUNT = VIEW_SELECTED_UNREAD + 1;
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
@@ -833,9 +852,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			/*if (a.id == ARTICLE_SPECIAL_LOADMORE) {
 				return VIEW_LOADMORE; */
-			if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
+			/*if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
 				return VIEW_TOP_CHANGED;
-			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
+			} else */ if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
 				return VIEW_SELECTED;
@@ -933,10 +952,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 switch (getItemViewType(position)) {
 				/*case VIEW_LOADMORE:
 					layoutId = R.layout.headlines_row_loadmore;
-					break;*/
+					break;
 				case VIEW_TOP_CHANGED:
 					layoutId = R.layout.headlines_row_top_changed;
-					break;
+					break;*/
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
 					break;
@@ -1582,10 +1601,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		if (!m_refreshInProgress && /*m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null &&*/ firstVisibleItem + visibleItemCount == m_articles.size()) {
-			refresh(true);
-		}
-
 		if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > (m_activity.isSmallScreen() ? 1 : 0) && !m_autoCatchupDisabled) {
 			Article a = (Article) view.getItemAtPosition(firstVisibleItem - 1);
 
@@ -1611,6 +1626,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             m_listPreviousVisibleItem = firstVisibleItem;
         }
+
+		if (!m_refreshInProgress && !m_lazyLoadDisabled && /*m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null &&*/ firstVisibleItem + visibleItemCount == m_articles.size()) {
+			refresh(true);
+		}
 	}
 
 	@Override

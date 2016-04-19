@@ -165,8 +165,11 @@ public class ArticlePager extends Fragment {
 				
 				if (result != null) {
 
-					if (m_firstIdChanged) {
-						m_articles.add(new Article(HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED));
+					if (m_firstIdChanged && !(m_activity instanceof DetailActivity && !m_activity.isPortrait())) {
+						// TODO: show an information message in viewpager without modifying m_articles
+						//m_articles.add(new Article(HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED));
+
+						m_activity.toast(R.string.headlines_row_top_changed);
 					}
 
 					ArticlePager.this.m_firstId = m_firstId;

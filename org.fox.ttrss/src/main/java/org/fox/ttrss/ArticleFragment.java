@@ -182,7 +182,7 @@ public class ArticleFragment extends Fragment  {
         m_contentView = view.findViewById(R.id.article_scrollview);
         m_customViewContainer = (FrameLayout) view.findViewById(R.id.article_fullscreen_video);
 
-        if (m_article.id == HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED) {
+        /* if (m_article.id == HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED) {
             TextView statusMessage = (TextView) view.findViewById(R.id.article_status_message);
             statusMessage.setText(R.string.headlines_row_top_changed);
             statusMessage.setVisibility(View.VISIBLE);
@@ -191,7 +191,7 @@ public class ArticleFragment extends Fragment  {
             view.findViewById(R.id.article_fab).setVisibility(View.GONE);
 
             return view;
-        }
+        } */
 
         NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
         m_fab = view.findViewById(R.id.article_fab);
