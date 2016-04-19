@@ -117,7 +117,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private ListView m_list;
 	private ImageLoader m_imageLoader = ImageLoader.getInstance();
 	private View m_listLoadingView;
-	//private View m_topChangedView;
+	private View m_topChangedView;
+	private View m_amrFooterView;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -450,23 +451,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 
 		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
-		m_list.addFooterView(m_listLoadingView, null, false);
-		m_listLoadingView.setVisibility(View.GONE);
+		//m_list.addFooterView(m_listLoadingView, null, false);
+		//m_listLoadingView.setVisibility(View.GONE);
 
-		/*m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);
-		m_list.addFooterView(m_topChangedView, null, false);
-		m_topChangedView.setVisibility(View.GONE);*/
+		m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);
+		//m_list.addFooterView(m_topChangedView, null, false);
+		//m_topChangedView.setVisibility(View.GONE);*/
 
 		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             int screenHeight = display.getHeight();
 
-            View layout = inflater.inflate(R.layout.headlines_footer, container, false);
+            m_amrFooterView = inflater.inflate(R.layout.headlines_footer, container, false);
+			m_amrFooterView.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-			layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
-
-            m_list.addFooterView(layout, null, false);
+            m_list.addFooterView(m_amrFooterView, null, false);
         }
 
         if (m_activity.isSmallScreen()) {
@@ -569,6 +569,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	
 	@SuppressWarnings({ "serial" })
 	public void refresh(boolean append, boolean userInitiated) {
+		m_list.removeFooterView(m_listLoadingView);
+		m_list.removeFooterView(m_topChangedView);
+		m_list.removeFooterView(m_amrFooterView);
 
 		if (!append) m_lazyLoadDisabled = false;
 
@@ -612,7 +615,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-					m_listLoadingView.setVisibility(View.GONE);
+					//m_listLoadingView.setVisibility(View.GONE);
+					m_list.removeFooterView(m_listLoadingView);
+					m_list.removeFooterView(m_topChangedView);
+					m_list.removeFooterView(m_amrFooterView);
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -624,10 +630,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_firstIdChanged) {
 							m_lazyLoadDisabled = true;
 
-							m_activity.toast(R.string.headlines_row_top_changed);
+							//m_activity.toast(R.string.headlines_row_top_changed);
 
 							//m_topChangedView.setVisibility(View.VISIBLE);
 							//m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
+
+							m_list.addFooterView(m_topChangedView, null, false);
 						}
 
 						HeadlinesFragment.this.m_firstId = m_firstId;
@@ -658,6 +666,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							//m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
 					}
+
+					if (m_amrFooterView != null) m_list.addFooterView(m_amrFooterView, null, false);
 				}
 			};
 			
@@ -688,7 +698,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				}
 
 				if (skip > 0) {
-					m_listLoadingView.setVisibility(View.VISIBLE);
+					m_list.addFooterView(m_listLoadingView, null, false);
+					//m_listLoadingView.setVisibility(View.VISIBLE);
 				}
 
 			} else {
