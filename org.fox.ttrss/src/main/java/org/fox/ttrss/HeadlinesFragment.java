@@ -638,6 +638,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							m_list.addFooterView(m_topChangedView, null, false);
 						}
 
+						if (m_amountLoaded < HEADLINES_REQUEST_SIZE) {
+							m_lazyLoadDisabled = true;
+						}
+
 						HeadlinesFragment.this.m_firstId = m_firstId;
 
 						m_adapter.notifyDataSetChanged();
