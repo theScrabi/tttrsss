@@ -1693,7 +1693,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
-			refresh(false);
+
+			// could be called before fragment view has been initialized
+			if (m_list != null) {
+				refresh(false);
+			}
 		}
 	}
 
