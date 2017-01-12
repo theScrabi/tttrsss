@@ -22,14 +22,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 public class OfflineActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -492,36 +488,66 @@ public class OfflineActivity extends CommonActivity {
 			return true;
 		case R.id.catchup_above:
 			if (oap != null) {
-				int articleId = oap.getSelectedArticleId();
-				int feedId = oap.getFeedId();
-				boolean isCat = oap.getFeedIsCat();
+				if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
 
-				SQLiteStatement stmt = null;
-				
-				if (isCat) {
-					stmt = getDatabase().compileStatement(
-							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");						
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							OfflineActivity.this)
+							.setMessage(R.string.confirm_catchup_above)
+							.setPositiveButton(R.string.dialog_ok,
+									new Dialog.OnClickListener() {
+										public void onClick(DialogInterface dialog,
+															int which) {
+
+											catchupAbove(oap);
+
+										}
+									})
+							.setNegativeButton(R.string.dialog_cancel,
+									new Dialog.OnClickListener() {
+										public void onClick(DialogInterface dialog,
+															int which) {
+
+										}
+									});
+
+					AlertDialog dlg = builder.create();
+					dlg.show();
 				} else {
-					stmt = getDatabase().compileStatement(
-							"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-							"updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-							"AND feed_id = ?");						
+					catchupAbove(oap);
 				}
-				
-				stmt.bindLong(1, articleId);
-				stmt.bindLong(2, feedId);
-				stmt.execute();
-				stmt.close();
-				
-				refresh();
 			}
 			return true;
 		default:
 			Log.d(TAG, "onOptionsItemSelected, unhandled id=" + item.getItemId());
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void catchupAbove(OfflineArticlePager oap) {
+		int articleId = oap.getSelectedArticleId();
+		int feedId = oap.getFeedId();
+		boolean isCat = oap.getFeedIsCat();
+
+		SQLiteStatement stmt = null;
+
+		if (isCat) {
+            stmt = getDatabase().compileStatement(
+                    "UPDATE articles SET modified = 1, unread = 0 WHERE " +
+                    "updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+                    "AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+        } else {
+            stmt = getDatabase().compileStatement(
+                    "UPDATE articles SET modified = 1, unread = 0 WHERE " +
+                    "updated >= (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+                    "AND feed_id = ?");
+        }
+
+		stmt.bindLong(1, articleId);
+		stmt.bindLong(2, feedId);
+		stmt.execute();
+		stmt.close();
+
+		refresh();
 	}
 
 	@Override

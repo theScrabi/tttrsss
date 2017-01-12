@@ -241,4 +241,6 @@
     <string name="open_with_app">Open with app</string>
     <string name="prefs_opening_links">Opening links</string>
     <string name="open_with">Open with…</string>
+    <string name="confirm_catchup_above">Mark articles as read?</string>
+    <string name="dialog_ok">OK</string>
 </resources>

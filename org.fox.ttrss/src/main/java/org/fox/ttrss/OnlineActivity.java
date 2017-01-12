@@ -32,10 +32,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiscCache;
-import com.nostra13.universalimageloader.core.DefaultConfigurationFactory;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.fox.ttrss.offline.OfflineActivity;
 import org.fox.ttrss.offline.OfflineDownloadService;
@@ -45,12 +41,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -897,26 +888,35 @@ public class OnlineActivity extends CommonActivity {
 			return true;
 		case R.id.catchup_above:
 			if (hf != null) {
-				if (ap != null && ap.getSelectedArticle() != null) {
-					Article article = ap.getSelectedArticle();
-					
-					ArticleList articles = hf.getAllArticles();
-					ArticleList tmp = new ArticleList();
-					for (Article a : articles) {
-						if (article.id == a.id)
-							break;
 
-						if (a.unread) {							
-							a.unread = false;
-							tmp.add(a);
-						}
-					}
-					if (tmp.size() > 0) {
-						toggleArticlesUnread(tmp);
-						hf.notifyUpdated();
-						invalidateOptionsMenu();
-					}
+				if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							OnlineActivity.this)
+							.setMessage(R.string.confirm_catchup_above)
+							.setPositiveButton(R.string.dialog_ok,
+									new Dialog.OnClickListener() {
+										public void onClick(DialogInterface dialog,
+															int which) {
+
+											catchupAbove(hf, ap);
+
+										}
+									})
+							.setNegativeButton(R.string.dialog_cancel,
+									new Dialog.OnClickListener() {
+										public void onClick(DialogInterface dialog,
+															int which) {
+
+										}
+									});
+
+					AlertDialog dlg = builder.create();
+					dlg.show();
+				} else {
+					catchupAbove(hf, ap);
 				}
+
 			}
 			return true;
 		case R.id.set_labels:
@@ -940,7 +940,30 @@ public class OnlineActivity extends CommonActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+	private void catchupAbove(HeadlinesFragment hf, ArticlePager ap) {
+		if (ap != null && ap.getSelectedArticle() != null) {
+            Article article = ap.getSelectedArticle();
+
+            ArticleList articles = hf.getAllArticles();
+            ArticleList tmp = new ArticleList();
+            for (Article a : articles) {
+                if (article.id == a.id)
+                    break;
+
+                if (a.unread) {
+                    a.unread = false;
+                    tmp.add(a);
+                }
+            }
+            if (tmp.size() > 0) {
+                toggleArticlesUnread(tmp);
+                hf.notifyUpdated();
+                invalidateOptionsMenu();
+            }
+        }
+	}
+
 	protected void catchupVisibleArticles() {
 		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 		

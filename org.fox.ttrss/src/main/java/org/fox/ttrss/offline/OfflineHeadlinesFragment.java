@@ -1,7 +1,10 @@
 package org.fox.ttrss.offline;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.database.Cursor;
@@ -129,7 +132,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			return true;
 	}
 
-	private boolean onArticleMenuItemSelected(MenuItem item, int articleId) {
+	private boolean onArticleMenuItemSelected(MenuItem item, final int articleId) {
 		switch (item.getItemId()) {
 			case R.id.headlines_article_link_copy:
 				if (true) {
@@ -159,34 +162,66 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				return true;
 			case R.id.catchup_above:
 				if (true) {
-					SQLiteStatement stmt = null;
+					if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
 
-					String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								m_activity)
+								.setMessage(R.string.confirm_catchup_above)
+								.setPositiveButton(R.string.dialog_ok,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+																int which) {
 
-					if (m_feedIsCat) {
-						stmt = m_activity.getDatabase().compileStatement(
-								"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-										"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-										"AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+												catchupAbove(articleId);
+
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+																int which) {
+
+											}
+										});
+
+						AlertDialog dlg = builder.create();
+						dlg.show();
 					} else {
-						stmt = m_activity.getDatabase().compileStatement(
-								"UPDATE articles SET modified = 1, unread = 0 WHERE " +
-										"updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
-										"AND unread = 1 AND feed_id = ?");
+						catchupAbove(articleId);
 					}
 
-					stmt.bindLong(1, articleId);
-					stmt.bindLong(2, m_feedId);
-					stmt.execute();
-					stmt.close();
 				}
-				refresh();
 				return true;
 			default:
 				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
 				return false;
 		}
 
+	}
+
+	private void catchupAbove(int articleId) {
+		SQLiteStatement stmt = null;
+
+		String updatedOperator = (m_prefs.getBoolean("offline_oldest_first", false)) ? "<" : ">";
+
+		if (m_feedIsCat) {
+            stmt = m_activity.getDatabase().compileStatement(
+                    "UPDATE articles SET modified = 1, unread = 0 WHERE " +
+                            "updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+                            "AND unread = 1 AND feed_id IN (SELECT "+BaseColumns._ID+" FROM feeds WHERE cat_id = ?)");
+        } else {
+            stmt = m_activity.getDatabase().compileStatement(
+                    "UPDATE articles SET modified = 1, unread = 0 WHERE " +
+                            "updated "+updatedOperator+" (SELECT updated FROM articles WHERE " + BaseColumns._ID + " = ?) " +
+                            "AND unread = 1 AND feed_id = ?");
+        }
+
+		stmt.bindLong(1, articleId);
+		stmt.bindLong(2, m_feedId);
+		stmt.execute();
+		stmt.close();
+
+		refresh();
 	}
 
 	@Override

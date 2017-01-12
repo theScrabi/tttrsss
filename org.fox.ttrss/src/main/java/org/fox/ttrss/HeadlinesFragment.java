@@ -1,7 +1,10 @@
 package org.fox.ttrss;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -181,28 +184,61 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				return true;
 			case R.id.catchup_above:
 				if (true) {
-					ArticleList articles = getAllArticles();
-					ArticleList tmp = new ArticleList();
-					for (Article a : articles) {
-						if (article.id == a.id)
-							break;
 
-						if (a.unread) {
-							a.unread = false;
-							tmp.add(a);
-						}
+					if (m_prefs.getBoolean("confirm_headlines_catchup", true)) {
+						final Article fa = article;
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								m_activity)
+								.setMessage(R.string.confirm_catchup_above)
+								.setPositiveButton(R.string.dialog_ok,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+																int which) {
+
+												catchupAbove(fa);
+
+											}
+										})
+								.setNegativeButton(R.string.dialog_cancel,
+										new Dialog.OnClickListener() {
+											public void onClick(DialogInterface dialog,
+																int which) {
+
+											}
+										});
+
+						AlertDialog dlg = builder.create();
+						dlg.show();
+					} else {
+						catchupAbove(article);
 					}
-					if (tmp.size() > 0) {
-						m_activity.toggleArticlesUnread(tmp);
-						//updateHeadlines();
-					}
-					m_adapter.notifyDataSetChanged();
+
 				}
 				return true;
 			default:
 				Log.d(TAG, "onArticleMenuItemSelected, unhandled id=" + item.getItemId());
 				return false;
 		}
+	}
+
+	private void catchupAbove(Article article) {
+		ArticleList articles = getAllArticles();
+		ArticleList tmp = new ArticleList();
+		for (Article a : articles) {
+            if (article.id == a.id)
+                break;
+
+            if (a.unread) {
+                a.unread = false;
+                tmp.add(a);
+            }
+        }
+		if (tmp.size() > 0) {
+            m_activity.toggleArticlesUnread(tmp);
+            //updateHeadlines();
+        }
+		m_adapter.notifyDataSetChanged();
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
