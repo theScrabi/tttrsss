@@ -63,6 +63,7 @@ import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationA
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -532,7 +533,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		if (enableSwipeToDismiss) {
 
-			SimpleSwipeUndoAdapter swipeUndoAdapter = new SimpleSwipeUndoAdapter(m_adapter, m_activity,
+			TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(m_adapter, m_activity,
 					new OnDismissCallback() {
 						@Override
 						public void onDismiss(final ViewGroup listView, final int[] reverseSortedPositions) {
@@ -555,6 +556,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					}
 			);
 
+			swipeUndoAdapter.setTimeoutMs(2000);
 			swipeUndoAdapter.setAbsListView(m_list);
 			m_list.setAdapter(swipeUndoAdapter);
 			m_list.enableSimpleSwipeUndo();
