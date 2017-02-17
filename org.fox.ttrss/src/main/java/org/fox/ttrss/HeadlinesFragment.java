@@ -31,13 +31,17 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
@@ -519,6 +523,27 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		m_animationAdapter.setAbsListView(m_list);
 		m_list.setAdapter(m_animationAdapter);
+
+		final GestureDetector gestureDetector = new GestureDetector(new HeadlinesGestureDetector());
+
+		m_list.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent motionEvent) {
+
+				// i literally had it crash because motionevent was somehow null
+				try {
+					if (gestureDetector.onTouchEvent(motionEvent)) {
+						MotionEvent cancelEvent = MotionEvent.obtain(motionEvent);
+						cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
+						m_list.onTouchEvent(cancelEvent);
+						return true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return false;
+			}
+		});
 
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
@@ -1750,4 +1775,103 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();
     }
+
+	private class HeadlinesGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+		private final int REL_SWIPE_MIN_DISTANCE = 100;
+		private final int REL_SWIPE_MAX_OFF_PATH = 150;
+		private final int REL_SWIPE_THRESHOLD_VELOCITY = 100;
+
+		private int temp_position = -1;
+
+		public HeadlinesGestureDetector() {
+			super();
+
+			/*DisplayMetrics dm = getResources().getDisplayMetrics();
+
+			REL_SWIPE_MIN_DISTANCE = (int) (120.0f * dm.densityDpi / 160.0f + 0.5);
+			REL_SWIPE_MAX_OFF_PATH = (int) (250.0f * dm.densityDpi / 160.0f + 0.5);
+			REL_SWIPE_THRESHOLD_VELOCITY = (int) (120.0f * dm.densityDpi / 160.0f + 0.5);*/
+		}
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+
+			temp_position = m_list.pointToPosition((int) e.getX(), (int) e.getY());
+
+			return super.onDown(e);
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+							   float velocityY) {
+			if (Math.abs(e1.getY() - e2.getY()) > REL_SWIPE_MAX_OFF_PATH)
+				return false;
+			if (e1.getX() - e2.getX() > REL_SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityX) > REL_SWIPE_THRESHOLD_VELOCITY) {
+
+				int pos = m_list.pointToPosition((int) e1.getX(), (int) e2.getY());
+
+				if (pos >= 0 && temp_position == pos) {
+					return onListItemSwiped(false, pos);
+				}
+			} else if (e2.getX() - e1.getX() > REL_SWIPE_MIN_DISTANCE
+					&& Math.abs(velocityX) > REL_SWIPE_THRESHOLD_VELOCITY) {
+
+				int pos = m_list.pointToPosition((int) e1.getX(), (int) e2.getY());
+
+				if (pos >= 0 && temp_position == pos) {
+					return onListItemSwiped(true, pos);
+				}
+
+			}
+			return false;
+		}
+
+	}
+
+	private boolean onListItemSwiped(boolean right, int pos) {
+		Log.d(TAG, "onListItemSwiped: " + right + " " + pos);
+
+		if (right) {
+			final Article article = (Article) m_list.getItemAtPosition(pos);
+
+			if (article != null) {
+
+				final Animation animation = AnimationUtils.loadAnimation(m_activity,
+						R.anim.slide_out_right);
+
+				animation.setAnimationListener(new Animation.AnimationListener() {
+					@Override
+					public void onAnimationStart(Animation animation) {
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+					}
+
+					@Override
+					public void onAnimationEnd(Animation animation) {
+
+						if (article.unread) {
+							article.unread = false;
+							m_activity.saveArticleUnread(article);
+						}
+
+						m_adapter.remove(article);
+						m_adapter.notifyDataSetChanged();
+					}
+				});
+
+				View view = m_list.getChildAt(pos);
+
+				if (view != null) {
+					view.startAnimation(animation);
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
 }
