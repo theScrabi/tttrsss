@@ -245,4 +245,6 @@
     <string name="dialog_ok">OK</string>
     <string name="headline_undo_row_button">UNDO</string>
     <string name="headline_undo_row_prompt">Marked as read</string>
+    <string name="pref_headlines_swipe_to_dismiss">Swipe to dismiss</string>
+    <string name="pref_headlines_swipe_to_dismiss_long">Disables headlines context menu</string>
 </resources>

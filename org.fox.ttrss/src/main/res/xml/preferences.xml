@@ -87,8 +87,8 @@
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="headlines_swipe_to_dismiss"
-            android:summary="Disables headlines context menu"
-            android:title="Swipe to dismiss" />
+            android:summary="@string/pref_headlines_swipe_to_dismiss_long"
+            android:title="@string/pref_headlines_swipe_to_dismiss" />
 
         <!-- <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
