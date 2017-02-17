@@ -243,4 +243,6 @@
     <string name="open_with">Open with…</string>
     <string name="confirm_catchup_above">Mark articles as read?</string>
     <string name="dialog_ok">OK</string>
+    <string name="headline_undo_row_button">UNDO</string>
+    <string name="headline_undo_row_prompt">Marked as read</string>
 </resources>

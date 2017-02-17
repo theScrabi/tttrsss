@@ -84,6 +84,12 @@
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
 
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="true"
+            android:key="headlines_swipe_to_dismiss"
+            android:summary="Disables headlines context menu"
+            android:title="Swipe to dismiss" />
+
         <!-- <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="headlines_show_flavor_image"

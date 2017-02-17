@@ -11,12 +11,12 @@
     	android:layout_width="match_parent"
     	android:layout_height="match_parent" >
     
-	   <ListView
+	   <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
 	       android:id="@+id/headlines_list"
            android:drawSelectorOnTop="true"
 	       android:layout_width="match_parent"
 	       android:layout_height="match_parent" >
-	   </ListView>
+	   </com.nhaarman.listviewanimations.itemmanipulation.DynamicListView>
 	</android.support.v4.widget.SwipeRefreshLayout>
 
     <!-- <TextView

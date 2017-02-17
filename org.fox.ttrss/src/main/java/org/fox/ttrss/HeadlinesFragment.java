@@ -17,6 +17,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -57,6 +60,10 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.gson.JsonElement;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -117,7 +124,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private int m_maxImageSize = 0;
     private boolean m_compactLayoutMode = false;
     private int m_listPreviousVisibleItem;
-    private ListView m_list;
+    private DynamicListView m_list;
 	private ImageLoader m_imageLoader = ImageLoader.getInstance();
 	private View m_listLoadingView;
 	private View m_topChangedView;
@@ -469,9 +476,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-		m_list = (ListView)view.findViewById(R.id.headlines_list);
+		m_list = (DynamicListView) view.findViewById(R.id.headlines_list);
 
 		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
+
+		boolean enableSwipeToDismiss = m_prefs.getBoolean("headlines_swipe_to_dismiss", true);
 
 		if (! (getActivity() instanceof DetailActivity)) {
 
@@ -482,6 +491,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					refresh(false);
 				}
 			});
+
 		} else {
 			fab.setVisibility(View.GONE);
 		}
@@ -520,9 +530,41 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_animationAdapter.setAbsListView(m_list);
 		m_list.setAdapter(m_animationAdapter);
 
+		if (enableSwipeToDismiss) {
+
+			SimpleSwipeUndoAdapter swipeUndoAdapter = new SimpleSwipeUndoAdapter(m_adapter, m_activity,
+					new OnDismissCallback() {
+						@Override
+						public void onDismiss(final ViewGroup listView, final int[] reverseSortedPositions) {
+							for (int position : reverseSortedPositions) {
+								Article article = m_adapter.getItem(position);
+
+								Log.d(TAG, "onSwipeDismiss: " + article);
+
+								if (article != null) {
+									if (article.unread) {
+										article.unread = false;
+										m_activity.saveArticleUnread(article);
+									}
+
+									m_adapter.remove(article);
+									m_adapter.notifyDataSetChanged();
+								}
+							}
+						}
+					}
+			);
+
+			swipeUndoAdapter.setAbsListView(m_list);
+			m_list.setAdapter(swipeUndoAdapter);
+			m_list.enableSimpleSwipeUndo();
+		}
+
+
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
-		registerForContextMenu(m_list);
+
+		if (!enableSwipeToDismiss) registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
@@ -838,7 +880,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public boolean flavorImageEmbedded;
 	}
 	
-	private class ArticleListAdapter extends ArrayAdapter<Article> {
+	private class ArticleListAdapter extends ArrayAdapter<Article> implements UndoAdapter {
 		private ArrayList<Article> items;
 		
 		public static final int VIEW_NORMAL = 0;
@@ -1570,6 +1612,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				tv.setTextColor(origTitleColors[viewType].intValue());
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			}
+		}
+
+		@NonNull
+		@Override
+		public View getUndoView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+			View view = convertView;
+
+			if (view == null) {
+				view = LayoutInflater.from(m_activity).inflate(R.layout.headlines_row_undo, parent, false);
+			}
+			return view;
+		}
+
+		@NonNull
+		@Override
+		public View getUndoClickView(@NonNull View view) {
+			return view.findViewById(R.id.headlines_row_undo_button);
 		}
 	}
 
