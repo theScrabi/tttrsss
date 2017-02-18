@@ -61,6 +61,7 @@ import com.google.gson.JsonElement;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.DismissableManager;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
@@ -560,6 +561,19 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			swipeUndoAdapter.setAbsListView(m_list);
 			m_list.setAdapter(swipeUndoAdapter);
 			m_list.enableSimpleSwipeUndo();
+			m_list.setDismissableManager(new DismissableManager() {
+				@Override
+				public boolean isDismissable(long id, int position) {
+					try {
+						Article article = m_adapter.getItem(position);
+
+						return article != null;
+					} catch (Exception e) {
+						// index out of bounds == footer or w/e
+						return false;
+					}
+				}
+			});
 		}
 
 
