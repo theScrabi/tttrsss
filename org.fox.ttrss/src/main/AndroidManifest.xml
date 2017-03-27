@@ -119,34 +119,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*"
-                    android:pathPattern=".*xml"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*rss"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*feed.*"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*podcast.*"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*Podcast.*"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*rss.*"
-                    android:scheme="http" />
-                <data
-                    android:host="*"
-                    android:pathPattern=".*RSS.*"
-                    android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*xml" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*rss" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*feed.*" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*podcast.*" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*Podcast.*" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*rss.*" android:scheme="http" />
+                <data android:host="*" android:pathPattern=".*RSS.*" android:scheme="http" />
+
+                <data android:host="*" android:pathPattern=".*xml" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*rss" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*feed.*" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*podcast.*" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*Podcast.*" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*rss.*" android:scheme="https" />
+                <data android:host="*" android:pathPattern=".*RSS.*" android:scheme="https" />
+                
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -154,15 +142,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:mimeType="text/xml"
-                    android:scheme="http" />
-                <data
-                    android:mimeType="application/rss+xml"
-                    android:scheme="http" />
-                <data
-                    android:mimeType="application/atom+xml"
-                    android:scheme="http" />
+                <data android:mimeType="text/xml" android:scheme="http" />
+                <data android:mimeType="application/rss+xml" android:scheme="http" />
+                <data android:mimeType="application/atom+xml" android:scheme="http" />
+
+                <data android:mimeType="text/xml" android:scheme="https" />
+                <data android:mimeType="application/rss+xml" android:scheme="https" />
+                <data android:mimeType="application/atom+xml" android:scheme="https" />
+                
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -171,6 +158,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="*" />
                 <data android:pathPattern=".*\\.xml" />
                 <data android:pathPattern=".*\\.rss" />
@@ -182,6 +170,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="feeds.feedburner.com" />
                 <data android:host="feedproxy.google.com" />
                 <data android:host="feeds2.feedburner.com" />
@@ -194,6 +183,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="application/rss+xml" />
                 <data android:mimeType="application/atom+xml" />
