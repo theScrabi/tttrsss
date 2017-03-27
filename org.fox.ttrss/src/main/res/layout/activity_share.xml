@@ -46,6 +46,7 @@
 
     <Button
         android:id="@+id/share_button"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
