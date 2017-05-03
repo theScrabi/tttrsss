@@ -33,6 +33,7 @@ stages:
   - build
 
 build:
+  when: manual
   stage: build
   script:
     - ./gradlew assembleDebug
