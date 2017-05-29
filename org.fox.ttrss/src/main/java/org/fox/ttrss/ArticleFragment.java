@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -57,7 +58,6 @@ public class ArticleFragment extends Fragment  {
     protected int m_articleFontSize;
     protected int m_articleSmallFontSize;
     protected boolean m_acceleratedWebview = true;
-    private boolean m_isVisible;
 
     public void initialize(Article article) {
 		m_article = article;
@@ -153,15 +153,6 @@ public class ArticleFragment extends Fragment  {
 		super.onCreateContextMenu(menu, v, menuInfo);
 
 	}
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        m_isVisible = isVisibleToUser;
-
-        renderContent(null);
-    }
 
 	@SuppressLint("NewApi")
 	@Override
@@ -398,9 +389,16 @@ public class ArticleFragment extends Fragment  {
 
         m_web.setVisibility(View.VISIBLE);
 
-        if (savedInstanceState != null || m_isVisible) renderContent(savedInstanceState);
+        //renderContent(savedInstanceState);
 
-		return view;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                renderContent(savedInstanceState);
+            }
+        }, 250);
+
+        return view;
 	}
 
     protected void renderContent(Bundle savedInstanceState) {

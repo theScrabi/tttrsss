@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.BadParcelableException;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ClassloaderWorkaroundFragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
@@ -45,6 +46,8 @@ public class ArticlePager extends Fragment {
 			super(fm);
 		}
 
+		private ArticleFragment m_currentFragment;
+
 		@Override
 		public Fragment getItem(int position) {
 			Article article = m_articles.get(position);
@@ -62,7 +65,18 @@ public class ArticlePager extends Fragment {
 		public int getCount() {
 			return m_articles.size();
 		}
-		
+
+        public ArticleFragment getCurrentFragment() {
+            return m_currentFragment;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+			m_currentFragment = ((ArticleFragment) object);
+
+            super.setPrimaryItem(container, position, object);
+        }
+
 	}
 		
 	public void initialize(Article article, Feed feed, ArticleList articles) {
@@ -119,18 +133,20 @@ public class ArticlePager extends Fragment {
 
 			@Override
 			public void onPageSelected(int position) {
-				Article article = m_articles.get(position);
+                Log.d(TAG, "onPageSelected: " + position);
+
+				final Article article = m_articles.get(position);
 				
 				if (article != null) {
 					m_article = article;
-					
-					/* if (article.unread) {
-						article.unread = false;
-						m_activity.saveArticleUnread(article);
-					} */
 
-					m_listener.onArticleSelected(article, false);
-					
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							m_listener.onArticleSelected(article, false);
+						}
+					}, 250);
+
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
 					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 15) {
