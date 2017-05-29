@@ -8,10 +8,10 @@ import org.acra.annotation.ReportsCrashes;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 
-@ReportsCrashes(formKey = "", mode = ReportingInteractionMode.DIALOG,
+@ReportsCrashes(mode = ReportingInteractionMode.SILENT,
         excludeMatchingSharedPreferencesKeys = {"password"},
         resDialogText = R.string.crash_dialog_text,
-        formUri = "http://tt-rss.org/acra/submit/")
+        formUri = "https://tt-rss.org/acra/submit/")
 public class Application extends android.app.Application {
 	private static Application m_singleton;
 	

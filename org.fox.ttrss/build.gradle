@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.shamanland:fab:0.0.5'
-    compile 'ch.acra:acra:4.5.0'
+    compile 'ch.acra:acra:4.9.1'
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
     compile 'me.relex:circleindicator:1.1.1@aar'
     compile 'com.viewpagerindicator:library:2.4.1'
