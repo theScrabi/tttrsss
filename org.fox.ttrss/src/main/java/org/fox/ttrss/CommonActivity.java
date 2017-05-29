@@ -2,6 +2,8 @@ package org.fox.ttrss;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -37,6 +39,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.fox.ttrss.util.DatabaseHelper;
+import org.fox.ttrss.widget.SmallWidgetProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -159,6 +162,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		m_prefs.registerOnSharedPreferenceChangeListener(this);
 
+		setupWidgetUpdates(this);
+
         if (savedInstanceState != null) {
 			m_theme = savedInstanceState.getString("theme");
 		} else {
@@ -237,7 +242,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, "onSharedPreferenceChanged:" + key);
 
-		String[] filter = new String[] { "theme", "enable_cats", "headline_mode" };
+		String[] filter = new String[] { "theme", "enable_cats", "headline_mode", "widget_update_interval" };
 
 		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
 	}
@@ -412,6 +417,29 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 				toast(e.getMessage());
 			}
 		}
+	}
+
+	public static void setupWidgetUpdates(Context context) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		int updateInterval = Integer.parseInt(prefs.getString("widget_update_interval", "15")) * 60 * 1000;
+
+		Log.d("setupWidgetUpdates", "setupWidgetUpdate: interval= " + updateInterval);
+
+		AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+
+		Intent intentUpdate = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
+
+		PendingIntent pendingIntentAlarm = PendingIntent.getBroadcast(context,
+				0, intentUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		alarmManager.cancel(pendingIntentAlarm);
+
+		alarmManager.setRepeating(AlarmManager.RTC,
+				System.currentTimeMillis() + updateInterval,
+				updateInterval,
+				pendingIntentAlarm);
+
 	}
 
 	public void displayImageCaption(String url, String htmlContent) {

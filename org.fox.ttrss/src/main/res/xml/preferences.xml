@@ -189,6 +189,18 @@
             android:title="@string/offline_image_cache_enabled" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefs_widget" >
+        <ListPreference
+            android:defaultValue="15"
+            android:entries="@array/pref_widget_update_intervals"
+            android:entryValues="@array/pref_widget_update_intervals"
+            android:key="widget_update_interval"
+            android:title="@string/pref_widget_update_interval" />
+
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="false"
+            android:key="widget_dark_mode"
+            android:title="@string/pref_widget_dark_background" />
+
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="widget_show_fresh"

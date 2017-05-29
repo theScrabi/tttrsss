@@ -30,5 +30,11 @@
         <item>1000</item>
         <item>1500</item>
         <item>2000</item>
-    </string-array>    
+    </string-array>
+    <string-array name="pref_widget_update_intervals" translatable="false">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+    </string-array>
 </resources>

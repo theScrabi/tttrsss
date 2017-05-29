@@ -6,7 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.fox.ttrss.OnlineActivity;
@@ -17,6 +21,7 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 
 	public static final String ACTION_REQUEST_UPDATE = "org.fox.ttrss.WIDGET_FORCE_UPDATE";
     public static final String ACTION_UPDATE_RESULT = "org.fox.ttrss.WIDGET_UPDATE_RESULT";
+    public static final String ACTION_SETTINGS_CHANGED = "org.fox.ttrss.WIDGET_SETTINGS_CHANGED";
 
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -28,11 +33,20 @@ public class SmallWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_small);
         views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
 
+        SharedPreferences prefs  = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean darkMode = prefs.getBoolean("widget_dark_mode", false);
+
+        if (darkMode) {
+            views.setViewVisibility(R.id.widget_dark, View.VISIBLE);
+        } else {
+            views.setViewVisibility(R.id.widget_dark, View.INVISIBLE);
+        }
+
         appWidgetManager.updateAppWidget(appWidgetIds, views);
 
         Intent serviceIntent = new Intent(context.getApplicationContext(), WidgetUpdateService.class);
         context.startService(serviceIntent);
-	}
+    }
 
 
 	@Override
@@ -55,6 +69,11 @@ public class SmallWidgetProvider extends AppWidgetProvider {
             Log.d(TAG, "onReceive: got update result from service: " + unread + " " + resultCode);
 
             updateWidgetsText(context, appWidgetManager, appWidgetIds, unread, resultCode);
+        } else if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {
+            Log.d(TAG, "onReceive: got settings changed");
+
+            // TODO
+
         } else {
             super.onReceive(context, intent);
         }
