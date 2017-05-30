@@ -2,6 +2,7 @@
     android:id="@+id/widget_main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/widget_border"
     android:padding="@dimen/widget_margin" >
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
