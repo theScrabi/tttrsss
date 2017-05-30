@@ -202,7 +202,7 @@
             android:entries="@array/pref_widget_bgs"
             android:entryValues="@array/pref_widget_bgs_values"
             android:key="widget_background"
-            android:title="@string/pref_widget_background" />
+            android:title="@string/pref_theme" />
 
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
