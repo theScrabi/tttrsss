@@ -253,4 +253,5 @@
     <string name="widget_background_dark">Dark</string>
     <string name="widget_background_transparent">Transparent</string>
     <string name="pref_widget_background">Background color</string>
+    <string name="pref_widget_update_interval_summary">This interval is imprecise due to Android limitations</string>
 </resources>

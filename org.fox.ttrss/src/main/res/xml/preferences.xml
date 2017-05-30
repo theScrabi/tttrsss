@@ -194,6 +194,7 @@
             android:entries="@array/pref_widget_update_intervals"
             android:entryValues="@array/pref_widget_update_intervals"
             android:key="widget_update_interval"
+            android:summary="@string/pref_widget_update_interval_summary"
             android:title="@string/pref_widget_update_interval" />
 
         <ListPreference
