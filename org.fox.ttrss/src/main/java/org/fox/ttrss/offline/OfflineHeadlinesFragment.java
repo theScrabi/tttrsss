@@ -116,6 +116,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		menu.findItem(R.id.article_set_note).setVisible(false);
 		menu.findItem(R.id.headlines_article_unread).setVisible(false); // TODO: implement
 
+		if (m_prefs.getBoolean("offline_sort_by_feed", false)) {
+			menu.findItem(R.id.catchup_above).setVisible(false);
+		}
+
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
@@ -361,7 +365,11 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		}
 		
 		String orderBy = (m_prefs.getBoolean("offline_oldest_first", false)) ? "updated" : "updated DESC";
-		
+
+		if (m_prefs.getBoolean("offline_sort_by_feed", false)) {
+			orderBy = "feed_title, " + orderBy;
+		}
+
 		if (m_searchQuery == null || m_searchQuery.equals("")) {
 			return m_activity.getDatabase().query("articles LEFT JOIN feeds ON (feed_id = feeds."+BaseColumns._ID+")", 
 					new String[] { "articles.*", "feeds.title AS feed_title" }, feedClause, 

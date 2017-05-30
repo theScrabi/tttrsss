@@ -184,6 +184,11 @@
 
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="false"
+            android:key="offline_sort_by_feed"
+            android:title="@string/prefs_offline_sort_by_feed" />
+
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="false"
             android:key="offline_image_cache_enabled"
             android:summary="@string/offline_image_cache_enabled_summary"
             android:title="@string/offline_image_cache_enabled" />
