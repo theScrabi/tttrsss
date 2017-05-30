@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.customtabs.CustomTabsCallback;
 import android.support.customtabs.CustomTabsClient;
@@ -435,8 +436,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		alarmManager.cancel(pendingIntentAlarm);
 
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-				System.currentTimeMillis() + updateInterval,
+		alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
+				SystemClock.elapsedRealtime() + updateInterval,
 				updateInterval,
 				pendingIntentAlarm);
 

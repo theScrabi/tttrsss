@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +53,7 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 
         Intent serviceIntent = new Intent(context.getApplicationContext(), WidgetUpdateService.class);
         context.startService(serviceIntent);
+
     }
 
 

@@ -3,6 +3,7 @@ package org.fox.ttrss.widget;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -52,7 +53,7 @@ public class WidgetUpdateService extends Service {
 
                 final int feedId = m_prefs.getBoolean("widget_show_fresh", true) ? -3 : 0;
 
-                SimpleLoginManager loginManager = new SimpleLoginManager() {
+                final SimpleLoginManager loginManager = new SimpleLoginManager() {
 
                     @Override
                     protected void onLoginSuccess(int requestId, String sessionId, int apiLevel) {
@@ -75,6 +76,8 @@ public class WidgetUpdateService extends Service {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+                                } else {
+                                    Log.d(TAG, "request failed: " + getErrorMessage());
                                 }
 
                                 ++m_updateFailures;
@@ -97,6 +100,8 @@ public class WidgetUpdateService extends Service {
 
                     @Override
                     protected void onLoginFailed(int requestId, ApiRequest ar) {
+                        Log.d(TAG, "login failed: " + ar.getErrorMessage());
+
                         ++m_updateFailures;
                         sendResultIntent(-1, UPDATE_RESULT_ERROR_LOGIN);
                     }
@@ -108,10 +113,16 @@ public class WidgetUpdateService extends Service {
                     }
                 };
 
-                String login = m_prefs.getString("login", "").trim();
-                String password = m_prefs.getString("password", "").trim();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String login = m_prefs.getString("login", "").trim();
+                        String password = m_prefs.getString("password", "").trim();
 
-                loginManager.logIn(getApplicationContext(), 1, login, password);
+                        loginManager.logIn(getApplicationContext(), 1, login, password);
+                    }
+                }, 2 * 1000);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
