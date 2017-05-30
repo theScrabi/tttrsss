@@ -435,7 +435,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		alarmManager.cancel(pendingIntentAlarm);
 
-		alarmManager.setRepeating(AlarmManager.RTC,
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis() + updateInterval,
 				updateInterval,
 				pendingIntentAlarm);

@@ -25,6 +25,8 @@ public class WidgetUpdateService extends Service {
     public static final int UPDATE_RESULT_ERROR_NEED_CONF = 3;
     public static final int UPDATE_IN_PROGRESS = 4;
 
+    private int m_updateFailures = 0;
+
     @Override
 	public IBinder onBind(Intent intent) {
 		Log.d(TAG, "onBind");
@@ -63,6 +65,8 @@ public class WidgetUpdateService extends Service {
                                         JsonObject content = result.getAsJsonObject();
 
                                         if (content != null) {
+                                            m_updateFailures = 0;
+
                                             int unread = content.get("unread").getAsInt();
                                             sendResultIntent(unread, UPDATE_RESULT_OK);
 
@@ -73,6 +77,7 @@ public class WidgetUpdateService extends Service {
                                     }
                                 }
 
+                                ++m_updateFailures;
                                 sendResultIntent(-1, UPDATE_RESULT_ERROR_OTHER);
                             }
                         };
@@ -92,6 +97,7 @@ public class WidgetUpdateService extends Service {
 
                     @Override
                     protected void onLoginFailed(int requestId, ApiRequest ar) {
+                        ++m_updateFailures;
                         sendResultIntent(-1, UPDATE_RESULT_ERROR_LOGIN);
                     }
 
@@ -110,6 +116,7 @@ public class WidgetUpdateService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
 
+            ++m_updateFailures;
             sendResultIntent(-1, UPDATE_RESULT_ERROR_OTHER);
         }
 
@@ -123,6 +130,7 @@ public class WidgetUpdateService extends Service {
         intent.setAction(SmallWidgetProvider.ACTION_UPDATE_RESULT);
         intent.putExtra("resultCode", resultCode);
         intent.putExtra("unread", unread);
+        intent.putExtra("failures", m_updateFailures);
 
         sendBroadcast(intent);
 
