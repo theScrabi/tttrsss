@@ -1,10 +1,13 @@
 package org.fox.ttrss.widget;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -38,6 +41,14 @@ public class WidgetUpdateService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         Log.d(TAG, "onStart");
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (pm.isDeviceIdleMode()) {
+                Log.d(TAG, "device in idle mode, bailing out");
+                return;
+            }
+        }
 
         try {
             sendResultIntent(-1, UPDATE_IN_PROGRESS);
@@ -100,7 +111,7 @@ public class WidgetUpdateService extends Service {
 
                     @Override
                     protected void onLoginFailed(int requestId, ApiRequest ar) {
-                        Log.d(TAG, "login failed: " + ar.getErrorMessage());
+                        Log.d(TAG, "login failed: " + getString(ar.getErrorMessage()));
 
                         ++m_updateFailures;
                         sendResultIntent(-1, UPDATE_RESULT_ERROR_LOGIN);
