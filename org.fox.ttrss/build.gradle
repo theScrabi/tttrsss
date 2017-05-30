@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "org.fox.ttrss"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 23 // we're not targeting SDK 25 because of this: https://issuetracker.google.com/issues/37103380#makechanges
     }
 
     lintOptions {
