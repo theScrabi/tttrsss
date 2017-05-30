@@ -424,7 +424,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		int updateInterval = Integer.parseInt(prefs.getString("widget_update_interval", "15")) * 60 * 1000;
 
-		Log.d("setupWidgetUpdates", "setupWidgetUpdate: interval= " + updateInterval);
+		Log.d("setupWidgetUpdates", "interval= " + updateInterval);
 
 		AlarmManager alarmManager = (AlarmManager)context.getSystemService(ALARM_SERVICE);
 

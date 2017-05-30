@@ -248,5 +248,9 @@
     <string name="pref_headlines_swipe_to_dismiss">Swipe to dismiss</string>
     <string name="pref_headlines_swipe_to_dismiss_long">Disables headlines context menu</string>
     <string name="pref_widget_update_interval">Update interval (in minutes)</string>
-    <string name="pref_widget_dark_background">Use dark background</string>
+
+    <string name="widget_background_light">Light</string>
+    <string name="widget_background_dark">Dark</string>
+    <string name="widget_background_transparent">Transparent</string>
+    <string name="pref_widget_background">Background color</string>
 </resources>

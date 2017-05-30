@@ -196,10 +196,12 @@
             android:key="widget_update_interval"
             android:title="@string/pref_widget_update_interval" />
 
-        <org.fox.ttrss.util.LessBrokenSwitchPreference
-            android:defaultValue="false"
-            android:key="widget_dark_mode"
-            android:title="@string/pref_widget_dark_background" />
+        <ListPreference
+            android:defaultValue="WB_LIGHT"
+            android:entries="@array/pref_widget_bgs"
+            android:entryValues="@array/pref_widget_bgs_values"
+            android:key="widget_background"
+            android:title="@string/pref_widget_background" />
 
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"

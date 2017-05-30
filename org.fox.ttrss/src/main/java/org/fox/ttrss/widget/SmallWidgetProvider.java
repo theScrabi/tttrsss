@@ -21,7 +21,6 @@ public class SmallWidgetProvider extends AppWidgetProvider {
 
 	public static final String ACTION_REQUEST_UPDATE = "org.fox.ttrss.WIDGET_FORCE_UPDATE";
     public static final String ACTION_UPDATE_RESULT = "org.fox.ttrss.WIDGET_UPDATE_RESULT";
-    public static final String ACTION_SETTINGS_CHANGED = "org.fox.ttrss.WIDGET_SETTINGS_CHANGED";
 
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -34,12 +33,19 @@ public class SmallWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
 
         SharedPreferences prefs  = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean darkMode = prefs.getBoolean("widget_dark_mode", false);
+        String widgetBackground = prefs.getString("widget_background", "WB_LIGHT");
 
-        if (darkMode) {
+        Log.d(TAG, "widget bg: " + widgetBackground);
+
+        if ("WB_LIGHT".equals(widgetBackground)) {
+            views.setViewVisibility(R.id.widget_dark, View.INVISIBLE);
+            views.setViewVisibility(R.id.widget_light, View.VISIBLE);
+        } else if ("WB_DARK".equals(widgetBackground)) {
             views.setViewVisibility(R.id.widget_dark, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_light, View.INVISIBLE);
         } else {
             views.setViewVisibility(R.id.widget_dark, View.INVISIBLE);
+            views.setViewVisibility(R.id.widget_light, View.INVISIBLE);
         }
 
         appWidgetManager.updateAppWidget(appWidgetIds, views);
@@ -69,11 +75,6 @@ public class SmallWidgetProvider extends AppWidgetProvider {
             Log.d(TAG, "onReceive: got update result from service: " + unread + " " + resultCode);
 
             updateWidgetsText(context, appWidgetManager, appWidgetIds, unread, resultCode);
-        } else if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {
-            Log.d(TAG, "onReceive: got settings changed");
-
-            // TODO
-
         } else {
             super.onReceive(context, intent);
         }
