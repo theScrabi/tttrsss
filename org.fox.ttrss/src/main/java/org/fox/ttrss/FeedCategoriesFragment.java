@@ -275,6 +275,8 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	} */
 	
 	public void refresh(boolean background) {
+		if (!isAdded()) return;
+
         if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 		
 		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());

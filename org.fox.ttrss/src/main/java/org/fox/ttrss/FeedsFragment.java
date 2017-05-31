@@ -384,6 +384,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 	@SuppressWarnings({ "serial" })
 	public void refresh(boolean background) {
+		if (!isAdded()) return;
+
 		//FeedCategory cat = m_onlineServices.getActiveCategory();
 
         if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
