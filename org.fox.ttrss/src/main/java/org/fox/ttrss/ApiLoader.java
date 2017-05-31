@@ -42,6 +42,7 @@ public class ApiLoader extends AsyncTaskLoader<JsonElement> {
 	protected String m_lastErrorMessage;
 	protected ApiError m_lastError;
 	protected HashMap<String,String> m_params;
+	protected JsonElement m_data;
 
 	public ApiLoader(Context context, HashMap<String,String> params) {
 		super(context);
@@ -55,6 +56,22 @@ public class ApiLoader extends AsyncTaskLoader<JsonElement> {
 		m_lastError = ApiError.NO_ERROR;
 		m_params = params;
 
+	}
+
+	@Override
+	protected void onStartLoading() {
+		if (m_data != null) {
+			deliverResult(m_data);
+		} else {
+			forceLoad();
+		}
+	}
+
+	@Override
+	public void deliverResult(JsonElement data) {
+		m_data = data;
+
+		super.deliverResult(data);
 	}
 
 	public int getErrorMessage() {

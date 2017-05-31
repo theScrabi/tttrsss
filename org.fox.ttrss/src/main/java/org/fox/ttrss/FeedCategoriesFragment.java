@@ -327,7 +327,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 		if (savedInstanceState != null) {
 			m_selectedCat = savedInstanceState.getParcelable("selectedCat");
-			m_cats = savedInstanceState.getParcelable("cats");
+			//m_cats = savedInstanceState.getParcelable("cats");
 		}	
 		
 		View view = inflater.inflate(R.layout.fragment_cats, container, false);
@@ -376,7 +376,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onResume() {
 		super.onResume();
 
-		getLoaderManager().initLoader(0, null, this).forceLoad();
+		getLoaderManager().initLoader(0, null, this);
 
 		m_activity.invalidateOptionsMenu();
 	}
@@ -387,7 +387,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("selectedCat", m_selectedCat);
-		out.putParcelable("cats", m_cats);
+		//out.putParcelable("cats", m_cats);
 	}
 
 	public void refresh(boolean background) {
