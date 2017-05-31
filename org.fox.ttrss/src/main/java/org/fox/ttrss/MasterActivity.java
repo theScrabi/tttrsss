@@ -78,6 +78,8 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
                     getSupportActionBar().show();
                     invalidateOptionsMenu();
+
+					refresh(false);
                 }
 
                 @Override
