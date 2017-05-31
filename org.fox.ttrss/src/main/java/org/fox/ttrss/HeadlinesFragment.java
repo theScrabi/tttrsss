@@ -1312,12 +1312,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						@Override
 						public void onClick(View view) {
 
-							if (m_mediaPlayer != null) {
-								m_mediaPlayer.release();
-							}
+							try {
+								if (m_mediaPlayer != null) {
+									m_mediaPlayer.release();
+								}
 
-							if (m_activeSurface != null) {
-								m_activeSurface.setVisibility(View.GONE);
+								if (m_activeSurface != null) {
+									m_activeSurface.setVisibility(View.GONE);
+								}
+							} catch (IllegalStateException e) {
+								e.printStackTrace();
 							}
 
 							m_mediaPlayer = new MediaPlayer();
@@ -1807,4 +1811,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         m_articles.addAll(articles);
         m_adapter.notifyDataSetChanged();
     }
+
+    @Override
+	public void onPause() {
+		super.onPause();
+
+		try {
+			if (m_mediaPlayer != null) {
+				m_mediaPlayer.release();
+			}
+
+			if (m_activeSurface != null) {
+				m_activeSurface.setVisibility(View.GONE);
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 }

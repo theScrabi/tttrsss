@@ -6,7 +6,7 @@
     android:background="@android:color/black"
     android:layout_height="fill_parent">
 
-    <org.fox.ttrss.ArticleImagesPager
+    <com.bogdwellers.pinchtozoom.view.ImageViewPager
         android:id="@+id/article_images_pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

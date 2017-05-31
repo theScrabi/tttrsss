@@ -22,10 +22,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -42,10 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import me.relex.circleindicator.CircleIndicator;
 
-public class ArticleImagesPagerActivity extends CommonActivity implements GestureDetector.OnDoubleTapListener {
+public class ArticleImagesPagerActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<String> m_urls;
@@ -53,24 +54,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
     private String m_content;
-    private GestureDetector m_detector;
     private ProgressBar m_progress;
     private ViewPager m_pager;
-
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTap(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
-        return false;
-    }
 
     private class ArticleImagesPagerAdapter extends PagerAdapter {
         private List<String> m_urls;
@@ -101,21 +86,11 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
             View view = inflater.inflate(R.layout.article_images_image, null);
 
-            m_detector = new GestureDetector(ArticleImagesPagerActivity.this, new GestureDetector.SimpleOnGestureListener());
+            ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
 
-            m_detector.setOnDoubleTapListener(ArticleImagesPagerActivity.this);
+            ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
 
-            ImageViewTouch imgView = (ImageViewTouch) view.findViewById(R.id.flavor_image);
-
-            imgView.setFitToScreen(true);
-            //imgView.setFitToWidth(true);
-
-            imgView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    return m_detector.onTouchEvent(event);
-                }
-            });
+            imgView.setOnTouchListener(touchHandler);
 
             // shared element transitions stop GIFs from playing
             if (position == 0 && url.toLowerCase().indexOf(".gif") == -1) {
@@ -174,10 +149,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                     })
                     .into(glideImage);
 
-            /*if (position == 0) {
-                ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
-            }*/
-
             return view;
         }
 
@@ -195,15 +166,6 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
             for (String url : urls[0]) {
                 if (!isCancelled()) {
                     position++;
-
-                    //Log.d(TAG, "checking: " + url);
-
-                    /*DisplayImageOptions options = new DisplayImageOptions.Builder()
-                            .cacheInMemory(true)
-                            .cacheOnDisk(true)
-                            .build();
-
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, options); */
 
                     try {
                         Bitmap bmp = Glide.with(ArticleImagesPagerActivity.this)
