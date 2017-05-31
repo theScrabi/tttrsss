@@ -26,11 +26,12 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,6 +40,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import me.relex.circleindicator.CircleIndicator;
@@ -140,48 +142,40 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 }
             });
 
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)
-                    .resetViewBeforeLoading(true)
-                    .cacheOnDisk(true)
-                    .displayer(new FadeInBitmapDisplayer(200))
-                    .build();
-
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
             final View errorMessage = view.findViewById(R.id.flavor_image_error);
 
-            ImageLoader.getInstance().displayImage(url, imgView, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String s, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String s, View view, FailReason failReason) {
-                    progressBar.setVisibility(View.GONE);
-                    errorMessage.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    if (bitmap != null) {
-                        view.setTag(s);
-                    }
-
-                    progressBar.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onLoadingCancelled(String s, View view) {
-
-                }
-            });
+            final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
 
             container.addView(view, 0);
 
-            if (position == 0) {
+            Glide.with(ArticleImagesPagerActivity.this)
+                    .load(url)
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            errorMessage.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            errorMessage.setVisibility(View.GONE);
+
+                            ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
+                            return false;
+                        }
+                    })
+                    .into(glideImage);
+
+            /*if (position == 0) {
                 ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
-            }
+            }*/
 
             return view;
         }
@@ -203,18 +197,32 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
 
                     //Log.d(TAG, "checking: " + url);
 
-                    DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    /*DisplayImageOptions options = new DisplayImageOptions.Builder()
                             .cacheInMemory(true)
                             .cacheOnDisk(true)
                             .build();
 
-                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, options);
+                    Bitmap bmp = ImageLoader.getInstance().loadImageSync(url, options); */
 
-                    if (bmp != null && bmp.getWidth() > 128 && bmp.getHeight() > 128) {
-                        publishProgress(url, String.valueOf(position));
-                    } else {
-                        publishProgress(null, String.valueOf(position));
+                    try {
+                        Bitmap bmp = Glide.with(ArticleImagesPagerActivity.this)
+                                .load(url)
+                                .asBitmap()
+                                .into(-1, -1)
+                                .get();
+
+                        if (bmp != null && bmp.getWidth() > 128 && bmp.getHeight() > 128) {
+                            publishProgress(url, String.valueOf(position));
+                        } else {
+                            publishProgress(null, String.valueOf(position));
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
+
                 }
             }
 

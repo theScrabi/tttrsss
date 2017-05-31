@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,8 +20,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonElement;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -241,7 +242,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
 
-		ImageLoader.getInstance().clearMemoryCache();
+		//ImageLoader.getInstance().clearMemoryCache();
 
         FragmentTransaction ft = getSupportFragmentManager()
                 .beginTransaction();
@@ -485,6 +486,16 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
         super.onPause();
 
 		Date date = new Date();
+
+		if (isFinishing()) {
+			AsyncTask.execute(new Runnable() {
+				@Override
+				public void run() {
+					Glide.get(MasterActivity.this).clearDiskCache();
+				}
+			});
+
+		}
 
 		if (isFinishing() || date.getTime() - m_lastWidgetRefresh > 60*1000) {
 			m_lastWidgetRefresh = date.getTime();

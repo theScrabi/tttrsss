@@ -43,7 +43,7 @@
                         android:max="100"
                         android:indeterminate="false" />
 
-                    <org.fox.ttrss.util.EnlargingImageView
+                    <ImageView
                         android:id="@+id/flavor_image"
                         android:foreground="@drawable/ripple"
                         android:layout_width="match_parent"

@@ -22,9 +22,11 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.IOException;
 
@@ -71,7 +73,27 @@ public class VideoPlayerActivity extends CommonActivity {
 
             ViewCompat.setTransitionName(coverView, "gallery:" + m_coverUri);
 
-            ImageLoader imageLoader = ImageLoader.getInstance();
+            Glide.with(this)
+                    .load(m_coverUri)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
+                            return false;
+                        }
+                    })
+                    .into(coverView);
+
+
+            /*ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(m_coverUri, coverView, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
@@ -92,7 +114,7 @@ public class VideoPlayerActivity extends CommonActivity {
                 public void onLoadingCancelled(String s, View view) {
                     ActivityCompat.startPostponedEnterTransition(VideoPlayerActivity.this);
                 }
-            });
+            });*/
 
 
         } else {

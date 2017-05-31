@@ -56,6 +56,12 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.google.gson.JsonElement;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
@@ -64,15 +70,6 @@ import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.Dismissable
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.shamanland.fab.FloatingActionButton;
 import com.shamanland.fab.ShowHideOnScroll;
 
@@ -88,6 +85,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class HeadlinesFragment extends Fragment implements OnItemClickListener, OnScrollListener {
 	public enum ArticlesSelection { ALL, NONE, UNREAD }
@@ -122,7 +121,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     private boolean m_compactLayoutMode = false;
     private int m_listPreviousVisibleItem;
     private DynamicListView m_list;
-	private ImageLoader m_imageLoader = ImageLoader.getInstance();
+	//private ImageLoader m_imageLoader = ImageLoader.getInstance();
 	private View m_listLoadingView;
 	private View m_topChangedView;
 	private View m_amrFooterView;
@@ -728,7 +727,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
         private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
-		private final DisplayImageOptions displayImageOptions;
+		//private final DisplayImageOptions displayImageOptions;
 		boolean showFlavorImage;
 		private int m_minimumHeightToEmbed;
 		boolean m_youtubeInstalled;
@@ -750,12 +749,12 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
 			titleHighScoreUnreadColor = tv.data;
 
-			displayImageOptions = new DisplayImageOptions.Builder()
+			/*displayImageOptions = new DisplayImageOptions.Builder()
 					.cacheInMemory(true)
 					.resetViewBeforeLoading(true)
 					.cacheOnDisk(true)
 					.displayer(new FadeInBitmapDisplayer(500))
-					.build();
+					.build();*/
 
 			List<ApplicationInfo> packages = m_activity.getPackageManager().getInstalledApplications(0);
 			for (ApplicationInfo pi : packages) {
@@ -790,22 +789,51 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
             if (article.selected) {
 				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
-				holder.textImage.setTag(null);
+				//holder.textImage.setTag(null);
 
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
 				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(article.title));
 
 				holder.textImage.setImageDrawable(textDrawable);
-				holder.textImage.setTag(null);
+				//holder.textImage.setTag(null);
 
 				//holder.textChecked.setVisibility(View.GONE);
 
 				if (!showFlavorImage || article.flavorImage == null) {
 					holder.textImage.setImageDrawable(textDrawable);
-					holder.textImage.setTag(null);
+					//holder.textImage.setTag(null);
 				} else {
-					if (!article.flavorImageUri.equals(holder.textImage.getTag())) {
+
+					//final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(holder.textImage);
+
+					Glide.with(HeadlinesFragment.this)
+							.load(article.flavorImageUri)
+							.placeholder(textDrawable)
+							.bitmapTransform(new CropCircleTransformation(getActivity()))
+							.dontAnimate()
+							.diskCacheStrategy(DiskCacheStrategy.ALL)
+							.skipMemoryCache(false)
+							.listener(new RequestListener<String, GlideDrawable>() {
+								@Override
+								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+									return false;
+								}
+
+								@Override
+								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+									if (resource.getIntrinsicWidth() < THUMB_IMG_MIN_SIZE || resource.getIntrinsicHeight() < THUMB_IMG_MIN_SIZE) {
+										return true;
+									} else {
+										return false;
+									}
+								}
+							})
+							.into(holder.textImage);
+
+
+					/* if (!article.flavorImageUri.equals(holder.textImage.getTag())) {
 
 						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
 
@@ -833,7 +861,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 									@Override
 									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
 										if (position == holder.position && bitmap != null) {
-											holder.textImage.setTag(article.flavorImageUri);
+											//holder.textImage.setTag(article.flavorImageUri);
 
 											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
 												holder.textImage.setImageDrawable(textDrawable);
@@ -848,7 +876,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								}
 						);
 
-					}
+					} */
 				}
 
                 holder.textChecked.setVisibility(View.GONE);
@@ -1143,79 +1171,53 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						});
 					}
 
-					if (!article.flavorImageUri.equals(holder.flavorImageView.getTag())) {
+					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
 
-						//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
+					holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+					holder.flavorImageLoadingBar.setIndeterminate(true);
 
-						ImageAware imageAware = new ImageViewAware(holder.flavorImageView, false);
+					holder.flavorImageView.setVisibility(View.VISIBLE);
+					holder.flavorImageView.setImageDrawable(null);
 
-						m_imageLoader.displayImage(article.flavorImageUri, imageAware, displayImageOptions, new ImageLoadingListener() {
-							@Override
-							public void onLoadingStarted(String s, View view) {
-								holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-								holder.flavorImageLoadingBar.setIndeterminate(false);
-								holder.flavorImageLoadingBar.setProgress(0);
-							}
+					final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(holder.flavorImageView);
 
-							@Override
-							public void onLoadingFailed(String s, View view, FailReason failReason) {
-								holder.flavorImageLoadingBar.setVisibility(View.GONE);
-							}
+					Glide.with(HeadlinesFragment.this)
+							.load(article.flavorImageUri)
+							.dontAnimate()
+							.diskCacheStrategy(DiskCacheStrategy.ALL)
+							.skipMemoryCache(false)
+							.listener(new RequestListener<String, GlideDrawable>() {
+								@Override
+								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-							@Override
-							public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-								if (position == holder.position && bitmap != null) {
+									holder.flavorImageLoadingBar.setVisibility(View.GONE);
+									holder.flavorImageView.setVisibility(View.GONE);
+
+									return false;
+								}
+
+								@Override
+								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
 
 									holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
-									if (bitmap.getWidth() > FLAVOR_IMG_MIN_SIZE && bitmap.getHeight() > FLAVOR_IMG_MIN_SIZE) {
-										holder.flavorImageView.setTag(article.flavorImageUri);
+									holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+									if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
 
 										holder.flavorImageView.setVisibility(View.VISIBLE);
 										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
-										maybeRepositionFlavorImage(view, bitmap, holder);
+										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder);
 										adjustVideoKindView(holder, article);
 
+										return false;
 									} else {
-										holder.flavorImageView.setImageDrawable(null);
+										return true;
 									}
 								}
-							}
-
-							@Override
-							public void onLoadingCancelled(String s, View view) {
-								holder.flavorImageLoadingBar.setVisibility(View.GONE);
-							}
-						}, new ImageLoadingProgressListener() {
-							@Override
-							public void onProgressUpdate(String s, View view, int current, int total) {
-								if (total != 0) {
-									int p = (int) ((float) current / total * 100);
-
-									holder.flavorImageLoadingBar.setIndeterminate(false);
-									holder.flavorImageLoadingBar.setProgress(p);
-								} else {
-									holder.flavorImageLoadingBar.setIndeterminate(true);
-								}
-							}
-						});
-
-					} else { // already tagged
-						holder.flavorImageView.setVisibility(View.VISIBLE);
-						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-
-						adjustVideoKindView(holder, article);
-
-						if (holder.flavorImageEmbedded) {
-							TypedValue tv = new TypedValue();
-							if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
-								holder.headlineHeader.setBackgroundColor(tv.data);
-							}
-						} else {
-							holder.headlineHeader.setBackgroundDrawable(null);
-						}
-					}
+							})
+							.into(glideImage);
 				}
 
 				holder.flavorImageView.setOnClickListener(new OnClickListener() {
@@ -1388,16 +1390,16 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return px;
 		}
 
-		private void maybeRepositionFlavorImage(View view, Bitmap bitmap, HeadlineViewHolder holder) {
+		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, HeadlineViewHolder holder) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
-			int w = bitmap.getWidth();
-			int h = bitmap.getHeight();
+			int w = resource.getIntrinsicWidth();
+			int h = resource.getIntrinsicHeight();
 			float r = h != 0 ? (float)w/h : 0;
 
 			//Log.d(TAG, "XYR: " + pxToDp(w) + " " + pxToDp(h) + " " + r);
 
-			if (bitmap.getHeight() < m_minimumHeightToEmbed || r >= 1.2) {
+			if (h < m_minimumHeightToEmbed || r >= 1.2) {
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
@@ -1565,12 +1567,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING || scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-			m_imageLoader.pause();
-		} else {
-			m_imageLoader.resume();
-		}
-
 		if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 			if (!m_readArticles.isEmpty()) {
 				m_activity.toggleArticlesUnread(m_readArticles);
