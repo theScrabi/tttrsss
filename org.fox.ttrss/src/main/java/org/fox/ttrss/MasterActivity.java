@@ -38,6 +38,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	
 	protected SharedPreferences m_prefs;
 	protected long m_lastRefresh = 0;
+	protected long m_lastWidgetRefresh = 0;
 	
 	private boolean m_feedIsSelected = false;
     private boolean m_userFeedSelected = false;
@@ -63,6 +64,8 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 		setSupportActionBar(toolbar);
 
 		Application.getInstance().load(savedInstanceState);
+
+		m_lastWidgetRefresh = new Date().getTime();
 
         m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
 
@@ -476,11 +479,18 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	}
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
 
-        Intent updateWidgetIntent = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
-        sendBroadcast(updateWidgetIntent);
+		Date date = new Date();
+
+		if (isFinishing() || date.getTime() - m_lastWidgetRefresh > 60*1000) {
+			m_lastWidgetRefresh = date.getTime();
+
+			Intent updateWidgetIntent = new Intent(SmallWidgetProvider.ACTION_REQUEST_UPDATE);
+			sendBroadcast(updateWidgetIntent);
+		}
+
     }
 
     @Override
