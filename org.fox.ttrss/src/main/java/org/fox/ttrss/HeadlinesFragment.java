@@ -98,9 +98,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
 
-	//public static final int ARTICLE_SPECIAL_LOADMORE = -1;
-	//public static final int ARTICLE_SPECIAL_TOP_CHANGED = -3;
-
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
@@ -260,157 +257,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return true;
 	}
 
-	/*@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		
-		switch (item.getItemId()) {
-		case R.id.set_labels:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-			
-				if (article != null) {
-					if (m_activity.getApiLevel() != 7) {
-						m_activity.editArticleLabels(article);					
-					} else {
-						m_activity.toast(R.string.server_function_not_available);
-					}				
-				}
-			}
-			return true;
-		case R.id.article_set_note:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-			
-				if (article != null) {
-					m_activity.editArticleNote(article);				
-				}
-			}
-			return true;
-
-		case R.id.headlines_article_link_copy:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-			
-				if (article != null) {
-					m_activity.copyToClipboard(article.link);
-				}
-			}
-			return true;
-		case R.id.headlines_article_link_open:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-			
-				if (article != null) {
-					m_activity.openUri(Uri.parse(article.link));
-
-					if (article.unread) {
-						article.unread = false;
-						m_activity.saveArticleUnread(article);
-					}
-				}
-			}
-			return true;
-		case R.id.selection_toggle_marked:
-			if (true) {
-				ArticleList selected = getSelectedArticles();
-
-				if (selected.size() > 0) {
-					for (Article a : selected)
-						a.marked = !a.marked;
-
-					m_activity.toggleArticlesMarked(selected);
-					//updateHeadlines();
-				} else {
-					Article article = getArticleAtPosition(info.position);
-					if (article != null) {
-						article.marked = !article.marked;
-						m_activity.saveArticleMarked(article);
-						//updateHeadlines();
-					}
-				}
-				m_adapter.notifyDataSetChanged();
-			}
-			return true;
-		case R.id.selection_toggle_published:
-			if (true) {
-				ArticleList selected = getSelectedArticles();
-
-				if (selected.size() > 0) {
-					for (Article a : selected)
-						a.published = !a.published;
-
-					m_activity.toggleArticlesPublished(selected);
-					//updateHeadlines();
-				} else {
-					Article article = getArticleAtPosition(info.position);
-					if (article != null) {
-						article.published = !article.published;
-						m_activity.saveArticlePublished(article);
-						//updateHeadlines();
-					}
-				}
-				m_adapter.notifyDataSetChanged();
-			}
-			return true;
-		case R.id.selection_toggle_unread:
-			if (true) {
-				ArticleList selected = getSelectedArticles();
-
-				if (selected.size() > 0) {
-					for (Article a : selected)
-						a.unread = !a.unread;
-
-					m_activity.toggleArticlesUnread(selected);
-					//updateHeadlines();
-				} else {
-					Article article = getArticleAtPosition(info.position);
-					if (article != null) {
-						article.unread = !article.unread;
-						m_activity.saveArticleUnread(article);
-						//updateHeadlines();
-					}
-				}
-				m_adapter.notifyDataSetChanged();
-			}
-			return true;
-		case R.id.headlines_share_article:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-				if (article != null)
-					m_activity.shareArticle(article);
-			}
-			return true;
-		case R.id.catchup_above:
-			if (true) {
-				Article article = getArticleAtPosition(info.position);
-				if (article != null) {
-					ArticleList articles = getAllArticles();
-					ArticleList tmp = new ArticleList();
-					for (Article a : articles) {
-						if (article.id == a.id)
-							break;
-
-						if (a.unread) {
-							a.unread = false;
-							tmp.add(a);
-						}
-					}
-					if (tmp.size() > 0) {
-						m_activity.toggleArticlesUnread(tmp);
-						//updateHeadlines();
-					}
-				}
-				m_adapter.notifyDataSetChanged();
-			}
-			return true;
-		default:
-			Log.d(TAG, "onContextItemSelected, unhandled id=" + item.getItemId());
-			return super.onContextItemSelected(item);
-		}
-	} */
-
     public HeadlinesFragment() {
         super();
 
@@ -497,12 +343,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 
 		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
-		//m_list.addFooterView(m_listLoadingView, null, false);
-		//m_listLoadingView.setVisibility(View.GONE);
-
 		m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);
-		//m_list.addFooterView(m_topChangedView, null, false);
-		//m_topChangedView.setVisibility(View.GONE);*/
 
 		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
             WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
@@ -595,32 +436,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		if (m_adapter != null) m_adapter.notifyDataSetChanged();
 
-		/* if (Application.getInstance().m_activeArticle != null) {
-			m_activeArticle = Application.getInstance().m_activeArticle;
-			Application.getInstance().m_activeArticle = null;
-		} */
-
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
 		}
-
-        /* if (!(m_activity instanceof DetailActivity)) {
-            refresh(false);
-        } */
 
         if (m_articles.size() == 0) {
             refresh(false);
         }
 
-		/* if (m_articles.size() == 0 || !m_feed.equals(Application.getInstance().m_activeFeed)) {
-			if (m_activity.getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_ARTICLE) == null) {
-				refresh(false);
-				Application.getInstance().m_activeFeed = m_feed;
-			}			
-		} else {
-			notifyUpdated();
-		} */
-		
 		m_activity.invalidateOptionsMenu();
 	}
 
@@ -672,10 +495,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
-			/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
-				append = false;
-			} */
-
 			// new stuff may appear on top, scroll back to show it
 			if (!append) {
 				if (getView() != null) {
@@ -722,11 +541,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						if (m_firstIdChanged) {
 							m_lazyLoadDisabled = true;
 
-							//m_activity.toast(R.string.headlines_row_top_changed);
-
-							//m_topChangedView.setVisibility(View.VISIBLE);
-							//m_articles.add(new Article(ARTICLE_SPECIAL_TOP_CHANGED));
-
 							m_list.addFooterView(m_topChangedView, null, false);
 						}
 
@@ -758,8 +572,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							} else {
 								m_activity.toast(getErrorMessage());
 							}
-
-							//m_activity.setLoadingStatus(getErrorMessage(), false);
 						}
 					}
 
@@ -901,9 +713,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
-		//public static final int VIEW_LOADMORE = 4;
-		//public static final int VIEW_TOP_CHANGED = 4;
-		
+
 		public static final int VIEW_COUNT = VIEW_SELECTED_UNREAD + 1;
 		
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
@@ -957,11 +767,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 
-			/*if (a.id == ARTICLE_SPECIAL_LOADMORE) {
-				return VIEW_LOADMORE; */
-			/*if (a.id == ARTICLE_SPECIAL_TOP_CHANGED) {
-				return VIEW_TOP_CHANGED;
-			} else */ if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
+			if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
 				return VIEW_SELECTED;
@@ -1057,12 +863,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
                 switch (getItemViewType(position)) {
-				/*case VIEW_LOADMORE:
-					layoutId = R.layout.headlines_row_loadmore;
-					break;
-				case VIEW_TOP_CHANGED:
-					layoutId = R.layout.headlines_row_top_changed;
-					break;*/
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
 					break;
@@ -1751,7 +1551,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
             m_listPreviousVisibleItem = firstVisibleItem;
         }
 
-		if (!m_refreshInProgress && !m_lazyLoadDisabled && /*m_articles.findById(ARTICLE_SPECIAL_LOADMORE) != null &&*/ firstVisibleItem + visibleItemCount == m_articles.size()) {
+		if (!m_refreshInProgress && !m_lazyLoadDisabled && firstVisibleItem + visibleItemCount == m_articles.size()) {
 			refresh(true);
 		}
 	}
@@ -1787,14 +1587,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         return -1;
     }
 
-	/* public int getArticlePosition(Article article) {
-		try {
-			return m_adapter.getPosition(article);
-		} catch (NullPointerException e) {
-			return -1;
-		}
-	} */
-
 	public String getSearchQuery() {
 		return m_searchQuery;
 	}
@@ -1813,10 +1605,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public Feed getFeed() {
 		return m_feed;
 	}
-
-    /*public ArticleList getArticles() {
-        return m_articles;
-    }*/
 
     public void setArticles(ArticleList articles) {
         m_articles.clear();
