@@ -1,13 +1,11 @@
 package org.fox.ttrss;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.util.Base64;
 import android.util.Log;
 
@@ -15,6 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.fox.ttrss.ApiCommon.ApiError;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,14 +24,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import static org.fox.ttrss.ApiCommon.ApiError;
-
-public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonElement> {
+public class ApiLoader extends AsyncTaskLoader<JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
+
 
     public static final int API_STATUS_OK = 0;
 	public static final int API_STATUS_ERR = 1;
-		
+
 	private String m_api;
 	private boolean m_transportDebugging = false;
 	protected int m_responseCode = 0;
@@ -41,10 +40,12 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	protected Context m_context;
 	private SharedPreferences m_prefs;
 	protected String m_lastErrorMessage;
-
 	protected ApiError m_lastError;
+	protected HashMap<String,String> m_params;
 
-	public ApiRequest(Context context) {
+	public ApiLoader(Context context, HashMap<String,String> params) {
+		super(context);
+
 		m_context = context;
 
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(m_context);
@@ -52,16 +53,8 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		m_api = m_prefs.getString("ttrss_url", "").trim();
 		m_transportDebugging = m_prefs.getBoolean("transport_debugging", false);
 		m_lastError = ApiError.NO_ERROR;
+		m_params = params;
 
-	}
-
-	@SuppressLint("NewApi")
-	@SuppressWarnings("unchecked")
-	public void execute(HashMap<String,String> map) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-			super.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, map);
-		else
-			super.execute(map);
 	}
 
 	public int getErrorMessage() {
@@ -108,8 +101,16 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		}
 	}
 
+	public ApiError getLastError() {
+		return m_lastError;
+	}
+
+	public String getLastErrorMessage() {
+		return m_lastErrorMessage;
+	}
+
 	@Override
-	protected JsonElement doInBackground(HashMap<String, String>... params) {
+	public JsonElement loadInBackground() {
 
 		if (!isNetworkAvailable()) {
 			m_lastError = ApiError.NETWORK_UNAVAILABLE;
@@ -118,7 +119,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 
 		Gson gson = new Gson();
 
-		String requestStr = gson.toJson(new HashMap<String,String>(params[0]));
+		String requestStr = gson.toJson(new HashMap<>(m_params));
 		byte[] postData = null;
 
 		try {
@@ -182,7 +183,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 				while ((read = in.read(buf)) >= 0) {
 					response.append(buf, 0, read);
 					total += read;
-					publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
+					//publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
 				}
 
 				if (m_transportDebugging) Log.d(TAG, "<<< " + response);

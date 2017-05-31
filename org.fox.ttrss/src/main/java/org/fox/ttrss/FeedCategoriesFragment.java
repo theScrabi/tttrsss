@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
@@ -43,7 +45,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener,
+		LoaderManager.LoaderCallbacks<JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
@@ -52,6 +55,131 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	private SwipeRefreshLayout m_swipeLayout;
     private ListView m_list;
 	protected SharedPreferences m_prefs;
+
+	@Override
+	public Loader<JsonElement> onCreateLoader(int id, Bundle args) {
+		final String sessionId = m_activity.getSessionId();
+		final boolean unreadOnly = m_activity.getUnreadOnly();
+
+		@SuppressWarnings("serial")
+		HashMap<String, String> params = new HashMap<String, String>() {
+			{
+				put("op", "getCategories");
+				put("sid", sessionId);
+				put("enable_nested", "true");
+				if (unreadOnly) {
+					put("unread_only", String.valueOf(unreadOnly));
+				}
+			}
+		};
+
+		return new ApiLoader(getContext(), params);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<JsonElement> loader, JsonElement result) {
+		Log.d(TAG, "onLoadFinished: " + loader + " " + result);
+
+		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
+
+		View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
+
+		if (loadingBar != null) {
+			loadingBar.setVisibility(View.INVISIBLE);
+		}
+
+		if (result != null) {
+			try {
+				JsonArray content = result.getAsJsonArray();
+				if (content != null) {
+					Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
+					final List<FeedCategory> cats = new Gson().fromJson(content, listType);
+
+					m_cats.clear();
+
+					int apiLevel = m_activity.getApiLevel();
+
+					boolean specialCatFound = false;
+
+					// virtual cats implemented in getCategories since api level 1
+					if (apiLevel == 0) {
+						m_cats.add(new FeedCategory(-1, "Special", 0));
+						m_cats.add(new FeedCategory(-2, "Labels", 0));
+						m_cats.add(new FeedCategory(0, "Uncategorized", 0));
+
+						specialCatFound = true;
+					}
+
+					for (FeedCategory c : cats) {
+						if (c.id == -1) {
+							specialCatFound = true;
+						}
+
+						m_cats.add(c);
+					}
+
+					sortCats();
+
+					if (!specialCatFound) {
+						m_cats.add(0, new FeedCategory(-1, "Special", 0));
+					}
+
+					//m_adapter.notifyDataSetChanged(); (done by sortCats)
+					//m_activity.setLoadingStatus(R.string.blank, false);
+
+					return;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		ApiLoader al = (ApiLoader) loader;
+
+		if (al.getLastError() == ApiCommon.ApiError.LOGIN_FAILED) {
+			m_activity.login(true);
+		} else {
+			if (al.getLastErrorMessage() != null) {
+				m_activity.toast(getString(al.getErrorMessage()) + "\n" + al.getLastErrorMessage());
+			} else {
+				m_activity.toast(al.getErrorMessage());
+			}
+		}
+	}
+
+	public void sortCats() {
+		Comparator<FeedCategory> cmp;
+
+		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
+			cmp = new CatUnreadComparator();
+		} else {
+			if (m_activity.getApiLevel() >= 3) {
+				cmp = new CatOrderComparator();
+			} else {
+				cmp = new CatTitleComparator();
+			}
+		}
+
+		try {
+			Collections.sort(m_cats, cmp);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		try {
+			m_adapter.notifyDataSetChanged();
+		} catch (NullPointerException e) {
+			// adapter missing
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<JsonElement> loader) {
+		Log.d(TAG, "onLoaderReset: " + loader);
+
+		m_cats.clear();
+		m_adapter.notifyDataSetChanged();
+	}
 
 	@SuppressLint("DefaultLocale")
 	class CatUnreadComparator implements Comparator<FeedCategory> {
@@ -248,8 +376,10 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onResume() {
 		super.onResume();
 		
-		refresh(false);
-		
+		//refresh(false);
+
+		getLoaderManager().initLoader(0, null, this).forceLoad();
+
 		m_activity.invalidateOptionsMenu();
 	}
 	
@@ -262,164 +392,12 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		out.putParcelable("cats", m_cats);
 	}
 
-	/* private void setLoadingStatus(int status, boolean showProgress) {
-		if (getView() != null) {
-			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-			
-			if (tv != null) {
-				tv.setText(status);
-			}
-		}
-	
-		m_activity.setProgressBarIndeterminateVisibility(showProgress);
-	} */
-	
 	public void refresh(boolean background) {
 		if (!isAdded()) return;
 
         if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
-		
-		CatsRequest req = new CatsRequest(getActivity().getApplicationContext());
-		
-		final String sessionId = m_activity.getSessionId();
-		final boolean unreadOnly = m_activity.getUnreadOnly();
-		
-		if (sessionId != null) {
-			//m_activity.setLoadingStatus(R.string.blank, true);
-			//m_activity.setProgressBarVisibility(true);
-			
-			@SuppressWarnings("serial")
-			HashMap<String,String> map = new HashMap<String,String>() {
-				{
-					put("op", "getCategories");
-					put("sid", sessionId);
-					put("enable_nested", "true");
-					if (unreadOnly) {
-						put("unread_only", String.valueOf(unreadOnly));
-					}
-				}			 
-			};
 
-			req.execute(map);
-		}
-	}
-	
-	private class CatsRequest extends ApiRequest {
-		
-		public CatsRequest(Context context) {
-			super(context);
-		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... progress) {
-			m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
-		}
-		
-		@Override
-		protected void onPostExecute(JsonElement result) {
-			if (isDetached() || !isAdded()) return;
-			
-            if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
-
-			if (getView() != null) {
-                View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-                if (loadingBar != null) {
-                    loadingBar.setVisibility(View.INVISIBLE);
-                }
-            }
-			
-			if (result != null) {
-				try {			
-					JsonArray content = result.getAsJsonArray();
-					if (content != null) {
-						Type listType = new TypeToken<List<FeedCategory>>() {}.getType();
-						final List<FeedCategory> cats = new Gson().fromJson(content, listType);
-						
-						m_cats.clear();
-						
-						int apiLevel = m_activity.getApiLevel();
-
-                        boolean specialCatFound = false;
-
-						// virtual cats implemented in getCategories since api level 1
-						if (apiLevel == 0) {
-							m_cats.add(new FeedCategory(-1, "Special", 0));
-							m_cats.add(new FeedCategory(-2, "Labels", 0));
-							m_cats.add(new FeedCategory(0, "Uncategorized", 0));
-
-                            specialCatFound = true;
-						}
-						
-						for (FeedCategory c : cats) {
-                            if (c.id == -1) {
-                                specialCatFound = true;
-                            }
-
-                            m_cats.add(c);
-                        }
-						
-						sortCats();
-
-                        if (!specialCatFound) {
-                            m_cats.add(0, new FeedCategory(-1, "Special", 0));
-                        }
-
-						/* if (m_cats.size() == 0)
-							setLoadingStatus(R.string.no_feeds_to_display, false);
-						else */
-						
-						//m_adapter.notifyDataSetChanged(); (done by sortCats)
-						//m_activity.setLoadingStatus(R.string.blank, false);
-
-						return;
-					}
-							
-				} catch (Exception e) {
-					e.printStackTrace();						
-				}
-			}
-
-			if (m_lastError == ApiError.LOGIN_FAILED) {
-				m_activity.login(true);
-			} else {
-
-				if (m_lastErrorMessage != null) {
-					m_activity.toast(getString(getErrorMessage()) + "\n" + m_lastErrorMessage);
-				} else {
-					m_activity.toast(getErrorMessage());
-				}
-				
-				//m_activity.setLoadingStatus(getErrorMessage(), false);
-			}
-		}
-
-	}
-
-	public void sortCats() {
-		Comparator<FeedCategory> cmp;
-		
-		if (m_prefs.getBoolean("sort_feeds_by_unread", false)) {
-			cmp = new CatUnreadComparator();
-		} else {
-			if (m_activity.getApiLevel() >= 3) {
-				cmp = new CatOrderComparator();
-			} else {
-				cmp = new CatTitleComparator();
-			}
-		}
-		
-		try {
-			Collections.sort(m_cats, cmp);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
-		try {
-			m_adapter.notifyDataSetChanged();
-		} catch (NullPointerException e) {
-			// adapter missing
-		}
-		
+		getLoaderManager().restartLoader(0, null, this).forceLoad();
 	}
 	
 	private class FeedCategoryListAdapter extends ArrayAdapter<FeedCategory> {

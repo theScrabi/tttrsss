@@ -569,7 +569,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				}
 			}
 
-			if (m_lastError == ApiError.LOGIN_FAILED) {
+			if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 				m_activity.login(true);
 			} else {
 

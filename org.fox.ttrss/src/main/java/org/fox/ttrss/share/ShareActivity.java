@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import com.google.gson.JsonElement;
 
+import org.fox.ttrss.ApiCommon;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.R;
 
@@ -95,7 +96,7 @@ public class ShareActivity extends CommonShareActivity {
 			protected void onPostExecute(JsonElement result) {
 				setProgressBarIndeterminateVisibility(false);
 
-				if (m_lastError != ApiError.NO_ERROR) {
+				if (m_lastError != ApiCommon.ApiError.NO_ERROR) {
 					toast(getErrorMessage());
 				} else {
 					toast(R.string.share_article_posted);

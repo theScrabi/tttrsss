@@ -18,6 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.fox.ttrss.ApiCommon;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.R;
 import org.fox.ttrss.types.FeedCategory;
@@ -168,7 +169,7 @@ public class SubscribeActivity extends CommonShareActivity {
 			protected void onPostExecute(JsonElement result) {
 				m_progressBar.setVisibility(View.INVISIBLE);
 
-				if (m_lastError != ApiError.NO_ERROR) {
+				if (m_lastError != ApiCommon.ApiError.NO_ERROR) {
 					toast(getErrorMessage());
 				} else {
 					try {
@@ -273,7 +274,7 @@ public class SubscribeActivity extends CommonShareActivity {
 			protected void onPostExecute(JsonElement result) {
 				m_progressBar.setVisibility(View.INVISIBLE);
 
-				if (m_lastError != ApiError.NO_ERROR) {
+				if (m_lastError != ApiCommon.ApiError.NO_ERROR) {
 					toast(getErrorMessage());
 				} else {
 					JsonArray content = result.getAsJsonArray();

@@ -36,7 +36,6 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -63,7 +62,6 @@ import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationA
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.DismissableManager;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.SimpleSwipeUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -751,7 +749,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						//m_listLoadingView.setVisibility(m_amountLoaded == HEADLINES_REQUEST_SIZE ? View.VISIBLE : View.GONE);
 
 					} else {
-						if (m_lastError == ApiError.LOGIN_FAILED) {
+						if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 							m_activity.login(true);
 						} else {
 
