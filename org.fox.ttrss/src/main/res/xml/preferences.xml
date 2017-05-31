@@ -86,6 +86,7 @@
 
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
+            android:dependency="headlines_mark_read_scroll"
             android:key="headlines_swipe_to_dismiss"
             android:summary="@string/pref_headlines_swipe_to_dismiss_long"
             android:title="@string/pref_headlines_swipe_to_dismiss" />
@@ -103,6 +104,7 @@
         
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="false"
+            android:disableDependentsState="true"
             android:key="headlines_mark_read_scroll"
             android:summary="@string/pref_headlines_mark_read_scroll_long"
             android:title="@string/pref_headlines_mark_read_scroll" />

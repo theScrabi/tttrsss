@@ -371,7 +371,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		m_animationAdapter.setAbsListView(m_list);
 		m_list.setAdapter(m_animationAdapter);
 
-		if (enableSwipeToDismiss) {
+		if (enableSwipeToDismiss && !m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 
 			TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(m_adapter, m_activity,
 					new OnDismissCallback() {
