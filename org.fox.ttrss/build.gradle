@@ -27,20 +27,20 @@ android {
 dependencies {
     compile project(':taskerlocaleapi')
     compile files('libs/dashclock-api-r1.1.jar')
-    compile files('libs/jsoup-1.6.1.jar')
-    compile files('libs/universal-image-loader-1.9.3.jar')
+    compile 'org.jsoup:jsoup:1.10.2'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'com.shamanland:fab:0.0.5'
+    compile 'com.shamanland:fab:0.0.8'
     compile 'ch.acra:acra:4.9.1'
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
-    compile 'me.relex:circleindicator:1.1.1@aar'
+    compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.viewpagerindicator:library:2.4.1'
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0@aar'
-    compile files('libs/nineoldandroids-2.4.0.jar')
+    compile 'com.nineoldandroids:library:2.4.0'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
