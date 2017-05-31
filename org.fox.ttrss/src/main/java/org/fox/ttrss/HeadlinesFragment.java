@@ -435,7 +435,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 		super.onCreateContextMenu(menu, v, menuInfo);		
 	}
-	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setRetainInstance(true);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

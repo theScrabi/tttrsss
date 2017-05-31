@@ -88,7 +88,14 @@ public class ArticlePager extends Fragment {
 	public void setSearchQuery(String searchQuery) {
 		m_searchQuery = searchQuery;
 	}
-	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setRetainInstance(true);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		View view = inflater.inflate(R.layout.article_pager, container, false);
