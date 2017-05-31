@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -78,6 +81,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeadlinesRequest;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -125,6 +129,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private View m_listLoadingView;
 	private View m_topChangedView;
 	private View m_amrFooterView;
+
+	private MediaPlayer m_mediaPlayer;
+	private SurfaceView m_activeSurface;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -708,6 +715,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public View headlineHeader;
 		public View topChangedMessage;
 		public View flavorImageOverflow;
+		public SurfaceView flavorVideoView;
 		public int position;
 		public boolean flavorImageEmbedded;
 	}
@@ -933,6 +941,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
 				holder.topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 				holder.flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
+				holder.flavorVideoView = (SurfaceView) v.findViewById(R.id.flavor_video);
 
 				v.setTag(holder);
 
@@ -1106,6 +1115,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
 				holder.flavorImageOverflow.setVisibility(View.GONE);
+				holder.flavorVideoView.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
 				// this is needed if our flavor image goes behind base listview element
@@ -1176,6 +1186,61 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 					holder.flavorImageLoadingBar.setIndeterminate(true);
 
+					/*if ("video".equals(article.flavorImage.tagName().toLowerCase()) && article.flavorStreamUri != null) {
+						final MediaPlayer mediaPlayer = new MediaPlayer();
+
+						holder.flavorVideoView.setVisibility(View.VISIBLE);
+
+						repositionFlavorVideo(holder.flavorVideoView, holder);
+
+						try {
+							mediaPlayer.setDataSource(article.flavorStreamUri);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						final View bar = holder.flavorImageLoadingBar;
+						SurfaceHolder sh = holder.flavorVideoView.getHolder();
+
+						sh.addCallback(new SurfaceHolder.Callback() {
+							@Override
+							public void surfaceCreated(SurfaceHolder holder) {
+								mediaPlayer.setDisplay(holder);
+								try {
+									mediaPlayer.prepareAsync();
+								} catch (IllegalStateException e) {
+									e.printStackTrace();
+								}
+								mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+																	  @Override
+																	  public void onPrepared(MediaPlayer mp) {
+
+																		  bar.setVisibility(View.GONE);
+
+																		  //resizeSurface();
+																		  mp.setLooping(true);
+																		  mp.start();
+																	  }
+																  }
+
+								);
+							}
+
+							@Override
+							public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+								//
+							}
+
+							@Override
+							public void surfaceDestroyed(SurfaceHolder holder) {
+								//
+							}
+						});
+
+
+
+					} else { */
+
 					holder.flavorImageView.setVisibility(View.VISIBLE);
 					holder.flavorImageView.setImageDrawable(null);
 
@@ -1208,7 +1273,9 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 										holder.flavorImageView.setVisibility(View.VISIBLE);
 										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
-										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder);
+										boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+
+										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
 										adjustVideoKindView(holder, article);
 
 										return false;
@@ -1220,14 +1287,108 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							.into(glideImage);
 				}
 
-				holder.flavorImageView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
+				if (m_prefs.getBoolean("inline_video_player", false) && article.flavorImage != null &&
+						"video".equals(article.flavorImage.tagName().toLowerCase()) && article.flavorStreamUri != null) {
 
+					holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
+						  @Override
+						  public boolean onLongClick(View v) {
+
+							  openGalleryForType(article, holder, null);
+
+							  return true;
+						  }
+					  });
+
+					holder.flavorImageView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+
+							if (m_mediaPlayer != null) {
+								m_mediaPlayer.release();
+							}
+
+							if (m_activeSurface != null) {
+								m_activeSurface.setVisibility(View.GONE);
+							}
+
+							m_mediaPlayer = new MediaPlayer();
+
+							try {
+								m_mediaPlayer.setDataSource(article.flavorStreamUri);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+							SurfaceHolder sh = holder.flavorVideoView.getHolder();
+
+
+							holder.flavorVideoView.setVisibility(View.VISIBLE);
+							final ProgressBar bar = holder.flavorImageLoadingBar;
+
+							bar.setIndeterminate(true);
+							bar.setVisibility(View.VISIBLE);
+
+							holder.flavorVideoView.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									if (m_mediaPlayer.isPlaying())
+										m_mediaPlayer.pause();
+									else
+										m_mediaPlayer.start();
+								}
+							});
+
+							m_activeSurface = holder.flavorVideoView;
+
+							sh.addCallback(new SurfaceHolder.Callback() {
+								@Override
+								public void surfaceCreated(SurfaceHolder holder) {
+									m_mediaPlayer.setDisplay(holder);
+
+									try {
+										m_mediaPlayer.prepareAsync();
+									} catch (IllegalStateException e) {
+										e.printStackTrace();
+									}
+									m_mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+																		  @Override
+																		  public void onPrepared(MediaPlayer mp) {
+
+																			  bar.setVisibility(View.GONE);
+
+																			  //resizeSurface();
+																			  mp.setLooping(true);
+																			  mp.start();
+																		  }
+																	  }
+									);
+								}
+
+								@Override
+								public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+									bar.setVisibility(View.GONE);
+								}
+
+								@Override
+								public void surfaceDestroyed(SurfaceHolder holder) {
+									bar.setVisibility(View.GONE);
+
+									m_mediaPlayer.release();
+								}
+							});
+
+						}
+					});
+
+				} else {
+					holder.flavorImageView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
 						openGalleryForType(article, holder, null);
-
-					}
-				});
+						}
+					});
+				}
 			}
 
 			String articleAuthor = article.author != null ? article.author : "";
@@ -1390,7 +1551,15 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			return px;
 		}
 
-		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, HeadlineViewHolder holder) {
+		private void repositionFlavorVideo(View view, HeadlineViewHolder holder) {
+			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+			lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+
+			view.setLayoutParams(lp);
+		}
+
+		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, HeadlineViewHolder holder, boolean forceDown) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
 			int w = resource.getIntrinsicWidth();
@@ -1399,7 +1568,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 			//Log.d(TAG, "XYR: " + pxToDp(w) + " " + pxToDp(h) + " " + r);
 
-			if (h < m_minimumHeightToEmbed || r >= 1.2) {
+			if (forceDown || h < m_minimumHeightToEmbed || r >= 1.2) {
 
 				lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
 
@@ -1567,6 +1736,22 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING || scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+
+			/*if (m_activeSurface != null) {
+				m_activeSurface.setVisibility(View.GONE);
+			}*/
+
+			try {
+				if (m_mediaPlayer != null && m_mediaPlayer.isPlaying()) {
+					m_mediaPlayer.pause();
+				}
+			} catch (IllegalStateException e) {
+				// i guess it was already released, oh well
+			}
+
+		}
+
 		if (scrollState == SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 			if (!m_readArticles.isEmpty()) {
 				m_activity.toggleArticlesUnread(m_readArticles);

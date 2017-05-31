@@ -261,7 +261,7 @@ public class VideoPlayerActivity extends CommonActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                //
+                mediaPlayer.release();
             }
         });
 

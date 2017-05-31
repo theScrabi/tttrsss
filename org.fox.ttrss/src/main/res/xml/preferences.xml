@@ -134,6 +134,12 @@
             android:key="open_fresh_on_startup"
             android:title="@string/prefs_open_fresh_on_startup" />
 
+        <org.fox.ttrss.util.LessBrokenSwitchPreference
+            android:defaultValue="false"
+            android:key="inline_video_player"
+            android:summary="Experimental: play videos inside headlines list. Long tap to open separate player"
+            android:title="Inline video player" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reading" >
         <org.fox.ttrss.util.FontSizeDialogPreference
@@ -218,6 +224,7 @@
             android:summary="@string/prefs_widget_show_fresh_summary" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
+
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:key="webview_hardware_accel"

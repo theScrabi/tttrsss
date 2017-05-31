@@ -57,6 +57,22 @@
                         android:src="@drawable/drawer_header"
                         android:visibility="visible" />
 
+                    <SurfaceView
+                        android:id="@+id/flavor_video"
+                        android:foreground="@drawable/ripple"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:background="@android:color/transparent"
+                        android:cropToPadding="true"
+                        android:src="@drawable/drawer_header"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone"
+                        android:layout_alignBottom="@+id/flavor_image"
+                        android:layout_alignTop="@+id/flavor_image" />
+
                     <RelativeLayout
                         android:id="@+id/headline_header"
                         android:clickable="true"
