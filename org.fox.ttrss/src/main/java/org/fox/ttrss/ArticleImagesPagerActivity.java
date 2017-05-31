@@ -117,7 +117,8 @@ public class ArticleImagesPagerActivity extends CommonActivity implements Gestur
                 }
             });
 
-            if (position == 0) {
+            // shared element transitions stop GIFs from playing
+            if (position == 0 && url.toLowerCase().indexOf(".gif") == -1) {
                 ViewCompat.setTransitionName(imgView, "gallery:" + url);
             }
 
