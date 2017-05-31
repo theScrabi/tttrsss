@@ -1294,6 +1294,14 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						  @Override
 						  public boolean onLongClick(View v) {
 
+							  if (m_mediaPlayer != null) {
+								  m_mediaPlayer.release();
+							  }
+
+							  if (m_activeSurface != null) {
+								  m_activeSurface.setVisibility(View.GONE);
+							  }
+
 							  openGalleryForType(article, holder, null);
 
 							  return true;
