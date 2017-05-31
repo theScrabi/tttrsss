@@ -56,7 +56,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	private MasterActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
-	private boolean m_feedIconsChecked = false;
 	private SwipeRefreshLayout m_swipeLayout;
     private boolean m_enableParentBtn = false;
     private ListView m_list;
@@ -356,8 +355,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		
 		if (savedInstanceState != null) {
 			m_selectedFeed = savedInstanceState.getParcelable("selectedFeed");
-			m_feeds = savedInstanceState.getParcelable("feeds");
-			m_feedIconsChecked = savedInstanceState.getBoolean("feedIconsChecked");
 			m_activeCategory = savedInstanceState.getParcelable("activeCat");
             m_enableParentBtn = savedInstanceState.getBoolean("enableParentBtn");
 		}
@@ -425,7 +422,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	public void onResume() {
 		super.onResume();
 
-		getLoaderManager().initLoader(0, null, this).forceLoad();
+		getLoaderManager().initLoader(0, null, this);
 		
 		m_activity.invalidateOptionsMenu();
 	}
@@ -436,8 +433,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("selectedFeed", m_selectedFeed);
-		out.putParcelable("feeds", m_feeds);
-		out.putBoolean("feedIconsChecked", m_feedIconsChecked);
 		out.putParcelable("activeCat", m_activeCategory);
         out.putBoolean("enableParentBtn", m_enableParentBtn);
 	}
