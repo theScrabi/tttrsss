@@ -2,7 +2,6 @@ package org.fox.ttrss;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,7 +30,6 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiscCache;

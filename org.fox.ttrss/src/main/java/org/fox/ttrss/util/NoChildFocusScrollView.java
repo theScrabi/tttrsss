@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.ScrollView;
 
 public class NoChildFocusScrollView extends NotifyingScrollView {
 

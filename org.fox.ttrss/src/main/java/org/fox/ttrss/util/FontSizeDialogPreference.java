@@ -2,8 +2,6 @@ package org.fox.ttrss.util;
 
 // http://www.lukehorvat.com/blog/android-seekbardialogpreference/
 
-import org.fox.ttrss.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
@@ -15,6 +13,8 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+
+import org.fox.ttrss.R;
 
 /**
  * A {@link DialogPreference} that provides a user with the means to select an

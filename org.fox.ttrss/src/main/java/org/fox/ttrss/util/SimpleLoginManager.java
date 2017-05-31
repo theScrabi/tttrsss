@@ -1,14 +1,14 @@
 package org.fox.ttrss.util;
 
-import java.util.HashMap;
-
-import org.fox.ttrss.ApiRequest;
-
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import org.fox.ttrss.ApiRequest;
+
+import java.util.HashMap;
 
 public abstract class SimpleLoginManager {
 	private final String TAG = this.getClass().getSimpleName();

@@ -16,12 +16,11 @@ package org.fox.ttrss.util;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
-
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import java.lang.reflect.Field;
 
 /**
  * Special version of ImageView which allow enlarge width of image if android:adjustViewBounds is true.

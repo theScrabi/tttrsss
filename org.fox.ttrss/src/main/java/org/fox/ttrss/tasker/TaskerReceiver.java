@@ -1,13 +1,5 @@
 package org.fox.ttrss.tasker;
 
-import org.fox.ttrss.ApiCommon;
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.CommonActivity;
-import org.fox.ttrss.OnlineActivity;
-import org.fox.ttrss.offline.OfflineDownloadService;
-import org.fox.ttrss.offline.OfflineUploadService;
-import org.fox.ttrss.util.SimpleLoginManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +8,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.fox.ttrss.ApiCommon;
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.offline.OfflineDownloadService;
+import org.fox.ttrss.offline.OfflineUploadService;
+import org.fox.ttrss.util.SimpleLoginManager;
 
 public class TaskerReceiver extends BroadcastReceiver {
 	private final String TAG = this.getClass().getSimpleName();

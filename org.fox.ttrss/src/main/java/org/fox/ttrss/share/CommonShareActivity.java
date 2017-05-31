@@ -1,10 +1,5 @@
 package org.fox.ttrss.share;
 
-import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.PreferencesActivity;
-import org.fox.ttrss.R;
-import org.fox.ttrss.util.SimpleLoginManager;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.PreferencesActivity;
+import org.fox.ttrss.R;
+import org.fox.ttrss.util.SimpleLoginManager;
 
 
 public abstract class CommonShareActivity extends CommonActivity {

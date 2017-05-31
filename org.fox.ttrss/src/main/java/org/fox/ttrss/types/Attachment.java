@@ -1,11 +1,11 @@
 package org.fox.ttrss.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class Attachment implements Parcelable {
 	public int id;

@@ -1,7 +1,5 @@
 package org.fox.ttrss.tasker;
 
-import org.fox.ttrss.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+
+import org.fox.ttrss.R;
 
 public class TaskerSettingsActivity extends Activity {
 	protected static final int ACTION_DOWNLOAD = 0;
