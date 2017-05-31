@@ -375,8 +375,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		//refresh(false);
 
 		getLoaderManager().initLoader(0, null, this).forceLoad();
 

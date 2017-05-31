@@ -11,6 +11,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
@@ -45,7 +47,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener {
+public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener,
+		LoaderManager.LoaderCallbacks<JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
 	private SharedPreferences m_prefs;
 	private FeedListAdapter m_adapter;
@@ -53,8 +56,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	private MasterActivity m_activity;
 	private Feed m_selectedFeed;
 	private FeedCategory m_activeCategory;
-	private static final String ICON_PATH = "/icons/";
-	//private boolean m_enableFeedIcons;
 	private boolean m_feedIconsChecked = false;
 	private SwipeRefreshLayout m_swipeLayout;
     private boolean m_enableParentBtn = false;
@@ -64,7 +65,114 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
         m_activeCategory = cat;
         m_enableParentBtn = enableParentBtn;
 	}
-	
+
+	@Override
+	public Loader<JsonElement> onCreateLoader(int id, Bundle args) {
+		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
+
+		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
+
+		final String sessionId = m_activity.getSessionId();
+		final boolean unreadOnly = m_activity.getUnreadOnly() && (m_activeCategory == null || m_activeCategory.id != -1);
+
+		HashMap<String,String> params = new HashMap<String,String>() {
+			{
+				put("op", "getFeeds");
+				put("sid", sessionId);
+				put("include_nested", "true");
+				put("cat_id", String.valueOf(catId));
+				if (unreadOnly) {
+					put("unread_only", String.valueOf(unreadOnly));
+				}
+			}
+		};
+
+		return new FeedsLoader(getActivity().getApplicationContext(), params, catId);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<JsonElement> loader, JsonElement result) {
+		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
+
+		View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
+
+		if (loadingBar != null) {
+			loadingBar.setVisibility(View.INVISIBLE);
+		}
+
+		if (result != null) {
+			try {
+				JsonArray content = result.getAsJsonArray();
+				if (content != null) {
+
+					Type listType = new TypeToken<List<Feed>>() {}.getType();
+					final List<Feed> feeds = new Gson().fromJson(content, listType);
+
+					m_feeds.clear();
+
+					int catUnread = 0;
+
+					int catId = ((FeedsLoader) loader).getCatId();
+
+					for (Feed f : feeds)
+						if (f.id > -10 || catId != -4) { // skip labels for flat feedlist for now
+							if (m_activeCategory != null || f.id >= 0) {
+								m_feeds.add(f);
+								catUnread += f.unread;
+							}
+						}
+
+					sortFeeds();
+
+					if (m_activeCategory == null) {
+						Feed feed = new Feed(-1, "Special", true);
+						feed.unread = catUnread;
+
+						m_feeds.add(0, feed);
+						m_adapter.notifyDataSetChanged();
+
+					}
+
+					if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0 && m_feeds.size() > 0) {
+						Feed feed = new Feed(m_activeCategory.id, m_activeCategory.title, true);
+						feed.unread = catUnread;
+						feed.always_display_as_feed = true;
+						feed.display_title = getString(R.string.feed_all_articles);
+
+						m_feeds.add(0, feed);
+						m_adapter.notifyDataSetChanged();
+					}
+
+					return;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		ApiLoader al = (ApiLoader) loader;
+
+		if (al.getLastError() == ApiCommon.ApiError.LOGIN_FAILED) {
+			m_activity.login(true);
+		} else {
+
+			if (al.getLastErrorMessage() != null) {
+				m_activity.toast(getString(al.getErrorMessage()) + "\n" + al.getLastErrorMessage());
+			} else {
+				m_activity.toast(al.getErrorMessage());
+			}
+
+			//m_activity.setLoadingStatus(getErrorMessage(), false);
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<JsonElement> loader) {
+		m_feeds.clear();
+		m_adapter.notifyDataSetChanged();
+	}
+
 	@SuppressLint("DefaultLocale")
 	class FeedUnreadComparator implements Comparator<Feed> {
 
@@ -227,7 +335,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 
-        //ListView list = (ListView) getView().findViewById(R.id.feeds);
         Feed feed = (Feed) m_list.getItemAtPosition(info.position);
 		
 		menu.setHeaderTitle(feed.display_title != null ? feed.display_title : feed.title);
@@ -266,21 +373,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			}
 		});
 
-        /* Button parentBtn = (Button) view.findViewById(R.id.open_parent);
-
-        if (parentBtn != null) {
-            if (m_enableParentBtn) {
-                parentBtn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        m_activity.getSupportFragmentManager().popBackStack();
-                    }
-                });
-            } else {
-                parentBtn.setVisibility(View.GONE);
-            }
-        } */
-
 		m_list = (ListView)view.findViewById(R.id.feeds);
 
 		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn);
@@ -298,23 +390,18 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			m_list.addHeaderView(layout, null, false);
 		}
 
-		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<Feed>)m_feeds);
+		m_adapter = new FeedListAdapter(getActivity(), R.layout.feeds_row, m_feeds);
 		m_list.setAdapter(m_adapter);
 		m_list.setOnItemClickListener(this);
 
 		registerForContextMenu(m_list);
 
-        //m_enableFeedIcons = m_prefs.getBoolean("download_feed_icons", false);
-
-        View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
+        View loadingBar = view.findViewById(R.id.feeds_loading_bar);
 
 		if (loadingBar != null) {
 			loadingBar.setVisibility(View.VISIBLE);
 		}
 
-        //Log.d(TAG, "mpTRA=" + m_activity.m_pullToRefreshAttacher);
-		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
-		
 		return view;    	
 	}
 
@@ -337,8 +424,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		refresh(false);
+
+		getLoaderManager().initLoader(0, null, this).forceLoad();
 		
 		m_activity.invalidateOptionsMenu();
 	}
@@ -386,202 +473,9 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	public void refresh(boolean background) {
 		if (!isAdded()) return;
 
-		//FeedCategory cat = m_onlineServices.getActiveCategory();
+		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
-        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
-		
-		final int catId = (m_activeCategory != null) ? m_activeCategory.id : -4;
-		
-		final String sessionId = m_activity.getSessionId();
-		final boolean unreadOnly = m_activity.getUnreadOnly() && (m_activeCategory == null || m_activeCategory.id != -1);
-
-		FeedsRequest req = new FeedsRequest(getActivity().getApplicationContext(), catId);
-		
-		if (sessionId != null) {
-			//m_activity.setLoadingStatus(R.string.blank, true);
-			//m_activity.setProgressBarVisibility(true);
-			
-			HashMap<String,String> map = new HashMap<String,String>() {
-				{
-					put("op", "getFeeds");
-					put("sid", sessionId);
-					put("include_nested", "true");
-					put("cat_id", String.valueOf(catId));
-					if (unreadOnly) {
-						put("unread_only", String.valueOf(unreadOnly));
-					}
-				}			 
-			};
-
-			req.execute(map);
-		
-		}
-	}
-	
-	/* private void setLoadingStatus(int status, boolean showProgress) {
-		if (getView() != null) {
-			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-			
-			if (tv != null) {
-				tv.setText(status);
-			}
-		}
-		
-		if (getActivity() != null)
-			getActivity().setProgressBarIndeterminateVisibility(showProgress);
-	} */
-	
-	@SuppressWarnings({ "serial" })
-	/* public void getFeedIcons() {
-		
-		ApiRequest req = new ApiRequest(getActivity().getApplicationContext()) {
-			protected void onPostExecute(JsonElement result) {
-				if (isDetached()) return;
-				
-				if (result != null) {
-
-					try {
-						JsonElement iconsUrl = result.getAsJsonObject().get("icons_url");
-
-						if (iconsUrl != null) {
-							String iconsStr = iconsUrl.getAsString();
-							String baseUrl = "";
-							
-							if (!iconsStr.contains("://")) {
-								baseUrl = m_prefs.getString("ttrss_url", "").trim() + "/" + iconsStr;									
-							} else {
-								baseUrl = iconsStr;
-							}
-
-							GetIconsTask git = new GetIconsTask(baseUrl);
-							
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-								git.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, m_feeds);
-							else
-								git.execute(m_feeds);
-							
-							m_feedIconsChecked = true;
-						}
-					} catch (Exception e) {
-						Log.d(TAG, "Error receiving icons configuration");
-						e.printStackTrace();
-					}
-					
-				}
-			}
-		};
-		
-		final String sessionId = m_activity.getSessionId();
-		
-		HashMap<String,String> map = new HashMap<String,String>() {
-			{
-				put("sid", sessionId);
-				put("op", "getConfig");
-			}			 
-		};
-
-		req.execute(map);
-	} */
-	
-	private class FeedsRequest extends ApiRequest {
-		private int m_catId;
-			
-		public FeedsRequest(Context context, int catId) {
-			super(context);
-			m_catId = catId;
-		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... progress) {
-			m_activity.setProgress(Math.round((((float)progress[0] / (float)progress[1]) * 10000)));
-		}
-
-		@Override
-		protected void onPostExecute(JsonElement result) {
-			if (isDetached() || !isAdded()) return;
-
-			if (getView() != null) {
-                View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-                if (loadingBar != null) {
-                    loadingBar.setVisibility(View.INVISIBLE);
-                }
-            }
-			
-            if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
-			
-			if (result != null) {
-				try {			
-					JsonArray content = result.getAsJsonArray();
-					if (content != null) {
-
-						Type listType = new TypeToken<List<Feed>>() {}.getType();
-						final List<Feed> feeds = new Gson().fromJson(content, listType);
-
-						m_feeds.clear();
-
-                        int catUnread = 0;
-
-						for (Feed f : feeds)
-							if (f.id > -10 || m_catId != -4) { // skip labels for flat feedlist for now
-                                if (m_activeCategory != null || f.id >= 0) {
-                                    m_feeds.add(f);
-                                    catUnread += f.unread;
-                                }
-                            }
-						
-						sortFeeds();
-
-                        if (m_activeCategory == null) {
-                            Feed feed = new Feed(-1, "Special", true);
-                            feed.unread = catUnread;
-
-                            m_feeds.add(0, feed);
-                            m_adapter.notifyDataSetChanged();
-
-                        }
-
-                        if (m_enableParentBtn && m_activeCategory != null && m_activeCategory.id >= 0 && m_feeds.size() > 0) {
-                            Feed feed = new Feed(m_activeCategory.id, m_activeCategory.title, true);
-                            feed.unread = catUnread;
-                            feed.always_display_as_feed = true;
-                            feed.display_title = getString(R.string.feed_all_articles);
-
-                            m_feeds.add(0, feed);
-                            m_adapter.notifyDataSetChanged();
-                        }
-
-						/*if (m_feeds.size() == 0)
-							setLoadingStatus(R.string.no_feeds_to_display, false);
-						else */
-						
-						//m_activity.setLoadingStatus(R.string.blank, false);
-						//m_adapter.notifyDataSetChanged(); (done by sortFeeds)
-						
-						/* if (m_enableFeedIcons && !m_feedIconsChecked &&	Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
-							getFeedIcons(); */
-
-						return;
-					}
-							
-				} catch (Exception e) {
-					e.printStackTrace();						
-				}
-			}
-
-			if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
-				m_activity.login(true);
-			} else {
-
-				if (m_lastErrorMessage != null) {
-					m_activity.toast(getString(getErrorMessage()) + "\n" + m_lastErrorMessage);
-				} else {
-					m_activity.toast(getErrorMessage());
-				}
-
-				//m_activity.setLoadingStatus(getErrorMessage(), false);
-			}
-	    }
+		getLoaderManager().restartLoader(0, null, this).forceLoad();
 	}
 
 	private class FeedListAdapter extends ArrayAdapter<Feed> {
@@ -614,8 +508,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
             if (!m_activity.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
-				return VIEW_NORMAL;				
-			}			
+				return VIEW_NORMAL;
+			}
 		}
 
 		@Override
@@ -626,13 +520,13 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 			if (v == null) {
 				int layoutId = R.layout.feeds_row;
-				
+
 				switch (getItemViewType(position)) {
 				case VIEW_SELECTED:
 					layoutId = R.layout.feeds_row_selected;
 					break;
 				}
-				
+
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(layoutId, null);
 
@@ -687,16 +581,16 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				tu.setText(String.valueOf(feed.unread));
 				tu.setVisibility((feed.unread > 0) ? View.VISIBLE : View.INVISIBLE);
 			}
-			
+
 			/*ImageButton ib = (ImageButton) v.findViewById(R.id.feed_menu_button);
-			
+
 			if (ib != null) {
-				ib.setOnClickListener(new OnClickListener() {					
+				ib.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						getActivity().openContextMenu(v);
 					}
-				});								
+				});
 			}*/
 
 			return v;
@@ -729,95 +623,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			// adapter missing
 		}
 	}
-	
-	/* public class GetIconsTask extends AsyncTask<FeedList, Integer, Integer> {
-
-		private String m_baseUrl;
-		
-		public GetIconsTask(String baseUrl) {
-			m_baseUrl = baseUrl.trim();
-		}
-
-		@Override
-		protected Integer doInBackground(FeedList... params) {
-
-			FeedList localList = new FeedList();			
-			
-			try {
-				localList.addAll(params[0]);
-
-				File storage = m_activity.getExternalCacheDir();
-				final File iconPath = new File(storage.getAbsolutePath() + ICON_PATH);
-				if (!iconPath.exists()) iconPath.mkdirs();
-			
-				if (iconPath.exists()) {
-					for (Feed feed : localList)	 {
-						if (feed.id > 0 && feed.has_icon && !feed.is_cat) {
-							File outputFile = new File(iconPath.getAbsolutePath() + "/" + feed.id + ".ico");
-							String fetchUrl = m_baseUrl + "/" + feed.id + ".ico";
-							
-							if (!outputFile.exists()) {
-								downloadFile(fetchUrl, outputFile.getAbsolutePath());
-								Thread.sleep(2000);
-							}											
-						}
-					}						
-				}
-			} catch (Exception e) {
-				Log.d(TAG, "Error while downloading feed icons");
-				e.printStackTrace();
-			}
-			return null;
-		}
-		
-		protected void downloadFile(String fetchUrl, String outputFile) {
-			AndroidHttpClient client = AndroidHttpClient.newInstance("Tiny Tiny RSS");
-			
-			try {
-				URL url = new URL(fetchUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				
-				conn.setConnectTimeout(1000);
-				conn.setReadTimeout(5000);
-				
-				Log.d(TAG, "[downloadFile] " + url);
-
-				String httpLogin = m_prefs.getString("http_login", "");
-				String httpPassword = m_prefs.getString("http_password", "");
-				
-				if (httpLogin.length() > 0) {
-					conn.setRequestProperty("Authorization", "Basic " + 
-						Base64.encodeToString((httpLogin + ":" + httpPassword).getBytes("UTF-8"), Base64.NO_WRAP)); 				
-				}
-
-				InputStream content = conn.getInputStream();
-
-				BufferedInputStream is = new BufferedInputStream(content, 1024);
-				FileOutputStream fos = new FileOutputStream(outputFile);
-				
-				byte[] buffer = new byte[1024];
-				int len = 0;
-				while ((len = is.read(buffer)) != -1) {
-				    fos.write(buffer, 0, len);
-				}
-				
-				fos.close();
-				is.close();
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			client.close();
-		}
-		
-		protected void onPostExecute(Integer result) {
-			if (isDetached()) return;
-			
-			m_adapter.notifyDataSetChanged();
-		}
-		
-	} */
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -837,22 +642,4 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			return null;
 		}
 	}
-	
-	/* public Feed getSelectedFeed() {
-		return m_selectedFeed;
-	}	
-	
-	public void setSelectedFeed(Feed feed) {
-		m_selectedFeed = feed;
-		
-		if (m_adapter != null) {
-			m_adapter.notifyDataSetChanged();
-		}
-	} */
-
-	/* @Override
-	public void onRefreshStarted(View view) {
-		refresh(false);
-	} */
-
 }
