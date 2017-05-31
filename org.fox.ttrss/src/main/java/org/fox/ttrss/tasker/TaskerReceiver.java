@@ -1,5 +1,6 @@
 package org.fox.ttrss.tasker;
 
+import org.fox.ttrss.ApiCommon;
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
@@ -80,7 +81,7 @@ public class TaskerReceiver extends BroadcastReceiver {
 			String login = prefs.getString("login", "").trim();
 			String password = prefs.getString("password", "").trim();
 			String ttrssUrl = prefs.getString("ttrss_url", "").trim();
-			ApiRequest.trustAllHosts(prefs.getBoolean("ssl_trust_any", false), prefs.getBoolean("ssl_trust_any_host", false));
+			ApiCommon.trustAllHosts(prefs.getBoolean("ssl_trust_any", false), prefs.getBoolean("ssl_trust_any_host", false));
 			
 			if (ttrssUrl.equals("")) {
 				Toast toast = Toast.makeText(fContext, "Could not download articles: not configured?", Toast.LENGTH_SHORT);

@@ -136,7 +136,7 @@ public class OnlineActivity extends CommonActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		ApiRequest.disableConnectionReuseIfNecessary();
+		ApiCommon.disableConnectionReuseIfNecessary();
 		
 		// we use that before parent onCreate so let's init locally
 		m_prefs = PreferenceManager
@@ -1184,7 +1184,7 @@ public class OnlineActivity extends CommonActivity {
 	public void onResume() {
 		super.onResume();
 		
-		ApiRequest.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
+		ApiCommon.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
 				m_prefs.getBoolean("ssl_trust_any_host", false));				
 		
 		IntentFilter filter = new IntentFilter();
@@ -1581,7 +1581,7 @@ public class OnlineActivity extends CommonActivity {
 										} catch (Exception e) {
 											e.printStackTrace();
 										}
-									} else if (m_lastError != ApiError.API_UNKNOWN_METHOD) {
+									} else if (m_lastError != ApiCommon.ApiError.API_UNKNOWN_METHOD) {
 										// Unknown method means old tt-rss, in that case we assume API 0 and continue
 										
 										setLoadingStatus(getErrorMessage(), false);

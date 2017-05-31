@@ -9,8 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.fox.ttrss.ApiCommon;
 import org.fox.ttrss.ApiRequest;
-import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -121,7 +121,7 @@ public class HeadlinesRequest extends ApiRequest {
 			}
 		}
 
-		if (m_lastError == ApiError.LOGIN_FAILED) {
+		if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 			m_activity.login();
 		} else {
 

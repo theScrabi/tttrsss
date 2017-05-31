@@ -3,7 +3,6 @@ package org.fox.ttrss;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
@@ -216,7 +215,7 @@ public class ArticlePager extends Fragment {
 					}
 
 				} else {
-					if (m_lastError == ApiError.LOGIN_FAILED) {
+					if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 						m_activity.login(true);
 					} else {
 						m_activity.toast(getErrorMessage());
