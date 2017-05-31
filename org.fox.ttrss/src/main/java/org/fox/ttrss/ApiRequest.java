@@ -65,47 +65,7 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 	}
 
 	public int getErrorMessage() {
-		switch (m_lastError) {
-		case NO_ERROR:
-			return R.string.error_unknown;
-		case HTTP_UNAUTHORIZED:
-			return R.string.error_http_unauthorized;
-		case HTTP_FORBIDDEN:
-			return R.string.error_http_forbidden;
-		case HTTP_NOT_FOUND:
-			return R.string.error_http_not_found;
-		case HTTP_SERVER_ERROR:
-			return R.string.error_http_server_error;
-		case HTTP_OTHER_ERROR:
-			return R.string.error_http_other_error;
-		case SSL_REJECTED:
-			return R.string.error_ssl_rejected;
-		case SSL_HOSTNAME_REJECTED:
-			return R.string.error_ssl_hostname_rejected;
-		case PARSE_ERROR:
-			return R.string.error_parse_error;
-		case IO_ERROR:
-			return R.string.error_io_error;
-		case OTHER_ERROR:
-			return R.string.error_other_error;
-		case API_DISABLED:
-			return R.string.error_api_disabled;
-		case API_UNKNOWN:
-			return R.string.error_api_unknown;
-		case API_UNKNOWN_METHOD:
-			return R.string.error_api_unknown_method;
-		case LOGIN_FAILED:
-			return R.string.error_login_failed;
-		case INVALID_URL:
-			return R.string.error_invalid_api_url;
-		case API_INCORRECT_USAGE:
-			return R.string.error_api_incorrect_usage;
-		case NETWORK_UNAVAILABLE:
-			return R.string.error_network_unavailable;
-		default:
-			Log.d(TAG, "getErrorMessage: unknown error code=" + m_lastError);
-			return R.string.error_unknown;
-		}
+		return ApiCommon.getErrorMessage(m_lastError);
 	}
 
 	@Override
