@@ -114,9 +114,9 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 						if (c.id == -1) {
 							specialCatFound = true;
 						}
-
-						m_cats.add(c);
 					}
+
+					m_cats.addAll(cats);
 
 					sortCats();
 
