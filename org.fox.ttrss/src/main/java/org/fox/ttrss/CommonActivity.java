@@ -24,6 +24,7 @@ import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -116,13 +117,11 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	}
 
 	public void toast(int msgId) {
-		Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
-		toast.show();
+		toast(getString(msgId));
 	}
 
 	public void toast(String msg) {
-		Toast toast = Toast.makeText(CommonActivity.this, msg, Toast.LENGTH_SHORT);
-		toast.show();
+		Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
 	}
 
 	@Override
