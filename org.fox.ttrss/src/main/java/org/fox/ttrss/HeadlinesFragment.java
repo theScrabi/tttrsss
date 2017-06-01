@@ -578,6 +578,10 @@ public class HeadlinesFragment extends Fragment {
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
+			if (!append) {
+				m_list.scrollToPosition(0);
+			}
+
 			final String sessionId = m_activity.getSessionId();
 			final boolean isCat = m_feed.is_cat;
 			
