@@ -368,7 +368,8 @@ public class HeadlinesFragment extends Fragment {
 				@Override
 				public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-					final int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
+					final int adapterPosition = viewHolder.getAdapterPosition();
+					final int position = adapterPosition - m_adapter.getHeaderCount();
 
 					try {
 						final Article article = getArticleAtPosition(position);
@@ -398,7 +399,8 @@ public class HeadlinesFragment extends Fragment {
 											}
 
 											m_articles.add(position, article);
-											m_adapter.notifyDataSetChanged();
+											m_adapter.notifyItemInserted(adapterPosition);
+											m_adapter.notifyItemRangeChanged(adapterPosition, 1);
 										}
 									}).show();
 
