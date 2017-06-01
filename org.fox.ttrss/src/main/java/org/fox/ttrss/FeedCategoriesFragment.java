@@ -337,7 +337,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				refresh(false);
+				refresh(true);
 			}
 		});
 
@@ -356,8 +356,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 			loadingBar.setVisibility(View.VISIBLE);
 		}
 
-		//m_activity.m_pullToRefreshAttacher.addRefreshableView(list, this);
-		
 		return view; 
 	}
 	
@@ -390,10 +388,18 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		//out.putParcelable("cats", m_cats);
 	}
 
-	public void refresh(boolean background) {
+	public void refresh(boolean swipeRefresh) {
 		if (!isAdded()) return;
 
-        if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
+        if (m_swipeLayout != null && swipeRefresh) {
+			m_swipeLayout.setRefreshing(true);
+		} else {
+			View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
+
+			if (loadingBar != null) {
+				loadingBar.setVisibility(View.VISIBLE);
+			}
+		}
 
 		getLoaderManager().restartLoader(0, null, this).forceLoad();
 	}
@@ -529,8 +535,4 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		return m_selectedCat;
 	}
 
-	/* @Override
-	public void onRefreshStarted(View view) {
-		refresh(false);
-	} */
 }
