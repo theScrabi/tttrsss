@@ -66,13 +66,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.JsonElement;
-import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
-import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
-import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.DismissableManager;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.TimedUndoAdapter;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.undo.UndoAdapter;
 import com.shamanland.fab.FloatingActionButton;
 import com.shamanland.fab.ShowHideOnScroll;
 
@@ -114,7 +107,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private SharedPreferences m_prefs;
 	
 	private ArticleListAdapter m_adapter;
-	private AnimationAdapter m_animationAdapter;
 	private ArticleList m_articles = new ArticleList(); //Application.getInstance().m_loadedArticles;
 	//private ArticleList m_selectedArticles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
@@ -124,7 +116,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	private int m_maxImageSize = 0;
     private boolean m_compactLayoutMode = false;
     private int m_listPreviousVisibleItem;
-    private DynamicListView m_list;
+    private ListView m_list;
 	//private ImageLoader m_imageLoader = ImageLoader.getInstance();
 	private View m_listLoadingView;
 	private View m_topChangedView;
@@ -335,7 +327,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			}
 		});
 
-		m_list = (DynamicListView) view.findViewById(R.id.headlines_list);
+		m_list = (ListView) view.findViewById(R.id.headlines_list);
 
 		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
 
@@ -379,55 +371,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
         }
 
 		m_adapter = new ArticleListAdapter(getActivity(), R.layout.headlines_row, m_articles);
-		m_animationAdapter = new SwingBottomInAnimationAdapter(m_adapter);
-
-		m_animationAdapter.setAbsListView(m_list);
-		m_list.setAdapter(m_animationAdapter);
-
-		if (enableSwipeToDismiss && !m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
-
-			TimedUndoAdapter swipeUndoAdapter = new TimedUndoAdapter(m_adapter, m_activity,
-					new OnDismissCallback() {
-						@Override
-						public void onDismiss(final ViewGroup listView, final int[] reverseSortedPositions) {
-							for (int position : reverseSortedPositions) {
-								Article article = m_adapter.getItem(position);
-
-								Log.d(TAG, "onSwipeDismiss: " + article);
-
-								if (article != null) {
-									if (article.unread) {
-										article.unread = false;
-										m_activity.saveArticleUnread(article);
-									}
-
-									m_adapter.remove(article);
-									m_adapter.notifyDataSetChanged();
-								}
-							}
-						}
-					}
-			);
-
-			swipeUndoAdapter.setTimeoutMs(2000);
-			swipeUndoAdapter.setAbsListView(m_list);
-			m_list.setAdapter(swipeUndoAdapter);
-			m_list.enableSimpleSwipeUndo();
-			m_list.setDismissableManager(new DismissableManager() {
-				@Override
-				public boolean isDismissable(long id, int position) {
-					try {
-						Article article = m_adapter.getItem(position);
-
-						return article != null;
-					} catch (Exception e) {
-						// index out of bounds == footer or w/e
-						return false;
-					}
-				}
-			});
-		}
-
+		m_list.setAdapter(m_adapter);
 
 		m_list.setOnItemClickListener(this);
 		m_list.setOnScrollListener(this);
@@ -515,7 +459,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					m_autoCatchupDisabled = true;
 					m_list.setSelection(0);
 					m_autoCatchupDisabled = false;
-					m_animationAdapter.reset();
 					m_articles.clear();
 					m_adapter.notifyDataSetChanged();
 				}
@@ -720,7 +663,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		public boolean flavorImageEmbedded;
 	}
 	
-	private class ArticleListAdapter extends ArrayAdapter<Article> implements UndoAdapter {
+	private class ArticleListAdapter extends ArrayAdapter<Article>  {
 		private ArrayList<Article> items;
 		
 		public static final int VIEW_NORMAL = 0;
@@ -1540,23 +1483,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				tv.setTextColor(origTitleColors[viewType].intValue());
 				tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			}
-		}
-
-		@NonNull
-		@Override
-		public View getUndoView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-			View view = convertView;
-
-			if (view == null) {
-				view = LayoutInflater.from(m_activity).inflate(R.layout.headlines_row_undo, parent, false);
-			}
-			return view;
-		}
-
-		@NonNull
-		@Override
-		public View getUndoClickView(@NonNull View view) {
-			return view.findViewById(R.id.headlines_row_undo_button);
 		}
 	}
 

@@ -84,24 +84,13 @@
             android:summary="@string/pref_headlines_show_content_long"
             android:title="@string/pref_headlines_show_content" />
 
-        <org.fox.ttrss.util.LessBrokenSwitchPreference
+        <!-- <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="true"
             android:dependency="headlines_mark_read_scroll"
             android:key="headlines_swipe_to_dismiss"
             android:summary="@string/pref_headlines_swipe_to_dismiss_long"
-            android:title="@string/pref_headlines_swipe_to_dismiss" />
+            android:title="@string/pref_headlines_swipe_to_dismiss" /> -->
 
-        <!-- <org.fox.ttrss.util.LessBrokenSwitchPreference
-            android:defaultValue="true"
-            android:key="headlines_show_flavor_image"
-            android:title="@string/prefs_headlines_show_flavor_image" /> -->
-        
-        <!--  <org.fox.ttrss.util.LessBrokenSwitchPreference
-            android:defaultValue="false"
-            android:key="headlines_full_content"
-            android:summary="@string/pref_headlines_full_content_long"
-            android:title="@string/pref_headlines_full_content" /> -->
-        
         <org.fox.ttrss.util.LessBrokenSwitchPreference
             android:defaultValue="false"
             android:disableDependentsState="true"
