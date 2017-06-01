@@ -16,7 +16,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -741,7 +740,7 @@ public class HeadlinesFragment extends Fragment {
 		out.putBoolean("lazyLoadDisabled", m_lazyLoadDisabled);
 	}
 
-	static class HeadlineViewHolder extends RecyclerView.ViewHolder {
+	static class ArticleiewHolder extends RecyclerView.ViewHolder {
 		public View view;
 		public Article article;
 
@@ -768,7 +767,7 @@ public class HeadlinesFragment extends Fragment {
 		//public int position;
 		public boolean flavorImageEmbedded;
 
-		public HeadlineViewHolder(View v) {
+		public ArticleiewHolder(View v) {
 			super(v);
 
 			view = v;
@@ -797,7 +796,7 @@ public class HeadlinesFragment extends Fragment {
 		}
 	}
 	
-	private class ArticleListAdapter extends RecyclerView.Adapter<HeadlineViewHolder>  {
+	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleiewHolder>  {
 		private ArrayList<Article> items;
 		
 		public static final int VIEW_NORMAL = 0;
@@ -846,7 +845,7 @@ public class HeadlinesFragment extends Fragment {
 		}
 
 		@Override
-		public HeadlineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		public ArticleiewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
 			int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
@@ -864,11 +863,11 @@ public class HeadlinesFragment extends Fragment {
 
 			View v = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
 
-			return new HeadlineViewHolder(v);
+			return new ArticleiewHolder(v);
 		}
 
 		@Override
-		public void onBindViewHolder(final HeadlineViewHolder holder, final int position) {
+		public void onBindViewHolder(final ArticleiewHolder holder, final int position) {
 			holder.article = items.get(position);
 
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
@@ -1401,7 +1400,7 @@ public class HeadlinesFragment extends Fragment {
 			return items.size();
 		}
 
-		private void updateTextCheckedState(final HeadlineViewHolder holder, final Article article, final int position) {
+		private void updateTextCheckedState(final ArticleiewHolder holder, final Article article, final int position) {
             String tmp = article.title.length() > 0 ? article.title.substring(0, 1).toUpperCase() : "?";
 
             if (article.selected) {
@@ -1448,7 +1447,7 @@ public class HeadlinesFragment extends Fragment {
             }
         }
 
-		private void openGalleryForType(Article article, HeadlineViewHolder holder, View transitionView) {
+		private void openGalleryForType(Article article, ArticleiewHolder holder, View transitionView) {
 			if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
 
 				if (m_youtubeInstalled) {
@@ -1499,7 +1498,7 @@ public class HeadlinesFragment extends Fragment {
 
 		}
 
-		private void adjustVideoKindView(HeadlineViewHolder holder, Article article) {
+		private void adjustVideoKindView(ArticleiewHolder holder, Article article) {
 			if (article.flavorImage != null) {
 				if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
 					holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
@@ -1530,7 +1529,7 @@ public class HeadlinesFragment extends Fragment {
 			return px;
 		}
 
-		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, HeadlineViewHolder holder, boolean forceDown) {
+		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, ArticleiewHolder holder, boolean forceDown) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
 			int w = resource.getIntrinsicWidth();
