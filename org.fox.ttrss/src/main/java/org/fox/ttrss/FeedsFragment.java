@@ -422,7 +422,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	public void onResume() {
 		super.onResume();
 
-		getLoaderManager().initLoader(0, null, this);
+		getLoaderManager().initLoader(0, null, this).forceLoad();
 		
 		m_activity.invalidateOptionsMenu();
 	}
