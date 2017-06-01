@@ -85,7 +85,7 @@ public class HeadlinesFragment extends Fragment {
 
 	public enum ArticlesSelection { ALL, NONE, UNREAD }
 
-    public static final int FLAVOR_IMG_MIN_SIZE = 128;
+    public static final int FLAVOR_IMG_MIN_SIZE = 200;
 	public static final int THUMB_IMG_MIN_SIZE = 32;
 
     public static final int HEADLINES_REQUEST_SIZE = 30;
