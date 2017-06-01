@@ -176,7 +176,8 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 			
 			m_menu.setGroupVisible(R.id.menu_group_headlines, !isPortrait() && !isSmallScreen());
 			//m_menu.findItem(R.id.headlines_toggle_sidebar).setVisible(!isPortrait() && !isSmallScreen());
-			
+			m_menu.findItem(R.id.headlines_toggle_sort_order).setVisible(false);
+
 			ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 			
 			m_menu.setGroupVisible(R.id.menu_group_article, af != null);
