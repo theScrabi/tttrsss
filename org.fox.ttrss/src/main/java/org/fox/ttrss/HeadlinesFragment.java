@@ -16,7 +16,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -366,10 +368,10 @@ public class HeadlinesFragment extends Fragment {
 				@Override
 				public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-					int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
+					final int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
 
 					try {
-						Article article = getArticleAtPosition(position);
+						final Article article = getArticleAtPosition(position);
 
 						if (article != null) {
 							if (article.unread) {
@@ -380,6 +382,16 @@ public class HeadlinesFragment extends Fragment {
 
 						m_articles.remove(position);
 						m_adapter.notifyDataSetChanged();
+
+						Snackbar.make(m_list, R.string.headline_undo_row_prompt, Snackbar.LENGTH_LONG)
+							.setAction(getString(R.string.headline_undo_row_button), new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									m_articles.add(position, article);
+									m_adapter.notifyDataSetChanged();
+								}
+							}).show();
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
