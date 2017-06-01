@@ -6,6 +6,7 @@ android {
 
     defaultConfig {
         applicationId "org.fox.ttrss"
+        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         minSdkVersion 16
         targetSdkVersion 23 // we're not targeting SDK 25 because of this: https://issuetracker.google.com/issues/37103380#makechanges
     }
