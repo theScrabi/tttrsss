@@ -1194,6 +1194,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
 								.dontAnimate()
+								.dontTransform()
 								.diskCacheStrategy(DiskCacheStrategy.ALL)
 								.skipMemoryCache(false)
 								.listener(new RequestListener<String, GlideDrawable>() {
