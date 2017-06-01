@@ -1181,110 +1181,72 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						});
 					}
 
-					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
-
-					holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-					holder.flavorImageLoadingBar.setIndeterminate(true);
-
-					/*if ("video".equals(article.flavorImage.tagName().toLowerCase()) && article.flavorStreamUri != null) {
-						final MediaPlayer mediaPlayer = new MediaPlayer();
-
-						holder.flavorVideoView.setVisibility(View.VISIBLE);
-
-						repositionFlavorVideo(holder.flavorVideoView, holder);
-
-						try {
-							mediaPlayer.setDataSource(article.flavorStreamUri);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-						final View bar = holder.flavorImageLoadingBar;
-						SurfaceHolder sh = holder.flavorVideoView.getHolder();
-
-						sh.addCallback(new SurfaceHolder.Callback() {
-							@Override
-							public void surfaceCreated(SurfaceHolder holder) {
-								mediaPlayer.setDisplay(holder);
-								try {
-									mediaPlayer.prepareAsync();
-								} catch (IllegalStateException e) {
-									e.printStackTrace();
-								}
-								mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-																	  @Override
-																	  public void onPrepared(MediaPlayer mp) {
-
-																		  bar.setVisibility(View.GONE);
-
-																		  //resizeSurface();
-																		  mp.setLooping(true);
-																		  mp.start();
-																	  }
-																  }
-
-								);
-							}
-
-							@Override
-							public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-								//
-							}
-
-							@Override
-							public void surfaceDestroyed(SurfaceHolder holder) {
-								//
-							}
-						});
-
-
-
-					} else { */
+					Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
-					holder.flavorImageView.setImageDrawable(null);
 
-					final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(holder.flavorImageView);
+					Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
-					Glide.with(HeadlinesFragment.this)
-							.load(article.flavorImageUri)
-							.dontAnimate()
-							.diskCacheStrategy(DiskCacheStrategy.ALL)
-							.skipMemoryCache(false)
-							.listener(new RequestListener<String, GlideDrawable>() {
-								@Override
-								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+					if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {
+						holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+						holder.flavorImageLoadingBar.setIndeterminate(true);
 
-									holder.flavorImageLoadingBar.setVisibility(View.GONE);
-									holder.flavorImageView.setVisibility(View.GONE);
+						Glide.with(HeadlinesFragment.this)
+								.load(article.flavorImageUri)
+								.dontAnimate()
+								.diskCacheStrategy(DiskCacheStrategy.ALL)
+								.skipMemoryCache(false)
+								.listener(new RequestListener<String, GlideDrawable>() {
+									@Override
+									public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-									return false;
-								}
-
-								@Override
-								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-									holder.flavorImageLoadingBar.setVisibility(View.GONE);
-
-									holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-
-									if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
-
-										holder.flavorImageView.setVisibility(View.VISIBLE);
-										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-
-										boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
-
-										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
-										adjustVideoKindView(holder, article);
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
+										holder.flavorImageView.setVisibility(View.GONE);
 
 										return false;
-									} else {
-										return true;
 									}
-								}
-							})
-							.into(glideImage);
+
+									@Override
+									public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
+
+										if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
+
+											//holder.flavorImageView.setVisibility(View.VISIBLE);
+											holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+											holder.flavorImageOverflow.setTag(article.flavorImageUri);
+
+											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+
+											maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+											adjustVideoKindView(holder, article);
+
+											return false;
+										} else {
+
+											holder.flavorImageOverflow.setVisibility(View.GONE);
+
+											return true;
+										}
+									}
+								})
+								.into(holder.flavorImageView);
+					} else {
+						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+						adjustVideoKindView(holder, article);
+
+						if (holder.flavorImageEmbedded) {
+							TypedValue tv = new TypedValue();
+
+							if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
+									holder.headlineHeader.setBackgroundColor(tv.data);
+							}
+						} else {
+							holder.headlineHeader.setBackgroundDrawable(null);
+						}
+					}
 				}
 
 				if (m_prefs.getBoolean("inline_video_player", false) && article.flavorImage != null &&
