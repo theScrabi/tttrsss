@@ -416,7 +416,7 @@ public class HeadlinesFragment extends Fragment {
 
 				if (m_prefs.getBoolean("headlines_mark_read_scroll", false) && firstVisibleItem > m_adapter.getHeaderCount()) {
 
-					if (firstVisibleItem <= m_articles.size()) {
+					if (firstVisibleItem <= m_articles.size() + m_adapter.getHeaderCount()) {
 
 						Article a = (Article) m_articles.get(firstVisibleItem - m_adapter.getHeaderCount() - 1);
 
