@@ -343,9 +343,7 @@ public class HeadlinesFragment extends Fragment {
 
 		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
 
-		boolean enableSwipeToDismiss = m_prefs.getBoolean("headlines_swipe_to_dismiss", true);
-
-		if (enableSwipeToDismiss) {
+		if (m_prefs.getBoolean("headlines_swipe_to_dismiss", true) && !m_prefs.getBoolean("headlines_mark_read_scroll", false) ) {
 
 			ItemTouchHelper swipeHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
@@ -526,8 +524,6 @@ public class HeadlinesFragment extends Fragment {
 
 			}
 		});
-
-		//if (!enableSwipeToDismiss) registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
