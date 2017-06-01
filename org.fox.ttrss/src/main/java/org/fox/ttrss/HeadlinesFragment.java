@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -890,9 +891,8 @@ public class HeadlinesFragment extends Fragment {
 					// only set active article when it makes sense (in DetailActivity)
 					if (getActivity() instanceof DetailActivity) {
 						m_activeArticle = article;
+						m_adapter.notifyDataSetChanged();
 					}
-
-					m_adapter.notifyDataSetChanged();
 				}
 			});
 
@@ -1064,17 +1064,23 @@ public class HeadlinesFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						m_listener.onArticleSelected(article);
+
+						// only set active article when it makes sense (in DetailActivity)
+						if (getActivity() instanceof DetailActivity) {
+							m_activeArticle = article;
+							m_adapter.notifyDataSetChanged();
+						}
 					}
 				});
 
-				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
+				/*holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
 					@Override
 					public boolean onLongClick(View v) {
 						m_activity.openContextMenu(v);
 
 						return true;
 					}
-				});
+				});*/
 
 				if (showFlavorImage && article.flavorImageUri != null && holder.flavorImageView != null) {
 					if (holder.flavorImageOverflow != null) {
@@ -1632,13 +1638,12 @@ public class HeadlinesFragment extends Fragment {
             // only set active article when it makes sense (in DetailActivity)
             if (getActivity() instanceof DetailActivity) {
                 m_activeArticle = article;
+				m_adapter.notifyDataSetChanged();
             }
-
-            m_adapter.notifyDataSetChanged();
 
 			if (m_list != null) {
 				int position = getArticlePositionById(article.id);
-				m_list.smoothScrollToPosition(position);
+				m_list.scrollToPosition(position);
 			}
 		}
 	}
