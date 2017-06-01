@@ -26,6 +26,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.transition.Fade;
 import android.transition.Transition;
@@ -340,6 +341,42 @@ public class HeadlinesFragment extends Fragment {
 
 		boolean enableSwipeToDismiss = m_prefs.getBoolean("headlines_swipe_to_dismiss", true);
 
+		if (enableSwipeToDismiss) {
+
+			ItemTouchHelper swipeHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+				@Override
+				public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+					return false;
+				}
+
+				@Override
+				public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+					int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
+
+					try {
+						Article article = getArticleAtPosition(position);
+
+						if (article != null) {
+							if (article.unread) {
+								article.unread = false;
+								m_activity.saveArticleUnread(article);
+							}
+						}
+
+						m_articles.remove(position);
+						m_adapter.notifyDataSetChanged();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+
+			swipeHelper.attachToRecyclerView(m_list);
+
+		};
+
 		if (! (getActivity() instanceof DetailActivity)) {
 
 			m_list.setOnTouchListener(new ShowHideOnScroll(fab));
@@ -451,7 +488,7 @@ public class HeadlinesFragment extends Fragment {
 			}
 		});
 
-		if (!enableSwipeToDismiss) registerForContextMenu(m_list);
+		//if (!enableSwipeToDismiss) registerForContextMenu(m_list);
 
         if (m_activity.isSmallScreen()) {
             m_activity.setTitle(m_feed.title);
@@ -800,13 +837,13 @@ public class HeadlinesFragment extends Fragment {
 
 			//holder.position = position;
 
-			holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+			/*holder.view.setOnLongClickListener(new View.OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View v) {
 					m_activity.openContextMenu(v);
 					return false;
 				}
-			});
+			});*/
 
 			holder.view.setOnClickListener(new OnClickListener() {
 				@Override
@@ -1572,7 +1609,13 @@ public class HeadlinesFragment extends Fragment {
 	}
 
     public Article getArticleAtPosition(int position) {
-		return m_articles.get(position);
+		try {
+			return m_articles.get(position);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 	
 	public Article getArticleById(int id) {
