@@ -739,6 +739,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		boolean showFlavorImage;
 		private int m_minimumHeightToEmbed;
 		boolean m_youtubeInstalled;
+		private int m_screenHeight;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super(context, textViewResourceId, items);
@@ -748,6 +749,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 			Point size = new Point();
 			display.getSize(size);
 			m_minimumHeightToEmbed = size.y/3;
+			m_screenHeight = size.y;
 
 			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
 			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
@@ -839,52 +841,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								}
 							})
 							.into(holder.textImage);
-
-
-					/* if (!article.flavorImageUri.equals(holder.textImage.getTag())) {
-
-						ImageAware imageAware = new ImageViewAware(holder.textImage, false);
-
-						DisplayImageOptions options = new DisplayImageOptions.Builder()
-								.cacheInMemory(true)
-								.resetViewBeforeLoading(true)
-								.cacheOnDisk(true)
-								.showImageOnLoading(textDrawable)
-								.showImageOnFail(textDrawable)
-								.showImageForEmptyUri(textDrawable)
-								.displayer(new RoundedBitmapDisplayer(100))
-								.build();
-
-						m_imageLoader.displayImage(article.flavorImageUri, imageAware, options, new ImageLoadingListener() {
-									@Override
-									public void onLoadingStarted(String s, View view) {
-
-									}
-
-									@Override
-									public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-									}
-
-									@Override
-									public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-										if (position == holder.position && bitmap != null) {
-											//holder.textImage.setTag(article.flavorImageUri);
-
-											if (bitmap.getWidth() < THUMB_IMG_MIN_SIZE || bitmap.getHeight() < THUMB_IMG_MIN_SIZE) {
-												holder.textImage.setImageDrawable(textDrawable);
-											}
-										}
-									}
-
-									@Override
-									public void onLoadingCancelled(String s, View view) {
-
-									}
-								}
-						);
-
-					} */
 				}
 
                 holder.textChecked.setVisibility(View.GONE);
@@ -1184,15 +1140,17 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						});
 					}
 
-					Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
+					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
 
-					Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
+					//Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
 					if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {
 						holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 						holder.flavorImageLoadingBar.setIndeterminate(true);
+
+						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
@@ -1260,13 +1218,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						  @Override
 						  public boolean onLongClick(View v) {
 
-							  if (m_mediaPlayer != null) {
-								  m_mediaPlayer.release();
-							  }
-
-							  if (m_activeSurface != null) {
-								  m_activeSurface.setVisibility(View.GONE);
-							  }
+							  releaseSurface();
 
 							  openGalleryForType(article, holder, null);
 
@@ -1278,17 +1230,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 						@Override
 						public void onClick(View view) {
 
-							try {
-								if (m_mediaPlayer != null) {
-									m_mediaPlayer.release();
-								}
-
-								if (m_activeSurface != null) {
-									m_activeSurface.setVisibility(View.GONE);
-								}
-							} catch (IllegalStateException e) {
-								e.printStackTrace();
-							}
+							releaseSurface();
 
 							m_mediaPlayer = new MediaPlayer();
 
@@ -1299,7 +1241,6 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 							}
 
 							SurfaceHolder sh = holder.flavorVideoView.getHolder();
-
 
 							holder.flavorVideoView.setVisibility(View.VISIBLE);
 							final ProgressBar bar = holder.flavorImageLoadingBar;
@@ -1319,12 +1260,26 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
 							m_activeSurface = holder.flavorVideoView;
 
+							android.view.ViewGroup.LayoutParams lp = m_activeSurface.getLayoutParams();
+
+							Drawable drawable = holder.flavorImageView.getDrawable();
+
+							if (drawable != null) {
+
+								float aspect = drawable.getIntrinsicWidth() / (float) drawable.getIntrinsicHeight();
+
+								lp.height = holder.flavorImageView.getMeasuredHeight();
+								lp.width = (int) (lp.height * aspect);
+
+								m_activeSurface.setLayoutParams(lp);
+							}
+
 							sh.addCallback(new SurfaceHolder.Callback() {
 								@Override
-								public void surfaceCreated(SurfaceHolder holder) {
-									m_mediaPlayer.setDisplay(holder);
+								public void surfaceCreated(SurfaceHolder sh) {
 
 									try {
+										m_mediaPlayer.setDisplay(sh);
 										m_mediaPlayer.prepareAsync();
 									} catch (IllegalStateException e) {
 										e.printStackTrace();
@@ -1334,8 +1289,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 																		  public void onPrepared(MediaPlayer mp) {
 
 																			  bar.setVisibility(View.GONE);
-
-																			  //resizeSurface();
+																							  //resizeSurface();
 																			  mp.setLooping(true);
 																			  mp.start();
 																		  }
@@ -1352,7 +1306,11 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								public void surfaceDestroyed(SurfaceHolder holder) {
 									bar.setVisibility(View.GONE);
 
-									m_mediaPlayer.release();
+									try {
+										m_mediaPlayer.release();
+									} catch (IllegalStateException e) {
+										e.printStackTrace();
+									}
 								}
 							});
 
@@ -1602,6 +1560,23 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 		}
 	}
 
+	private void releaseSurface() {
+		try {
+			if (m_mediaPlayer != null) {
+				m_mediaPlayer.release();
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if (m_activeSurface != null) {
+				m_activeSurface.setVisibility(View.GONE);
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void notifyUpdated() {
 		m_adapter.notifyDataSetChanged();
@@ -1782,18 +1757,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 	public void onPause() {
 		super.onPause();
 
-		try {
-			if (m_mediaPlayer != null) {
-				m_mediaPlayer.release();
-			}
-
-			if (m_activeSurface != null) {
-				m_activeSurface.setVisibility(View.GONE);
-			}
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		}
-
+		releaseSurface();
 	}
 
 }
