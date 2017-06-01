@@ -36,7 +36,6 @@ public class ApiLoader extends AsyncTaskLoader<JsonElement> {
 	protected int m_responseCode = 0;
 	protected String m_responseMessage;
 	protected int m_apiStatusCode = 0;
-	protected boolean m_canUseProgress = false;
 	protected Context m_context;
 	private SharedPreferences m_prefs;
 	protected String m_lastErrorMessage;
@@ -151,16 +150,9 @@ public class ApiLoader extends AsyncTaskLoader<JsonElement> {
 				InputStreamReader in = new InputStreamReader(conn.getInputStream(), "UTF-8");
 				char[] buf = new char[256];
 				int read = 0;
-				int total = 0;
-
-				int contentLength = conn.getHeaderFieldInt("Api-Content-Length", -1);
-
-				m_canUseProgress = (contentLength != -1);
 
 				while ((read = in.read(buf)) >= 0) {
 					response.append(buf, 0, read);
-					total += read;
-					//publishProgress(Integer.valueOf(total), Integer.valueOf(contentLength));
 				}
 
 				if (m_transportDebugging) Log.d(TAG, "<<< " + response);

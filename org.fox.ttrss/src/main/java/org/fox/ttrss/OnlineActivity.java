@@ -178,10 +178,6 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 	
-	protected boolean canUseProgress() {
-		return Application.getInstance().m_canUseProgress;
-	}
-
 	protected void switchOffline() {
 		if (m_offlineModeStatus == 2) {
 			
@@ -1555,9 +1551,7 @@ public class OnlineActivity extends CommonActivity {
 						
 						JsonElement apiLevel = content.get("api_level");
 
-						Application.getInstance().m_canUseProgress = m_canUseProgress;
-
-						Log.d(TAG, "Authenticated! canUseProgress=" + m_canUseProgress);
+						Log.d(TAG, "Authenticated!");
 						
 						if (apiLevel != null) {
 							setApiLevel(apiLevel.getAsInt());
