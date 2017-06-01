@@ -351,6 +351,19 @@ public class HeadlinesFragment extends Fragment {
 				}
 
 				@Override
+				public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+
+					int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
+
+					Article article = getArticleAtPosition(position);
+
+					if (article == null)
+						return 0;
+
+					return super.getSwipeDirs(recyclerView, viewHolder);
+				}
+
+				@Override
 				public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
 					int position = viewHolder.getAdapterPosition() - m_adapter.getHeaderCount();
@@ -455,7 +468,7 @@ public class HeadlinesFragment extends Fragment {
 
 					if (firstVisibleItem <= m_articles.size() + m_adapter.getHeaderCount()) {
 
-						Article a = (Article) m_articles.get(firstVisibleItem - m_adapter.getHeaderCount() - 1);
+						Article a = getArticleAtPosition(firstVisibleItem - m_adapter.getHeaderCount() - 1);
 
 						if (a != null && a.unread) {
 							Log.d(TAG, "title=" + a.title);
@@ -834,16 +847,6 @@ public class HeadlinesFragment extends Fragment {
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
 
 			final Article article = holder.article;
-
-			//holder.position = position;
-
-			/*holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					m_activity.openContextMenu(v);
-					return false;
-				}
-			});*/
 
 			holder.view.setOnClickListener(new OnClickListener() {
 				@Override
@@ -1611,7 +1614,9 @@ public class HeadlinesFragment extends Fragment {
     public Article getArticleAtPosition(int position) {
 		try {
 			return m_articles.get(position);
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

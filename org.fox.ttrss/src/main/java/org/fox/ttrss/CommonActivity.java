@@ -236,7 +236,8 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, "onSharedPreferenceChanged:" + key);
 
-		String[] filter = new String[] { "theme", "enable_cats", "headline_mode", "widget_update_interval" };
+		String[] filter = new String[] { "theme", "enable_cats", "headline_mode", "widget_update_interval",
+				"headlines_swipe_to_dismiss", "headlines_mark_read_scroll" };
 
 		m_needRestart = Arrays.asList(filter).indexOf(key) != -1;
 	}
