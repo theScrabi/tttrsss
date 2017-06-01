@@ -1147,15 +1147,18 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 								popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 									@Override
 									public boolean onMenuItemClick(MenuItem item) {
+
+										Uri mediaUri = Uri.parse(article.flavorStreamUri != null ? article.flavorStreamUri : article.flavorImageUri);
+
 										switch (item.getItemId()) {
 											case R.id.article_img_open:
-												m_activity.openUri(Uri.parse(article.flavorImageUri));
+												m_activity.openUri(mediaUri);
 												return true;
 											case R.id.article_img_copy:
-												m_activity.copyToClipboard(article.flavorImageUri);
+												m_activity.copyToClipboard(mediaUri.toString());
 												return true;
 											case R.id.article_img_share:
-												m_activity.shareText(article.flavorImageUri);
+												m_activity.shareText(mediaUri.toString());
 												return true;
 											case R.id.article_img_view_caption:
 												m_activity.displayImageCaption(article.flavorImageUri, article.content);

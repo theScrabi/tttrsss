@@ -12,8 +12,8 @@
     <item
         android:id="@+id/article_img_share"
         android:icon="@drawable/ic_share"
-        app:showAsAction="ifRoom"
-        android:title="@string/article_img_share"/>
+        app:showAsAction=""
+        android:title="@string/article_media_share"/>
     <item
         android:id="@+id/article_img_view_caption"
         app:showAsAction=""

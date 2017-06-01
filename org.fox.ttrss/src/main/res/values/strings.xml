@@ -164,8 +164,7 @@
     <string name="headlines_starred">Starred</string>
     <string name="headlines_published">Published</string>
     <string name="headlines_unread">Unread</string>
-    <string name="article_img_open">Open image</string>
-    <string name="article_img_share">Share image</string>
+    <string name="article_media_share">Share</string>
     <string name="article_img_view_caption">View Caption</string>
     <string name="pref_headlines_mark_read_scroll">Mark read on scroll</string>
     <string name="pref_headlines_mark_read_scroll_long">Headlines will be marked read when scrolling past them</string>
