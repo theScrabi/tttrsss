@@ -46,6 +46,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -740,7 +742,7 @@ public class HeadlinesFragment extends Fragment {
 		out.putBoolean("lazyLoadDisabled", m_lazyLoadDisabled);
 	}
 
-	static class ArticleiewHolder extends RecyclerView.ViewHolder {
+	static class ArticleViewHolder extends RecyclerView.ViewHolder {
 		public View view;
 		public Article article;
 
@@ -767,7 +769,7 @@ public class HeadlinesFragment extends Fragment {
 		//public int position;
 		public boolean flavorImageEmbedded;
 
-		public ArticleiewHolder(View v) {
+		public ArticleViewHolder(View v) {
 			super(v);
 
 			view = v;
@@ -794,9 +796,13 @@ public class HeadlinesFragment extends Fragment {
 			flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
 			flavorVideoView = (SurfaceView) v.findViewById(R.id.flavor_video);
 		}
+
+		public void clearAnimation() {
+			view.clearAnimation();
+		}
 	}
 	
-	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleiewHolder>  {
+	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleViewHolder>  {
 		private ArrayList<Article> items;
 		
 		public static final int VIEW_NORMAL = 0;
@@ -816,6 +822,7 @@ public class HeadlinesFragment extends Fragment {
 		private int m_minimumHeightToEmbed;
 		boolean m_youtubeInstalled;
 		private int m_screenHeight;
+		private int m_lastAddedPosition;
 
 		public ArticleListAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {
 			super();
@@ -845,7 +852,7 @@ public class HeadlinesFragment extends Fragment {
 		}
 
 		@Override
-		public ArticleiewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		public ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
 			int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
@@ -863,11 +870,11 @@ public class HeadlinesFragment extends Fragment {
 
 			View v = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
 
-			return new ArticleiewHolder(v);
+			return new ArticleViewHolder(v);
 		}
 
 		@Override
-		public void onBindViewHolder(final ArticleiewHolder holder, final int position) {
+		public void onBindViewHolder(final ArticleViewHolder holder, final int position) {
 			holder.article = items.get(position);
 
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
@@ -1378,6 +1385,21 @@ public class HeadlinesFragment extends Fragment {
 				});
 			}
 
+			startAnimation(holder.view, position);
+		}
+
+		protected void startAnimation(View view, int position) {
+			if (position > m_lastAddedPosition) {
+				Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.up_from_bottom);
+				view.startAnimation(animation);
+				m_lastAddedPosition = position;
+			}
+		}
+
+		@Override
+		public void onViewDetachedFromWindow(final ArticleViewHolder holder)
+		{
+			holder.clearAnimation();
 		}
 
 		@Override
@@ -1400,7 +1422,7 @@ public class HeadlinesFragment extends Fragment {
 			return items.size();
 		}
 
-		private void updateTextCheckedState(final ArticleiewHolder holder, final Article article, final int position) {
+		private void updateTextCheckedState(final ArticleViewHolder holder, final Article article, final int position) {
             String tmp = article.title.length() > 0 ? article.title.substring(0, 1).toUpperCase() : "?";
 
             if (article.selected) {
@@ -1447,7 +1469,7 @@ public class HeadlinesFragment extends Fragment {
             }
         }
 
-		private void openGalleryForType(Article article, ArticleiewHolder holder, View transitionView) {
+		private void openGalleryForType(Article article, ArticleViewHolder holder, View transitionView) {
 			if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
 
 				if (m_youtubeInstalled) {
@@ -1498,7 +1520,7 @@ public class HeadlinesFragment extends Fragment {
 
 		}
 
-		private void adjustVideoKindView(ArticleiewHolder holder, Article article) {
+		private void adjustVideoKindView(ArticleViewHolder holder, Article article) {
 			if (article.flavorImage != null) {
 				if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
 					holder.flavorVideoKindView.setImageResource(R.drawable.ic_youtube_play);
@@ -1529,7 +1551,7 @@ public class HeadlinesFragment extends Fragment {
 			return px;
 		}
 
-		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, ArticleiewHolder holder, boolean forceDown) {
+		private void maybeRepositionFlavorImage(View view, GlideDrawable resource, ArticleViewHolder holder, boolean forceDown) {
 			RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
 			int w = resource.getIntrinsicWidth();
