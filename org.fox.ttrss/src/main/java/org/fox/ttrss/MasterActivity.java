@@ -242,7 +242,11 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
 
-		//ImageLoader.getInstance().clearMemoryCache();
+		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
+
+		if (ff != null && ff.isAdded()) {
+			ff.setSelectedfeed(feed);
+		}
 
         FragmentTransaction ft = getSupportFragmentManager()
                 .beginTransaction();
@@ -256,7 +260,6 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
         m_feedIsSelected = true;
         m_userFeedSelected = selectedByUser;
-        //m_feedWasSelected = true;
 
         if (m_drawerLayout != null) {
             m_drawerLayout.closeDrawers();
@@ -277,7 +280,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 		
 		if (!openAsFeed) {
 			
-			if (fc != null) {
+			if (fc != null && fc.isAdded()) {
 				fc.setSelectedCategory(null);
 			}
 

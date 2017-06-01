@@ -458,9 +458,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 				}
 			}
 			
-    		m_selectedFeed = feed;
-			
-			m_adapter.notifyDataSetChanged();
+    		//m_selectedFeed = feed;
+			//m_adapter.notifyDataSetChanged();
 		}
 	}
 
@@ -508,7 +507,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		public int getItemViewType(int position) {
 			Feed feed = items.get(position);
 
-            if (!m_activity.isSmallScreen() && m_selectedFeed != null && feed.id == m_selectedFeed.id) {
+            if (/*!m_activity.isSmallScreen() &&*/ m_selectedFeed != null && feed.id == m_selectedFeed.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;
@@ -645,4 +644,12 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			return null;
 		}
 	}
+
+	public void setSelectedfeed(Feed feed) {
+        m_selectedFeed = feed;
+
+        if (m_adapter != null) {
+            m_adapter.notifyDataSetChanged();
+        }
+    }
 }

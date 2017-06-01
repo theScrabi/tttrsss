@@ -425,7 +425,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		public int getItemViewType(int position) {
 			FeedCategory cat = items.get(position);
 			
-			if (!m_activity.isSmallScreen() && m_selectedCat != null && cat.id == m_selectedCat.id) {
+			if (/*!m_activity.isSmallScreen() &&*/ m_selectedCat != null && cat.id == m_selectedCat.id) {
 				return VIEW_SELECTED;
 			} else {
 				return VIEW_NORMAL;				
@@ -509,6 +509,9 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 
 			FeedCategory cat = (FeedCategory)list.getItemAtPosition(position);
 
+			m_selectedCat = null;
+			m_adapter.notifyDataSetChanged();
+
 			if (cat != null) {
 				if (cat.id < 0) {
 					m_activity.onCatSelected(cat, false);
@@ -516,9 +519,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 					m_activity.onCatSelected(cat);
 				}
 
-				m_selectedCat = cat;
-
-				m_adapter.notifyDataSetChanged();
 			}
 		}
 	}
@@ -530,9 +530,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 			m_adapter.notifyDataSetChanged();
 		}
 	}
-	
-	public FeedCategory getSelectedCategory() {
-		return m_selectedCat;
-	}
+
 
 }
