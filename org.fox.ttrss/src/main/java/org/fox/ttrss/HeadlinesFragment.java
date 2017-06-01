@@ -372,25 +372,37 @@ public class HeadlinesFragment extends Fragment {
 
 					try {
 						final Article article = getArticleAtPosition(position);
+						final boolean wasUnread;
 
 						if (article != null) {
 							if (article.unread) {
+								wasUnread = true;
+
 								article.unread = false;
 								m_activity.saveArticleUnread(article);
+							} else {
+								wasUnread = false;
 							}
+
+							m_articles.remove(position);
+							m_adapter.notifyDataSetChanged();
+
+							Snackbar.make(m_list, R.string.headline_undo_row_prompt, Snackbar.LENGTH_LONG)
+									.setAction(getString(R.string.headline_undo_row_button), new OnClickListener() {
+										@Override
+										public void onClick(View v) {
+
+											if (wasUnread) {
+												article.unread = true;
+												m_activity.saveArticleUnread(article);
+											}
+
+											m_articles.add(position, article);
+											m_adapter.notifyDataSetChanged();
+										}
+									}).show();
+
 						}
-
-						m_articles.remove(position);
-						m_adapter.notifyDataSetChanged();
-
-						Snackbar.make(m_list, R.string.headline_undo_row_prompt, Snackbar.LENGTH_LONG)
-							.setAction(getString(R.string.headline_undo_row_button), new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									m_articles.add(position, article);
-									m_adapter.notifyDataSetChanged();
-								}
-							}).show();
 
 					} catch (Exception e) {
 						e.printStackTrace();
