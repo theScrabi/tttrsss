@@ -140,7 +140,7 @@ public class ArticleVideoFragment extends GalleryBaseFragment {
 
     private void initializeVideoPlayer(final View view) {
 
-        Log.d(TAG, "initializeVideoPlayer: " + m_activity + " " + view);
+        //Log.d(TAG, "initializeVideoPlayer: " + m_activity + " " + view);
 
         final MediaController m_mediaController = new MediaController(m_activity);
         final TextureView textureView = (TextureView) view.findViewById(R.id.flavor_video);
@@ -148,10 +148,14 @@ public class ArticleVideoFragment extends GalleryBaseFragment {
         textureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!m_mediaController.isShowing())
-                    m_mediaController.show(5000);
-                else
-                    m_mediaController.hide();
+                try {
+                    if (!m_mediaController.isShowing())
+                        m_mediaController.show(5000);
+                    else
+                        m_mediaController.hide();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -255,7 +259,11 @@ public class ArticleVideoFragment extends GalleryBaseFragment {
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                m_mediaPlayer.release();
+                try {
+                    m_mediaPlayer.release();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return false;
             }
 

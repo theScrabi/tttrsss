@@ -58,7 +58,7 @@
                         android:scaleType="fitCenter"
                         android:visibility="visible" />
 
-                    <SurfaceView
+                    <TextureView
                         android:id="@+id/flavor_video"
                         android:foreground="@drawable/ripple"
                         android:layout_width="match_parent"

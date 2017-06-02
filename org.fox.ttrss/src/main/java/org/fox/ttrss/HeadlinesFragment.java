@@ -11,12 +11,12 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Resources.Theme;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -41,8 +41,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ import org.fox.ttrss.util.HeaderViewRecyclerAdapter;
 import org.fox.ttrss.util.HeadlinesRequest;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,7 +126,7 @@ public class HeadlinesFragment extends Fragment {
 	private View m_amrFooterView;
 
 	private MediaPlayer m_mediaPlayer;
-	private SurfaceView m_activeSurface;
+	private TextureView m_activeTexture;
 
 	public ArticleList getSelectedArticles() {
         ArticleList tmp = new ArticleList();
@@ -764,7 +766,7 @@ public class HeadlinesFragment extends Fragment {
 		public View headlineHeader;
 		public View topChangedMessage;
 		public View flavorImageOverflow;
-		public SurfaceView flavorVideoView;
+		public TextureView flavorVideoView;
 		//public int position;
 		public boolean flavorImageEmbedded;
 
@@ -793,7 +795,7 @@ public class HeadlinesFragment extends Fragment {
 			headlineHeader = v.findViewById(R.id.headline_header);
 			topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 			flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
-			flavorVideoView = (SurfaceView) v.findViewById(R.id.flavor_video);
+			flavorVideoView = (TextureView) v.findViewById(R.id.flavor_video);
 		}
 
 		public void clearAnimation() {
@@ -1227,14 +1229,6 @@ public class HeadlinesFragment extends Fragment {
 							releaseSurface();
 							m_mediaPlayer = new MediaPlayer();
 
-							try {
-								m_mediaPlayer.setDataSource(article.flavorStreamUri);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-
-							SurfaceHolder sh = holder.flavorVideoView.getHolder();
-
 							holder.flavorVideoView.setVisibility(View.VISIBLE);
 							final ProgressBar bar = holder.flavorImageLoadingBar;
 
@@ -1255,9 +1249,9 @@ public class HeadlinesFragment extends Fragment {
 								}
 							});
 
-							m_activeSurface = holder.flavorVideoView;
+							m_activeTexture = holder.flavorVideoView;
 
-							android.view.ViewGroup.LayoutParams lp = m_activeSurface.getLayoutParams();
+							android.view.ViewGroup.LayoutParams lp = m_activeTexture.getLayoutParams();
 
 							Drawable drawable = holder.flavorImageView.getDrawable();
 
@@ -1268,48 +1262,56 @@ public class HeadlinesFragment extends Fragment {
 								lp.height = holder.flavorImageView.getMeasuredHeight();
 								lp.width = (int) (lp.height * aspect);
 
-								m_activeSurface.setLayoutParams(lp);
+								m_activeTexture.setLayoutParams(lp);
 							}
 
-							sh.addCallback(new SurfaceHolder.Callback() {
-								@Override
-								public void surfaceCreated(SurfaceHolder sh) {
+							holder.flavorVideoView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+									 @Override
+									 public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+										 m_mediaPlayer.setSurface(new Surface(surface));
 
-									try {
-										m_mediaPlayer.setDisplay(sh);
-										m_mediaPlayer.prepareAsync();
-									} catch (IllegalStateException e) {
-										e.printStackTrace();
-									}
-									m_mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-																			@Override
-																			public void onPrepared(MediaPlayer mp) {
+										 try {
+											 m_mediaPlayer.setDataSource(article.flavorStreamUri);
 
-																				bar.setVisibility(View.GONE);
-																				//resizeSurface();
-																				mp.setLooping(true);
-																				mp.start();
-																			}
-																		}
-									);
-								}
+											 m_mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+													 @Override
+													 public void onPrepared(MediaPlayer mp) {
 
-								@Override
-								public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-									bar.setVisibility(View.GONE);
-								}
+														 bar.setVisibility(View.GONE);
+														 //resizeSurface();
+														 mp.setLooping(true);
+														 mp.start();
+													 }
+												 });
 
-								@Override
-								public void surfaceDestroyed(SurfaceHolder holder) {
-									bar.setVisibility(View.GONE);
+											 m_mediaPlayer.prepareAsync();
+										 } catch (Exception e) {
+											 e.printStackTrace();
+										 }
 
-									try {
-										m_mediaPlayer.release();
-									} catch (IllegalStateException e) {
-										e.printStackTrace();
-									}
-								}
-							});
+									 }
+
+									 @Override
+									 public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+									 }
+
+									 @Override
+									 public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+										 try {
+											 m_mediaPlayer.release();
+										 } catch (Exception e) {
+											 e.printStackTrace();
+										 }
+										 return false;
+									 }
+
+									 @Override
+									 public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+									 }
+								 }
+							);
 
 						}
 					});
@@ -1606,8 +1608,8 @@ public class HeadlinesFragment extends Fragment {
 		}
 
 		try {
-			if (m_activeSurface != null) {
-				m_activeSurface.setVisibility(View.GONE);
+			if (m_activeTexture != null) {
+				m_activeTexture.setVisibility(View.GONE);
 			}
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
