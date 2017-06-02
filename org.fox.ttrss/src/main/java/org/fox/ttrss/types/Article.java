@@ -105,7 +105,7 @@ public class Article implements Parcelable {
 							if (matcher.find()) {
 								youtubeVid = matcher.group(1);
 
-								flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/mqdefault.jpg";
+								flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/hqdefault.jpg";
 								flavorStreamUri = "https://youtu.be/" + youtubeVid;
 							}
 						}
