@@ -24,18 +24,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 
-public class ArticleImageFragment extends Fragment {
+public class ArticleImageFragment extends GalleryBaseFragment {
     private final String TAG = this.getClass().getSimpleName();
 
     String m_url;
-    private ArticleImagesPagerActivity m_activity;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setRetainInstance(true);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,48 +119,6 @@ public class ArticleImageFragment extends Fragment {
         else
             return true;
     }*/
-
-    public boolean onImageMenuItemSelected(MenuItem item, String url) {
-        switch (item.getItemId()) {
-            case R.id.article_img_open:
-                if (url != null) {
-                    try {
-                        m_activity.openUri(Uri.parse(url));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        m_activity.toast(R.string.error_other_error);
-                    }
-                }
-                return true;
-            case R.id.article_img_copy:
-                if (url != null) {
-                    m_activity.copyToClipboard(url);
-                }
-                return true;
-            case R.id.article_img_share:
-                if (url != null) {
-                    m_activity.shareText(url);
-                }
-                return true;
-            case R.id.article_img_view_caption:
-                if (url != null) {
-                    m_activity.displayImageCaption(url, m_activity.m_content);
-                }
-                return true;
-            default:
-                Log.d(TAG, "onImageMenuItemSelected, unhandled id=" + item.getItemId());
-                return false;
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        //m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        m_activity = (ArticleImagesPagerActivity) activity;
-
-    }
 
     @Override
     public void onSaveInstanceState (Bundle out) {

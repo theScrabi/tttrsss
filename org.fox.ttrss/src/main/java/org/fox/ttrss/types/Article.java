@@ -72,10 +72,10 @@ public class Article implements Parcelable {
 				if ("iframe".equals(e.tagName().toLowerCase())) {
 					flavorImage = e;
 					break;
-				} else if ("video".equals(e.tagName().toLowerCase())) {
+				} /*else if ("video".equals(e.tagName().toLowerCase())) {
 					flavorImage = e;
 					break;
-				}
+				}*/
 			}
 
 			if (flavorImage == null) {

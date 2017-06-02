@@ -12,11 +12,13 @@
         android:text="@string/error_loading_image"
         android:id="@+id/flavor_image_error" />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TextureView
+        android:id="@+id/flavor_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:layout_gravity="center"
-        android:id="@+id/flavor_image_progress" />
+        android:scaleType="fitCenter" />
 
     <ImageView
         android:id="@+id/flavor_image"
@@ -25,6 +27,12 @@
         android:adjustViewBounds="true"
         android:layout_gravity="center"
         android:scaleType="fitCenter" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/flavor_image_progress" />
 
     <ImageView
         android:id="@+id/flavor_image_overflow"

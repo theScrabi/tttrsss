@@ -19,6 +19,7 @@
         android:id="@+id/article_images_progress"
         android:progress="0"
         android:indeterminate="false"
+        android:visibility="gone"
         android:layout_above="@+id/article_images_indicator"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

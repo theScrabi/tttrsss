@@ -1206,11 +1206,17 @@ public class HeadlinesFragment extends Fragment {
 					holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
 						@Override
 						public boolean onLongClick(View v) {
-
 							releaseSurface();
+							openGalleryForType(article, holder, holder.flavorImageView);
+							return true;
+						}
+					});
 
-							openGalleryForType(article, holder, null);
-
+					holder.flavorVideoView.setOnLongClickListener(new View.OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							releaseSurface();
+							openGalleryForType(article, holder, holder.flavorImageView);
 							return true;
 						}
 					});
@@ -1218,9 +1224,7 @@ public class HeadlinesFragment extends Fragment {
 					holder.flavorImageView.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
-
 							releaseSurface();
-
 							m_mediaPlayer = new MediaPlayer();
 
 							try {
@@ -1240,10 +1244,14 @@ public class HeadlinesFragment extends Fragment {
 							holder.flavorVideoView.setOnClickListener(new OnClickListener() {
 								@Override
 								public void onClick(View v) {
-									if (m_mediaPlayer.isPlaying())
-										m_mediaPlayer.pause();
-									else
-										m_mediaPlayer.start();
+									try {
+										if (m_mediaPlayer.isPlaying())
+											m_mediaPlayer.pause();
+										else
+											m_mediaPlayer.start();
+									} catch (IllegalStateException e) {
+										releaseSurface();
+									}
 								}
 							});
 
@@ -1310,7 +1318,7 @@ public class HeadlinesFragment extends Fragment {
 					holder.flavorImageView.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							openGalleryForType(article, holder, null);
+							openGalleryForType(article, holder, holder.flavorImageView);
 						}
 					});
 				}
@@ -1474,6 +1482,8 @@ public class HeadlinesFragment extends Fragment {
         }
 
 		private void openGalleryForType(Article article, ArticleViewHolder holder, View transitionView) {
+			//Log.d(TAG, "openGalleryForType: " + article + " " + holder + " " + transitionView);
+
 			if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
 
 				if (m_youtubeInstalled) {
@@ -1489,35 +1499,18 @@ public class HeadlinesFragment extends Fragment {
 					m_activity.openUri(Uri.parse(article.flavorStreamUri));
 				}
 
-			} else if ("video".equals(article.flavorImage.tagName().toLowerCase())) {
-
-				Intent intent = new Intent(m_activity, VideoPlayerActivity.class);
-				intent.putExtra("streamUri", article.flavorStreamUri);
-				intent.putExtra("title", article.title);
-				intent.putExtra("coverSrc", article.flavorImageUri);
-
-				//startActivity(intent);
-				//m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-				ActivityOptionsCompat options =
-						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
-								transitionView != null ? transitionView : holder.flavorImageView,
-								"gallery:" + article.flavorImageUri);
-
-				ActivityCompat.startActivity(m_activity, intent, options.toBundle());
-
 			} else {
 
 				Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
 
-				intent.putExtra("firstSrc", article.flavorImageUri);
+				intent.putExtra("firstSrc", article.flavorStreamUri != null ? article.flavorStreamUri : article.flavorImageUri);
 				intent.putExtra("title", article.title);
 				intent.putExtra("content", article.content);
 
 				ActivityOptionsCompat options =
 						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
 								transitionView != null ? transitionView : holder.flavorImageView,
-								"gallery:" + article.flavorImageUri);
+								"gallery:" + (article.flavorStreamUri != null ? article.flavorStreamUri : article.flavorImageUri));
 
 				ActivityCompat.startActivity(m_activity, intent, options.toBundle());
 			}
