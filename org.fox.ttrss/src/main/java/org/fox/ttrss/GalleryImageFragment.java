@@ -40,7 +40,7 @@ public class GalleryImageFragment extends GalleryBaseFragment {
 
         ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
 
-        //imgView.setOnTouchListener(touchHandler);
+        imgView.setOnTouchListener(touchHandler);
 
         // shared element transitions stop GIFs from playing
         if (m_url.toLowerCase().indexOf(".gif") == -1) {
