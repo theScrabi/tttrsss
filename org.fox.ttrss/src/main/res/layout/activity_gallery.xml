@@ -28,7 +28,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/article_images_progress"
+        android:id="@+id/gallery_check_progress"
         android:progress="0"
         android:indeterminate="false"
         android:visibility="gone"
@@ -47,7 +47,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 

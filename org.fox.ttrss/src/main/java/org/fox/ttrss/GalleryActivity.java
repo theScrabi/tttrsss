@@ -27,6 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator;
+
 public class GalleryActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
@@ -35,7 +37,7 @@ public class GalleryActivity extends CommonActivity {
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
     public String m_content;
-    private ProgressBar m_progress;
+    //private ProgressBar m_progress;
     private ViewPager m_pager;
 
     private enum GalleryEntryType { TYPE_IMAGE, TYPE_VIDEO };
@@ -178,7 +180,7 @@ public class GalleryActivity extends CommonActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        m_progress = (ProgressBar) findViewById(R.id.article_images_progress);
+        //m_progress = (ProgressBar) findViewById(R.id.gallery_check_progress);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
@@ -289,6 +291,9 @@ public class GalleryActivity extends CommonActivity {
         m_pager = (ViewPager) findViewById(R.id.gallery_pager);
         m_pager.setAdapter(m_adapter);
         m_pager.setPageTransformer(true, new DepthPageTransformer());
+
+        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.gallery_pager_indicator);
+        indicator.setViewPager(m_pager);
 
     }
 
