@@ -284,7 +284,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		if ("HL_COMPACT".equals(headlineMode) || "HL_COMPACT_NOIMAGES".equals(headlineMode))
 			m_compactLayoutMode = true;
 
-		View view = inflater.inflate(R.layout.fragment_headlines, container, false);
+		View view = inflater.inflate(R.layout.fragment_headlines_offline, container, false);
 
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
 		

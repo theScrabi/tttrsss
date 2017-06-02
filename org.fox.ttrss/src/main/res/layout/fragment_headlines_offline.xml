@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/headlines_fragment"
+    android:background="?android:colorBackground"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout 
+    	android:id="@+id/headlines_swipe_container"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent" >
+    
+	   <ListView
+	       android:id="@+id/headlines_list"
+           android:drawSelectorOnTop="true"
+	       android:layout_width="match_parent"
+	       android:layout_height="match_parent" />
+	</android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.shamanland.fab.FloatingActionButton
+        android:id="@+id/headlines_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        app:floatingActionButtonColor="?colorAccent"
+        android:src="@drawable/ic_refresh"
+        />
+
+</FrameLayout>
