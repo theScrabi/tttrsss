@@ -248,7 +248,7 @@
         </service>
 
         <activity
-            android:name=".ArticleImagesPagerActivity"
+            android:name=".GalleryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Article Images" >
         </activity>

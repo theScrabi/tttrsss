@@ -1,8 +1,5 @@
 package org.fox.ttrss;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -11,13 +8,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
-import com.bumptech.glide.Glide;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,11 +22,8 @@ import org.jsoup.select.Elements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import me.relex.circleindicator.CircleIndicator;
-
-public class ArticleImagesPagerActivity extends CommonActivity {
+public class GalleryActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<GalleryEntry> m_items;
@@ -73,7 +65,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
             switch (item.type) {
                 case TYPE_IMAGE:
                     if (true) {
-                        ArticleImageFragment frag = new ArticleImageFragment();
+                        GalleryImageFragment frag = new GalleryImageFragment();
                         frag.initialize(item.url);
 
                         return frag;
@@ -81,7 +73,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                     break;
                 case TYPE_VIDEO:
                     if (true) {
-                        ArticleVideoFragment frag = new ArticleVideoFragment();
+                        GalleryVideoFragment frag = new GalleryVideoFragment();
                         frag.initialize(item.url, item.coverUrl);
 
                         return frag;
@@ -111,7 +103,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
                     position++;
 
                     try {
-                        Bitmap bmp = Glide.with(ArticleImagesPagerActivity.this)
+                        Bitmap bmp = Glide.with(zzzzticleImagesPagerActivity.this)
                                 .load(url)
                                 .asBitmap()
                                 .into(-1, -1)
@@ -177,7 +169,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.article_images_pager);
+        setContentView(R.layout.activity_gallery);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

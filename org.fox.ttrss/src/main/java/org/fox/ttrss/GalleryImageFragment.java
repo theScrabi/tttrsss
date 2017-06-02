@@ -1,10 +1,7 @@
 package org.fox.ttrss;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,14 +21,14 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 
-public class ArticleImageFragment extends GalleryBaseFragment {
+public class GalleryImageFragment extends GalleryBaseFragment {
     private final String TAG = this.getClass().getSimpleName();
 
     String m_url;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_article_image, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery_entry, container, false);
 
         if (savedInstanceState != null) {
             m_url = savedInstanceState.getString("url");

@@ -1,15 +1,11 @@
 package org.fox.ttrss;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.Display;
@@ -17,18 +13,13 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 
-import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -38,7 +29,7 @@ import com.bumptech.glide.request.target.Target;
 
 import java.io.IOException;
 
-public class ArticleVideoFragment extends GalleryBaseFragment {
+public class GalleryVideoFragment extends GalleryBaseFragment {
     private final String TAG = this.getClass().getSimpleName();
 
     String m_url;
@@ -48,7 +39,7 @@ public class ArticleVideoFragment extends GalleryBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_article_image, container, false);
+        final View view = inflater.inflate(R.layout.fragment_gallery_entry, container, false);
 
         if (savedInstanceState != null) {
             m_url = savedInstanceState.getString("url");

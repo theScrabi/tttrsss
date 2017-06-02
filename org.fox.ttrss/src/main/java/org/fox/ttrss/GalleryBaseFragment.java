@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 public class GalleryBaseFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
-    protected ArticleImagesPagerActivity m_activity;
+    protected GalleryActivity m_activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class GalleryBaseFragment extends Fragment {
         super.onAttach(activity);
 
         //m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        m_activity = (ArticleImagesPagerActivity) activity;
+        m_activity = (GalleryActivity) activity;
 
     }
 

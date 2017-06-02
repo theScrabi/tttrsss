@@ -42,7 +42,6 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,8 +75,6 @@ import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeaderViewRecyclerAdapter;
 import org.fox.ttrss.util.HeadlinesRequest;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1503,7 +1500,7 @@ public class HeadlinesFragment extends Fragment {
 
 			} else {
 
-				Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
+				Intent intent = new Intent(m_activity, GalleryActivity.class);
 
 				intent.putExtra("firstSrc", article.flavorStreamUri != null ? article.flavorStreamUri : article.flavorImageUri);
 				intent.putExtra("title", article.title);
