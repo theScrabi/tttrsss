@@ -1,39 +1,23 @@
 package org.fox.ttrss;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
-import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,16 +37,15 @@ public class ArticleImagesPagerActivity extends CommonActivity {
     private ArrayList<String> m_checkedUrls;
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
-    private String m_content;
+    public String m_content;
     private ProgressBar m_progress;
     private ViewPager m_pager;
 
-    private class ArticleImagesPagerAdapter extends PagerAdapter {
+    private class ArticleImagesPagerAdapter extends FragmentStatePagerAdapter {
         private List<String> m_urls;
 
-        public ArticleImagesPagerAdapter(List<String> urls) {
-            super();
-
+        public ArticleImagesPagerAdapter(FragmentManager fm, List<String> urls) {
+            super(fm);
             m_urls = urls;
         }
 
@@ -72,89 +55,14 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return view == o;
-        }
+        public Fragment getItem(int position) {
+            ArticleImageFragment frag = new ArticleImageFragment();
 
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            final String url = m_urls.get(position);
+            Log.d(TAG, "getItem: " + position + " " + m_urls.get(position));
 
-            Log.d(TAG, "called for URL: " + url);
+            frag.initialize(m_urls.get(position));
 
-            LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            View view = inflater.inflate(R.layout.article_images_image, null);
-
-            ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
-
-            ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
-
-            imgView.setOnTouchListener(touchHandler);
-
-            // shared element transitions stop GIFs from playing
-            if (position == 0 && url.toLowerCase().indexOf(".gif") == -1) {
-                ViewCompat.setTransitionName(imgView, "gallery:" + url);
-            }
-
-            registerForContextMenu(imgView);
-
-            view.findViewById(R.id.flavor_image_overflow).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu popup = new PopupMenu(ArticleImagesPagerActivity.this, v);
-                    MenuInflater inflater = popup.getMenuInflater();
-                    inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            return onImageMenuItemSelected(item, url);
-                        }
-                    });
-
-                    popup.show();
-
-                }
-            });
-
-            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
-            final View errorMessage = view.findViewById(R.id.flavor_image_error);
-
-            final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
-
-            container.addView(view, 0);
-
-            Glide.with(ArticleImagesPagerActivity.this)
-                    .load(url)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            progressBar.setVisibility(View.GONE);
-                            errorMessage.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            progressBar.setVisibility(View.GONE);
-                            errorMessage.setVisibility(View.GONE);
-
-                            ActivityCompat.startPostponedEnterTransition(ArticleImagesPagerActivity.this);
-                            return false;
-                        }
-                    })
-                    .into(glideImage);
-
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((FrameLayout)object);
+            return frag;
         }
     }
 
@@ -299,7 +207,7 @@ public class ArticleImagesPagerActivity extends CommonActivity {
 
         setTitle(m_title);
 
-        m_adapter = new ArticleImagesPagerAdapter(m_checkedUrls);
+        m_adapter = new ArticleImagesPagerAdapter(getSupportFragmentManager(), m_urls);
 
         m_pager = (ViewPager) findViewById(R.id.article_images_pager);
         m_pager.setAdapter(m_adapter);
@@ -331,48 +239,5 @@ public class ArticleImagesPagerActivity extends CommonActivity {
         out.putString("content", m_content);
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        int position = m_pager.getCurrentItem();
-        String url = m_checkedUrls.get(position);
-
-        if (!onImageMenuItemSelected(item, url))
-            return super.onContextItemSelected(item);
-        else
-            return true;
-    }
-
-    public boolean onImageMenuItemSelected(MenuItem item, String url) {
-        switch (item.getItemId()) {
-            case R.id.article_img_open:
-                if (url != null) {
-                    try {
-                        openUri(Uri.parse(url));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        toast(R.string.error_other_error);
-                    }
-                }
-                return true;
-            case R.id.article_img_copy:
-                if (url != null) {
-                    copyToClipboard(url);
-                }
-                return true;
-            case R.id.article_img_share:
-                if (url != null) {
-                    shareText(url);
-                }
-                return true;
-            case R.id.article_img_view_caption:
-                if (url != null) {
-                    displayImageCaption(url, m_content);
-                }
-                return true;
-            default:
-                Log.d(TAG, "onImageMenuItemSelected, unhandled id=" + item.getItemId());
-                return false;
-        }
-    }
 
 }
