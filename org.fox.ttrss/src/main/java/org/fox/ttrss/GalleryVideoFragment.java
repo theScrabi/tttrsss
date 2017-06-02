@@ -52,26 +52,7 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
 
         ViewCompat.setTransitionName(imgView, "gallery:" + m_url);
 
-        //registerForContextMenu(imgView);
-
-        view.findViewById(R.id.flavor_image_overflow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(getContext(), v);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onImageMenuItemSelected(item, m_url);
-                    }
-                });
-
-                popup.show();
-
-            }
-        });
+        registerForContextMenu(imgView);
 
         final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
 
@@ -133,8 +114,11 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
 
         //Log.d(TAG, "initializeVideoPlayer: " + m_activity + " " + view);
 
+
         final MediaController m_mediaController = new MediaController(m_activity);
         final TextureView textureView = (TextureView) view.findViewById(R.id.flavor_video);
+
+        registerForContextMenu(textureView);
 
         textureView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,17 +254,6 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
         m_url = url;
         m_coverUrl = coverUrl;
     }
-
-    /*@Override
-    public boolean onContextItemSelected(MenuItem item) {
-        int position = m_pager.getCurrentItem();
-        String url = m_checkedUrls.get(position);
-
-        if (!onImageMenuItemSelected(item, url))
-            return super.onContextItemSelected(item);
-        else
-            return true;
-    }*/
 
     @Override
     public void onSaveInstanceState (Bundle out) {

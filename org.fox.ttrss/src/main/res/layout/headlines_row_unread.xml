@@ -152,7 +152,7 @@
                     android:layout_marginBottom="8dp" />
 
                 <ImageView
-                    android:id="@+id/flavor_image_overflow"
+                    android:id="@+id/gallery_overflow"
                     android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"

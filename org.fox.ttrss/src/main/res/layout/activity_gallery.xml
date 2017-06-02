@@ -7,10 +7,22 @@
     android:layout_height="fill_parent">
 
     <com.bogdwellers.pinchtozoom.view.ImageViewPager
-        android:id="@+id/article_images_pager"
+        android:id="@+id/gallery_pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:id="@+id/gallery_overflow"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_weight="0"
+        android:background="@drawable/ripple"
+        android:src="@drawable/ic_dots_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -20,7 +32,7 @@
         android:progress="0"
         android:indeterminate="false"
         android:visibility="gone"
-        android:layout_above="@+id/article_images_indicator"
+        android:layout_above="@+id/gallery_pager_indicator"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
@@ -29,14 +41,13 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
     <me.relex.circleindicator.CircleIndicator
-        android:id="@+id/article_images_indicator"
+        android:id="@+id/gallery_pager_indicator"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:visibility="invisible" />
-
 
     <include layout="@layout/toolbar" android:id="@+id/toolbar" />
 

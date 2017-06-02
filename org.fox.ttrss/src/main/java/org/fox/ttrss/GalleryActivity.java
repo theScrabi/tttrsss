@@ -1,5 +1,6 @@
 package org.fox.ttrss;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -8,8 +9,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
+import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
@@ -239,6 +243,28 @@ public class GalleryActivity extends CommonActivity {
             m_content = savedInstanceState.getString("content");
         }
 
+        findViewById(R.id.gallery_overflow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(GalleryActivity.this, v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.content_gallery_entry, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        String url = m_items.get(m_pager.getCurrentItem()).url;
+
+                        return onImageMenuItemSelected(item, url);
+                    }
+                });
+
+                popup.show();
+
+            }
+        });
+
+
         /*if (m_items.size() > 1) {
             m_progress.setProgress(0);
             m_progress.setMax(m_items.size());
@@ -260,20 +286,12 @@ public class GalleryActivity extends CommonActivity {
 
         m_adapter = new ArticleImagesPagerAdapter(getSupportFragmentManager(), m_items);
 
-        m_pager = (ViewPager) findViewById(R.id.article_images_pager);
+        m_pager = (ViewPager) findViewById(R.id.gallery_pager);
         m_pager.setAdapter(m_adapter);
         m_pager.setPageTransformer(true, new DepthPageTransformer());
 
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-
-        getMenuInflater().inflate(R.menu.context_article_content_img, menu);
-
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
 
     @Override
     public void onSaveInstanceState(Bundle out) {
@@ -284,5 +302,48 @@ public class GalleryActivity extends CommonActivity {
         out.putString("content", m_content);
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = m_pager.getCurrentItem();
+        String url = m_items.get(position).url;
+
+        if (onImageMenuItemSelected(item, url))
+            return true;
+
+        return super.onContextItemSelected(item);
+    }
+
+    public boolean onImageMenuItemSelected(MenuItem item, String url) {
+        switch (item.getItemId()) {
+            case R.id.article_img_open:
+                if (url != null) {
+                    try {
+                        openUri(Uri.parse(url));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        toast(R.string.error_other_error);
+                    }
+                }
+                return true;
+            case R.id.article_img_copy:
+                if (url != null) {
+                    copyToClipboard(url);
+                }
+                return true;
+            case R.id.article_img_share:
+                if (url != null) {
+                    shareText(url);
+                }
+                return true;
+            case R.id.article_img_view_caption:
+                if (url != null) {
+                    displayImageCaption(url, m_content);
+                }
+                return true;
+            default:
+                Log.d(TAG, "onImageMenuItemSelected, unhandled id=" + item.getItemId());
+                return false;
+        }
+    }
 
 }

@@ -40,33 +40,14 @@ public class GalleryImageFragment extends GalleryBaseFragment {
 
         ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
 
-        imgView.setOnTouchListener(touchHandler);
+        //imgView.setOnTouchListener(touchHandler);
 
         // shared element transitions stop GIFs from playing
         if (m_url.toLowerCase().indexOf(".gif") == -1) {
             ViewCompat.setTransitionName(imgView, "gallery:" + m_url);
         }
 
-        //registerForContextMenu(imgView);
-
-        view.findViewById(R.id.flavor_image_overflow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(getContext(), v);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        return onImageMenuItemSelected(item, m_url);
-                    }
-                });
-
-                popup.show();
-
-            }
-        });
+        registerForContextMenu(imgView);
 
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
         final View errorMessage = view.findViewById(R.id.flavor_image_error);

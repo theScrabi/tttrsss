@@ -572,7 +572,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
 				holder.flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
 				holder.headlineHeader = v.findViewById(R.id.headline_header);
-				holder.flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
+				holder.flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 
                 v.setTag(holder);
 

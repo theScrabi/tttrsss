@@ -135,7 +135,7 @@ public class ArticleFragment extends Fragment  {
 			if (result != null && (result.getType() == HitTestResult.IMAGE_TYPE || result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)) {
 
 				menu.setHeaderTitle(result.getExtra());
-				getActivity().getMenuInflater().inflate(R.menu.context_article_content_img, menu);
+				getActivity().getMenuInflater().inflate(R.menu.content_gallery_entry, menu);
 				
 				/* FIXME I have no idea how to do this correctly ;( */
 				

@@ -791,7 +791,7 @@ public class HeadlinesFragment extends Fragment {
 			textChecked = (ImageView) v.findViewById(R.id.text_checked);
 			headlineHeader = v.findViewById(R.id.headline_header);
 			topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
-			flavorImageOverflow = v.findViewById(R.id.flavor_image_overflow);
+			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 			flavorVideoView = (TextureView) v.findViewById(R.id.flavor_video);
 		}
 
@@ -1086,7 +1086,7 @@ public class HeadlinesFragment extends Fragment {
 							public void onClick(View v) {
 								PopupMenu popup = new PopupMenu(getActivity(), holder.flavorImageOverflow);
 								MenuInflater inflater = popup.getMenuInflater();
-								inflater.inflate(R.menu.context_article_content_img, popup.getMenu());
+								inflater.inflate(R.menu.content_gallery_entry, popup.getMenu());
 
 								popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 									@Override
