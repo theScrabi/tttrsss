@@ -118,9 +118,9 @@ public class HeadlinesFragment extends Fragment {
     private RecyclerView m_list;
 	private LinearLayoutManager m_layoutManager;
 
-	private View m_listLoadingView;
+	/*private View m_listLoadingView;
 	private View m_topChangedView;
-	private View m_amrFooterView;
+	private View m_amrFooterView;*/
 
 	private MediaPlayer m_mediaPlayer;
 	private TextureView m_activeTexture;
@@ -285,6 +285,25 @@ public class HeadlinesFragment extends Fragment {
 		setRetainInstance(true);
 	}
 
+	public View createListFooter(int layoutId) {
+		if (isAdded() || m_activity != null) {
+			View view = getActivity().getLayoutInflater().inflate(layoutId, m_list, false);
+
+			if (layoutId == R.layout.headlines_footer) {
+				WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
+				Display display = wm.getDefaultDisplay();
+				int screenHeight = display.getHeight();
+
+				view.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
+			}
+
+			return view;
+
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -429,18 +448,18 @@ public class HeadlinesFragment extends Fragment {
 			fab.setVisibility(View.GONE);
 		}
 
-		m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
-		m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);
+		/*m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
+		m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);*/
 
 		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
-            WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
+            /*WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
-            int screenHeight = display.getHeight();
+            int screenHeight = display.getHeight();*/
 
-            m_amrFooterView = inflater.inflate(R.layout.headlines_footer, container, false);
+            /*m_amrFooterView = inflater.inflate(R.layout.headlines_footer, container, false);
 			m_amrFooterView.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
 
-            m_adapter.addFooterView(m_amrFooterView);
+            m_adapter.addFooterView(m_amrFooterView);*/
         }
 
         if (m_activity.isSmallScreen()) {
@@ -566,9 +585,11 @@ public class HeadlinesFragment extends Fragment {
 	
 	@SuppressWarnings({ "serial" })
 	public void refresh(final boolean append, boolean userInitiated) {
-		m_adapter.removeFooterView(m_listLoadingView);
+		/*m_adapter.removeFooterView(m_listLoadingView);
 		m_adapter.removeFooterView(m_topChangedView);
-		m_adapter.removeFooterView(m_amrFooterView);
+		m_adapter.removeFooterView(m_amrFooterView);*/
+
+		m_adapter.removeAllFooterViews();
 
 		if (!append) m_lazyLoadDisabled = false;
 
@@ -598,9 +619,10 @@ public class HeadlinesFragment extends Fragment {
 
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-					m_adapter.removeFooterView(m_listLoadingView);
+					/*m_adapter.removeFooterView(m_listLoadingView);
 					m_adapter.removeFooterView(m_topChangedView);
-					m_adapter.removeFooterView(m_amrFooterView);
+					m_adapter.removeFooterView(m_amrFooterView);*/
+					m_adapter.removeAllFooterViews();
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -612,7 +634,7 @@ public class HeadlinesFragment extends Fragment {
 						if (m_firstIdChanged) {
 							m_lazyLoadDisabled = true;
 
-							m_adapter.addFooterView(m_topChangedView);
+							m_adapter.addFooterView(createListFooter(R.layout.headlines_row_top_changed));
 						}
 
 						if (m_amountLoaded < HEADLINES_REQUEST_SIZE) {
@@ -637,7 +659,8 @@ public class HeadlinesFragment extends Fragment {
 						}
 					}
 
-					if (m_amrFooterView != null) m_adapter.addFooterView(m_amrFooterView);
+					if (m_prefs.getBoolean("headlines_mark_read_scroll", false))
+						m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
 				}
 			};
 			
@@ -668,7 +691,7 @@ public class HeadlinesFragment extends Fragment {
 				}
 
 				if (skip > 0) {
-					m_adapter.addFooterView(m_listLoadingView);
+					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
 				}
 			}
 			

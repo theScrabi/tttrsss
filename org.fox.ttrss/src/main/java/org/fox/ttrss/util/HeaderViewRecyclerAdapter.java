@@ -129,6 +129,10 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         mFooterViews.remove(view);
     }
 
+    public void removeAllFooterViews() {
+        mFooterViews.clear();
+    }
+
     @Override
     public int getItemCount() {
         return getHeaderCount() + getFooterCount() + getWrappedItemCount();
