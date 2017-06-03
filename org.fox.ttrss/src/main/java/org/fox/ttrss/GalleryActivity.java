@@ -2,6 +2,7 @@ package org.fox.ttrss;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 
+import org.fox.ttrss.types.GalleryEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -39,14 +41,6 @@ public class GalleryActivity extends CommonActivity {
     public String m_content;
     //private ProgressBar m_progress;
     private ViewPager m_pager;
-
-    private enum GalleryEntryType { TYPE_IMAGE, TYPE_VIDEO };
-
-    private class GalleryEntry implements Serializable {
-        String url;
-        GalleryEntryType type;
-        String coverUrl;
-    }
 
     private class ArticleImagesPagerAdapter extends FragmentStatePagerAdapter {
         private List<GalleryEntry> m_items;
@@ -218,7 +212,7 @@ public class GalleryActivity extends CommonActivity {
 
                     item.url = src;
                     item.coverUrl = cover;
-                    item.type = GalleryEntryType.TYPE_VIDEO;
+                    item.type = GalleryEntry.GalleryEntryType.TYPE_VIDEO;
 
                 } else {
                     String src = elem.attr("src");
@@ -231,7 +225,7 @@ public class GalleryActivity extends CommonActivity {
                         firstFound = true;
 
                     item.url = src;
-                    item.type = GalleryEntryType.TYPE_IMAGE;
+                    item.type = GalleryEntry.GalleryEntryType.TYPE_IMAGE;
                 }
 
                 if (firstFound && item.url != null) {
