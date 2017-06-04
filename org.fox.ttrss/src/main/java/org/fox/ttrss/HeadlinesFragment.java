@@ -1189,8 +1189,8 @@ public class HeadlinesFragment extends Fragment {
 								.load(article.flavorImageUri)
 								.dontAnimate()
 								.dontTransform()
-								.diskCacheStrategy(DiskCacheStrategy.NONE)
-								.skipMemoryCache(true)
+								.diskCacheStrategy(DiskCacheStrategy.ALL)
+								.skipMemoryCache(false)
 								.listener(new RequestListener<String, GlideDrawable>() {
 									@Override
 									public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
