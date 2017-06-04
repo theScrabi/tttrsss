@@ -243,7 +243,7 @@ public class HeadlinesFragment extends Fragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 
-		Article article = getArticleAtPosition(info.position);
+		Article article = getArticleAtPosition(info.position - m_adapter.getHeaderCount());
 
 		if (!onArticleMenuItemSelected(item, article))
 			return super.onContextItemSelected(item);
@@ -344,6 +344,7 @@ public class HeadlinesFragment extends Fragment {
 		});
 
 		m_list = (RecyclerView) view.findViewById(R.id.headlines_list);
+		registerForContextMenu(m_list);
 
 		m_layoutManager = new LinearLayoutManager(m_activity.getApplicationContext());
 		m_list.setLayoutManager(m_layoutManager);
@@ -808,6 +809,7 @@ public class HeadlinesFragment extends Fragment {
 		public void clearAnimation() {
 			view.clearAnimation();
 		}
+
 	}
 	
 	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleViewHolder>  {
@@ -878,6 +880,8 @@ public class HeadlinesFragment extends Fragment {
 
 			View v = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
 
+			//registerForContextMenu(v);
+
 			return new ArticleViewHolder(v);
 		}
 
@@ -889,6 +893,14 @@ public class HeadlinesFragment extends Fragment {
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
 
 			final Article article = holder.article;
+
+			holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					m_list.showContextMenuForChild(v);
+					return true;
+				}
+			});
 
 			holder.view.setOnClickListener(new OnClickListener() {
 				@Override
@@ -1080,14 +1092,14 @@ public class HeadlinesFragment extends Fragment {
 					}
 				});
 
-				/*holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
+				holder.headlineHeader.setOnLongClickListener(new View.OnLongClickListener() {
 					@Override
 					public boolean onLongClick(View v) {
-						m_activity.openContextMenu(v);
+						m_list.showContextMenuForChild(holder.view);
 
 						return true;
 					}
-				});*/
+				});
 
 				if (showFlavorImage && article.flavorImageUri != null && holder.flavorImageView != null) {
 					if (holder.flavorImageOverflow != null) {
@@ -1130,9 +1142,7 @@ public class HeadlinesFragment extends Fragment {
 						holder.flavorImageView.setOnLongClickListener(new View.OnLongClickListener() {
 							@Override
 							public boolean onLongClick(View v) {
-
-								m_activity.openContextMenu(v);
-
+								m_list.showContextMenuForChild(holder.view);
 								return true;
 							}
 						});

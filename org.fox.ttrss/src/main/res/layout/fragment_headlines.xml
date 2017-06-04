@@ -11,7 +11,7 @@
     	android:layout_width="match_parent"
     	android:layout_height="match_parent" >
     
-	   <android.support.v7.widget.RecyclerView
+	   <org.fox.ttrss.util.ContextMenuRecyclerView
 	       android:id="@+id/headlines_list"
            android:drawSelectorOnTop="true"
 	       android:layout_width="match_parent"
