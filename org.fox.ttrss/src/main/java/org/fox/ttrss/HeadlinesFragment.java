@@ -1221,7 +1221,7 @@ public class HeadlinesFragment extends Fragment {
 
 											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
-											//maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+											maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
 											adjustVideoKindView(holder, article);
 
 											return false;
