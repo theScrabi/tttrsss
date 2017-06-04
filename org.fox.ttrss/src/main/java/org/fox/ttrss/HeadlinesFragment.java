@@ -587,10 +587,7 @@ public class HeadlinesFragment extends Fragment {
 				m_articles.clear();
 				m_adapter.notifyDataSetChanged();
 			} else {
-				// TODO: should check footer presence by id?
-				if (m_adapter.getFooterCount() == 0) {
-					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
-				}
+				m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
 			}
 
 			final String sessionId = m_activity.getSessionId();
