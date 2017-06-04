@@ -1191,7 +1191,6 @@ public class HeadlinesFragment extends Fragment {
 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
-								//.dontAnimate()
 								.dontTransform()
 								.diskCacheStrategy(DiskCacheStrategy.ALL)
 								.skipMemoryCache(false)
@@ -1507,7 +1506,6 @@ public class HeadlinesFragment extends Fragment {
 							.load(article.flavorImageUri)
 							.placeholder(textDrawable)
 							.bitmapTransform(new CropCircleTransformation(getActivity()))
-							.dontAnimate()
 							.diskCacheStrategy(DiskCacheStrategy.ALL)
 							.skipMemoryCache(false)
 							.listener(new RequestListener<String, GlideDrawable>() {
