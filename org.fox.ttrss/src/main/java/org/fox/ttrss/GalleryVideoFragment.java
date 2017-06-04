@@ -215,11 +215,15 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
                         getView().findViewById(R.id.flavor_image).setVisibility(View.GONE);
                         getView().findViewById(R.id.flavor_image_progress).setVisibility(View.GONE);
 
-                        resizeSurface(textureView);
-                        mp.setLooping(true);
+                        try {
+                            resizeSurface(textureView);
+                            mp.setLooping(true);
 
-                        if (m_userVisibleHint) {
-                            mp.start();
+                            if (m_userVisibleHint) {
+                                mp.start();
+                            }
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
                         }
                     }
                 });

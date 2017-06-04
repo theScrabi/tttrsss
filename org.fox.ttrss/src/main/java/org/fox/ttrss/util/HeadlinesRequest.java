@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiCommon;
 import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
@@ -20,9 +21,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class HeadlinesRequest extends ApiRequest {
-	public static final int HEADLINES_REQUEST_SIZE = 30;
-	public static final int HEADLINES_BUFFER_MAX = 1500;
-
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private int m_offset = 0;
@@ -83,7 +81,7 @@ public class HeadlinesRequest extends ApiRequest {
 					if (m_offset == 0) {
 						m_articles.clear();
 					} else {
-						while (m_articles.size() > HEADLINES_BUFFER_MAX) {
+						while (m_articles.size() > HeadlinesFragment.HEADLINES_BUFFER_MAX) {
 							m_articles.remove(0);
 						}
 

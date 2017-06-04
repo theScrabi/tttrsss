@@ -539,7 +539,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
                 if (hf != null) {
                     hf.setArticles(articles);
-                    hf.setActiveArticle(article);
+                    //hf.setActiveArticle(article); disable HL scrolling on resume for now
                 }
             }
 

@@ -93,7 +93,7 @@ public class HeadlinesFragment extends Fragment {
 	public static final int THUMB_IMG_MIN_SIZE = 32;
 
     public static final int HEADLINES_REQUEST_SIZE = 30;
-	public static final int HEADLINES_BUFFER_MAX = 500;
+	public static final int HEADLINES_BUFFER_MAX = 1000;
 
 	private final String TAG = this.getClass().getSimpleName();
 	
@@ -117,10 +117,6 @@ public class HeadlinesFragment extends Fragment {
     private int m_listPreviousVisibleItem;
     private RecyclerView m_list;
 	private LinearLayoutManager m_layoutManager;
-
-	/*private View m_listLoadingView;
-	private View m_topChangedView;
-	private View m_amrFooterView;*/
 
 	private MediaPlayer m_mediaPlayer;
 	private TextureView m_activeTexture;
@@ -289,7 +285,8 @@ public class HeadlinesFragment extends Fragment {
 		if (isAdded() || m_activity != null) {
 			View view = getActivity().getLayoutInflater().inflate(layoutId, m_list, false);
 
-			if (layoutId == R.layout.headlines_footer) {
+			// only resize footer if auto mark as read is enabled
+			if (layoutId == R.layout.headlines_footer && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 				WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
 				Display display = wm.getDefaultDisplay();
 				int screenHeight = display.getHeight();
@@ -448,27 +445,13 @@ public class HeadlinesFragment extends Fragment {
 			fab.setVisibility(View.GONE);
 		}
 
-		/*m_listLoadingView = inflater.inflate(R.layout.headlines_row_loadmore, m_list, false);
-		m_topChangedView = inflater.inflate(R.layout.headlines_row_top_changed, m_list, false);*/
-
-		if (m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
-            /*WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            int screenHeight = display.getHeight();*/
-
-            /*m_amrFooterView = inflater.inflate(R.layout.headlines_footer, container, false);
-			m_amrFooterView.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
-
-            m_adapter.addFooterView(m_amrFooterView);*/
-        }
-
         if (m_activity.isSmallScreen()) {
             View layout = inflater.inflate(R.layout.headlines_heading_spacer, m_list, false);
             m_adapter.addHeaderView(layout);
 
             m_swipeLayout.setProgressViewOffset(false, 0,
                     m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) +
-                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_end_material) + 5);
+                    m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_padding_end_material) + 15);
         }
 
 		m_list.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -538,6 +521,8 @@ public class HeadlinesFragment extends Fragment {
 					m_listPreviousVisibleItem = firstVisibleItem;
 				}
 
+				//Log.d(TAG, "onScrolled: " + m_refreshInProgress + " " + m_lazyLoadDisabled + " " + lastVisibleItem + " " + m_articles.size());
+
 				if (!m_refreshInProgress && !m_lazyLoadDisabled && lastVisibleItem >= m_articles.size() - 5) {
 					refresh(true);
 				}
@@ -585,21 +570,23 @@ public class HeadlinesFragment extends Fragment {
 	
 	@SuppressWarnings({ "serial" })
 	public void refresh(final boolean append, boolean userInitiated) {
-		/*m_adapter.removeFooterView(m_listLoadingView);
-		m_adapter.removeFooterView(m_topChangedView);
-		m_adapter.removeFooterView(m_amrFooterView);*/
-
 		m_adapter.removeAllFooterViews();
 
 		if (!append) m_lazyLoadDisabled = false;
 
-		if (m_activity != null && m_feed != null) {
+		if (m_activity != null && isAdded() && m_feed != null) {
 			m_refreshInProgress = true;
 
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
 			if (!append) {
-				m_list.scrollToPosition(0);
+				m_articles.clear();
+				m_adapter.notifyDataSetChanged();
+			} else {
+				// TODO: should check footer presence by id?
+				if (m_adapter.getFooterCount() == 0) {
+					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
+				}
 			}
 
 			final String sessionId = m_activity.getSessionId();
@@ -616,12 +603,10 @@ public class HeadlinesFragment extends Fragment {
 					if (isDetached() || !isAdded()) return;
 					
 					super.onPostExecute(result);
+					m_adapter.notifyDataSetChanged();
 
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-					/*m_adapter.removeFooterView(m_listLoadingView);
-					m_adapter.removeFooterView(m_topChangedView);
-					m_adapter.removeFooterView(m_amrFooterView);*/
 					m_adapter.removeAllFooterViews();
 
 					if (result != null) {
@@ -634,10 +619,12 @@ public class HeadlinesFragment extends Fragment {
 						if (m_firstIdChanged) {
 							m_lazyLoadDisabled = true;
 
+							//Log.d(TAG, "first id changed, disabling lazy load");
 							m_adapter.addFooterView(createListFooter(R.layout.headlines_row_top_changed));
 						}
 
 						if (m_amountLoaded < HEADLINES_REQUEST_SIZE) {
+							//Log.d(TAG, "amount loaded < request size, disabling lazy load");
 							m_lazyLoadDisabled = true;
 						}
 
@@ -659,11 +646,11 @@ public class HeadlinesFragment extends Fragment {
 						}
 					}
 
-					if (m_prefs.getBoolean("headlines_mark_read_scroll", false))
-						m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
+					//if (m_prefs.getBoolean("headlines_mark_read_scroll", false))
+					m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
 				}
 			};
-			
+
 			int skip = 0;
 			
 			if (append) {
@@ -1297,10 +1284,13 @@ public class HeadlinesFragment extends Fragment {
 													 @Override
 													 public void onPrepared(MediaPlayer mp) {
 
-														 bar.setVisibility(View.GONE);
-														 //resizeSurface();
-														 mp.setLooping(true);
-														 mp.start();
+														 try {
+															 bar.setVisibility(View.GONE);
+															 mp.setLooping(true);
+															 mp.start();
+														 } catch (IllegalStateException e) {
+															 e.printStackTrace();
+														 }
 													 }
 												 });
 
