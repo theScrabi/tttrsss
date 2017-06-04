@@ -224,8 +224,18 @@ public class GalleryActivity extends CommonActivity {
                     if (imgSrcFirst.equals(src))
                         firstFound = true;
 
-                    item.url = src;
-                    item.type = GalleryEntry.GalleryEntryType.TYPE_IMAGE;
+                    try {
+                        Uri checkUri = Uri.parse(src);
+
+                        if (!"data".equals(checkUri.getScheme().toLowerCase())) {
+                            item.url = src;
+                            item.type = GalleryEntry.GalleryEntryType.TYPE_IMAGE;
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
                 if (firstFound && item.url != null) {
