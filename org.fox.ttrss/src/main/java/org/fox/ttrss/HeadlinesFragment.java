@@ -64,6 +64,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.JsonElement;
 import com.shamanland.fab.FloatingActionButton;
@@ -74,6 +76,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeaderViewRecyclerAdapter;
 import org.fox.ttrss.util.HeadlinesRequest;
+import org.fox.ttrss.util.ProgressTarget;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -777,6 +780,7 @@ public class HeadlinesFragment extends Fragment {
 		public TextureView flavorVideoView;
 		//public int position;
 		public boolean flavorImageEmbedded;
+		public ProgressTarget<String, GlideDrawable> flavorProgressTarget;
 
 		public ArticleViewHolder(View v) {
 			super(v);
@@ -804,14 +808,44 @@ public class HeadlinesFragment extends Fragment {
 			topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 			flavorVideoView = (TextureView) v.findViewById(R.id.flavor_video);
+
+			if (flavorImageView != null && flavorImageLoadingBar != null) {
+				flavorProgressTarget = new FlavorProgressTarget<>(new GlideDrawableImageViewTarget(flavorImageView), flavorImageLoadingBar);
+			}
 		}
 
 		public void clearAnimation() {
 			view.clearAnimation();
 		}
-
 	}
-	
+
+	private static class FlavorProgressTarget<Z> extends ProgressTarget<String, Z> {
+		private final ProgressBar progress;
+		public FlavorProgressTarget(Target<Z> target, ProgressBar progress) {
+			super(target);
+			this.progress = progress;
+		}
+
+		@Override public float getGranualityPercentage() {
+			return 0.1f; // this matches the format string for #text below
+		}
+
+		@Override protected void onConnecting() {
+			progress.setIndeterminate(true);
+			progress.setVisibility(View.VISIBLE);
+		}
+		@Override protected void onDownloading(long bytesRead, long expectedLength) {
+			progress.setIndeterminate(false);
+			progress.setProgress((int)(100 * bytesRead / expectedLength));
+		}
+		@Override protected void onDownloaded() {
+			progress.setIndeterminate(true);
+		}
+		@Override protected void onDelivered() {
+			progress.setVisibility(View.INVISIBLE);
+		}
+	}
+
 	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleViewHolder>  {
 		private ArrayList<Article> items;
 		
@@ -1072,6 +1106,7 @@ public class HeadlinesFragment extends Fragment {
 
 				/* reset to default in case of convertview */
 				holder.flavorImageLoadingBar.setVisibility(View.GONE);
+				holder.flavorImageLoadingBar.setIndeterminate(false);
 				holder.flavorImageView.setVisibility(View.GONE);
 				holder.flavorVideoKindView.setVisibility(View.GONE);
 				holder.flavorImageOverflow.setVisibility(View.GONE);
@@ -1155,17 +1190,18 @@ public class HeadlinesFragment extends Fragment {
 					//Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
 					if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {
-						holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-						holder.flavorImageLoadingBar.setIndeterminate(true);
+						//holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
+						//holder.flavorImageLoadingBar.setIndeterminate(true);
 
 						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
+						holder.flavorProgressTarget.setModel(article.flavorImageUri);
 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
 								.dontAnimate()
 								.dontTransform()
-								.diskCacheStrategy(DiskCacheStrategy.ALL)
-								.skipMemoryCache(false)
+								.diskCacheStrategy(DiskCacheStrategy.NONE)
+								.skipMemoryCache(true)
 								.listener(new RequestListener<String, GlideDrawable>() {
 									@Override
 									public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -1201,7 +1237,7 @@ public class HeadlinesFragment extends Fragment {
 										}
 									}
 								})
-								.into(holder.flavorImageView);
+								.into(holder.flavorProgressTarget);
 					} else {
 						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
