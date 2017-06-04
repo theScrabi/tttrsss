@@ -38,6 +38,7 @@ public class GalleryImageFragment extends GalleryBaseFragment {
 
         ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
 
+        // TODO: ImageMatrixTouchHandler doesn't like context menus
         ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
 
         imgView.setOnTouchListener(touchHandler);
