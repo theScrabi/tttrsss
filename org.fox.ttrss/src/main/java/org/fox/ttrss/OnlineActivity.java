@@ -1487,8 +1487,12 @@ public class OnlineActivity extends CommonActivity {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
 				
 			if (hf != null && !m_forceDisableActionMode) {
-				if (hf.getSelectedArticles().size() > 0 && m_headlinesActionMode == null) {
-					m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
+				if (hf.getSelectedArticles().size() > 0) {
+					if (m_headlinesActionMode == null) {
+						m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
+					}
+
+					m_headlinesActionMode.setTitle(String.valueOf(hf.getSelectedArticles().size()));
 				} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
 					m_headlinesActionMode.finish();
 				}
