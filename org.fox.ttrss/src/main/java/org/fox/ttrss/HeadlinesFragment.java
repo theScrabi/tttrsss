@@ -1194,7 +1194,7 @@ public class HeadlinesFragment extends Fragment {
 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
-								.dontAnimate()
+								//.dontAnimate()
 								.dontTransform()
 								.diskCacheStrategy(DiskCacheStrategy.ALL)
 								.skipMemoryCache(false)

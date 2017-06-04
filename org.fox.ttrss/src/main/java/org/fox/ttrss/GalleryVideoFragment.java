@@ -58,7 +58,7 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
 
         Glide.with(this)
                 .load(m_coverUrl)
-                .dontAnimate()
+                //.dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(false)
                 .listener(new RequestListener<String, GlideDrawable>() {
