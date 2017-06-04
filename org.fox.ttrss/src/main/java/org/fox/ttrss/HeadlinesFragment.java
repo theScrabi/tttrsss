@@ -1173,10 +1173,9 @@ public class HeadlinesFragment extends Fragment {
 					}
 
 					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
+					//Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
-
-					//Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
 					if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {
 						//holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
@@ -1184,6 +1183,14 @@ public class HeadlinesFragment extends Fragment {
 
 						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
 						holder.flavorProgressTarget.setModel(article.flavorImageUri);
+
+						/*	TODO: maybe an option? force height for all images to reduce list jumping around
+
+							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+							lp.height = (int)(m_screenHeight * 0.5f);
+							lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+							holder.flavorImageView.setLayoutParams(lp);
+						*/
 
 						Glide.with(HeadlinesFragment.this)
 								.load(article.flavorImageUri)
@@ -1214,13 +1221,14 @@ public class HeadlinesFragment extends Fragment {
 
 											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
-											maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+											//maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
 											adjustVideoKindView(holder, article);
 
 											return false;
 										} else {
 
 											holder.flavorImageOverflow.setVisibility(View.GONE);
+											holder.flavorImageView.setVisibility(View.GONE);
 
 											return true;
 										}
