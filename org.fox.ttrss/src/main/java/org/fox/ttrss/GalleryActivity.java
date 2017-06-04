@@ -1,6 +1,10 @@
 package org.fox.ttrss;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.preference.PreferenceManager;
@@ -8,16 +12,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Gallery;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.gson.JsonElement;
 
 import org.fox.ttrss.types.GalleryEntry;
 import org.jsoup.Jsoup;
@@ -28,19 +39,19 @@ import org.jsoup.select.Elements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import me.relex.circleindicator.CircleIndicator;
 
 public class GalleryActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    private ArrayList<GalleryEntry> m_items;
-    //private ArrayList<GalleryEntry> m_checkedItems;
+    private ArrayList<GalleryEntry> m_items = new ArrayList<>();
     private String m_title;
     private ArticleImagesPagerAdapter m_adapter;
     public String m_content;
-    //private ProgressBar m_progress;
     private ViewPager m_pager;
+    private ProgressBar m_checkProgress;
 
     private class ArticleImagesPagerAdapter extends FragmentStatePagerAdapter {
         private List<GalleryEntry> m_items;
@@ -85,77 +96,66 @@ public class GalleryActivity extends CommonActivity {
         }
     }
 
-    /*private class ImageCheckTask extends AsyncTask<List<GalleryEntry>, Integer, List<GalleryEntry>> {
-        private GalleryEntry m_lastCheckedItem;
+    private class MediaProgressResult {
+        GalleryEntry item;
+        int position;
+        int count;
+
+        public MediaProgressResult(GalleryEntry item, int position, int count) {
+            this.item = item;
+            this.position = position;
+            this.count = count;
+        }
+    }
+
+    private class MediaCheckTask extends AsyncTask<List<GalleryEntry>, MediaProgressResult, List<GalleryEntry>> {
+
+        private List<GalleryEntry> m_checkedItems = new ArrayList<>();
 
         @Override
-        protected List<GalleryEntry> doInBackground(List<GalleryEntry>... items) {
+        protected List<GalleryEntry> doInBackground(List<GalleryEntry>... params) {
 
-            List<GalleryEntry> tmp = new ArrayList<>(items[0]);
-
+            ArrayList<GalleryEntry> items = new ArrayList<>(params[0]);
             int position = 0;
 
-            for (GalleryEntry item : tmp) {
-
+            for (GalleryEntry item : items) {
                 if (!isCancelled()) {
-                    String url = item.url;
+                    ++position;
 
-                    position++;
+                    Log.d(TAG, "checking: " + item.url + " " + item.coverUrl);
 
-                    try {
-                        Bitmap bmp = Glide.with(zzzzticleImagesPagerActivity.this)
-                                .load(url)
-                                .asBitmap()
-                                .into(-1, -1)
-                                .get();
+                    if (item.type == GalleryEntry.GalleryEntryType.TYPE_IMAGE) {
+                        try {
+                            Bitmap bmp = Glide.with(GalleryActivity.this)
+                                    .load(item.url)
+                                    .asBitmap()
+                                    .skipMemoryCache(false)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .dontTransform()
+                                    .into(HeadlinesFragment.FLAVOR_IMG_MIN_SIZE, HeadlinesFragment.FLAVOR_IMG_MIN_SIZE)
+                                    .get();
 
-                        if (bmp != null && bmp.getWidth() > 128 && bmp.getHeight() > 128) {
-                            m_lastCheckedItem = item;
-                            publishProgress(position);
-                        } else {
-                            m_lastCheckedItem = null;
-                            publishProgress(position);
+                            if (bmp.getWidth() >= HeadlinesFragment.FLAVOR_IMG_MIN_SIZE && bmp.getHeight() >= HeadlinesFragment.FLAVOR_IMG_MIN_SIZE) {
+                                m_checkedItems.add(item);
+                                publishProgress(new MediaProgressResult(item, position, items.size()));
+                            }
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
                         }
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
+                    } else {
+                        m_checkedItems.add(item);
+                        publishProgress(new MediaProgressResult(item, position, items.size()));
                     }
-
                 }
             }
 
-            return -1;
+            return m_checkedItems;
         }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-
-            if (!isFinishing() && m_adapter != null) {
-                Log.d(TAG, "progr=" + progress[0]);
-
-                m_adapter.notifyDataSetChanged();
-
-                m_progress.setProgress(Integer.valueOf(progress[1]));
-            } else {
-                cancel(true);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<GalleryEntry> result) {
-            m_progress.setVisibility(View.GONE);
-
-            CircleIndicator indicator = (CircleIndicator) findViewById(R.id.article_images_indicator);
-
-            if (indicator != null) {
-                indicator.setViewPager(m_pager);
-                indicator.setVisibility(View.VISIBLE);
-            }
-
-        }
-    } */
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,6 +179,8 @@ public class GalleryActivity extends CommonActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
 
+        ArrayList<GalleryEntry> uncheckedItems = new ArrayList<>();
+
         if (savedInstanceState == null) {
             m_title = getIntent().getStringExtra("title");
             //m_urls = getIntent().getStringArrayListExtra("urls");
@@ -186,12 +188,12 @@ public class GalleryActivity extends CommonActivity {
 
             String imgSrcFirst = getIntent().getStringExtra("firstSrc");
 
-            m_items = new ArrayList<GalleryEntry>();
-
             Document doc = Jsoup.parse(m_content);
             Elements elems = doc.select("img,video");
 
             boolean firstFound = false;
+
+            ArrayList<GalleryEntry> tmp = new ArrayList<>();
 
             for (Element elem : elems) {
 
@@ -239,7 +241,10 @@ public class GalleryActivity extends CommonActivity {
                 }
 
                 if (firstFound && item.url != null) {
-                    m_items.add(item);
+                    if (m_items.size() == 0)
+                        m_items.add(item);
+                    else
+                        uncheckedItems.add(item);
                 }
             }
 
@@ -270,24 +275,6 @@ public class GalleryActivity extends CommonActivity {
             }
         });
 
-
-        /*if (m_items.size() > 1) {
-            m_progress.setProgress(0);
-            m_progress.setMax(m_items.size());
-            m_checkedItems = new ArrayList<>();
-
-            ArrayList<GalleryEntry> tmp = new ArrayList<>(m_items);
-
-            m_checkedItems.add(tmp.get(0));
-            tmp.remove(0);
-
-            ImageCheckTask ict = new ImageCheckTask();
-            ict.execute(tmp);
-        } else {
-            m_checkedItems = new ArrayList<>(m_items);
-            m_progress.setVisibility(View.GONE);
-        } */
-
         setTitle(m_title);
 
         m_adapter = new ArticleImagesPagerAdapter(getSupportFragmentManager(), m_items);
@@ -298,6 +285,36 @@ public class GalleryActivity extends CommonActivity {
 
         CircleIndicator indicator = (CircleIndicator) findViewById(R.id.gallery_pager_indicator);
         indicator.setViewPager(m_pager);
+        m_adapter.registerDataSetObserver(indicator.getDataSetObserver());
+
+        m_checkProgress = (ProgressBar) findViewById(R.id.gallery_check_progress);
+
+        Log.d(TAG, "items to check:" + uncheckedItems.size());
+
+        MediaCheckTask mct = new MediaCheckTask() {
+            @Override
+            protected void onProgressUpdate(MediaProgressResult... result) {
+                m_items.add(result[0].item);
+                m_adapter.notifyDataSetChanged();
+
+                if (result[0].position < result[0].count) {
+                    m_checkProgress.setVisibility(View.VISIBLE);
+                    m_checkProgress.setMax(result[0].count);
+                    m_checkProgress.setProgress(result[0].position);
+                } else {
+                    m_checkProgress.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            protected void onPostExecute(List<GalleryEntry> result) {
+                //m_items.addAll(result);
+                //m_adapter.notifyDataSetChanged();
+            }
+        };
+
+        mct.execute(uncheckedItems);
 
     }
 
