@@ -121,7 +121,14 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	}
 
 	public void toast(String msg) {
-		Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+		Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
+				.setAction(R.string.dialog_close, new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				})
+				.show();
 	}
 
 	@Override
