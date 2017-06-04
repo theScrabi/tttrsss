@@ -1506,13 +1506,13 @@ public class OnlineActivity extends CommonActivity {
 		FeedCategoriesFragment cf = (FeedCategoriesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_CATS);
 		
 		if (cf != null) {
-			cf.refresh(false);
+			cf.refresh();
 		}
 
 		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 		
 		if (ff != null) {
-			ff.refresh(false);
+			ff.refresh();
 		}
 
 		if (includeHeadlines) {

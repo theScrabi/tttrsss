@@ -228,23 +228,6 @@ public class OfflineFeedsFragment extends BaseFeedlistFragment implements OnItem
 		}
 	}
 
-	@Override
-	public void refresh(boolean background) {
-		refresh();
-	}
-
-	/* public void setLoadingStatus(int status, boolean showProgress) {
-		if (getView() != null) {
-			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
-			
-			if (tv != null) {
-				tv.setText(status);
-			}
-		}
-		
-		getActivity().setProgressBarIndeterminateVisibility(showProgress);
-	} */
-	
 	private class FeedListAdapter extends SimpleCursorAdapter {
 		
 

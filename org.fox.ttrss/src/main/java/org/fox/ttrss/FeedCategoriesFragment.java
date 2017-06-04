@@ -82,12 +82,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 
 		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-		View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-		if (loadingBar != null) {
-			loadingBar.setVisibility(View.INVISIBLE);
-		}
-
 		if (result != null) {
 			try {
 				JsonArray content = result.getAsJsonArray();
@@ -337,7 +331,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				refresh(true);
+				refresh();
 			}
 		});
 
@@ -349,12 +343,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
         m_list.setAdapter(m_adapter);
         m_list.setOnItemClickListener(this);
         registerForContextMenu(m_list);
-
-        View loadingBar = (View) view.findViewById(R.id.feeds_loading_bar);
-
-		if (loadingBar != null) {
-			loadingBar.setVisibility(View.VISIBLE);
-		}
 
 		return view; 
 	}
@@ -388,17 +376,11 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		//out.putParcelable("cats", m_cats);
 	}
 
-	public void refresh(boolean swipeRefresh) {
+	public void refresh() {
 		if (!isAdded()) return;
 
-        if (m_swipeLayout != null && swipeRefresh) {
+        if (m_swipeLayout != null) {
 			m_swipeLayout.setRefreshing(true);
-		} else {
-			View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-			if (loadingBar != null) {
-				loadingBar.setVisibility(View.VISIBLE);
-			}
 		}
 
 		getLoaderManager().restartLoader(0, null, this).forceLoad();

@@ -93,12 +93,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	public void onLoadFinished(Loader<JsonElement> loader, JsonElement result) {
 		if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-		View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-		if (loadingBar != null) {
-			loadingBar.setVisibility(View.INVISIBLE);
-		}
-
 		if (result != null) {
 			try {
 				JsonArray content = result.getAsJsonArray();
@@ -366,7 +360,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				refresh(true);
+				refresh();
 			}
 		});
 
@@ -392,12 +386,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		m_list.setOnItemClickListener(this);
 
 		registerForContextMenu(m_list);
-
-        View loadingBar = view.findViewById(R.id.feeds_loading_bar);
-
-		if (loadingBar != null) {
-			loadingBar.setVisibility(View.VISIBLE);
-		}
 
 		return view;    	
 	}
@@ -464,17 +452,11 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	}
 
 	@SuppressWarnings({ "serial" })
-	public void refresh(boolean swipeRefresh) {
+	public void refresh() {
 		if (!isAdded()) return;
 
-		if (m_swipeLayout != null && swipeRefresh) {
+		if (m_swipeLayout != null) {
             m_swipeLayout.setRefreshing(true);
-        } else {
-            View loadingBar = getView().findViewById(R.id.feeds_loading_bar);
-
-            if (loadingBar != null) {
-                loadingBar.setVisibility(View.VISIBLE);
-            }
         }
 
 		getLoaderManager().restartLoader(0, null, this).forceLoad();

@@ -202,11 +202,6 @@ public class OfflineFeedCategoriesFragment extends BaseFeedlistFragment implemen
 		}
 	}
 
-	@Override
-	public void refresh(boolean background) {
-		refresh();
-	}
-
 	/* public void setLoadingStatus(int status, boolean showProgress) {
 		if (getView() != null) {
 			TextView tv = (TextView)getView().findViewById(R.id.loading_message);
