@@ -775,7 +775,6 @@ public class HeadlinesFragment extends Fragment {
         public ImageView textImage;
         public ImageView textChecked;
 		public View headlineHeader;
-		public View topChangedMessage;
 		public View flavorImageOverflow;
 		public TextureView flavorVideoView;
 		//public int position;
@@ -805,7 +804,6 @@ public class HeadlinesFragment extends Fragment {
 			textImage = (ImageView) v.findViewById(R.id.text_image);
 			textChecked = (ImageView) v.findViewById(R.id.text_checked);
 			headlineHeader = v.findViewById(R.id.headline_header);
-			topChangedMessage = v.findViewById(R.id.headlines_row_top_changed);
 			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 			flavorVideoView = (TextureView) v.findViewById(R.id.flavor_video);
 
@@ -955,15 +953,6 @@ public class HeadlinesFragment extends Fragment {
 					@Override
 					public void onClick(View view) {
 						//
-					}
-				});
-			}
-
-			if (holder.topChangedMessage != null) {
-				holder.topChangedMessage.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						refresh(false, true);
 					}
 				});
 			}
