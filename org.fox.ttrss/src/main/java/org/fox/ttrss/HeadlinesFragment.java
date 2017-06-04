@@ -282,7 +282,7 @@ public class HeadlinesFragment extends Fragment {
 	}
 
 	public View createListFooter(int layoutId) {
-		if (isAdded() || m_activity != null) {
+		if (isAdded() && m_activity != null) {
 			View view = getActivity().getLayoutInflater().inflate(layoutId, m_list, false);
 
 			// only resize footer if auto mark as read is enabled
