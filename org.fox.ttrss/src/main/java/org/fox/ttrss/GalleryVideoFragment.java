@@ -297,7 +297,11 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        resizeSurface(getView().findViewById(R.id.flavor_video));
+        try {
+            resizeSurface(getView().findViewById(R.id.flavor_video));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
