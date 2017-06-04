@@ -463,7 +463,7 @@ public class HeadlinesFragment extends Fragment {
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
 
-				if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+				/*if (newState != RecyclerView.SCROLL_STATE_IDLE) {
 
 					try {
 						if (m_mediaPlayer != null && m_mediaPlayer.isPlaying()) {
@@ -473,7 +473,7 @@ public class HeadlinesFragment extends Fragment {
 						// i guess it was already released, oh well
 					}
 
-				}
+				}*/
 
 				if (newState == RecyclerView.SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 					if (!m_readArticles.isEmpty()) {
