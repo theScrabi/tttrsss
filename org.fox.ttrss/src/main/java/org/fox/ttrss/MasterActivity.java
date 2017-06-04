@@ -490,16 +490,6 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 		Date date = new Date();
 
-		if (isFinishing()) {
-			AsyncTask.execute(new Runnable() {
-				@Override
-				public void run() {
-					Glide.get(MasterActivity.this).clearDiskCache();
-				}
-			});
-
-		}
-
 		if (isFinishing() || date.getTime() - m_lastWidgetRefresh > 60*1000) {
 			m_lastWidgetRefresh = date.getTime();
 
