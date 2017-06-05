@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -240,7 +241,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
         onFeedSelected(feed, true);
     }
 
-	public void onFeedSelected(Feed feed, final boolean selectedByUser) {
+	public void onFeedSelected(final Feed feed, final boolean selectedByUser) {
 
 		FeedsFragment ff = (FeedsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_FEEDS);
 
@@ -248,22 +249,28 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 			ff.setSelectedfeed(feed);
 		}
 
-        FragmentTransaction ft = getSupportFragmentManager()
-                .beginTransaction();
+		if (m_drawerLayout != null) {
+			m_drawerLayout.closeDrawers();
+		}
 
-        HeadlinesFragment hf = new HeadlinesFragment();
-        hf.initialize(feed);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				FragmentTransaction ft = getSupportFragmentManager()
+						.beginTransaction();
 
-        ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
+				HeadlinesFragment hf = new HeadlinesFragment();
+				hf.initialize(feed);
 
-        ft.commit();
+				ft.replace(R.id.headlines_fragment, hf, FRAG_HEADLINES);
 
-        m_feedIsSelected = true;
-        m_userFeedSelected = selectedByUser;
+				ft.commit();
 
-        if (m_drawerLayout != null) {
-            m_drawerLayout.closeDrawers();
-        }
+				m_feedIsSelected = true;
+				m_userFeedSelected = selectedByUser;
+
+			}
+		}, 250);
 
         Date date = new Date();
 

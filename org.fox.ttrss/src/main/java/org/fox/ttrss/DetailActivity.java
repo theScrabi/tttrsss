@@ -211,7 +211,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 	}
 
 	@Override
-	public void onArticleSelected(Article article, boolean open) {
+	public void onArticleSelected(final Article article, boolean open) {
 		
 		if (article == null) return;
 		
@@ -229,19 +229,17 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 		if (!getSupportActionBar().isShowing()) getSupportActionBar().show();
 
 		if (open) {
-			
-			final Article fArticle = article;
-			
+
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
                     ArticlePager af = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
 					
 					if (af != null) {
-						af.setActiveArticle(fArticle);
+						af.setActiveArticle(article);
 					}
 				}
-			}, 10);			
+			}, 250);
 
 		} else {
 			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
