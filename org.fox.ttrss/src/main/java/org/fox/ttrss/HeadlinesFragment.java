@@ -1228,6 +1228,10 @@ public class HeadlinesFragment extends Fragment {
 
 										boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
+										RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+										lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+										holder.flavorImageView.setLayoutParams(lp);
+
 										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
 										adjustVideoKindView(holder, article);
 
