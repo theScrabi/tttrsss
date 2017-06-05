@@ -148,6 +148,7 @@
                     android:layout_below="@+id/headline_header"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
+                    android:tint="?colorAccent"
                     android:layout_marginLeft="8dp"
                     android:layout_marginBottom="8dp" />
 
@@ -162,6 +163,7 @@
                     android:paddingRight="4dp"
                     android:src="@drawable/ic_dots_vertical"
                     android:layout_gravity="bottom|right"
+                    android:tint="?colorAccent"
                     android:layout_marginBottom="10dp" />
 
             </FrameLayout>
