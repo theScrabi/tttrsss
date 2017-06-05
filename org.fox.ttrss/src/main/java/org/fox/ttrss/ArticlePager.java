@@ -7,6 +7,7 @@ import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ClassloaderWorkaroundFragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -38,6 +39,8 @@ public class ArticlePager extends Fragment {
 	private Feed m_feed;
 	private SharedPreferences m_prefs;
 	private int m_firstId = 0;
+	private boolean m_refreshInProgress;
+	private boolean m_lazyLoadDisabled;
 
 	private class PagerAdapter extends ClassloaderWorkaroundFragmentStatePagerAdapter {
 		
@@ -155,9 +158,15 @@ public class ArticlePager extends Fragment {
 
 					//Log.d(TAG, "Page #" + position + "/" + m_adapter.getCount());
 					
-					if ((m_activity.isSmallScreen() || m_activity.isPortrait()) && position == m_adapter.getCount() - 15) {
+					if (!m_refreshInProgress && !m_lazyLoadDisabled && (m_activity.isSmallScreen() || m_activity.isPortrait()) && position >= m_adapter.getCount() - 5) {
 						Log.d(TAG, "loading more articles...");
-						refresh(true);
+
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								refresh(true);
+							}
+						}, 100);
 					}
 				}
 			}
@@ -169,10 +178,20 @@ public class ArticlePager extends Fragment {
 	@SuppressWarnings({ "serial" }) 
 	protected void refresh(boolean append) {
 
-		/* if (!m_feed.equals(Application.getInstance().m_activeFeed)) {
-			append = false;
+		// viewpager doesn't like it when there's no data to display so we can't really allow not-appending here
+		// luckily this fragment doesn't call for not-appending updates
+		// TODO: maybe later implement some placeholder fragment to show if there's no data
+
+		/* if (!append) {
+			m_lazyLoadDisabled = false;
+
+			// this won't ever work
+			m_articles.clear();
+			m_adapter.notifyDataSetChanged();
 		} */
-		
+
+		m_refreshInProgress = true;
+
 		HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 			@Override
 			protected void onProgressUpdate(Integer... progress) {
@@ -184,14 +203,21 @@ public class ArticlePager extends Fragment {
 				if (isDetached() || !isAdded()) return;
 
 				super.onPostExecute(result);
-				
+
+				m_refreshInProgress = false;
+
 				if (result != null) {
 
-					if (m_firstIdChanged && !(m_activity instanceof DetailActivity && !m_activity.isPortrait())) {
-						// TODO: show an information message in viewpager without modifying m_articles
-						//m_articles.add(new Article(HeadlinesFragment.ARTICLE_SPECIAL_TOP_CHANGED));
+					if (m_firstIdChanged) {
+						m_lazyLoadDisabled = true;
+					}
 
+					if (m_firstIdChanged && !(m_activity instanceof DetailActivity && !m_activity.isPortrait())) {
 						m_activity.toast(R.string.headlines_row_top_changed);
+					}
+
+					if (m_amountLoaded < HeadlinesFragment.HEADLINES_REQUEST_SIZE) {
+						m_lazyLoadDisabled = true;
 					}
 
 					ArticlePager.this.m_firstId = m_firstId;
@@ -323,13 +349,8 @@ public class ArticlePager extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		/* if (m_articles.size() == 0 || !m_feed.equals(Application.getInstance().m_activeFeed)) {
-			refresh(false);
-			Application.getInstance().m_activeFeed = m_feed;
-		} */
 
-		if (m_adapter != null) m_adapter.notifyDataSetChanged();
+		//if (m_adapter != null) m_adapter.notifyDataSetChanged();
 
 		m_activity.invalidateOptionsMenu();
 	}

@@ -488,8 +488,6 @@ public class HeadlinesFragment extends Fragment {
 						}, 100);
 					}
 				}
-
-
 			}
 
 			@Override
@@ -529,7 +527,13 @@ public class HeadlinesFragment extends Fragment {
 				//Log.d(TAG, "onScrolled: " + m_refreshInProgress + " " + m_lazyLoadDisabled + " " + lastVisibleItem + " " + m_articles.size());
 
 				if (!m_refreshInProgress && !m_lazyLoadDisabled && lastVisibleItem >= m_articles.size() - 5) {
-					refresh(true);
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							refresh(true);
+						}
+					}, 100);
+
 				}
 
 			}
@@ -615,9 +619,9 @@ public class HeadlinesFragment extends Fragment {
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
 					//m_adapter.removeAllFooterViews();
+					m_refreshInProgress = false;
 
 					if (result != null) {
-						m_refreshInProgress = false;
 
 						if (m_activeArticle != null && !m_articles.containsId(m_activeArticle.id)) {
 							m_activeArticle = null;
