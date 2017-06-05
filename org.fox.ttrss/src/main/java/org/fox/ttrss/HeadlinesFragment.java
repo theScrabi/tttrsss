@@ -1307,9 +1307,9 @@ public class HeadlinesFragment extends Fragment {
 							holder.flavorVideoView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
 									 @Override
 									 public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-										 m_mediaPlayer.setSurface(new Surface(surface));
-
 										 try {
+											 m_mediaPlayer.setSurface(new Surface(surface));
+
 											 m_mediaPlayer.setDataSource(article.flavorStreamUri);
 
 											 m_mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
