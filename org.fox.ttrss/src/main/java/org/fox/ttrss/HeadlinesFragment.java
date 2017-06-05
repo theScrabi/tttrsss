@@ -150,7 +150,7 @@ public class HeadlinesFragment extends Fragment {
         }
 	}
 
-	public boolean onArticleMenuItemSelected(MenuItem item, Article article) {
+	public boolean onArticleMenuItemSelected(MenuItem item, Article article, int position) {
 
 		if (article == null) return false;
 
@@ -164,7 +164,7 @@ public class HeadlinesFragment extends Fragment {
 			case R.id.headlines_article_unread:
 				article.unread = !article.unread;
 				m_activity.saveArticleUnread(article);
-				m_adapter.notifyDataSetChanged();
+				m_adapter.notifyItemChanged(position);
 				return true;
 			case R.id.headlines_article_link_copy:
 				m_activity.copyToClipboard(article.link);
@@ -176,7 +176,7 @@ public class HeadlinesFragment extends Fragment {
 					article.unread = false;
 					m_activity.saveArticleUnread(article);
 
-					m_adapter.notifyDataSetChanged();
+					m_adapter.notifyItemChanged(position);
 				}
 				return true;
 			case R.id.headlines_share_article:
@@ -247,7 +247,7 @@ public class HeadlinesFragment extends Fragment {
 
 		Article article = getArticleAtPosition(info.position - m_adapter.getHeaderCount());
 
-		if (!onArticleMenuItemSelected(item, article))
+		if (!onArticleMenuItemSelected(item, article, info.position))
 			return super.onContextItemSelected(item);
 		else
 			return true;
@@ -1435,7 +1435,7 @@ public class HeadlinesFragment extends Fragment {
 						popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 							@Override
 							public boolean onMenuItemClick(MenuItem item) {
-								return onArticleMenuItemSelected(item, article);
+								return onArticleMenuItemSelected(item, article, m_list.getChildPosition(holder.view));
 							}
 						});
 
