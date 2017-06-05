@@ -116,7 +116,6 @@ public class HeadlinesFragment extends Fragment {
 	private SwipeRefreshLayout m_swipeLayout;
 	private int m_maxImageSize = 0;
     private boolean m_compactLayoutMode = false;
-    private int m_listPreviousVisibleItem;
     private RecyclerView m_list;
 	private LinearLayoutManager m_layoutManager;
 
@@ -510,18 +509,13 @@ public class HeadlinesFragment extends Fragment {
 					}
 				}
 
-				if (!m_activity.isTablet()) {
-					if (m_adapter.getItemCount() > 0) {
-						if (firstVisibleItem > m_listPreviousVisibleItem) {
-							m_activity.getSupportActionBar().hide();
-						} else if (firstVisibleItem < m_listPreviousVisibleItem) {
-							m_activity.getSupportActionBar().show();
-						}
+				if (!m_activity.isTablet() && m_articles.size() > 0) {
+					if (dy > 0) {
+						m_activity.getSupportActionBar().hide();
 					} else {
 						m_activity.getSupportActionBar().show();
 					}
 
-					m_listPreviousVisibleItem = firstVisibleItem;
 				}
 
 				//Log.d(TAG, "onScrolled: " + m_refreshInProgress + " " + m_lazyLoadDisabled + " " + lastVisibleItem + " " + m_articles.size());
