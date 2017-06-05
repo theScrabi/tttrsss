@@ -284,26 +284,6 @@ public class HeadlinesFragment extends Fragment {
 		setRetainInstance(true);
 	}
 
-	public View createListFooter(int layoutId) {
-		if (isAdded() && m_activity != null) {
-			View view = getActivity().getLayoutInflater().inflate(layoutId, m_list, false);
-
-			// only resize footer if auto mark as read is enabled
-			if (layoutId == R.layout.headlines_footer && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
-				WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
-				Display display = wm.getDefaultDisplay();
-				int screenHeight = display.getHeight();
-
-				view.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
-			}
-
-			return view;
-
-		} else {
-			return null;
-		}
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -596,8 +576,6 @@ public class HeadlinesFragment extends Fragment {
 			} else {
 				m_articles.add(new Article(Article.TYPE_LOADMORE));
 				m_adapter.notifyDataSetChanged();
-
-				//m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
 			}
 
 			final String sessionId = m_activity.getSessionId();
@@ -631,7 +609,6 @@ public class HeadlinesFragment extends Fragment {
 							m_lazyLoadDisabled = true;
 
 							//Log.d(TAG, "first id changed, disabling lazy load");
-							//!m_adapter.addFooterView(createListFooter(R.layout.headlines_row_top_changed));
 							m_articles.add(new Article(Article.TYPE_TOP_CHANGED));
 						}
 
@@ -658,8 +635,6 @@ public class HeadlinesFragment extends Fragment {
 						}
 					}
 
-					//if (m_prefs.getBoolean("headlines_mark_read_scroll", false))
-					//!m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
 					m_articles.add(new Article(Article.TYPE_AMR_FOOTER));
 					m_adapter.notifyDataSetChanged();
 				}
@@ -690,10 +665,6 @@ public class HeadlinesFragment extends Fragment {
 				} else {
 					skip = numAll;
 				}
-
-				/*if (skip > 0) {
-					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
-				}*/
 			}
 
 			final int fskip = skip;
@@ -963,7 +934,7 @@ public class HeadlinesFragment extends Fragment {
 
 			final Article article = holder.article;
 
-			if (article.id == Article.TYPE_AMR_FOOTER) {
+			if (article.id == Article.TYPE_AMR_FOOTER && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 				WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
 				Display display = wm.getDefaultDisplay();
 				int screenHeight = display.getHeight();
