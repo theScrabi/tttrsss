@@ -98,7 +98,7 @@ public class HeadlinesFragment extends Fragment {
 	public static final int HEADLINES_BUFFER_MAX = 1000;
 
 	private final String TAG = this.getClass().getSimpleName();
-	
+
 	private Feed m_feed;
 	private Article m_activeArticle;
 	private String m_searchQuery = "";
@@ -107,7 +107,7 @@ public class HeadlinesFragment extends Fragment {
 	private boolean m_lazyLoadDisabled = false;
 
 	private SharedPreferences m_prefs;
-	
+
 	private HeaderViewRecyclerAdapter m_adapter;
 	private ArticleList m_articles = new ArticleList();
 	private ArticleList m_readArticles = new ArticleList();
@@ -131,7 +131,7 @@ public class HeadlinesFragment extends Fragment {
 
 		return tmp;
 	}
-	
+
 	public void initialize(Feed feed) {
 		m_feed = feed;
 	}
@@ -139,7 +139,7 @@ public class HeadlinesFragment extends Fragment {
 	public void initialize(Feed feed, Article activeArticle, boolean compactMode, ArticleList articles) {
 		m_feed = feed;
         m_compactLayoutMode = compactMode;
-		
+
 		if (activeArticle != null) {
 			m_activeArticle = getArticleById(activeArticle.id);
 		}
@@ -262,7 +262,7 @@ public class HeadlinesFragment extends Fragment {
             setReenterTransition(fade);
         }
     }
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -272,7 +272,7 @@ public class HeadlinesFragment extends Fragment {
 		menu.findItem(R.id.set_labels).setEnabled(m_activity.getApiLevel() >= 1);
 		menu.findItem(R.id.article_set_note).setEnabled(m_activity.getApiLevel() >= 1);
 
-		super.onCreateContextMenu(menu, v, menuInfo);		
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
@@ -332,7 +332,7 @@ public class HeadlinesFragment extends Fragment {
 		m_maxImageSize = (int) (128 * metrics.density + 0.5);
 
 		Log.d(TAG, "maxImageSize=" + m_maxImageSize);
-		
+
 		View view = inflater.inflate(R.layout.fragment_headlines, container, false);
 
 		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
@@ -540,7 +540,7 @@ public class HeadlinesFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 
-		if (m_adapter != null) m_adapter.notifyDataSetChanged();
+		//if (m_adapter != null) m_adapter.notifyDataSetChanged();
 
 		if (m_activeArticle != null) {
 			setActiveArticle(m_activeArticle);
@@ -562,9 +562,9 @@ public class HeadlinesFragment extends Fragment {
 	}
 
 	public void refresh(boolean append) {
-		refresh(append, false);	
+		refresh(append, false);
 	}
-	
+
 	@SuppressWarnings({ "serial" })
 	public void refresh(final boolean append, boolean userInitiated) {
 		m_adapter.removeAllFooterViews();
@@ -585,7 +585,7 @@ public class HeadlinesFragment extends Fragment {
 
 			final String sessionId = m_activity.getSessionId();
 			final boolean isCat = m_feed.is_cat;
-			
+
 			HeadlinesRequest req = new HeadlinesRequest(getActivity().getApplicationContext(), m_activity, m_feed, m_articles) {
 				@Override
 				protected void onProgressUpdate(Integer... progress) {
@@ -595,7 +595,7 @@ public class HeadlinesFragment extends Fragment {
 				@Override
 				protected void onPostExecute(JsonElement result) {
 					if (isDetached() || !isAdded()) return;
-					
+
 					super.onPostExecute(result);
 					m_adapter.notifyDataSetChanged();
 
@@ -646,23 +646,23 @@ public class HeadlinesFragment extends Fragment {
 			};
 
 			int skip = 0;
-			
+
 			if (append) {
 				// adaptive, all_articles, marked, published, unread
 				String viewMode = m_activity.getViewMode();
 				int numUnread = 0;
 				int numAll = m_articles.size();
-				
+
 				for (Article a : m_articles) {
 					if (a.unread) ++numUnread;
 				}
-				
+
 				if ("marked".equals(viewMode)) {
 					skip = numAll;
 				} else if ("published".equals(viewMode)) {
 					skip = numAll;
 				} else if ("unread".equals(viewMode)) {
-					skip = numUnread;					
+					skip = numUnread;
 				} else if (m_searchQuery != null && m_searchQuery.length() > 0) {
 					skip = numAll;
 				} else if ("adaptive".equals(viewMode)) {
@@ -675,11 +675,11 @@ public class HeadlinesFragment extends Fragment {
 					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
 				}
 			}
-			
+
 			final int fskip = skip;
-			
-			final boolean allowForceUpdate = m_activity.getApiLevel() >= 9 && 
-					!m_feed.is_cat && m_feed.id > 0 && !append && userInitiated &&  
+
+			final boolean allowForceUpdate = m_activity.getApiLevel() >= 9 &&
+					!m_feed.is_cat && m_feed.id > 0 && !append && userInitiated &&
 					skip == 0;
 
 			Log.d(TAG, "allowForceUpdate=" + allowForceUpdate + " userInitiated=" + userInitiated);
@@ -702,13 +702,13 @@ public class HeadlinesFragment extends Fragment {
 					put("include_nested", "true");
                     put("has_sandbox", "true");
 					put("order_by", m_activity.getSortMode());
-					
+
 					if (isCat) put("is_cat", "true");
 
-					if (allowForceUpdate) {					
+					if (allowForceUpdate) {
 						put("force_update", "true");
 					}
-					
+
 					if (m_searchQuery != null && m_searchQuery.length() != 0) {
 						put("search", m_searchQuery);
 						put("search_mode", "");
@@ -727,12 +727,12 @@ public class HeadlinesFragment extends Fragment {
 
 			req.execute(map);
 		}
-	}		
+	}
 
 	@Override
 	public void onSaveInstanceState (Bundle out) {
 		super.onSaveInstanceState(out);
-		
+
 		out.setClassLoader(getClass().getClassLoader());
 		out.putParcelable("feed", m_feed);
 		out.putParcelable("articles", m_articles);
@@ -836,14 +836,14 @@ public class HeadlinesFragment extends Fragment {
 
 	private class ArticleListAdapter extends RecyclerView.Adapter<ArticleViewHolder>  {
 		private ArrayList<Article> items;
-		
+
 		public static final int VIEW_NORMAL = 0;
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
 
 		public static final int VIEW_COUNT = VIEW_SELECTED_UNREAD + 1;
-		
+
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
 
@@ -908,7 +908,7 @@ public class HeadlinesFragment extends Fragment {
 		}
 
 		@Override
-		public void onBindViewHolder(final ArticleViewHolder holder, final int position) {
+		public void onBindViewHolder(final ArticleViewHolder holder, int position) {
 			holder.article = items.get(position);
 
 			int headlineFontSize = Integer.parseInt(m_prefs.getString("headlines_font_size_sp", "13"));
@@ -957,7 +957,7 @@ public class HeadlinesFragment extends Fragment {
 
 						article.selected = !article.selected;
 
-						updateTextCheckedState(holder, article, position);
+						updateTextCheckedState(holder, article, m_list.getChildPosition(holder.view));
 
 						m_listener.onArticleListSelectionChange(getSelectedArticles());
 
@@ -1018,7 +1018,8 @@ public class HeadlinesFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						article.marked = !article.marked;
-						m_adapter.notifyDataSetChanged();
+
+						m_adapter.notifyItemChanged(m_list.getChildPosition(holder.view));
 
 						m_activity.saveArticleMarked(article);
 					}
@@ -1042,7 +1043,8 @@ public class HeadlinesFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						article.published = !article.published;
-						m_adapter.notifyDataSetChanged();
+						//m_adapter.notifyDataSetChanged();
+						m_adapter.notifyItemChanged(m_list.getChildPosition(holder.view));
 
 						m_activity.saveArticlePublished(article);
 					}
@@ -1167,7 +1169,7 @@ public class HeadlinesFragment extends Fragment {
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
 
-					if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {
+					/*if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {*/
 						//holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
 						//holder.flavorImageLoadingBar.setIndeterminate(true);
 
@@ -1224,7 +1226,7 @@ public class HeadlinesFragment extends Fragment {
 									}
 								})
 								.into(holder.flavorProgressTarget);
-					} else {
+					/*} else {
 						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
 						adjustVideoKindView(holder, article);
@@ -1238,7 +1240,7 @@ public class HeadlinesFragment extends Fragment {
 						} else {
 							holder.headlineHeader.setBackgroundDrawable(null);
 						}
-					}
+					}*/
 				}
 
 				if (m_prefs.getBoolean("inline_video_player", false) && article.flavorImage != null &&
@@ -1469,8 +1471,8 @@ public class HeadlinesFragment extends Fragment {
 			} else if (a.unread) {
 				return VIEW_UNREAD;
 			} else {
-				return VIEW_NORMAL;				
-			}			
+				return VIEW_NORMAL;
+			}
 		}
 
 		@Override
@@ -1685,7 +1687,7 @@ public class HeadlinesFragment extends Fragment {
 	public void setSelection(ArticlesSelection select) {
 		for (Article a : m_articles)
             a.selected = false;
-		
+
 		if (select != ArticlesSelection.NONE) {
 			for (Article a : m_articles) {
 				if (select == ArticlesSelection.ALL || select == ArticlesSelection.UNREAD && a.unread) {
@@ -1710,7 +1712,7 @@ public class HeadlinesFragment extends Fragment {
 
 		return null;
 	}
-	
+
 	public Article getArticleById(int id) {
 		for (Article a : m_articles) {
 			if (a.id == id)
@@ -1744,7 +1746,7 @@ public class HeadlinesFragment extends Fragment {
 	public String getSearchQuery() {
 		return m_searchQuery;
 	}
-	
+
 	public void setSearchQuery(String query) {
 		if (!m_searchQuery.equals(query)) {
 			m_searchQuery = query;
