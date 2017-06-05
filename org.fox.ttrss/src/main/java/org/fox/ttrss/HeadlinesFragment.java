@@ -512,7 +512,7 @@ public class HeadlinesFragment extends Fragment {
 				if (!m_activity.isTablet() && m_articles.size() > 0) {
 					if (dy > 0) {
 						m_activity.getSupportActionBar().hide();
-					} else {
+					} else if (dy < 0) {
 						m_activity.getSupportActionBar().show();
 					}
 
