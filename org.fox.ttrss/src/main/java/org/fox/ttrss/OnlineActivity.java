@@ -359,7 +359,7 @@ public class OnlineActivity extends CommonActivity {
 	public void login(boolean refresh, OnLoginFinishedListener listener) {
 		if (m_prefs.getString("ttrss_url", "").trim().length() == 0) {
 
-			setLoadingStatus(R.string.login_need_configure, false);
+			setLoadingStatus(R.string.login_need_configure);
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(R.string.dialog_need_configure_prompt)
@@ -382,7 +382,7 @@ public class OnlineActivity extends CommonActivity {
 			alert.show();
 			
 		} else {
-			setLoadingStatus(R.string.login_in_progress, true);
+			setLoadingStatus(R.string.login_in_progress);
 			
 			LoginRequest ar = new LoginRequest(getApplicationContext(), refresh, listener);
 
@@ -396,12 +396,12 @@ public class OnlineActivity extends CommonActivity {
 
 			ar.execute(map);
 
-			setLoadingStatus(R.string.login_in_progress, true);
+			setLoadingStatus(R.string.login_in_progress);
 		}
 	}
 	
 	protected void loginSuccess(boolean refresh) {
-		setLoadingStatus(R.string.blank, false);
+		setLoadingStatus(R.string.blank);
 		
 		initMenu();
 	
@@ -1098,48 +1098,26 @@ public class OnlineActivity extends CommonActivity {
 		req.execute(map);
 	}
 
-    private void setLoadingStatus(int status, boolean showProgress) {
-        TextView tv = (TextView) findViewById(R.id.loading_message);
-
-        if (tv != null) {
-            tv.setText(status);
-        }
-
-        View loadingContainer = findViewById(R.id.loading_container);
-
-        if (loadingContainer != null) {
-            loadingContainer.setVisibility(status == R.string.blank ? View.GONE : View.VISIBLE);
-        }
+    private void setLoadingStatus(int status) {
+		setLoadingStatus(getString(status));
     }
 
-	private void setLoadingStatus(String status, boolean showProgress) {
+	private void setLoadingStatus(String status) {
 		TextView tv = (TextView) findViewById(R.id.loading_message);
 
 		if (tv != null) {
 			tv.setText(status);
-		}
-
-		View loadingContainer = findViewById(R.id.loading_container);
-
-		if (loadingContainer != null) {
-			loadingContainer.setVisibility(status.equals("") ? View.GONE : View.VISIBLE);
 		}
 	}
 
     protected void logout() {
 		setSessionId(null);
 
-        View loadingContainer = findViewById(R.id.loading_container);
-
-        if (loadingContainer != null) {
-            loadingContainer.setVisibility(View.VISIBLE);
-        }
-
-		setLoadingStatus(R.string.login_ready, false);
+		setLoadingStatus(R.string.login_ready);
 
 		initMenu();
 	}
-	
+
 	protected void loginFailure() {
 		setSessionId(null);
 		initMenu();
@@ -1582,12 +1560,12 @@ public class OnlineActivity extends CommonActivity {
 									} else if (m_lastError != ApiCommon.ApiError.API_UNKNOWN_METHOD) {
 										// Unknown method means old tt-rss, in that case we assume API 0 and continue
 										
-										setLoadingStatus(getErrorMessage(), false);
+										setLoadingStatus(getErrorMessage());
 
 										if (m_lastErrorMessage != null) {
-											setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage, false);
+											setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage);
 										} else {
-											setLoadingStatus(getErrorMessage(), false);
+											setLoadingStatus(getErrorMessage());
 										}
 										
 										if (m_listener != null) {
@@ -1617,7 +1595,7 @@ public class OnlineActivity extends CommonActivity {
 	
 							req.execute(map);
 	
-							setLoadingStatus(R.string.loading_message, true);
+							setLoadingStatus(R.string.loading_message);
 						}
 
 						return;
@@ -1631,9 +1609,9 @@ public class OnlineActivity extends CommonActivity {
 			setSessionId(null);
 
 			if (m_lastErrorMessage != null) {
-				setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage, false);
+				setLoadingStatus(getString(getErrorMessage()) + "\n\n" + m_lastErrorMessage);
 			} else {
-				setLoadingStatus(getErrorMessage(), false);
+				setLoadingStatus(getErrorMessage());
 			}
 			
 			loginFailure();
