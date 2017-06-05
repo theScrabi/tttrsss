@@ -46,6 +46,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -776,6 +777,19 @@ public class HeadlinesFragment extends Fragment {
 
 			view = v;
 
+			view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+				@Override
+				public boolean onPreDraw() {
+					View flavorImage = view.findViewById(R.id.flavor_image);
+
+					if (flavorImage != null) {
+						article.flavorViewHeight = flavorImage.getMeasuredHeight();
+					}
+
+					return true;
+				}
+			});
+
 			titleView = (TextView)v.findViewById(R.id.title);
 
 			feedTitleView = (TextView)v.findViewById(R.id.feed_title);
@@ -1164,7 +1178,7 @@ public class HeadlinesFragment extends Fragment {
 						});
 					}
 
-					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri);
+					//Log.d(TAG, "IMG: " + article.flavorImageUri + " STREAM: " + article.flavorStreamUri + " H:" + article.flavorViewHeight);
 					//Log.d(TAG, "TAG:" + holder.flavorImageOverflow.getTag());
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
@@ -1175,6 +1189,13 @@ public class HeadlinesFragment extends Fragment {
 
 						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
 						holder.flavorProgressTarget.setModel(article.flavorImageUri);
+
+					if (article.flavorViewHeight > 0) {
+						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+						lp.height = article.flavorViewHeight;
+						holder.flavorImageView.setLayoutParams(lp);
+					}
+
 
 						/*	TODO: maybe an option? force height for all images to reduce list jumping around
 

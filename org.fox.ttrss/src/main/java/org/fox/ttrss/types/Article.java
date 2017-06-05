@@ -45,6 +45,7 @@ public class Article implements Parcelable {
 	transient public String flavorStreamUri;
 	transient public String youtubeVid;
 	transient public List<Element> mediaList = new ArrayList<>();
+	transient public int flavorViewHeight;
 
 	public Article(Parcel in) {
 		readFromParcel(in);
