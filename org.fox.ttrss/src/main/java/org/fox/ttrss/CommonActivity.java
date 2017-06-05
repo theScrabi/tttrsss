@@ -216,16 +216,22 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	@SuppressLint({ "NewApi", "ServiceCast" })
 	@SuppressWarnings("deprecation")
 	public void copyToClipboard(String str) {
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {				
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(str);
 		} else {
 			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(str);
-		}		
+		}
 
-		Toast toast = Toast.makeText(this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT);
-		toast.show();
+		Snackbar.make(findViewById(android.R.id.content), R.string.text_copied_to_clipboard, Snackbar.LENGTH_SHORT)
+				.setAction(R.string.dialog_close, new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				})
+				.show();
 	}
 
 	protected void setAppTheme(SharedPreferences prefs) {
