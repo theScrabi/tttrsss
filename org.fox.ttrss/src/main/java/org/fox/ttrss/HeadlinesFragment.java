@@ -25,6 +25,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -107,6 +108,8 @@ public class HeadlinesFragment extends Fragment {
 	private boolean m_refreshInProgress = false;
 	private int m_firstId = 0;
 	private boolean m_lazyLoadDisabled = false;
+	private int m_amountScrolled;
+	private int m_scrollToToggleBar;
 
 	private SharedPreferences m_prefs;
 
@@ -313,6 +316,8 @@ public class HeadlinesFragment extends Fragment {
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		m_maxImageSize = (int) (128 * metrics.density + 0.5);
 
+		m_scrollToToggleBar = m_activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
+
 		Log.d(TAG, "maxImageSize=" + m_maxImageSize);
 
 		View view = inflater.inflate(R.layout.fragment_headlines, container, false);
@@ -496,10 +501,15 @@ public class HeadlinesFragment extends Fragment {
 				}
 
 				if (!m_activity.isTablet() && m_articles.size() > 0) {
-					if (dy > 0) {
-						m_activity.getSupportActionBar().hide();
-					} else if (dy < 0) {
-						m_activity.getSupportActionBar().show();
+					m_amountScrolled += dy;
+					ActionBar bar = m_activity.getSupportActionBar();
+
+					if (dy > 0 && m_amountScrolled >= m_scrollToToggleBar) {
+						bar.hide();
+						m_amountScrolled = 0;
+					} else if (dy < 0 && m_amountScrolled <= -m_scrollToToggleBar) {
+						bar.show();
+						m_amountScrolled = 0;
 					}
 
 				}
