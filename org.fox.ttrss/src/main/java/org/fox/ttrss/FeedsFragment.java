@@ -122,7 +122,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 						feed.unread = catUnread;
 
 						m_feeds.add(0, feed);
-						m_adapter.notifyDataSetChanged();
 
 					}
 
@@ -133,8 +132,9 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 						feed.display_title = getString(R.string.feed_all_articles);
 
 						m_feeds.add(0, feed);
-						m_adapter.notifyDataSetChanged();
 					}
+
+					m_adapter.notifyDataSetChanged();
 
 					return;
 				}

@@ -118,8 +118,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 						m_cats.add(0, new FeedCategory(-1, "Special", 0));
 					}
 
-					//m_adapter.notifyDataSetChanged(); (done by sortCats)
-					//m_activity.setLoadingStatus(R.string.blank, false);
+					m_adapter.notifyDataSetChanged();
 
 					return;
 				}
