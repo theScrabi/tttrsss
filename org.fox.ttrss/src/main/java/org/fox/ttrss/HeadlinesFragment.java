@@ -1183,10 +1183,6 @@ public class HeadlinesFragment extends Fragment {
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
 
-					/*if (!article.flavorImageUri.equals(holder.flavorImageOverflow.getTag())) {*/
-						//holder.flavorImageLoadingBar.setVisibility(View.VISIBLE);
-						//holder.flavorImageLoadingBar.setIndeterminate(true);
-
 						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
 						holder.flavorProgressTarget.setModel(article.flavorImageUri);
 
@@ -1197,71 +1193,55 @@ public class HeadlinesFragment extends Fragment {
 					}
 
 
-						/*	TODO: maybe an option? force height for all images to reduce list jumping around
+					/*	TODO: maybe an option? force height for all images to reduce list jumping around
 
-							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
-							lp.height = (int)(m_screenHeight * 0.5f);
-							lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
-							holder.flavorImageView.setLayoutParams(lp);
-						*/
+						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+						lp.height = (int)(m_screenHeight * 0.5f);
+						lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+						holder.flavorImageView.setLayoutParams(lp);
+					*/
 
-						Glide.with(HeadlinesFragment.this)
-								.load(article.flavorImageUri)
-								.dontTransform()
-								.diskCacheStrategy(DiskCacheStrategy.ALL)
-								.skipMemoryCache(false)
-								.listener(new RequestListener<String, GlideDrawable>() {
-									@Override
-									public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+					Glide.with(HeadlinesFragment.this)
+							.load(article.flavorImageUri)
+							.dontTransform()
+							.diskCacheStrategy(DiskCacheStrategy.ALL)
+							.skipMemoryCache(false)
+							.listener(new RequestListener<String, GlideDrawable>() {
+								@Override
+								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-										holder.flavorImageLoadingBar.setVisibility(View.GONE);
-										holder.flavorImageView.setVisibility(View.GONE);
+									holder.flavorImageLoadingBar.setVisibility(View.GONE);
+									holder.flavorImageView.setVisibility(View.GONE);
+
+									return false;
+								}
+
+								@Override
+								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+									holder.flavorImageLoadingBar.setVisibility(View.GONE);
+
+									if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
+
+										//holder.flavorImageView.setVisibility(View.VISIBLE);
+										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+										boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+
+										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+										adjustVideoKindView(holder, article);
 
 										return false;
+									} else {
+
+										holder.flavorImageOverflow.setVisibility(View.GONE);
+										holder.flavorImageView.setVisibility(View.GONE);
+
+										return true;
 									}
-
-									@Override
-									public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-										holder.flavorImageLoadingBar.setVisibility(View.GONE);
-
-										if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
-
-											//holder.flavorImageView.setVisibility(View.VISIBLE);
-											holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-											holder.flavorImageOverflow.setTag(article.flavorImageUri);
-
-											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
-
-											maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
-											adjustVideoKindView(holder, article);
-
-											return false;
-										} else {
-
-											holder.flavorImageOverflow.setVisibility(View.GONE);
-											holder.flavorImageView.setVisibility(View.GONE);
-
-											return true;
-										}
-									}
-								})
-								.into(holder.flavorProgressTarget);
-					/*} else {
-						holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-
-						adjustVideoKindView(holder, article);
-
-						if (holder.flavorImageEmbedded) {
-							TypedValue tv = new TypedValue();
-
-							if (m_activity.getTheme().resolveAttribute(R.attr.headlineHeaderBackground, tv, true)) {
-								holder.headlineHeader.setBackgroundColor(tv.data);
-							}
-						} else {
-							holder.headlineHeader.setBackgroundDrawable(null);
-						}
-					}*/
+								}
+							})
+							.into(holder.flavorProgressTarget);
 				}
 
 				if (m_prefs.getBoolean("inline_video_player", false) && article.flavorImage != null &&
@@ -1506,8 +1486,6 @@ public class HeadlinesFragment extends Fragment {
 
             if (article.selected) {
 				holder.textImage.setImageDrawable(m_drawableBuilder.build(" ", 0xff616161));
-				//holder.textImage.setTag(null);
-
                 holder.textChecked.setVisibility(View.VISIBLE);
             } else {
 				final Drawable textDrawable = m_drawableBuilder.build(tmp, m_colorGenerator.getColor(article.title));
