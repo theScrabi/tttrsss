@@ -14,6 +14,10 @@ import java.util.regex.Pattern;
 
 // TODO: serialize Labels
 public class Article implements Parcelable {
+	public static final int TYPE_LOADMORE = -1;
+	public static final int TYPE_AMR_FOOTER = -2;
+	public static final int TYPE_TOP_CHANGED = -3;
+
 	public int id;
 	public boolean unread; 
 	public boolean marked; 
@@ -134,7 +138,7 @@ public class Article implements Parcelable {
 
 	public Article(int id) {
 		this.id = id;
-		this.title = "";
+		this.title = "ID:" + String.valueOf(id);
 		this.link = "";
 		this.tags = new ArrayList<String>();
 	}

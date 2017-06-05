@@ -43,6 +43,18 @@ public class ArticleList extends ArrayList<Article> implements Parcelable {
 		readFromParcel(in);
 	}
 
+	public void stripFooters() {
+		for (int i = this.size()-1; i >= 0; i--) {
+			Article a = this.get(i);
+
+			if (a.id < 0) {
+				this.remove(a);
+			} else if (a.id > 0) {
+				break;
+			}
+		}
+	}
+
 	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
     	new Parcelable.Creator() {

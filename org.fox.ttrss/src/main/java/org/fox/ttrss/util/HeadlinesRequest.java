@@ -81,6 +81,9 @@ public class HeadlinesRequest extends ApiRequest {
 					if (m_offset == 0) {
 						m_articles.clear();
 					} else {
+
+						m_articles.stripFooters();
+
 						while (m_articles.size() > HeadlinesFragment.HEADLINES_BUFFER_MAX) {
 							m_articles.remove(0);
 						}

@@ -17,6 +17,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -477,8 +478,14 @@ public class HeadlinesFragment extends Fragment {
 				if (newState == RecyclerView.SCROLL_STATE_IDLE && m_prefs.getBoolean("headlines_mark_read_scroll", false)) {
 					if (!m_readArticles.isEmpty()) {
 						m_activity.toggleArticlesUnread(m_readArticles);
-						m_activity.refresh(false);
 						m_readArticles.clear();
+
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								m_activity.refresh(false);
+							}
+						}, 100);
 					}
 				}
 
@@ -568,7 +575,8 @@ public class HeadlinesFragment extends Fragment {
 
 	@SuppressWarnings({ "serial" })
 	public void refresh(final boolean append, boolean userInitiated) {
-		m_adapter.removeAllFooterViews();
+		m_articles.stripFooters();
+		m_adapter.notifyDataSetChanged();
 
 		if (!append) m_lazyLoadDisabled = false;
 
@@ -578,10 +586,14 @@ public class HeadlinesFragment extends Fragment {
 			if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 
 			if (!append) {
+				m_activity.getSupportActionBar().show();
 				m_articles.clear();
 				m_adapter.notifyDataSetChanged();
 			} else {
-				m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
+				m_articles.add(new Article(Article.TYPE_LOADMORE));
+				m_adapter.notifyDataSetChanged();
+
+				//m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
 			}
 
 			final String sessionId = m_activity.getSessionId();
@@ -602,7 +614,7 @@ public class HeadlinesFragment extends Fragment {
 
 					if (m_swipeLayout != null) m_swipeLayout.setRefreshing(false);
 
-					m_adapter.removeAllFooterViews();
+					//m_adapter.removeAllFooterViews();
 
 					if (result != null) {
 						m_refreshInProgress = false;
@@ -615,7 +627,8 @@ public class HeadlinesFragment extends Fragment {
 							m_lazyLoadDisabled = true;
 
 							//Log.d(TAG, "first id changed, disabling lazy load");
-							m_adapter.addFooterView(createListFooter(R.layout.headlines_row_top_changed));
+							//!m_adapter.addFooterView(createListFooter(R.layout.headlines_row_top_changed));
+							m_articles.add(new Article(Article.TYPE_TOP_CHANGED));
 						}
 
 						if (m_amountLoaded < HEADLINES_REQUEST_SIZE) {
@@ -642,7 +655,9 @@ public class HeadlinesFragment extends Fragment {
 					}
 
 					//if (m_prefs.getBoolean("headlines_mark_read_scroll", false))
-					m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
+					//!m_adapter.addFooterView(createListFooter(R.layout.headlines_footer));
+					m_articles.add(new Article(Article.TYPE_AMR_FOOTER));
+					m_adapter.notifyDataSetChanged();
 				}
 			};
 
@@ -672,9 +687,9 @@ public class HeadlinesFragment extends Fragment {
 					skip = numAll;
 				}
 
-				if (skip > 0) {
+				/*if (skip > 0) {
 					m_adapter.addFooterView(createListFooter(R.layout.headlines_row_loadmore));
-				}
+				}*/
 			}
 
 			final int fskip = skip;
@@ -767,6 +782,7 @@ public class HeadlinesFragment extends Fragment {
         public ImageView textChecked;
 		public View headlineHeader;
 		public View flavorImageOverflow;
+		public View rowTopChanged;
 		public TextureView flavorVideoView;
 		//public int position;
 		public boolean flavorImageEmbedded;
@@ -808,6 +824,7 @@ public class HeadlinesFragment extends Fragment {
 			textImage = (ImageView) v.findViewById(R.id.text_image);
 			textChecked = (ImageView) v.findViewById(R.id.text_checked);
 			headlineHeader = v.findViewById(R.id.headline_header);
+			rowTopChanged = v.findViewById(R.id.headlines_row_top_changed);
 			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 			flavorVideoView = (TextureView) v.findViewById(R.id.flavor_video);
 
@@ -855,8 +872,11 @@ public class HeadlinesFragment extends Fragment {
 		public static final int VIEW_UNREAD = 1;
 		public static final int VIEW_SELECTED = 2;
 		public static final int VIEW_SELECTED_UNREAD = 3;
+		public static final int VIEW_LOADMORE = 4;
+		public static final int VIEW_TOP_CHANGED = 5;
+		public static final int VIEW_AMR_FOOTER = 6;
 
-		public static final int VIEW_COUNT = VIEW_SELECTED_UNREAD + 1;
+		public static final int VIEW_COUNT = VIEW_AMR_FOOTER + 1;
 
 		private final Integer[] origTitleColors = new Integer[VIEW_COUNT];
 		private final int titleHighScoreUnreadColor;
@@ -903,6 +923,15 @@ public class HeadlinesFragment extends Fragment {
 			int layoutId = m_compactLayoutMode ? R.layout.headlines_row_compact : R.layout.headlines_row;
 
 			switch (viewType) {
+				case VIEW_AMR_FOOTER:
+					layoutId = R.layout.headlines_footer;
+					break;
+				case VIEW_TOP_CHANGED:
+					layoutId = R.layout.headlines_row_top_changed;
+					break;
+				case VIEW_LOADMORE:
+					layoutId = R.layout.headlines_row_loadmore;
+					break;
 				case VIEW_UNREAD:
 					layoutId = m_compactLayoutMode ? R.layout.headlines_row_unread_compact : R.layout.headlines_row_unread;
 					break;
@@ -929,6 +958,26 @@ public class HeadlinesFragment extends Fragment {
 			int headlineSmallFontSize = Math.max(10, Math.min(18, headlineFontSize - 2));
 
 			final Article article = holder.article;
+
+			if (article.id == Article.TYPE_AMR_FOOTER) {
+				WindowManager wm = (WindowManager) m_activity.getSystemService(Context.WINDOW_SERVICE);
+				Display display = wm.getDefaultDisplay();
+				int screenHeight = display.getHeight();
+
+				holder.view.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, screenHeight));
+			}
+
+			if (holder.rowTopChanged != null) {
+				holder.rowTopChanged.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						refresh(false);
+					}
+				});
+			}
+
+			// nothing else of interest for those below anyway
+			if (article.id < 0) return;
 
 			holder.view.setOnLongClickListener(new View.OnLongClickListener() {
 				@Override
@@ -1448,7 +1497,10 @@ public class HeadlinesFragment extends Fragment {
 				});
 			}
 
-			startAnimation(holder.view, position);
+			// not on an emulator pls
+			if (!BuildConfig.DEBUG) {
+				startAnimation(holder.view, position);
+			}
 		}
 
 		protected void startAnimation(View view, int position) {
@@ -1469,7 +1521,13 @@ public class HeadlinesFragment extends Fragment {
 		public int getItemViewType(int position) {
 			Article a = items.get(position);
 
-			if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
+			if (a.id == Article.TYPE_AMR_FOOTER) {
+				return VIEW_AMR_FOOTER;
+			} else if (a.id == Article.TYPE_LOADMORE) {
+				return VIEW_LOADMORE;
+			} else if (a.id == Article.TYPE_TOP_CHANGED) {
+				return VIEW_TOP_CHANGED;
+			} else if (m_activeArticle != null && a.id == m_activeArticle.id && a.unread) {
 				return VIEW_SELECTED_UNREAD;
 			} else if (m_activeArticle != null && a.id == m_activeArticle.id) {
 				return VIEW_SELECTED;
@@ -1666,8 +1724,12 @@ public class HeadlinesFragment extends Fragment {
 		m_adapter.notifyDataSetChanged();
 	}
 
+	// returns cloned array without footers
 	public ArticleList getAllArticles() {
-		return (ArticleList) m_articles.clone();
+		ArticleList tmp = (ArticleList) m_articles.clone();
+		tmp.stripFooters();
+
+		return tmp;
 	}
 
     // if setting active doesn't make sense, scroll to whatever is passed to us
