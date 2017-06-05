@@ -1,4 +1,4 @@
-package org.fox.ttrss.util;
+package org.fox.ttrss.glide;
 
 
 import android.graphics.drawable.Drawable;

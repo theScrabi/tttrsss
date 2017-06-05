@@ -22,7 +22,7 @@
 
         <!-- <meta-data android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             tools:node="remove" /> -->
-        <meta-data android:name="org.fox.ttrss.util.OkHttpProgressGlideModule"
+        <meta-data android:name="org.fox.ttrss.glide.OkHttpProgressGlideModule"
             android:value="GlideModule" />
 
         <activity

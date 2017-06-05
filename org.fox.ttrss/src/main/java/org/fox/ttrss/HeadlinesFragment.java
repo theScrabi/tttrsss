@@ -65,7 +65,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.JsonElement;
 import com.shamanland.fab.FloatingActionButton;
@@ -76,7 +75,7 @@ import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeaderViewRecyclerAdapter;
 import org.fox.ttrss.util.HeadlinesRequest;
-import org.fox.ttrss.util.ProgressTarget;
+import org.fox.ttrss.glide.ProgressTarget;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
