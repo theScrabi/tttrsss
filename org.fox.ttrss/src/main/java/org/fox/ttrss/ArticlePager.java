@@ -241,6 +241,8 @@ public class ArticlePager extends Fragment {
 					}
 
 				} else {
+					m_lazyLoadDisabled = true;
+
 					if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 						m_activity.login(true);
 					} else {

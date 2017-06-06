@@ -638,10 +638,11 @@ public class HeadlinesFragment extends Fragment {
 						m_listener.onHeadlinesLoaded(append);
 
 					} else {
+						m_lazyLoadDisabled = true;
+
 						if (m_lastError == ApiCommon.ApiError.LOGIN_FAILED) {
 							m_activity.login(true);
 						} else {
-
 							if (m_lastErrorMessage != null) {
 								m_activity.toast(getString(getErrorMessage()) + "\n" + m_lastErrorMessage);
 							} else {
