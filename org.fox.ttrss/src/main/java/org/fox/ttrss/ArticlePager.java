@@ -52,14 +52,19 @@ public class ArticlePager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			Article article = m_articles.get(position);
-			
-			if (article != null) {
-				ArticleFragment af = new ArticleFragment();
-				af.initialize(article);
+			try {
+				Article article = m_articles.get(position);
 
-				return af;
+				if (article != null) {
+					ArticleFragment af = new ArticleFragment();
+					af.initialize(article);
+
+					return af;
+				}
+			} catch (IndexOutOfBoundsException e) {
+				e.printStackTrace();
 			}
+
 			return null;
 		}
 
