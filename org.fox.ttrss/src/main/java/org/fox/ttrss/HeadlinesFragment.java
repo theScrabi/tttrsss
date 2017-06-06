@@ -1481,25 +1481,6 @@ public class HeadlinesFragment extends Fragment {
 					}
 				});
 			}
-
-			// not on an emulator pls
-			if (!BuildConfig.DEBUG) {
-				startAnimation(holder.view, position);
-			}
-		}
-
-		protected void startAnimation(View view, int position) {
-			if (position > m_lastAddedPosition) {
-				Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.up_from_bottom);
-				view.startAnimation(animation);
-				m_lastAddedPosition = position;
-			}
-		}
-
-		@Override
-		public void onViewDetachedFromWindow(final ArticleViewHolder holder)
-		{
-			holder.clearAnimation();
 		}
 
 		@Override
