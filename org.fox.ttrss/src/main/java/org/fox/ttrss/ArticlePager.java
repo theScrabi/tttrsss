@@ -176,19 +176,11 @@ public class ArticlePager extends Fragment {
 	}
 	
 	@SuppressWarnings({ "serial" }) 
-	protected void refresh(boolean append) {
+	protected void refresh(final boolean append) {
 
-		// viewpager doesn't like it when there's no data to display so we can't really allow not-appending here
-		// luckily this fragment doesn't call for not-appending updates
-		// TODO: maybe later implement some placeholder fragment to show if there's no data
-
-		/* if (!append) {
+		if (!append) {
 			m_lazyLoadDisabled = false;
-
-			// this won't ever work
-			m_articles.clear();
-			m_adapter.notifyDataSetChanged();
-		} */
+		}
 
 		m_refreshInProgress = true;
 
@@ -202,6 +194,13 @@ public class ArticlePager extends Fragment {
 			protected void onPostExecute(JsonElement result) {
 				if (isDetached() || !isAdded()) return;
 
+				if (!append) {
+					ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
+					pager.setCurrentItem(0);
+
+					m_articles.clear();
+				}
+
 				super.onPostExecute(result);
 
 				m_refreshInProgress = false;
@@ -213,7 +212,15 @@ public class ArticlePager extends Fragment {
 					}
 
 					if (m_firstIdChanged && !(m_activity instanceof DetailActivity && !m_activity.isPortrait())) {
-						m_activity.toast(R.string.headlines_row_top_changed);
+						//m_activity.toast(R.string.headlines_row_top_changed);
+
+						Snackbar.make(getView(), R.string.headlines_row_top_changed, Snackbar.LENGTH_LONG)
+								.setAction(R.string.reload, new View.OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										refresh(false);
+									}
+								}).show();
 					}
 
 					if (m_amountLoaded < HeadlinesFragment.HEADLINES_REQUEST_SIZE) {

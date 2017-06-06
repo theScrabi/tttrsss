@@ -622,7 +622,7 @@ public class HeadlinesFragment extends Fragment {
 
 							//Log.d(TAG, "first id changed, disabling lazy load");
 
-							if (!(m_activity instanceof DetailActivity)) {
+							if (m_activity.isSmallScreen() || !m_activity.isPortrait()) {
 
 								Snackbar.make(getView(), R.string.headlines_row_top_changed, Snackbar.LENGTH_LONG)
 										.setAction(R.string.reload, new OnClickListener() {
