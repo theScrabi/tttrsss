@@ -363,7 +363,7 @@ public class HeadlinesFragment extends Fragment {
 
 					Article article = getArticleAtPosition(position);
 
-					if (article == null)
+					if (article == null && article.id > 0)
 						return 0;
 
 					return super.getSwipeDirs(recyclerView, viewHolder);
@@ -379,7 +379,7 @@ public class HeadlinesFragment extends Fragment {
 						final Article article = getArticleAtPosition(position);
 						final boolean wasUnread;
 
-						if (article != null) {
+						if (article != null && article.id > 0) {
 							if (article.unread) {
 								wasUnread = true;
 
@@ -584,8 +584,10 @@ public class HeadlinesFragment extends Fragment {
 				m_articles.clear();
 				m_adapter.notifyDataSetChanged();
 			} else {
-				m_articles.add(new Article(Article.TYPE_LOADMORE));
-				m_adapter.notifyDataSetChanged();
+				if (!(m_activity instanceof DetailActivity)) {
+					m_articles.add(new Article(Article.TYPE_LOADMORE));
+					m_adapter.notifyDataSetChanged();
+				}
 			}
 
 			final String sessionId = m_activity.getSessionId();
@@ -619,7 +621,10 @@ public class HeadlinesFragment extends Fragment {
 							m_lazyLoadDisabled = true;
 
 							//Log.d(TAG, "first id changed, disabling lazy load");
-							m_articles.add(new Article(Article.TYPE_TOP_CHANGED));
+
+							if (!(m_activity instanceof DetailActivity)) {
+								m_articles.add(new Article(Article.TYPE_TOP_CHANGED));
+							}
 						}
 
 						if (m_amountLoaded < HEADLINES_REQUEST_SIZE) {
@@ -645,8 +650,10 @@ public class HeadlinesFragment extends Fragment {
 						}
 					}
 
-					m_articles.add(new Article(Article.TYPE_AMR_FOOTER));
-					m_adapter.notifyDataSetChanged();
+					if (!(m_activity instanceof DetailActivity)) {
+						m_articles.add(new Article(Article.TYPE_AMR_FOOTER));
+						m_adapter.notifyDataSetChanged();
+					}
 				}
 			};
 
