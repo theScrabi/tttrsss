@@ -363,7 +363,7 @@ public class HeadlinesFragment extends Fragment {
 
 					Article article = getArticleAtPosition(position);
 
-					if (article == null && article.id > 0)
+					if (article == null || article.id < 0)
 						return 0;
 
 					return super.getSwipeDirs(recyclerView, viewHolder);
