@@ -249,12 +249,15 @@ public class HeadlinesFragment extends Fragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 
-		Article article = getArticleAtPosition(info.position - m_adapter.getHeaderCount());
+		if (info != null) {
 
-		if (!onArticleMenuItemSelected(item, article, info.position))
-			return super.onContextItemSelected(item);
-		else
-			return true;
+			Article article = getArticleAtPosition(info.position - m_adapter.getHeaderCount());
+
+			if (!onArticleMenuItemSelected(item, article, info.position))
+				return super.onContextItemSelected(item);
+		}
+
+		return super.onContextItemSelected(item);
 	}
 
     public HeadlinesFragment() {
