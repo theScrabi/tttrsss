@@ -2,11 +2,11 @@
 <resources>
 
     <string name="login_in_progress">Conectando…</string>
-    <string name="app_name">Tiny Tiny RSS</string>
+    <string name="app_name" translatable="false">Tiny Tiny RSS</string>
     <string name="login_need_configure">Por favor, configure a aplicação.</string>
     <string name="login_ready">Pronto para conectar.</string>
     <string name="login_login">Conectar</string>
-    <string name="logout">Desconectar</string>
+    <!-- <string name="logout">Desconectar</string> -->
     <string name="login">Nome de usuário</string>
     <string name="debugging">Depuração</string>
     <string name="password">Senha</string>
@@ -18,13 +18,13 @@
     <string name="theme_dark">Escuro</string>
     <string name="preferences">Configurações</string>
     <string name="connection">Conexão</string>
-    <string name="headline_context_multiple">Artigos selecionados</string>
+    <!-- <string name="headline_context_multiple">Artigos selecionados</string> -->
     <string name="http_authentication">Autenticação HTTP</string>
     <string name="loading_message">Carregando, aguarde…</string>
-    <string name="menu_unread_feeds">Mostrar feeds não lidos</string>
-    <string name="menu_all_feeds">Mostrar todos os feeds</string>
+    <!-- <string name="menu_unread_feeds">Mostrar feeds não lidos</string> -->
+    <!-- <string name="menu_all_feeds">Mostrar todos os feeds</string> -->
     <string name="unread_only">Apenas não lidos</string>
-    <string name="update_feeds">Atualizar</string>
+    <!-- <string name="update_feeds">Atualizar</string> -->
     <string name="share_article">Compartilhar artigo</string>
     <string name="catchup">Marcar como lido</string>
     <string name="sort_feeds_by_unread">Ordenar por número de não lidos</string>
@@ -43,8 +43,8 @@
     <string name="selection_toggle_marked">Colocar/Retirar estrela</string>
     <string name="selection_toggle_published">Publicar/Não publicar</string>
     <string name="selection_toggle_unread">Marcar como lido/não-lido</string>
-    <string name="context_selection_toggle_marked">Colocar/Remover estrela</string>
-    <string name="context_selection_toggle_published">Publicar/Não publicar</string>
+    <!-- <string name="context_selection_toggle_marked">Colocar/Remover estrela</string>
+    <string name="context_selection_toggle_published">Publicar/Não publicar</string> -->
     <string name="context_selection_toggle_unread">Marcar como lido/não-lido</string>
     <string name="article_mark_read_above">Marcar acima como lido</string>
     <string name="http_login_summary">Opcional. Preencha este campo se sua instalação do tt-rss usa autenticação básica HTTP</string>
@@ -73,7 +73,7 @@
     <string name="go_offline">Modo offline</string>
     <string name="go_online">Modo online</string>
     <string name="offline_switch_error">Falha ao preparar o modo offline (ver log)</string>
-    <string name="no_feeds">Nenhum feed para mostrar</string>
+    <!-- <string name="no_feeds">Nenhum feed para mostrar display</string> -->
     <string name="dialog_offline_prompt">O Login falhou, mas você tem dados armazenados. Mudar para modo offline?</string>
     <string name="dialog_offline_success">Modo offline está disponível</string>
     <string name="dialog_offline_go">Mudar para offline</string>
@@ -108,7 +108,7 @@
     <string name="article_set_note">Publicar com anotação</string>
     <string name="dialog_open_preferences">Configuração</string>
     <string name="dialog_need_configure_prompt">Preencha com a informação do servidor tt-rss como URL, nome de usuário e senha.</string>
-    <string name="update_headlines">Atualizar</string>
+    <!-- <string name="update_headlines">Atualizar</string> -->
     <string name="error_network_unavailable">Erro: Rede indisponível</string>
     <string name="category_browse_headlines">Navegar pelos títulos</string>
     <string name="use_volume_keys">Usar botões de volume</string>
@@ -133,8 +133,8 @@
     <string name="trial_purchase">Desbloquear a versão completa</string>
     <string name="trial_expired">Período de teste encerrado</string>
     <string name="trial_expired_message">Para continuar usando o Tiny Tiny RSS por favor desbloqueie a versão completa comprando a chave.</string>
-    <string name="theme_sepia">Sépia</string>
-    <string name="theme_amber">Âmbar</string>
+    <!-- <string name="theme_sepia">Sépia</string>
+    <string name="theme_amber">Âmbar</string> -->
     <string name="reading">Leitura</string>
     <string name="offline_articles_to_download">Número de artigos a baixar</string>
     <string name="offline_articles_to_download_long">Número de artigos a baixar para o modo offline (mais novos primeiro).</string>
@@ -155,7 +155,7 @@
     <string name="error_feed_already_exists_">Erro: já inscrito neste feed.</string>
     <string name="error_invalid_url">Erro: URL inválida.</string>
     <string name="error_url_is_an_html_page_no_feeds_found">Erro: URL é de uma página HTML, nenhum feed encontrado.</string>
-    <string name="error_url_contains_multiple_feeds">Erro: URL contém múltiplos feeds</string>
+    <!-- <string name="error_url_contains_multiple_feeds">Erro: URL contém múltiplos feeds</string> -->
     <string name="error_could_not_download_url">Erro: Não foi possível baixar a URL</string>
     <string name="headlines_view_mode">Define modo de visualização</string>
     <string name="headlines_set_view_mode">Define modo de visualização</string>
@@ -164,8 +164,7 @@
     <string name="headlines_starred">Com estrela</string>
     <string name="headlines_published">Publicados</string>
     <string name="headlines_unread">Não lidos</string>
-    <string name="article_img_open">Abrir imagem</string>
-    <string name="article_img_share">Compartilhar imagem</string>
+    <string name="article_media_share">Compartilhar</string>
     <string name="article_img_view_caption">Ver legenda</string>
     <string name="pref_headlines_mark_read_scroll">Marcar como lido ao visualizar</string>
     <string name="pref_headlines_mark_read_scroll_long">Artigos serão marcados como lidos ao rodar depois deles</string>
@@ -196,7 +195,7 @@
     <string name="server_function_not_available">Desculpe, esta função não está disponível na sua versão do tt-rss.</string>
     <string name="unsubscribe">Cancelar inscrição</string>
     <string name="unsubscribe_from_prompt">Cancelar inscrição em %1$s?</string>
-    <string name="open_article_in_web_browser">Abrir no navegador</string>
+    <!-- <string name="open_article_in_web_browser">Abrir no navegador</string> -->
     <string name="error_loading_image">Erro ao carregar imagem.</string>
     <string name="toggle_sort_order">Alternar entre mais novo ou mais antigo primeiro</string>
     <string name="headlines_sort_default">Padrão</string>
@@ -225,19 +224,34 @@
     <string name="prefs_widget">Widget</string>
     <string name="title_activity_video_player">Reprodutor de vídeos</string>
 
-    <string name="hello_world">Olá, mundo!</string>
+    <!-- <string name="hello_world">Olá, mundo!</string> -->
     <string name="action_settings">Configurações</string>
     <string name="video_player_share">Compartilhar vídeo</string>
-    <string name="video_player_open">Abrir vídeo</string>
+    <!-- <string name="video_player_open">Abrir vídeo</string> -->
 
-    <string name="flavor_image_prompt">(mais imagens…)</string>
+    <!-- <string name="flavor_image_prompt">(mais imagens…)</string> -->
     <string name="headlines_row_top_changed">Novos artigos encontrados, recarregue o feed para continuar.</string>
     <string name="prefs_custom_tabs_summary">Abrir links externos com custom tabs do Chrome (mais rápido, usado se disponível)</string>
     <string name="prefs_use_custom_tabs">Usar vizualiação rápida</string>
     <string name="ask_me_every_time">Perguntar toda vez</string>
-    <string name="open_link">Abrir link</string>
+    <!-- <string name="open_link">Abrir link</string> -->
     <string name="quick_preview">Vizualização rápida</string>
-    <string name="open_with_app">Abrir com aplicativo</string>
+    <!-- <string name="open_with_app">Abrir com aplicativo</string> -->
     <string name="prefs_opening_links">Abertura de links</string>
     <string name="open_with">Abrir com…</string>
+    <string name="confirm_catchup_above">Marcar artigos como lidos?</string>
+    <string name="dialog_ok">OK</string>
+    <string name="headline_undo_row_button">DESFAZER</string>
+    <string name="headline_undo_row_prompt">Marcar como lido</string>
+    <string name="pref_headlines_swipe_to_dismiss">Deslizar para marcar como lido</string>
+    <string name="pref_headlines_swipe_to_dismiss_long">Desabilita menu de contexto dos títulos</string>
+    <string name="pref_widget_update_interval">Intervalo de atualização (em minutos)</string>
+
+    <string name="widget_background_light">Claro</string>
+    <string name="widget_background_dark">Escuro</string>
+    <string name="widget_background_transparent">Transparente</string>
+    <string name="pref_widget_background">Tema do widget</string>
+    <string name="pref_widget_update_interval_summary">Esse intervalo não é preciso devido a limitações do Android</string>
+    <string name="prefs_offline_sort_by_feed">Agrupar títulos por feeds</string>
+    <string name="reload">Recarregar</string>
 </resources>
