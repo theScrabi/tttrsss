@@ -203,10 +203,16 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	class FeedOrderComparator implements Comparator<Feed> {
 
 		@Override
-		public int compare(Feed a, Feed b) {			
+		public int compare(Feed a, Feed b) {
+			Log.d(TAG, "A:" + a.title + " " + a.is_cat + " " + a.order_id);
+			Log.d(TAG, "B:" + b.title + " " + b.is_cat + " " + b.order_id);
+
 			if (a.id >= 0 && b.id >= 0)
 				if (a.is_cat && b.is_cat)
-					return a.title.toUpperCase().compareTo(b.title.toUpperCase());
+					if (a.order_id != 0 && b.order_id != 0)
+						return a.order_id - b.order_id;
+					else
+						return a.title.toUpperCase().compareTo(b.title.toUpperCase());
 				else if (a.is_cat && !b.is_cat)
 					return -1;
 				else if (!a.is_cat && b.is_cat) 
