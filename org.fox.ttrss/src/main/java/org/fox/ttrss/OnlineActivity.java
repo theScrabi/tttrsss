@@ -17,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.view.ActionMode;
@@ -148,21 +149,8 @@ public class OnlineActivity extends CommonActivity {
 
 		super.onCreate(savedInstanceState);
 
-//		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
-
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
-
 		boolean isOffline = localPrefs.getBoolean("offline_mode_active", false);
-
-		if (getIntent().getExtras() != null) {
-			if (getIntent().getBooleanExtra("forceSwitchOffline", false)) {
-
-				NotificationManager nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-				nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOAD_SUCCESS);
-
-				isOffline = true;
-			}
-		}
 
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
@@ -171,21 +159,21 @@ public class OnlineActivity extends CommonActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		//m_pullToRefreshAttacher = PullToRefreshAttacher.get(this);
+		if (getIntent().getExtras() != null) {
+			if (getIntent().getBooleanExtra("forceSwitchOffline", false)) {
+				isOffline = true;
+			}
+		}
 
 		if (isOffline) {
 			switchOfflineSuccess();			
 		} else {
 			checkTrial(false);
 			
-			/* if (getIntent().getExtras() != null) {
-				Intent i = getIntent();
-			} */
-			
 			if (savedInstanceState != null) {
 				m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
 			}
-			
+
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 	}
@@ -211,20 +199,8 @@ public class OnlineActivity extends CommonActivity {
 								public void onClick(DialogInterface dialog,
 													int which) {
 
-									((OnlineActivity)getActivity()).setOfflineModeStatus(0);
+									((OnlineActivity)getActivity()).switchOfflineSuccess();
 
-									SharedPreferences localPrefs = getActivity().getSharedPreferences("localprefs", Context.MODE_PRIVATE);
-									SharedPreferences.Editor editor = localPrefs.edit();
-									editor.putBoolean("offline_mode_active", true);
-									editor.apply();
-
-									Intent offline = new Intent(
-											getActivity(),
-											OfflineActivity.class);
-									offline.putExtra("initial", true);
-									startActivity(offline);
-
-									getActivity().finish();
 								}
 							})
 					.setNegativeButton(R.string.dialog_cancel,
@@ -232,16 +208,12 @@ public class OnlineActivity extends CommonActivity {
 								public void onClick(DialogInterface dialog,
 													int which) {
 
-									((OnlineActivity)getActivity()).setOfflineModeStatus(0);
+									((OnlineActivity)getActivity()).cancelOfflineSync();
 
 								}
 							})
 					.create();
 		}
-	}
-
-	protected void setOfflineModeStatus(int status) {
-		m_offlineModeStatus = status;
 	}
 
 	protected void switchOffline() {
@@ -366,6 +338,9 @@ public class OnlineActivity extends CommonActivity {
 	private void switchOfflineSuccess() {
 		logout();
 		// setLoadingStatus(R.string.blank, false);
+
+		NotificationManager nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOAD_SUCCESS);
 
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = localPrefs.edit();
@@ -1191,7 +1166,7 @@ public class OnlineActivity extends CommonActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		ApiCommon.trustAllHosts(m_prefs.getBoolean("ssl_trust_any", false),
 				m_prefs.getBoolean("ssl_trust_any_host", false));				
 		

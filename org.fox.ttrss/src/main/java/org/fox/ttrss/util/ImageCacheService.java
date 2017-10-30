@@ -8,9 +8,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import org.fox.ttrss.OnlineActivity;
@@ -255,7 +257,7 @@ public class ImageCacheService extends IntentService {
 			sendBroadcast(success);
 
 			notifyDownloadSuccess();
-	    }
+		}
 	}
 	
 }

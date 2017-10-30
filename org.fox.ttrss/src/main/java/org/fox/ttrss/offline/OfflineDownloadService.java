@@ -127,8 +127,6 @@ public class OfflineDownloadService extends Service {
 	@SuppressWarnings("deprecation")
 	private void notifyDownloadSuccess() {
 		Intent intent = new Intent(this, OnlineActivity.class);
-		intent.setAction(INTENT_ACTION_CANCEL);
-
 		intent.putExtra("forceSwitchOffline", true);
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
