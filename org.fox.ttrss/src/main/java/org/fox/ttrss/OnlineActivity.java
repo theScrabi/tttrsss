@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -177,46 +178,67 @@ public class OnlineActivity extends CommonActivity {
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 	}
-	
-	protected void switchOffline() {
-		if (m_offlineModeStatus == 2) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					OnlineActivity.this)
+
+	// TODO: if necessary rework into a class for multiple alert dialog types
+	public static class SwitchOfflineDialogFragment extends DialogFragment {
+
+		public static SwitchOfflineDialogFragment newInstance() {
+			SwitchOfflineDialogFragment frag = new SwitchOfflineDialogFragment();
+			Bundle args = new Bundle();
+			frag.setArguments(args);
+			return frag;
+		}
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			return new AlertDialog.Builder(
+					getActivity())
 					.setMessage(R.string.dialog_offline_success)
 					.setPositiveButton(R.string.dialog_offline_go,
 							new Dialog.OnClickListener() {
 								public void onClick(DialogInterface dialog,
-										int which) {
-									
-									m_offlineModeStatus = 0;
-									
-									SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+													int which) {
+
+									((OnlineActivity)getActivity()).setOfflineModeStatus(0);
+
+									SharedPreferences localPrefs = getActivity().getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 									SharedPreferences.Editor editor = localPrefs.edit();
 									editor.putBoolean("offline_mode_active", true);
 									editor.apply();
-									
+
 									Intent offline = new Intent(
-											OnlineActivity.this,
+											getActivity(),
 											OfflineActivity.class);
 									offline.putExtra("initial", true);
 									startActivity(offline);
-									finish();
+
+									getActivity().finish();
 								}
 							})
 					.setNegativeButton(R.string.dialog_cancel,
 							new Dialog.OnClickListener() {
 								public void onClick(DialogInterface dialog,
-										int which) {
+													int which) {
 
-									m_offlineModeStatus = 0;
+									((OnlineActivity)getActivity()).setOfflineModeStatus(0);
 
 								}
-							});
+							})
+					.create();
+		}
+	}
 
-			AlertDialog dlg = builder.create();
-			dlg.show();
-			
+	protected void setOfflineModeStatus(int status) {
+		m_offlineModeStatus = status;
+	}
+
+	protected void switchOffline() {
+		if (m_offlineModeStatus == 2) {
+
+			DialogFragment frag = SwitchOfflineDialogFragment.newInstance();
+			frag.show(getSupportFragmentManager(), FRAG_DIALOG);
+
 		} else if (m_offlineModeStatus == 0) {
 		
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)

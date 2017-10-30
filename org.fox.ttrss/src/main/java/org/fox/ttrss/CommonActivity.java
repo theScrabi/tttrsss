@@ -50,6 +50,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	public final static String FRAG_ARTICLE = "article";
 	public final static String FRAG_FEEDS = "feeds";
 	public final static String FRAG_CATS = "cats";
+	public final static String FRAG_DIALOG = "dialog";
 
 	public final static String THEME_DARK = "THEME_DARK";
 	public final static String THEME_LIGHT = "THEME_LIGHT";
