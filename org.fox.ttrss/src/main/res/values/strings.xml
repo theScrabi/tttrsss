@@ -255,4 +255,5 @@
     <string name="pref_widget_update_interval_summary">This interval is imprecise due to Android limitations</string>
     <string name="prefs_offline_sort_by_feed">Group headlines by feeds</string>
     <string name="reload">Reload</string>
+    <string name="offline_tap_to_switch">Tap to switch offline</string>
 </resources>

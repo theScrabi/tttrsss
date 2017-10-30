@@ -134,6 +134,7 @@ public class OfflineDownloadService extends Service {
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
 				.setContentTitle(getString(R.string.dialog_offline_success))
+				.setContentText(getString(R.string.offline_tap_to_switch))
 				.setContentIntent(contentIntent)
 				.setWhen(System.currentTimeMillis())
 				.setSmallIcon(R.drawable.ic_notification)
@@ -142,7 +143,7 @@ public class OfflineDownloadService extends Service {
 				.setOnlyAlertOnce(true);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			builder.setCategory(Notification.CATEGORY_PROGRESS)
+			builder.setCategory(Notification.CATEGORY_MESSAGE)
 					.setVibrate(new long[0])
 					.setVisibility(Notification.VISIBILITY_PUBLIC)
 					.setColor(0x88b0f0)

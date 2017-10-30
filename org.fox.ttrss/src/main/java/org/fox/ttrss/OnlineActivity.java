@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -178,49 +179,18 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 
-	// TODO: if necessary rework into a class for multiple alert dialog types
-	public static class SwitchOfflineDialogFragment extends DialogFragment {
-
-		public static SwitchOfflineDialogFragment newInstance() {
-			SwitchOfflineDialogFragment frag = new SwitchOfflineDialogFragment();
-			Bundle args = new Bundle();
-			frag.setArguments(args);
-			return frag;
-		}
-
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-			return new AlertDialog.Builder(
-					getActivity())
-					.setMessage(R.string.dialog_offline_success)
-					.setPositiveButton(R.string.dialog_offline_go,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-													int which) {
-
-									((OnlineActivity)getActivity()).switchOfflineSuccess();
-
-								}
-							})
-					.setNegativeButton(R.string.dialog_cancel,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-													int which) {
-
-									((OnlineActivity)getActivity()).cancelOfflineSync();
-
-								}
-							})
-					.create();
-		}
-	}
 
 	protected void switchOffline() {
 		if (m_offlineModeStatus == 2) {
 
-			DialogFragment frag = SwitchOfflineDialogFragment.newInstance();
-			frag.show(getSupportFragmentManager(), FRAG_DIALOG);
+			Snackbar.make(findViewById(android.R.id.content), R.string.dialog_offline_success, Snackbar.LENGTH_LONG)
+					.setAction(R.string.dialog_offline_go, new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							switchOfflineSuccess();
+						}
+					})
+					.show();
 
 		} else if (m_offlineModeStatus == 0) {
 		
