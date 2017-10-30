@@ -33,6 +33,7 @@ public class ImageCacheService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final int NOTIFY_DOWNLOADING = 1;
+	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
 	
 	private static final String CACHE_PATH = "/image-cache/";
 
@@ -128,7 +129,37 @@ public class ImageCacheService extends IntentService {
 	        return null;
 	    }
 	}
-	
+
+	@SuppressWarnings("deprecation")
+	private void notifyDownloadSuccess() {
+		Intent intent = new Intent(this, OnlineActivity.class);
+
+		intent.putExtra("forceSwitchOffline", true);
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle(getString(R.string.dialog_offline_success))
+				.setContentIntent(contentIntent)
+				.setWhen(System.currentTimeMillis())
+				.setSmallIcon(R.drawable.ic_notification)
+				.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+						R.drawable.ic_launcher))
+				.setOnlyAlertOnce(true);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			builder.setCategory(Notification.CATEGORY_PROGRESS)
+					.setVibrate(new long[0])
+					.setVisibility(Notification.VISIBILITY_PUBLIC)
+					.setColor(0x88b0f0)
+					.setGroup("org.fox.ttrss");
+		}
+
+		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
+	}
+
+
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -222,6 +253,8 @@ public class ImageCacheService extends IntentService {
 			success.setAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
 			success.addCategory(Intent.CATEGORY_DEFAULT);
 			sendBroadcast(success);
+
+			notifyDownloadSuccess();
 	    }
 	}
 	

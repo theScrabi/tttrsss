@@ -3,6 +3,7 @@ package org.fox.ttrss;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -150,8 +151,18 @@ public class OnlineActivity extends CommonActivity {
 //		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
-		
+
 		boolean isOffline = localPrefs.getBoolean("offline_mode_active", false);
+
+		if (getIntent().getExtras() != null) {
+			if (getIntent().getBooleanExtra("forceSwitchOffline", false)) {
+
+				NotificationManager nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+				nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOAD_SUCCESS);
+
+				isOffline = true;
+			}
+		}
 
 		Log.d(TAG, "m_isOffline=" + isOffline);
 
@@ -356,7 +367,8 @@ public class OnlineActivity extends CommonActivity {
 		logout();
 		// setLoadingStatus(R.string.blank, false);
 
-		SharedPreferences.Editor editor = m_prefs.edit();
+		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", true);
 		editor.apply();
 

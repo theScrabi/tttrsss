@@ -46,6 +46,8 @@ public class OfflineDownloadService extends Service {
 	private final String TAG = this.getClass().getSimpleName();
 
 	public static final int NOTIFY_DOWNLOADING = 1;
+	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
+
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
 
@@ -122,6 +124,36 @@ public class OfflineDownloadService extends Service {
         m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
+	@SuppressWarnings("deprecation")
+	private void notifyDownloadSuccess() {
+		Intent intent = new Intent(this, OnlineActivity.class);
+		intent.setAction(INTENT_ACTION_CANCEL);
+
+		intent.putExtra("forceSwitchOffline", true);
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+				.setContentTitle(getString(R.string.dialog_offline_success))
+				.setContentIntent(contentIntent)
+				.setWhen(System.currentTimeMillis())
+				.setSmallIcon(R.drawable.ic_notification)
+				.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+						R.drawable.ic_launcher))
+				.setOnlyAlertOnce(true);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			builder.setCategory(Notification.CATEGORY_PROGRESS)
+					.setVibrate(new long[0])
+					.setVisibility(Notification.VISIBILITY_PUBLIC)
+					.setColor(0x88b0f0)
+					.setGroup("org.fox.ttrss");
+		}
+
+		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
+	}
+
 	private void updateNotification(int msgResId, int progress, int max, boolean showProgress) {
 		updateNotification(getString(msgResId), progress, max, showProgress);
 	}
@@ -160,10 +192,13 @@ public class OfflineDownloadService extends Service {
 				editor.apply();
             	
             } else {
+
             	Intent intent = new Intent();
             	intent.setAction(INTENT_ACTION_SUCCESS);
             	intent.addCategory(Intent.CATEGORY_DEFAULT);
             	sendBroadcast(intent);
+
+				notifyDownloadSuccess();
             }
         } else {
         	updateNotification(getString(R.string.notify_downloading_images, 0), 0, 0, true);
