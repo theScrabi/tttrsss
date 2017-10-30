@@ -16,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -94,7 +95,10 @@ public class ApiRequest extends AsyncTask<HashMap<String,String>, Integer, JsonE
 		URL url;
 
 		try {
-			url = new URL(m_api + "/api/");
+			// canonicalize url just in case
+			URL baseUrl = new URL(m_api);
+			File f = new File(baseUrl.getPath() + "/api");
+			url = new URL(baseUrl, f.getCanonicalPath() + "/");
 		} catch (Exception e) {
 			m_lastError = ApiError.INVALID_URL;
 			e.printStackTrace();
