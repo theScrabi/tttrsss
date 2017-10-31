@@ -218,4 +218,12 @@ public class OfflineDetailActivity extends OfflineActivity implements OfflineHea
 		}
 
 	}
+
+	public void showSidebar(boolean show) {
+		if (!isSmallScreen() && !isPortrait()) {
+			findViewById(R.id.headlines_fragment).setVisibility(show ? View.VISIBLE : View.GONE);
+			invalidateOptionsMenu();
+		}
+	}
+
 }
