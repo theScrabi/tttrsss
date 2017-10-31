@@ -60,7 +60,6 @@ public class OnlineActivity extends CommonActivity {
 	protected SharedPreferences m_prefs;
 	protected Menu m_menu;
 
-	protected int m_offlineModeStatus = 0;
     protected boolean m_forceDisableActionMode = false;
 	
 	private ActionMode m_headlinesActionMode;
@@ -180,52 +179,41 @@ public class OnlineActivity extends CommonActivity {
 		} else {
 			checkTrial(false);
 			
-			if (savedInstanceState != null) {
-				m_offlineModeStatus = savedInstanceState.getInt("offlineModeStatus");
-			}
-
 			m_headlinesActionModeCallback = new HeadlinesActionModeCallback();
 		}
 	}
 
 
 	protected void switchOffline() {
-		if (m_offlineModeStatus == 0) {
-		
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-					.setMessage(R.string.dialog_offline_switch_prompt)
-					.setPositiveButton(R.string.dialog_offline_go,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-	
-									if (getSessionId() != null) {
-										Log.d(TAG, "offline: starting");
-										
-										m_offlineModeStatus = 1;
-	
-										Intent intent = new Intent(
-												OnlineActivity.this,
-												OfflineDownloadService.class);
-										intent.putExtra("sessionId", getSessionId());
-	
-										startService(intent);
-									}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+				.setMessage(R.string.dialog_offline_switch_prompt)
+				.setPositiveButton(R.string.dialog_offline_go,
+						new Dialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								if (getSessionId() != null) {
+									Log.d(TAG, "offline: starting");
+
+									Intent intent = new Intent(
+											OnlineActivity.this,
+											OfflineDownloadService.class);
+									intent.putExtra("sessionId", getSessionId());
+
+									startService(intent);
 								}
-							})
-					.setNegativeButton(R.string.dialog_cancel,
-							new Dialog.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									//
-								}
-							});
-	
-			AlertDialog dlg = builder.create();
-			dlg.show();
-		} else if (m_offlineModeStatus == 1) {
-			cancelOfflineSync();
-		}
+							}
+						})
+				.setNegativeButton(R.string.dialog_cancel,
+						new Dialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								//
+							}
+						});
+
+		AlertDialog dlg = builder.create();
+		dlg.show();
 	}
 	
 
@@ -256,53 +244,7 @@ public class OnlineActivity extends CommonActivity {
 
 		startService(intent);
 	}
-	
-	private void cancelOfflineSync() {		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-		.setMessage(R.string.dialog_offline_sync_in_progress)
-		.setNegativeButton(R.string.dialog_offline_sync_stop,
-				new Dialog.OnClickListener() {
-					public void onClick(DialogInterface dialog,
-							int which) {
 
-						if (getSessionId() != null) {
-							Log.d(TAG, "offline: stopping");
-							
-							m_offlineModeStatus = 0;
-
-							Intent intent = new Intent(
-									OnlineActivity.this,
-									OfflineDownloadService.class);
-
-							stopService(intent);
-							
-							dialog.dismiss();
-
-							restart();
-						}
-					}
-				})
-		.setPositiveButton(R.string.dialog_offline_sync_continue,
-				new Dialog.OnClickListener() {
-					public void onClick(DialogInterface dialog,
-							int which) {
-					
-						dialog.dismiss();
-
-						restart();
-					}
-				});
-
-		AlertDialog dlg = builder.create();
-		dlg.show();
-	}
-	
-	public void restart() {
-		Intent refresh = new Intent(OnlineActivity.this, OnlineActivity.class);
-		startActivity(refresh);
-		finish();
-	}
-	
 	private void switchOfflineSuccess() {
 		logout();
 		// setLoadingStatus(R.string.blank, false);
@@ -1127,8 +1069,6 @@ public class OnlineActivity extends CommonActivity {
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
-		out.putInt("offlineModeStatus", m_offlineModeStatus);
 	}
 	
 	@Override
