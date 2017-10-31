@@ -749,12 +749,23 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			} else if (holder.feedTitleView != null) {
 				holder.feedTitleView.setVisibility(View.GONE);
 			}
-			
+
+			TypedValue tvAccent = new TypedValue();
+			m_activity.getTheme().resolveAttribute(R.attr.colorAccent, tvAccent, true);
+
 			if (holder.markedView != null) {
 				TypedValue tv = new TypedValue();
-				m_activity.getTheme().resolveAttribute(article.getInt(article.getColumnIndex("marked")) == 1 ? R.attr.ic_star : R.attr.ic_star_outline, tv, true);
+
+				boolean marked = article.getInt(article.getColumnIndex("marked")) == 1;
+
+				m_activity.getTheme().resolveAttribute(marked ? R.attr.ic_star : R.attr.ic_star_outline, tv, true);
 
 				holder.markedView.setImageResource(tv.resourceId);
+
+				if (marked)
+					holder.markedView.setColorFilter(tvAccent.data);
+				else
+					holder.markedView.setColorFilter(null);
 				
 				holder.markedView.setOnClickListener(new OnClickListener() {
 
@@ -774,10 +785,18 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			
 			if (holder.publishedView != null) {
 				TypedValue tv = new TypedValue();
-				m_activity.getTheme().resolveAttribute(article.getInt(article.getColumnIndex("published")) == 1 ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
+
+				boolean published = article.getInt(article.getColumnIndex("published")) == 1;
+
+				m_activity.getTheme().resolveAttribute(published ? R.attr.ic_checkbox_marked : R.attr.ic_rss_box, tv, true);
 
 				holder.publishedView.setImageResource(tv.resourceId);
-				
+
+				if (published)
+					holder.publishedView.setColorFilter(tvAccent.data);
+				else
+					holder.publishedView.setColorFilter(null);
+
 				holder.publishedView.setOnClickListener(new OnClickListener() {
 
                     @Override
