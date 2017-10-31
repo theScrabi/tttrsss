@@ -90,6 +90,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	private SharedPreferences m_prefs;
     private ArrayList<Integer> m_readArticleIds = new ArrayList<Integer>();
+	private ArrayList<Integer> m_autoMarkedArticleIds = new ArrayList<Integer>();
 	
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
@@ -264,15 +265,21 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		
 		m_activity.invalidateOptionsMenu();
 	}
-	
+
 	public void refresh() {
+		refresh(true);
+	}
+
+	public void refresh(boolean keepRemnantIds) {
 		try {
 			if (!isAdded()) return;
 
             if (m_swipeLayout != null) m_swipeLayout.setRefreshing(true);
 			
 			if (m_cursor != null && !m_cursor.isClosed()) m_cursor.close();
-			
+
+			if (!keepRemnantIds) m_autoMarkedArticleIds.clear();
+
 			m_cursor = createCursor();
 			
 			if (m_cursor != null && m_adapter != null) {
@@ -297,6 +304,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			m_searchQuery = (String) savedInstanceState.getCharSequence("searchQuery");
 			m_feedIsCat = savedInstanceState.getBoolean("feedIsCat");
             m_compactLayoutMode = savedInstanceState.getBoolean("compactLayoutMode");
+			m_readArticleIds = savedInstanceState.getIntegerArrayList("autoMarkedIds");
+
 		} else {
 			m_activity.getDatabase().execSQL("UPDATE articles SET selected = 0 ");
 		}
@@ -313,7 +322,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				refresh();
+				refresh(false);
 			}
 		});
 
@@ -375,7 +384,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		} else if ("published".equals(viewMode)) {
 			feedClause += "AND (published = 1)";
 		} else if ("unread".equals(viewMode)) {
-			feedClause += "AND (unread = 1)";
+			String idsMarkedRead = "articles." + BaseColumns._ID + " in (" + android.text.TextUtils.join(",", m_autoMarkedArticleIds) + ")";
+
+			feedClause += "AND (unread = 1 OR "+idsMarkedRead+")";
 		} else { // all_articles
 			//
 		}
@@ -439,6 +450,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		//out.putParcelableArrayList("selectedArticles", m_selectedArticles);
 		out.putCharSequence("searchQuery", m_searchQuery);
 		out.putBoolean("feedIsCat", m_feedIsCat);
+		out.putIntegerArrayList("autoMarkedIds", m_autoMarkedArticleIds);
 
         out.putBoolean("compactLayoutMode", m_compactLayoutMode);
 	}
@@ -1219,9 +1231,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 }
 
                 stmt.close();
+
+				m_autoMarkedArticleIds.addAll(m_readArticleIds);
+				m_readArticleIds.clear();
+
                 refresh();
 
-                m_readArticleIds.clear();
             }
         }
     }
