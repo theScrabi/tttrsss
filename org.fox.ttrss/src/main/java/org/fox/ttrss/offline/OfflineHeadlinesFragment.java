@@ -11,6 +11,7 @@ import android.content.res.Resources.Theme;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -568,6 +569,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
 
 		private boolean showFlavorImage;
+		private int m_screenHeight;
 		
 		public ArticleListAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int flags) {
@@ -580,6 +582,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
 			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
+
+			Display display = m_activity.getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			//m_minimumHeightToEmbed = size.y/3;
+			m_screenHeight = size.y;
 		}
 
 		public int getViewTypeCount() {
@@ -943,6 +951,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 					final ArticleFlavorInfo afi = findFlavorImage(article);
 
 					if (afi.flavorImageUri != null) {
+						holder.flavorImageView.setVisibility(View.VISIBLE);
+
+						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
 
 						int flavorViewHeight = m_flavorHeightStorage.containsKey(articleId) ? m_flavorHeightStorage.get(articleId) : 0;
 
@@ -957,7 +968,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						final String articleContent = article.getString(article.getColumnIndex("content"));
 						final String articleTitle = article.getString(article.getColumnIndex("title"));
 
-                        holder.flavorImageView.setVisibility(View.VISIBLE);
 
                         holder.flavorImageView.setOnClickListener(new OnClickListener() {
                             @Override
