@@ -1238,51 +1238,56 @@ public class HeadlinesFragment extends Fragment {
 						holder.flavorImageView.setLayoutParams(lp);
 					*/
 
-					Glide.with(HeadlinesFragment.this)
-							.load(article.flavorImageUri)
-							.dontTransform()
-							.diskCacheStrategy(DiskCacheStrategy.ALL)
-							.skipMemoryCache(false)
-							.listener(new RequestListener<String, GlideDrawable>() {
-								@Override
-								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+					try {
 
-									holder.flavorImageLoadingBar.setVisibility(View.GONE);
-									holder.flavorImageView.setVisibility(View.GONE);
+						Glide.with(HeadlinesFragment.this)
+								.load(article.flavorImageUri)
+								.dontTransform()
+								.diskCacheStrategy(DiskCacheStrategy.ALL)
+								.skipMemoryCache(false)
+								.listener(new RequestListener<String, GlideDrawable>() {
+									@Override
+									public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-									return false;
-								}
-
-								@Override
-								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-									holder.flavorImageLoadingBar.setVisibility(View.GONE);
-
-									if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
-
-										//holder.flavorImageView.setVisibility(View.VISIBLE);
-										holder.flavorImageOverflow.setVisibility(View.VISIBLE);
-
-										boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
-
-										RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
-										lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-										holder.flavorImageView.setLayoutParams(lp);
-
-										maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
-										adjustVideoKindView(holder, article);
-
-										return false;
-									} else {
-
-										holder.flavorImageOverflow.setVisibility(View.GONE);
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
 										holder.flavorImageView.setVisibility(View.GONE);
 
-										return true;
+										return false;
 									}
-								}
-							})
-							.into(holder.flavorProgressTarget);
+
+									@Override
+									public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+										holder.flavorImageLoadingBar.setVisibility(View.GONE);
+
+										if (resource.getIntrinsicWidth() > FLAVOR_IMG_MIN_SIZE && resource.getIntrinsicHeight() > FLAVOR_IMG_MIN_SIZE) {
+
+											//holder.flavorImageView.setVisibility(View.VISIBLE);
+											holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+
+											RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+											lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+											holder.flavorImageView.setLayoutParams(lp);
+
+											maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+											adjustVideoKindView(holder, article);
+
+											return false;
+										} else {
+
+											holder.flavorImageOverflow.setVisibility(View.GONE);
+											holder.flavorImageView.setVisibility(View.GONE);
+
+											return true;
+										}
+									}
+								})
+								.into(holder.flavorProgressTarget);
+					} catch (OutOfMemoryError e) {
+						e.printStackTrace();
+					}
 				}
 
 				if (m_prefs.getBoolean("inline_video_player", false) && article.flavorImage != null &&

@@ -29,6 +29,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -835,61 +836,65 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                             }
                         });
 
+						try {
 
-                        Glide.with(OfflineHeadlinesFragment.this)
-                                .load(afi.flavorImageUri)
-                                .dontTransform()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .skipMemoryCache(false)
-                                .listener(new RequestListener<String, GlideDrawable>() {
-                                    @Override
-                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+							Glide.with(OfflineHeadlinesFragment.this)
+									.load(afi.flavorImageUri)
+									.dontTransform()
+									.diskCacheStrategy(DiskCacheStrategy.NONE)
+									.skipMemoryCache(false)
+									.listener(new RequestListener<String, GlideDrawable>() {
+										@Override
+										public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-                                        holder.flavorImageLoadingBar.setVisibility(View.GONE);
-                                        holder.flavorImageView.setVisibility(View.GONE);
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											holder.flavorImageView.setVisibility(View.GONE);
 
-                                        return false;
-                                    }
+											return false;
+										}
 
-                                    @Override
-                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+										@Override
+										public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
 
-                                        holder.flavorImageLoadingBar.setVisibility(View.GONE);
+											holder.flavorImageLoadingBar.setVisibility(View.GONE);
 
-                                        if (resource.getIntrinsicWidth() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE &&
-                                                resource.getIntrinsicHeight() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE) {
+											if (resource.getIntrinsicWidth() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE &&
+													resource.getIntrinsicHeight() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE) {
 
-                                            holder.flavorImageView.setVisibility(View.VISIBLE);
+												holder.flavorImageView.setVisibility(View.VISIBLE);
 
 
-                                            //TODO: not implemented
-                                            //holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+												//TODO: not implemented
+												//holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
-                                            /*boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+												/*boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
-                                            maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
-                                            adjustVideoKindView(holder, article);*/
+												maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+												adjustVideoKindView(holder, article);*/
 
-                                            /* we don't support image embedding in offline */
+												/* we don't support image embedding in offline */
 
-                                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
-                                            lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
-                                            //lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                                            holder.flavorImageView.setLayoutParams(lp);
+												RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+												lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+												//lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+												holder.flavorImageView.setLayoutParams(lp);
 
-                                            holder.headlineHeader.setBackgroundDrawable(null);
+												holder.headlineHeader.setBackgroundDrawable(null);
 
-                                            return false;
-                                        } else {
+												return false;
+											} else {
 
-                                            holder.flavorImageOverflow.setVisibility(View.GONE);
-                                            holder.flavorImageView.setVisibility(View.GONE);
+												holder.flavorImageOverflow.setVisibility(View.GONE);
+												holder.flavorImageView.setVisibility(View.GONE);
 
-                                            return true;
-                                        }
-                                    }
-                                })
-                                .into(holder.flavorImageView);
+												return true;
+											}
+										}
+									})
+									.into(holder.flavorImageView);
+						} catch (OutOfMemoryError e) {
+							e.printStackTrace();
+						}
 
                     }
 				}
