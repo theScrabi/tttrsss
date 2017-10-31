@@ -1265,7 +1265,7 @@ public class HeadlinesFragment extends Fragment {
 											//holder.flavorImageView.setVisibility(View.VISIBLE);
 											holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
-											boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+											boolean forceDown = !m_activity.isSmallScreen() || article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
 											RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
 											lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
