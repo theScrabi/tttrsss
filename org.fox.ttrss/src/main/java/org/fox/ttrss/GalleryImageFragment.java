@@ -57,6 +57,7 @@ public class GalleryImageFragment extends GalleryBaseFragment {
 
         Glide.with(this)
                 .load(m_url)
+                .thumbnail(0.1f)
                 //.dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(false)

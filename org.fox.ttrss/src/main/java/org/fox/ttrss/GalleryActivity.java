@@ -144,6 +144,8 @@ public class GalleryActivity extends CommonActivity {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
+                        } catch (OutOfMemoryError e) {
+                            e.printStackTrace();
                         }
 
                     } else {

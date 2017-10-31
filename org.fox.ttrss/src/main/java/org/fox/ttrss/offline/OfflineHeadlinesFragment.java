@@ -262,7 +262,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		}
 
 		refresh();
-		
+
 		m_activity.invalidateOptionsMenu();
 	}
 
@@ -563,7 +563,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 							.bitmapTransform(new CropCircleTransformation(getActivity()))
 							.diskCacheStrategy(DiskCacheStrategy.NONE)
 							.skipMemoryCache(false)
-							.thumbnail(0.5f)
 							.listener(new RequestListener<String, GlideDrawable>() {
 								@Override
 								public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
