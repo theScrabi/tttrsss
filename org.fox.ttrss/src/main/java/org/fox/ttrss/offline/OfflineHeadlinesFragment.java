@@ -940,8 +940,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 												/*boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
-												maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
-												adjustVideoKindView(holder, article);*/
+												maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);*/
+												adjustVideoKindView(holder, afi);
 
 												/* we don't support image embedding in offline */
 
@@ -1001,6 +1001,22 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
             return v;
 		}
 
+		private void adjustVideoKindView(HeadlineViewHolder holder, ArticleFlavorInfo afi) {
+			if (afi.flavorImageUri != null) {
+				if (afi.flavorStreamUri != null) {
+					holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
+					holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+				} else if (afi.mediaList.size() > 1) {
+					holder.flavorVideoKindView.setImageResource(R.drawable.ic_image_album);
+					holder.flavorVideoKindView.setVisibility(View.VISIBLE);
+				} else {
+					holder.flavorVideoKindView.setVisibility(View.INVISIBLE);
+				}
+			} else {
+				holder.flavorVideoKindView.setVisibility(View.INVISIBLE);
+			}
+		}
+
 		private void openGalleryForType(ArticleFlavorInfo afi, String title, String content, HeadlineViewHolder viewHolder, View transitionView) {
 
 			Intent intent = new Intent(m_activity, GalleryActivity.class);
@@ -1041,7 +1057,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		private class ArticleFlavorInfo {
             String flavorImageUri;
             String flavorStreamUri;
-        }
+			public List<Element> mediaList = new ArrayList<>();
+		}
 
 		private ArticleFlavorInfo findFlavorImage(Cursor article) {
             ArticleFlavorInfo afi = new ArticleFlavorInfo();
@@ -1054,9 +1071,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				if (articleDoc != null) {
 
 					Element flavorImage = null;
-					List<Element> mediaList = articleDoc.select("img,video");
+					afi.mediaList = articleDoc.select("img,video");
 
-					for (Element e : mediaList) {
+					for (Element e : afi.mediaList) {
 						flavorImage = e;
 						break;
 					}
