@@ -6,14 +6,17 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
@@ -36,12 +39,16 @@ public class ImageCacheService extends IntentService {
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
-	
+
+	public static final String INTENT_ACTION_ICS_STOP = "org.fox.ttrss.intent.action.ICSStop";
+
 	private static final String CACHE_PATH = "/image-cache/";
 
 	private int m_imagesDownloaded = 0;
-	
+	private boolean m_canProceed = true;
+
 	private NotificationManager m_nmgr;
+	private BroadcastReceiver m_receiver;
 	
 	public ImageCacheService() {
 		super("ImageCacheService");
@@ -62,6 +69,23 @@ public class ImageCacheService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+		m_receiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.d(TAG, "received broadcast action: " + intent.getAction());
+
+				if (INTENT_ACTION_ICS_STOP.equals(intent.getAction())) {
+					m_canProceed = false;
+				}
+			}
+		};
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(INTENT_ACTION_ICS_STOP);
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+
+		registerReceiver(m_receiver, filter);
 	}
 
 	public static boolean isUrlCached(Context context, String url) {
@@ -135,10 +159,9 @@ public class ImageCacheService extends IntentService {
 	@SuppressWarnings("deprecation")
 	private void notifyDownloadSuccess() {
 		Intent intent = new Intent(this, OnlineActivity.class);
+		intent.setAction(OfflineDownloadService.INTENT_ACTION_SWITCH_OFFLINE);
 
-		intent.putExtra("forceSwitchOffline", true);
-
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+		PendingIntent contentIntent = PendingIntent.getActivity(this, OfflineDownloadService.PI_SUCCESS,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
@@ -166,8 +189,10 @@ public class ImageCacheService extends IntentService {
 
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, OnlineActivity.class), 0);
+		Intent intent = new Intent(this, OnlineActivity.class);
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, OfflineDownloadService.PI_GENERIC,
+                intent, 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
 				.setContentText(msg)
@@ -183,11 +208,17 @@ public class ImageCacheService extends IntentService {
 		if (showProgress) builder.setProgress(max, progress, max == 0);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			intent = new Intent(this, OnlineActivity.class);
+			intent.setAction(OfflineDownloadService.INTENT_ACTION_CANCEL);
+
+			PendingIntent cancelIntent = PendingIntent.getActivity(this, OfflineDownloadService.PI_CANCEL, intent, 0);
+
 			builder.setCategory(Notification.CATEGORY_PROGRESS)
 					.setVibrate(new long[0])
 					.setVisibility(Notification.VISIBILITY_PUBLIC)
 					.setColor(0x88b0f0)
-					.setGroup("org.fox.ttrss");
+					.setGroup("org.fox.ttrss")
+					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
@@ -199,11 +230,12 @@ public class ImageCacheService extends IntentService {
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {
+
 		String url = intent.getStringExtra("url");
 
-		//Log.d(TAG, "got request to download URL=" + url);
-		
-		if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
+		Log.d(TAG, "got request to download URL=" + url + "; canProceed=" + m_canProceed);
+
+		if (!m_canProceed || !Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
 			return;
 		
 		String hashedUrl = md5(url);
@@ -258,7 +290,15 @@ public class ImageCacheService extends IntentService {
 			success.addCategory(Intent.CATEGORY_DEFAULT);
 			sendBroadcast(success);*/
 
-			notifyDownloadSuccess();
+			try {
+				unregisterReceiver(m_receiver);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			if (m_canProceed) {
+				notifyDownloadSuccess();
+			}
 		}
 	}
 	

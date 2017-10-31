@@ -48,8 +48,13 @@ public class OfflineDownloadService extends Service {
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
 
+	public static final int PI_GENERIC = 0;
+	public static final int PI_CANCEL = 1;
+	public static final int PI_SUCCESS = 2;
+
 	//public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
+	public static final String INTENT_ACTION_SWITCH_OFFLINE = "org.fox.ttrss.intent.action.SwitchOffline";
 
 	private static final int OFFLINE_SYNC_SEQ = 50;
 	private static final int OFFLINE_SYNC_MAX = OFFLINE_SYNC_SEQ * 10;
@@ -95,9 +100,8 @@ public class OfflineDownloadService extends Service {
 	@SuppressWarnings("deprecation")
 	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
 		Intent intent = new Intent(this, OnlineActivity.class);
-		intent.setAction(INTENT_ACTION_CANCEL);
 		
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+		PendingIntent contentIntent = PendingIntent.getActivity(this, PI_GENERIC,
                 intent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
@@ -114,11 +118,18 @@ public class OfflineDownloadService extends Service {
 		if (showProgress) builder.setProgress(max, progress, max == 0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+			intent = new Intent(this, OnlineActivity.class);
+			intent.setAction(INTENT_ACTION_CANCEL);
+
+			PendingIntent cancelIntent = PendingIntent.getActivity(this, PI_CANCEL, intent, 0);
+
             builder.setCategory(Notification.CATEGORY_PROGRESS)
                     .setVibrate(new long[0])
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setColor(0x88b0f0)
-                    .setGroup("org.fox.ttrss");
+                    .setGroup("org.fox.ttrss")
+					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
         }
 
         m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
@@ -127,9 +138,9 @@ public class OfflineDownloadService extends Service {
 	@SuppressWarnings("deprecation")
 	private void notifyDownloadSuccess() {
 		Intent intent = new Intent(this, OnlineActivity.class);
-		intent.putExtra("forceSwitchOffline", true);
+		intent.setAction(INTENT_ACTION_SWITCH_OFFLINE);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+		PendingIntent contentIntent = PendingIntent.getActivity(this, PI_SUCCESS,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())

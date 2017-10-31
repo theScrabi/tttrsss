@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.types.Label;
+import org.fox.ttrss.util.ImageCacheService;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -152,10 +154,25 @@ public class OnlineActivity extends CommonActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		if (getIntent().getExtras() != null) {
-			if (getIntent().getBooleanExtra("forceSwitchOffline", false)) {
-				isOffline = true;
-			}
+		Intent intent = getIntent();
+
+        Log.d(TAG, "intent action=" + intent.getAction());
+
+		if (OfflineDownloadService.INTENT_ACTION_CANCEL.equals(intent.getAction())) {
+
+			Intent serviceIntent = new Intent(
+					OnlineActivity.this,
+					OfflineDownloadService.class);
+
+			stopService(serviceIntent);
+
+			serviceIntent = new Intent();
+			serviceIntent.setAction(ImageCacheService.INTENT_ACTION_ICS_STOP);
+			serviceIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			sendBroadcast(serviceIntent);
+
+		} else if (OfflineDownloadService.INTENT_ACTION_SWITCH_OFFLINE.equals(intent.getAction())) {
+			isOffline = true;
 		}
 
 		if (isOffline) {
