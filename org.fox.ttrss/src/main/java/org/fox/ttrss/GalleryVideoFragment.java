@@ -54,7 +54,7 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
 
         registerForContextMenu(imgView);
 
-        final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
+        /*final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
 
         Glide.with(this)
                 .load(m_coverUrl)
@@ -78,7 +78,10 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
                         return false;
                     }
                 })
-                .into(glideImage);
+                .into(glideImage); */
+
+        ActivityCompat.startPostponedEnterTransition(m_activity);
+        initializeVideoPlayer(view);
 
         return view;
     }

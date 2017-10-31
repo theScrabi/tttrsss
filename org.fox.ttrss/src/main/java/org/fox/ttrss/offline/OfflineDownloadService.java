@@ -476,6 +476,23 @@ public class OfflineDownloadService extends Service {
 										}
 									}
 								}
+
+								Elements videos = doc.select("video");
+
+								for (Element vid : videos) {
+									String url = vid.attr("poster");
+
+									if (url.indexOf("://") != -1) {
+										if (!ImageCacheService.isUrlCached(OfflineDownloadService.this, url)) {
+											Intent intent = new Intent(OfflineDownloadService.this,
+													ImageCacheService.class);
+
+											intent.putExtra("url", url);
+											startService(intent);
+										}
+									}
+								}
+
 							}
 						}
 						

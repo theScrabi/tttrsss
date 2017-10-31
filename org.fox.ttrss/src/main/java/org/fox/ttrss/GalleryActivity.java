@@ -205,6 +205,8 @@ public class GalleryActivity extends CommonActivity {
                     Element source = elem.select("source").first();
                     String src = source.attr("src");
 
+                    //Log.d(TAG, "vid/src=" + src);
+
                     if (src.startsWith("//")) {
                         src = "https:" + src;
                     }
@@ -225,6 +227,9 @@ public class GalleryActivity extends CommonActivity {
 
                     if (imgSrcFirst.equals(src))
                         firstFound = true;
+
+                    Log.d(TAG, "img/fir=" + imgSrcFirst);
+                    Log.d(TAG, "img/src=" + src + "; ff=" + firstFound);
 
                     try {
                         Uri checkUri = Uri.parse(src);

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources.Theme;
 import android.database.Cursor;
@@ -14,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -39,22 +42,36 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.shamanland.fab.FloatingActionButton;
 
 import org.fox.ttrss.Application;
 import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.GalleryActivity;
+import org.fox.ttrss.HeadlinesFragment;
 import org.fox.ttrss.R;
+import org.fox.ttrss.util.ImageCacheService;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OfflineHeadlinesFragment extends Fragment implements OnItemClickListener, AbsListView.OnScrollListener {
 	public enum ArticlesSelection { ALL, NONE, UNREAD }
@@ -468,6 +485,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
         private ColorGenerator m_colorGenerator = ColorGenerator.DEFAULT;
         private TextDrawable.IBuilder m_drawableBuilder = TextDrawable.builder().round();
+
+		private boolean showFlavorImage;
 		
 		public ArticleListAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int flags) {
@@ -477,6 +496,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			TypedValue tv = new TypedValue();
 			theme.resolveAttribute(R.attr.headlineTitleHighScoreUnreadTextColor, tv, true);
 			titleHighScoreUnreadColor = tv.data;
+
+			String headlineMode = m_prefs.getString("headline_mode", "HL_DEFAULT");
+			showFlavorImage = "HL_DEFAULT".equals(headlineMode) || "HL_COMPACT".equals(headlineMode);
 		}
 
 		public int getViewTypeCount() {
@@ -519,7 +541,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
         }
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(int position, final View convertView, ViewGroup parent) {
 
 			View v = convertView;
 
@@ -780,6 +802,94 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 						return true;
 					}
 				});
+
+				if (showFlavorImage) {
+					final ArticleFlavorInfo afi = findFlavorImage(m_cursor);
+
+					/*Log.d(TAG, "flavor image=" + afi.flavorImageUri);
+					Log.d(TAG, "flavor stream=" + afi.flavorImageUri);*/
+
+					if (afi.flavorImageUri != null) {
+
+						final String articleContent = article.getString(article.getColumnIndex("content"));
+						final String articleTitle = article.getString(article.getColumnIndex("title"));
+
+                        holder.flavorImageView.setVisibility(View.VISIBLE);
+
+                        holder.flavorImageView.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(m_activity, GalleryActivity.class);
+
+                                intent.putExtra("firstSrc", afi.flavorStreamUri != null ? afi.flavorStreamUri : afi.flavorImageUri);
+                                intent.putExtra("title", articleTitle);
+                                intent.putExtra("content", rewriteUrlsToLocal(articleContent));
+
+                                ActivityOptionsCompat options =
+                                        ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,
+                                                holder.flavorImageView,
+                                                "gallery:" + (afi.flavorStreamUri != null ? afi.flavorStreamUri : afi.flavorImageUri));
+
+                                ActivityCompat.startActivity(m_activity, intent, options.toBundle());
+
+                            }
+                        });
+
+
+                        Glide.with(OfflineHeadlinesFragment.this)
+                                .load(afi.flavorImageUri)
+                                .dontTransform()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(false)
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                                        holder.flavorImageLoadingBar.setVisibility(View.GONE);
+                                        holder.flavorImageView.setVisibility(View.GONE);
+
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                                        holder.flavorImageLoadingBar.setVisibility(View.GONE);
+
+                                        if (resource.getIntrinsicWidth() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE &&
+                                                resource.getIntrinsicHeight() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE) {
+
+                                            holder.flavorImageView.setVisibility(View.VISIBLE);
+                                            holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+                                            /*boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
+
+                                            maybeRepositionFlavorImage(holder.flavorImageView, resource, holder, forceDown);
+                                            adjustVideoKindView(holder, article);*/
+
+                                            /* we don't support image embedding in offline */
+
+                                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+                                            lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
+                                            //lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                                            holder.flavorImageView.setLayoutParams(lp);
+
+                                            holder.headlineHeader.setBackgroundDrawable(null);
+
+                                            return false;
+                                        } else {
+
+                                            holder.flavorImageOverflow.setVisibility(View.GONE);
+                                            holder.flavorImageView.setVisibility(View.GONE);
+
+                                            return true;
+                                        }
+                                    }
+                                })
+                                .into(holder.flavorImageView);
+
+                    }
+				}
             }
 			
 			if (holder.menuButtonView != null) {
@@ -811,6 +921,92 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}
 
             return v;
+		}
+
+		private String rewriteUrlsToLocal(String content) {
+			Document doc = Jsoup.parse(content);
+
+			if (doc != null) {
+				List<Element> mediaList = doc.select("img,source");
+
+				for (Element e : mediaList) {
+					String url = e.attr("src");
+
+					if (url != null && ImageCacheService.isUrlCached(m_activity, url)) {
+						e.attr("src", "file://" + ImageCacheService.getCacheFileName(m_activity, url));
+					}
+				}
+
+				content = doc.html();
+			}
+
+			return content;
+		}
+
+		private class ArticleFlavorInfo {
+            String flavorImageUri;
+            String flavorStreamUri;
+        }
+
+		private ArticleFlavorInfo findFlavorImage(Cursor article) {
+            ArticleFlavorInfo afi = new ArticleFlavorInfo();
+
+			String content = article.getString(article.getColumnIndex("content"));
+
+			if (content != null) {
+				Document articleDoc = Jsoup.parse(content);
+
+				if (articleDoc != null) {
+
+					Element flavorImage = null;
+					List<Element> mediaList = articleDoc.select("img,video");
+
+					for (Element e : mediaList) {
+						flavorImage = e;
+						break;
+					}
+
+					if (flavorImage != null) {
+
+						try {
+
+							if ("video".equals(flavorImage.tagName().toLowerCase())) {
+								Element source = flavorImage.select("source").first();
+                                afi.flavorStreamUri = source.attr("src");
+
+                                afi.flavorImageUri = flavorImage.attr("poster");
+							} else {
+                                afi.flavorImageUri = flavorImage.attr("src");
+
+								if (afi.flavorImageUri != null && afi.flavorImageUri.startsWith("//")) {
+                                    afi.flavorImageUri = "https:" + afi.flavorImageUri;
+								}
+
+                                afi.flavorStreamUri = null;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+
+							afi.flavorImageUri = null;
+                            afi.flavorStreamUri = null;
+						}
+					}
+				}
+			}
+
+            if (afi.flavorImageUri != null && ImageCacheService.isUrlCached(m_activity, afi.flavorImageUri)) {
+                afi.flavorImageUri = "file://" + ImageCacheService.getCacheFileName(m_activity, afi.flavorImageUri);
+            } else {
+                afi.flavorImageUri = null;
+            }
+
+            if (afi.flavorStreamUri != null && ImageCacheService.isUrlCached(m_activity, afi.flavorStreamUri)) {
+                afi.flavorStreamUri = "file://" + ImageCacheService.getCacheFileName(m_activity, afi.flavorStreamUri);
+            } else {
+                afi.flavorStreamUri = null;
+            }
+
+            return afi;
 		}
 
 		private void adjustTitleTextView(int score, TextView tv, int position) {
