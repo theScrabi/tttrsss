@@ -319,10 +319,12 @@ public class OfflineArticleFragment extends Fragment {
 				if (doc != null) {
 					if (m_prefs.getBoolean("offline_image_cache_enabled", false)) {
 						
-						Elements images = doc.select("img");
+						Elements images = doc.select("img,source");
 						
 						for (Element img : images) {
 							String url = img.attr("src");
+
+							Log.d(TAG, "src=" + url);
 							
 							if (ImageCacheService.isUrlCached(m_activity, url)) {						
 								img.attr("src", "file://" + ImageCacheService.getCacheFileName(m_activity, url));
@@ -331,10 +333,10 @@ public class OfflineArticleFragment extends Fragment {
 					}
 					
 					// thanks webview for crashing on <video> tag
-					Elements videos = doc.select("video");
+					/*Elements videos = doc.select("video");
 					
 					for (Element video : videos)
-						video.remove();
+						video.remove();*/
 					
 					articleContent = doc.toString();
 				}
@@ -352,7 +354,7 @@ public class OfflineArticleFragment extends Fragment {
                     "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
                     "<style type=\"text/css\">" +
                     "body { padding : 0px; margin : 0px; line-height : 130%; }" +
-                    "img { max-width : 100%; width : auto; height : auto; }" +
+                    "img,video { max-width : 100%; width : auto; height : auto; }" +
                     " table { width : 100%; }" +
                     cssOverride +
                     "</style>" +

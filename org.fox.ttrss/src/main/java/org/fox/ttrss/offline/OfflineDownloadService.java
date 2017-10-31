@@ -461,7 +461,7 @@ public class OfflineDownloadService extends Service {
 							Document doc = Jsoup.parse(article.content);
 							
 							if (doc != null) {
-								Elements images = doc.select("img");
+								Elements images = doc.select("img,source");
 								
 								for (Element img : images) {
 									String url = img.attr("src");

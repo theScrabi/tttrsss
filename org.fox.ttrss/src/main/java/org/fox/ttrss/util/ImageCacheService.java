@@ -93,7 +93,7 @@ public class ImageCacheService extends IntentService {
 		
 		File storage = context.getExternalCacheDir();
 		
-		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl + ".png");
+		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl);
 		
 		return file.exists();
 	}
@@ -103,7 +103,7 @@ public class ImageCacheService extends IntentService {
 		
 		File storage = context.getExternalCacheDir();
 		
-		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl + ".png");
+		File file = new File(storage.getAbsolutePath() + CACHE_PATH + "/" + hashedUrl);
 		
 		return file.getAbsolutePath();
 	}
@@ -245,7 +245,7 @@ public class ImageCacheService extends IntentService {
 		if (!cachePath.exists()) cachePath.mkdirs();
 		
 		if (cachePath.isDirectory() && hashedUrl != null) {
-			File outputFile = new File(cachePath.getAbsolutePath() + "/" + hashedUrl + ".png");
+			File outputFile = new File(cachePath.getAbsolutePath() + "/" + hashedUrl);
 			
 			if (!outputFile.exists()) {
 
