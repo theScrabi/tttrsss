@@ -134,7 +134,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		menu.findItem(R.id.set_labels).setVisible(false);
 		menu.findItem(R.id.article_set_note).setVisible(false);
-		menu.findItem(R.id.headlines_article_unread).setVisible(false); // TODO: implement
 
 		if (m_prefs.getBoolean("offline_sort_by_feed", false)) {
 			menu.findItem(R.id.catchup_above).setVisible(false);
@@ -158,6 +157,20 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 	private boolean onArticleMenuItemSelected(MenuItem item, final int articleId) {
 		switch (item.getItemId()) {
+			case R.id.headlines_article_unread:
+				if (true) {
+
+					SQLiteStatement stmt = m_activity.getDatabase().compileStatement(
+							"UPDATE articles SET modified = 1, unread = not unread " + "WHERE " + BaseColumns._ID
+									+ " = ?");
+
+					stmt.bindLong(1, articleId);
+					stmt.execute();
+					stmt.close();
+
+					refresh();
+				}
+				return true;
 			case R.id.headlines_article_link_copy:
 				if (true) {
 					Cursor article = m_activity.getArticleById(articleId);
@@ -972,7 +985,6 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 						popup.getMenu().findItem(R.id.set_labels).setVisible(false);
 						popup.getMenu().findItem(R.id.article_set_note).setVisible(false);
-						popup.getMenu().findItem(R.id.headlines_article_unread).setVisible(false); // TODO: implement
 
 						popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 							@Override
