@@ -38,7 +38,31 @@ public class OfflineActivity extends CommonActivity {
 
 	private String m_lastImageHitTestUrl;
 
-	@SuppressLint("NewApi")
+	public String getFeedTitle(int feedId, boolean isCat) {
+		try {
+			SQLiteStatement stmt;
+
+			if (isCat) {
+				stmt = getDatabase().compileStatement(
+						"SELECT title FROM categories " + "WHERE " + BaseColumns._ID + " = ?");
+			} else {
+				stmt = getDatabase().compileStatement(
+						"SELECT title FROM feeds " + "WHERE " + BaseColumns._ID + " = ?");
+			}
+
+			stmt.bindLong(1, feedId);
+			String title = stmt.simpleQueryForString();
+
+			stmt.close();
+
+			return title;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+    @SuppressLint("NewApi")
 	private class HeadlinesActionModeCallback implements ActionMode.Callback {
 		
 		@Override

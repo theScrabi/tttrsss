@@ -85,6 +85,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	
 	private int m_feedId;
 	private boolean m_feedIsCat = false;
+	private String m_feedTitle;
+
 	private int m_activeArticleId;
 	private String m_searchQuery = "";
 	
@@ -104,7 +106,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
     private boolean m_compactLayoutMode = false;
     private ListView m_list;
     private int m_listPreviousVisibleItem;
-	
+
 	public void initialize(int feedId, boolean isCat, boolean compactMode) {
 		m_feedId = feedId;
 		m_feedIsCat = isCat;
@@ -377,6 +379,12 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		m_list.setOnItemClickListener(this);
         m_list.setOnScrollListener(this);
 		registerForContextMenu(m_list);
+
+		m_feedTitle = m_activity.getFeedTitle(m_feedId, m_feedIsCat);
+
+		if (m_feedTitle != null && m_activity.isSmallScreen()) {
+			m_activity.setTitle(m_feedTitle);
+		}
 
 		return view;    	
 	}
