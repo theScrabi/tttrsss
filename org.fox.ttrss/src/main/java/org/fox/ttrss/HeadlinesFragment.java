@@ -1533,6 +1533,7 @@ public class HeadlinesFragment extends Fragment {
 					Glide.with(HeadlinesFragment.this)
 							.load(article.flavorImageUri)
 							.placeholder(textDrawable)
+							.thumbnail(0.5f)
 							.bitmapTransform(new CropCircleTransformation(getActivity()))
 							.diskCacheStrategy(DiskCacheStrategy.ALL)
 							.skipMemoryCache(false)
