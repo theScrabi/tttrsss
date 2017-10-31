@@ -25,6 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.BuildConfig;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.types.Article;
@@ -246,7 +247,12 @@ public class OfflineDownloadService extends Service {
 				put("op", "getHeadlines");
 				put("sid", m_sessionId);
 				put("feed_id", "-4");
-				put("view_mode", "unread");
+
+				if (BuildConfig.DEBUG) {
+					put("view_mode", "all_articles");
+				} else {
+					put("view_mode", "unread");
+				}
 				put("show_content", "true");
 				put("skip", String.valueOf(m_articleOffset));
 				put("limit", String.valueOf(OFFLINE_SYNC_SEQ));
@@ -326,7 +332,10 @@ public class OfflineDownloadService extends Service {
 				put("op", "getFeeds");
 				put("sid", m_sessionId);
 				put("cat_id", "-3");
-				put("unread_only", "true");
+
+				if (!BuildConfig.DEBUG) {
+					put("unread_only", "true");
+				}
 			}			 
 		};
 		
@@ -394,7 +403,10 @@ public class OfflineDownloadService extends Service {
 				put("op", "getCategories");
 				put("sid", m_sessionId);
 				//put("cat_id", "-3");
-				put("unread_only", "true");
+
+				if (!BuildConfig.DEBUG) {
+					put("unread_only", "true");
+				}
 			}			 
 		};
 		
