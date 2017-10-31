@@ -860,7 +860,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                                                 resource.getIntrinsicHeight() > HeadlinesFragment.FLAVOR_IMG_MIN_SIZE) {
 
                                             holder.flavorImageView.setVisibility(View.VISIBLE);
-                                            holder.flavorImageOverflow.setVisibility(View.VISIBLE);
+
+
+                                            //TODO: not implemented
+                                            //holder.flavorImageOverflow.setVisibility(View.VISIBLE);
 
                                             /*boolean forceDown = article.flavorImage != null && "video".equals(article.flavorImage.tagName().toLowerCase());
 
