@@ -31,10 +31,10 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -71,10 +71,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -91,6 +90,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 	private SharedPreferences m_prefs;
     private ArrayList<Integer> m_readArticleIds = new ArrayList<Integer>();
 	private ArrayList<Integer> m_autoMarkedArticleIds = new ArrayList<Integer>();
+
+	private HashMap<Integer, Integer> m_flavorHeightStorage = new HashMap<>();
 	
 	private Cursor m_cursor;
 	private ArticleListAdapter m_adapter;
@@ -480,7 +481,13 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		getActivity().setProgressBarIndeterminateVisibility(showProgress);
 	} */
 
-    static class HeadlineViewHolder {
+    static class ArticleViewHolder {
+
+		public int articleId;
+		HashMap<Integer, Integer> flavorHeightStorage;
+
+		public View view;
+
         public TextView titleView;
         public TextView feedTitleView;
         public ImageView markedView;
@@ -499,6 +506,50 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		public ImageView flavorVideoKindView;
 		public View flavorImageOverflow;
 		public View headlineHeader;
+
+		public ArticleViewHolder(View v) {
+
+			view = v;
+
+			view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+				@Override
+				public boolean onPreDraw() {
+					View flavorImage = view.findViewById(R.id.flavor_image);
+
+					if (flavorImage != null) {
+						int height = flavorImage.getMeasuredHeight();
+
+						if (height > 0) {
+							//Log.d("ArticleViewHolder", "view measured height: " + flavorImage.getMeasuredHeight() + " for " + articleId);
+
+							flavorHeightStorage.put(articleId, flavorImage.getMeasuredHeight());
+						}
+					}
+
+					return true;
+				}
+			});
+
+			titleView = (TextView)v.findViewById(R.id.title);
+
+			feedTitleView = (TextView)v.findViewById(R.id.feed_title);
+			markedView = (ImageView)v.findViewById(R.id.marked);
+			publishedView = (ImageView)v.findViewById(R.id.published);
+			excerptView = (TextView)v.findViewById(R.id.excerpt);
+			flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
+			authorView = (TextView)v.findViewById(R.id.author);
+			dateView = (TextView) v.findViewById(R.id.date);
+			selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
+			menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
+			flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
+			flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
+			headlineFooter = v.findViewById(R.id.headline_footer);
+			textImage = (ImageView) v.findViewById(R.id.text_image);
+			textChecked = (ImageView) v.findViewById(R.id.text_checked);
+			flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
+			headlineHeader = v.findViewById(R.id.headline_header);
+			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
+		}
 	}
 
     private class ArticleListAdapter extends SimpleCursorAdapter {
@@ -552,7 +603,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}			
 		}
 
-        private void updateTextCheckedState(HeadlineViewHolder holder, Cursor item, ArticleFlavorInfo afi) {
+        private void updateTextCheckedState(ArticleViewHolder holder, Cursor item, ArticleFlavorInfo afi) {
             String title = item.getString(item.getColumnIndex("title"));
 
             String tmp = title.length() > 0 ? title.substring(0, 1) : "?";
@@ -610,7 +661,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			final Cursor article = (Cursor)getItem(position);
 
-            final HeadlineViewHolder holder;
+            final ArticleViewHolder holder;
 
 			final int articleId = article.getInt(0);
 			
@@ -638,34 +689,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
                 LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(layoutId, null);
 
-                holder = new HeadlineViewHolder();
-                holder.titleView = (TextView)v.findViewById(R.id.title);
-
-                holder.feedTitleView = (TextView)v.findViewById(R.id.feed_title);
-                holder.markedView = (ImageView)v.findViewById(R.id.marked);
-                holder.publishedView = (ImageView)v.findViewById(R.id.published);
-                holder.excerptView = (TextView)v.findViewById(R.id.excerpt);
-                holder.flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-                holder.authorView = (TextView)v.findViewById(R.id.author);
-                holder.dateView = (TextView) v.findViewById(R.id.date);
-                holder.selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
-                holder.menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
-                holder.flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
-                holder.flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
-                holder.headlineFooter = v.findViewById(R.id.headline_footer);
-                holder.textImage = (ImageView) v.findViewById(R.id.text_image);
-                holder.textChecked = (ImageView) v.findViewById(R.id.text_checked);
-				holder.flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
-				holder.headlineHeader = v.findViewById(R.id.headline_header);
-				holder.flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
-
+				holder = new ArticleViewHolder(v);
                 v.setTag(holder);
 
                 // http://code.google.com/p/android/issues/detail?id=3414
                 ((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             } else {
-                holder = (HeadlineViewHolder) v.getTag();
+                holder = (ArticleViewHolder) v.getTag();
             }
+
+            holder.articleId = articleId;
+			holder.flavorHeightStorage = m_flavorHeightStorage;
 
             // block footer clicks to make button/selection clicking easier
             if (holder.headlineFooter != null) {
@@ -908,10 +942,17 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				if (showFlavorImage) {
 					final ArticleFlavorInfo afi = findFlavorImage(article);
 
-					/*Log.d(TAG, "flavor image=" + afi.flavorImageUri);
-					Log.d(TAG, "flavor stream=" + afi.flavorImageUri);*/
-
 					if (afi.flavorImageUri != null) {
+
+						int flavorViewHeight = m_flavorHeightStorage.containsKey(articleId) ? m_flavorHeightStorage.get(articleId) : 0;
+
+						//Log.d(TAG, articleId + " IMG: " + afi.flavorImageUri + " STREAM: " + afi.flavorStreamUri + " H:" + flavorViewHeight);
+
+						if (flavorViewHeight > 0) {
+							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
+							lp.height = flavorViewHeight;
+							holder.flavorImageView.setLayoutParams(lp);
+						}
 
 						final String articleContent = article.getString(article.getColumnIndex("content"));
 						final String articleTitle = article.getString(article.getColumnIndex("title"));
@@ -966,7 +1007,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 												RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();
 												lp.addRule(RelativeLayout.BELOW, R.id.headline_header);
-												//lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+												lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 												holder.flavorImageView.setLayoutParams(lp);
 
 												holder.headlineHeader.setBackgroundDrawable(null);
@@ -1020,7 +1061,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
             return v;
 		}
 
-		private void adjustVideoKindView(HeadlineViewHolder holder, ArticleFlavorInfo afi) {
+		private void adjustVideoKindView(ArticleViewHolder holder, ArticleFlavorInfo afi) {
 			if (afi.flavorImageUri != null) {
 				if (afi.flavorStreamUri != null) {
 					holder.flavorVideoKindView.setImageResource(R.drawable.ic_play_circle);
@@ -1036,7 +1077,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			}
 		}
 
-		private void openGalleryForType(ArticleFlavorInfo afi, String title, String content, HeadlineViewHolder viewHolder, View transitionView) {
+		private void openGalleryForType(ArticleFlavorInfo afi, String title, String content, ArticleViewHolder viewHolder, View transitionView) {
 
 			Intent intent = new Intent(m_activity, GalleryActivity.class);
 
