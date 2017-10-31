@@ -91,6 +91,7 @@
     <string name="offline_media_cache_enabled">Cache media</string>
     <string name="offline_media_cache_enabled_summary">Download media files to sdcard. This might significantly increase time it takes to go offline</string>
     <string name="notify_downloading_images">Downloading images (%1$d)…</string>
+    <string name="notify_downloading_media">Downloading media files…</string>
     <string name="article_set_labels">Set labels</string>
     <string name="search">Search</string>
     <string name="cancel">Cancel</string>

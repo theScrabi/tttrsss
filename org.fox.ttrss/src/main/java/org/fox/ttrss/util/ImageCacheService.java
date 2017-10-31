@@ -49,7 +49,8 @@ public class ImageCacheService extends IntentService {
 
 	private NotificationManager m_nmgr;
 	private BroadcastReceiver m_receiver;
-	
+	private int m_queueSize = 0;
+
 	public ImageCacheService() {
 		super("ImageCacheService");
 	}
@@ -228,9 +229,20 @@ public class ImageCacheService extends IntentService {
 	/* private void updateNotification(int msgResId) {
 		updateNotification(getString(msgResId));
 	} */
-	
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+
+		m_queueSize++;
+
+		return super.onStartCommand(intent, flags, startId);
+	}
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
+
+		m_queueSize--;
+		m_imagesDownloaded++;
 
 		String url = intent.getStringExtra("url");
 
@@ -266,10 +278,9 @@ public class ImageCacheService extends IntentService {
 						
 						fos.close();
 						is.close();
-						
-						m_imagesDownloaded++;
-						
-						updateNotification(getString(R.string.notify_downloading_images, m_imagesDownloaded), 0, 0, true);
+
+						updateNotification(getString(R.string.notify_downloading_media), m_imagesDownloaded,
+								m_imagesDownloaded+m_queueSize, true);
 						
 					} catch (IOException e) {
 						e.printStackTrace();
