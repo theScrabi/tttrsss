@@ -261,7 +261,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			setActiveArticleId(m_activeArticleId);
 		}
 
-		refresh();
+		//refresh();
 
 		m_activity.invalidateOptionsMenu();
 	}
