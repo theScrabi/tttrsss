@@ -149,7 +149,8 @@ public class ImageCacheService extends IntentService {
 				.setSmallIcon(R.drawable.ic_notification)
 				.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
 						R.drawable.ic_launcher))
-				.setOnlyAlertOnce(true);
+				.setOnlyAlertOnce(true)
+				.setPriority(Notification.PRIORITY_HIGH);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			builder.setCategory(Notification.CATEGORY_MESSAGE)
