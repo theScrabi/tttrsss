@@ -211,7 +211,7 @@ public class OfflineArticleFragment extends Fragment {
             final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 
             NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
-            View fab = view.findViewById(R.id.article_fab);
+            m_fab = view.findViewById(R.id.article_fab);
 
             if (scrollView != null && m_activity.isSmallScreen()) {
                 view.findViewById(R.id.article_heading_spacer).setVisibility(View.VISIBLE);
@@ -231,11 +231,11 @@ public class OfflineArticleFragment extends Fragment {
                 });
             }
 
-            if (scrollView != null && fab != null) {
+            if (scrollView != null && m_fab != null) {
                 if (m_prefs.getBoolean("enable_article_fab", true)) {
-                    scrollView.setOnTouchListener(new ShowHideOnScroll(fab));
+                    scrollView.setOnTouchListener(new ShowHideOnScroll(m_fab));
 
-                    fab.setOnClickListener(new OnClickListener() {
+                    m_fab.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             try {
@@ -251,7 +251,7 @@ public class OfflineArticleFragment extends Fragment {
                         }
                     });
                 } else {
-                    fab.setVisibility(View.GONE);
+                    m_fab.setVisibility(View.GONE);
                 }
             }
 
