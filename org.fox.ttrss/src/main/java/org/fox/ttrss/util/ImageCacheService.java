@@ -253,10 +253,10 @@ public class ImageCacheService extends IntentService {
 	    if (!isDownloadServiceRunning()) {
 	    	m_nmgr.cancel(NOTIFY_DOWNLOADING);
 	    	
-			Intent success = new Intent();
+			/*Intent success = new Intent();
 			success.setAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
 			success.addCategory(Intent.CATEGORY_DEFAULT);
-			sendBroadcast(success);
+			sendBroadcast(success);*/
 
 			notifyDownloadSuccess();
 		}

@@ -76,15 +76,7 @@ public class OnlineActivity extends CommonActivity {
     private BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context content, Intent intent) {
-
-			if (intent.getAction().equals(OfflineDownloadService.INTENT_ACTION_SUCCESS)) {
-			
-				m_offlineModeStatus = 2;
-				
-				switchOffline();
-				
-			} else if (intent.getAction().equals(OfflineUploadService.INTENT_ACTION_SUCCESS)) {
-				Log.d(TAG, "offline upload service reports success");
+			if (intent.getAction().equals(OfflineUploadService.INTENT_ACTION_SUCCESS)) {
 				toast(R.string.offline_sync_success);
 			}
 		}
@@ -181,18 +173,7 @@ public class OnlineActivity extends CommonActivity {
 
 
 	protected void switchOffline() {
-		if (m_offlineModeStatus == 2) {
-
-			Snackbar.make(findViewById(android.R.id.content), R.string.dialog_offline_success, Snackbar.LENGTH_LONG)
-					.setAction(R.string.dialog_offline_go, new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							switchOfflineSuccess();
-						}
-					})
-					.show();
-
-		} else if (m_offlineModeStatus == 0) {
+		if (m_offlineModeStatus == 0) {
 		
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)
 					.setMessage(R.string.dialog_offline_switch_prompt)
@@ -1141,7 +1122,7 @@ public class OnlineActivity extends CommonActivity {
 				m_prefs.getBoolean("ssl_trust_any_host", false));				
 		
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
+		//filter.addAction(OfflineDownloadService.INTENT_ACTION_SUCCESS);
 		filter.addAction(OfflineUploadService.INTENT_ACTION_SUCCESS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 

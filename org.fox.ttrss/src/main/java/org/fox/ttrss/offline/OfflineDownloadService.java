@@ -48,7 +48,7 @@ public class OfflineDownloadService extends Service {
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
 
-	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
+	//public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.DownloadComplete";
 	public static final String INTENT_ACTION_CANCEL = "org.fox.ttrss.intent.action.Cancel";
 
 	private static final int OFFLINE_SYNC_SEQ = 50;
@@ -194,10 +194,10 @@ public class OfflineDownloadService extends Service {
             	
             } else {
 
-            	Intent intent = new Intent();
+            	/*Intent intent = new Intent();
             	intent.setAction(INTENT_ACTION_SUCCESS);
             	intent.addCategory(Intent.CATEGORY_DEFAULT);
-            	sendBroadcast(intent);
+            	sendBroadcast(intent);*/
 
 				notifyDownloadSuccess();
             }
