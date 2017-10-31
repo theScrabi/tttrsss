@@ -252,7 +252,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 			if (fc != null) {
 				fc.setSelectedFeedId(-1);
 			}
-			
+
 			FragmentTransaction ft = getSupportFragmentManager()
 					.beginTransaction();
 
@@ -265,7 +265,7 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 			//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 			//m_actionbarUpEnabled = true;
 			//m_actionbarRevertDepth = m_actionbarRevertDepth + 1;
-			
+
 			ft.commit();
 		}
 	}
@@ -294,6 +294,10 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 		
 		if (open) {
 
+			if (m_drawerLayout != null) {
+				m_drawerLayout.closeDrawers();
+			}
+
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -309,18 +313,8 @@ public class OfflineMasterActivity extends OfflineActivity implements OfflineHea
 					m_feedIsSelected = true;
 					//m_feedWasSelected = true;
 
-					if (m_drawerLayout != null) {
-						/* if (findViewById(R.id.sw600dp_port_anchor) != null) {
-							m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-						} */
-
-                        m_drawerLayout.closeDrawers();
-
-						//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-						//m_actionbarUpEnabled = true;
-					}
 				}
-			}, 10);
+			}, 250);
 		}		
 	}
 
