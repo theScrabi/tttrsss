@@ -152,7 +152,8 @@ public class OfflineDownloadService extends Service {
 				.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
 						R.drawable.ic_launcher))
 				.setOnlyAlertOnce(true)
-				.setPriority(Notification.PRIORITY_HIGH);
+				.setPriority(Notification.PRIORITY_HIGH)
+				.setDefaults(Notification.DEFAULT_ALL);
 
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
