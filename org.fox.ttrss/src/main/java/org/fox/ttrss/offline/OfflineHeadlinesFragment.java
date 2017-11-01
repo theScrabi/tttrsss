@@ -821,8 +821,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 					@Override
 					public void onClick(View v) {
-						SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET modified = 1, marked = NOT marked " +
-								"WHERE " + BaseColumns._ID + " = ?");
+						SQLiteStatement stmtUpdate = m_activity.getDatabase()
+								.compileStatement("UPDATE articles SET modified = 1, modified_marked = 1, marked = NOT marked " +
+									"WHERE " + BaseColumns._ID + " = ?");
 
 						stmtUpdate.bindLong(1, articleId);
 						stmtUpdate.execute();
@@ -851,8 +852,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
                     @Override
                     public void onClick(View v) {
-                        SQLiteStatement stmtUpdate = m_activity.getDatabase().compileStatement("UPDATE articles SET modified = 1, published = NOT published " +
-                                "WHERE " + BaseColumns._ID + " = ?");
+                        SQLiteStatement stmtUpdate = m_activity.getDatabase()
+								.compileStatement("UPDATE articles SET modified = 1, modified_published = 1, published = NOT published " +
+                                	"WHERE " + BaseColumns._ID + " = ?");
 
                         stmtUpdate.bindLong(1, articleId);
                         stmtUpdate.execute();

@@ -437,7 +437,7 @@ public class OfflineActivity extends CommonActivity {
 				int articleId = oap.getSelectedArticleId();
 				
 				SQLiteStatement stmt = getDatabase().compileStatement(
-						"UPDATE articles SET modified = 1, marked = NOT marked WHERE "
+						"UPDATE articles SET modified = 1, modified_marked = 1, marked = NOT marked WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
 				stmt.execute();
@@ -478,7 +478,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getDatabase()
 						.compileStatement(
-								"UPDATE articles SET modified = 1, marked = NOT marked WHERE selected = 1");
+								"UPDATE articles SET modified = 1, modified_marked = 1, marked = NOT marked WHERE selected = 1");
 				stmt.execute();
 				stmt.close();
 				
@@ -489,7 +489,7 @@ public class OfflineActivity extends CommonActivity {
 			if (getSelectedArticleCount() > 0) {
 				SQLiteStatement stmt = getDatabase()
 						.compileStatement(
-								"UPDATE articles SET modified = 1, published = NOT published WHERE selected = 1");
+								"UPDATE articles SET modified = 1, modified_published = 1, published = NOT published WHERE selected = 1");
 				stmt.execute();
 				stmt.close();
 				
@@ -501,7 +501,7 @@ public class OfflineActivity extends CommonActivity {
 				int articleId = oap.getSelectedArticleId();
 				
 				SQLiteStatement stmt = getDatabase().compileStatement(
-						"UPDATE articles SET modified = 1, published = NOT published WHERE "
+						"UPDATE articles SET modified = 1, modified_published = 1, published = NOT published WHERE "
 								+ BaseColumns._ID + " = ?");
 				stmt.bindLong(1, articleId);
 				stmt.execute();

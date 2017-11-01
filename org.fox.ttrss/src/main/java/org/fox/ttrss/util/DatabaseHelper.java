@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
 	public static final String DATABASE_NAME = "OfflineStorage.db";
-	public static final int DATABASE_VERSION = 4;
+	public static final int DATABASE_VERSION = 5;
 	private static DatabaseHelper m_instance;
 	private Context m_context;
 
@@ -67,7 +67,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "content TEXT, " +
                 "author TEXT, " +
                 "selected BOOLEAN, " +
-                "modified BOOLEAN" +
+                "modified BOOLEAN," +
+				"modified_published BOOLEAN," +
+				"modified_marked BOOLEAN" +
                 ");");
 		
 		db.execSQL("CREATE TRIGGER articles_set_modified UPDATE OF marked, published, unread ON articles " +

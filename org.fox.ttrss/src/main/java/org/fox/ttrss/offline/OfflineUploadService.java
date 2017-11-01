@@ -21,7 +21,9 @@ import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.DatabaseHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class OfflineUploadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
@@ -54,7 +56,7 @@ public class OfflineUploadService extends IntentService {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateNotification(String msg, int progress, int max, boolean showProgress) {
+	private void updateNotification(String msg, int progress, int max, boolean showProgress, boolean isError) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, OnlineActivity.class), 0);
 
@@ -63,11 +65,10 @@ public class OfflineUploadService extends IntentService {
                 .setContentTitle(getString(R.string.notify_uploading_title))
                 .setContentIntent(contentIntent)
                 .setWhen(System.currentTimeMillis())
-				.setProgress(0, 0, true)
                 .setSmallIcon(R.drawable.ic_cloud_upload)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                         R.drawable.ic_launcher))
-                .setOngoing(true)
+                .setOngoing(!isError)
                 .setOnlyAlertOnce(true)
                 .setVibrate(new long[0]);
 
@@ -77,14 +78,15 @@ public class OfflineUploadService extends IntentService {
             builder.setCategory(Notification.CATEGORY_PROGRESS)
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setColor(0x88b0f0)
-                    .setGroup("org.fox.ttrss");
+                    .setGroup("org.fox.ttrss")
+					.addAction(R.drawable.ic_launcher, getString(R.string.offline_sync_try_again), contentIntent);
         }
 
         m_nmgr.notify(NOTIFY_UPLOADING, builder.build());
 	}
 	
-	private void updateNotification(int msgResId, int progress, int max, boolean showProgress) {
-		updateNotification(getString(msgResId), progress, max, showProgress);
+	private void updateNotification(int msgResId, int progress, int max, boolean showProgress, boolean isError) {
+		updateNotification(getString(msgResId), progress, max, showProgress, isError);
 	}
 
 	private void initDatabase() {
@@ -94,47 +96,12 @@ public class OfflineUploadService extends IntentService {
 	private synchronized SQLiteDatabase getDatabase() {
 		return m_databaseHelper.getWritableDatabase();
 	}
-	
-	private void uploadRead() {
-		Log.d(TAG, "syncing modified offline data... (read)");
 
-		final String ids = getModifiedIds(ModifiedCriteria.READ);
-
-		if (ids.length() > 0) {
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement result) {
-					if (result != null) {
-						uploadMarked();
-					} else {
-						updateNotification(getErrorMessage(), 0, 0, false);
-						uploadFailed();
-					}
-				}
-			};
-
-			@SuppressWarnings("serial")
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("sid", m_sessionId);
-					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "0");
-					put("field", "2");
-				}
-			};
-
-			req.execute(map);
-		} else {
-			uploadMarked();
-		}
-	}
-	
 	private enum ModifiedCriteria {
-		READ, MARKED, PUBLISHED
+		READ, MARKED, UNMARKED, PUBLISHED, UNPUBLISHED
 	}
 
-    private String getModifiedIds(ModifiedCriteria criteria) {
+    private List<Integer> getModifiedIds(ModifiedCriteria criteria) {
 
 		String criteriaStr = "";
 
@@ -143,67 +110,34 @@ public class OfflineUploadService extends IntentService {
 			criteriaStr = "unread = 0";
 			break;
 		case MARKED:
-			criteriaStr = "marked = 1";
+			criteriaStr = "modified_marked = 1 AND marked = 1";
+			break;
+		case UNMARKED:
+			criteriaStr = "modified_marked = 1 AND marked = 0";
 			break;
 		case PUBLISHED:
-			criteriaStr = "published = 1";
+			criteriaStr = "modified_published = 1 AND published = 1";
+			break;
+		case UNPUBLISHED:
+			criteriaStr = "modified_published = 1 AND published = 0";
 			break;
 		}
 
 		Cursor c = getDatabase().query("articles", null,
 				"modified = 1 AND " + criteriaStr, null, null, null, null);
 
-		String tmp = "";
+		List<Integer> tmp = new ArrayList<>();
 
 		while (c.moveToNext()) {
-			tmp += c.getInt(0) + ",";
+			tmp.add(c.getInt(0));
 		}
-
-		tmp = tmp.replaceAll(",$", "");
 
 		c.close();
 
 		return tmp;
 	}
 
-	private void uploadMarked() {
-		Log.d(TAG, "syncing modified offline data... (marked)");
-
-		final String ids = getModifiedIds(ModifiedCriteria.MARKED);
-
-		if (ids.length() > 0) {
-			ApiRequest req = new ApiRequest(getApplicationContext()) {
-				@Override
-				protected void onPostExecute(JsonElement result) {
-					if (result != null) {
-						uploadPublished();
-					} else {
-						updateNotification(getErrorMessage(), 0, 0, false);
-						uploadFailed();
-					}
-				}
-			};
-
-			@SuppressWarnings("serial")
-			HashMap<String, String> map = new HashMap<String, String>() {
-				{
-					put("sid", m_sessionId);
-					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "1");
-					put("field", "0");
-				}
-			};
-
-			req.execute(map);
-		} else {
-			uploadPublished();
-		}
-	}
-	
 	private void uploadFailed() {
-        // TODO send notification to activity?
-        
         m_uploadInProgress = false;
 	}
 
@@ -228,20 +162,27 @@ public class OfflineUploadService extends IntentService {
         
 		m_nmgr.cancel(NOTIFY_UPLOADING);
 	}
-	
-	private void uploadPublished() {
-		Log.d(TAG, "syncing modified offline data... (published)");
 
-		final String ids = getModifiedIds(ModifiedCriteria.PUBLISHED);
+	interface CriteriaCallback {
+		void onUploadSuccess();
+	}
 
-		if (ids.length() > 0) {
+	private void uploadByCriteria(final ModifiedCriteria criteria, final CriteriaCallback callback) {
+
+		final List<Integer> ids = getModifiedIds(criteria);
+
+		Log.d(TAG, "syncing modified offline data for " + criteria + ": " + ids);
+
+		if (ids.size() > 0) {
 			ApiRequest req = new ApiRequest(getApplicationContext()) {
 				@Override
 				protected void onPostExecute(JsonElement result) {
 					if (result != null) {
-						uploadSuccess();
+						callback.onUploadSuccess();
 					} else {
-						updateNotification(getErrorMessage(), 0, 0, false);
+						Log.d(TAG, "syncing failed: " + getErrorMessage());
+
+						updateNotification(getErrorMessage(), 0, 0, false, true);
 						uploadFailed();
 					}
 				}
@@ -252,19 +193,39 @@ public class OfflineUploadService extends IntentService {
 				{
 					put("sid", m_sessionId);
 					put("op", "updateArticle");
-					put("article_ids", ids);
-					put("mode", "1");
-					put("field", "1");
+					put("article_ids", android.text.TextUtils.join(",", ids));
+
+					switch (criteria) {
+						case READ:
+							put("mode", "0");
+							put("field", "2");
+							break;
+						case PUBLISHED:
+							put("mode", "1");
+							put("field", "1");
+							break;
+						case UNPUBLISHED:
+							put("mode", "0");
+							put("field", "1");
+							break;
+						case MARKED:
+							put("mode", "1");
+							put("field", "0");
+							break;
+						case UNMARKED:
+							put("mode", "0");
+							put("field", "0");
+							break;
+					}
 				}
 			};
 
 			req.execute(map);
 		} else {
-			uploadSuccess();
+			callback.onUploadSuccess();
 		}
 	}
 
-	
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		try {
@@ -278,9 +239,36 @@ public class OfflineUploadService extends IntentService {
 			if (!m_uploadInProgress) {
 				m_uploadInProgress = true;
 	
-				updateNotification(R.string.notify_uploading_sending_data, 0, 0, true);
+				updateNotification(R.string.notify_uploading_sending_data, 0, 0, true, true);
 				
-				uploadRead();			
+				uploadByCriteria(ModifiedCriteria.READ, new CriteriaCallback() {
+					@Override
+					public void onUploadSuccess() {
+						uploadByCriteria(ModifiedCriteria.MARKED, new CriteriaCallback() {
+							@Override
+							public void onUploadSuccess() {
+								uploadByCriteria(ModifiedCriteria.UNMARKED, new CriteriaCallback() {
+									@Override
+									public void onUploadSuccess() {
+										uploadByCriteria(ModifiedCriteria.PUBLISHED, new CriteriaCallback() {
+											@Override
+											public void onUploadSuccess() {
+												uploadByCriteria(ModifiedCriteria.UNPUBLISHED, new CriteriaCallback() {
+													@Override
+													public void onUploadSuccess() {
+														Log.d(TAG, "upload complete");
+
+														uploadSuccess();
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						});
+					}
+				});
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
