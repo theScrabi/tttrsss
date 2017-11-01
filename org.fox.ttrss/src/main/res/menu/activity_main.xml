@@ -5,39 +5,12 @@
 
             <item
                 android:id="@+id/subscribe_to_feed"
+                android:orderInCategory="1"
                 android:icon="@drawable/ic_plus_circle"
                 app:showAsAction=""
                 android:title="@string/subscribe_to_feed"/> <!-- iRroom -->
-
-            <!-- <item
-                android:id="@+id/show_feeds"
-                android:icon="@drawable/ic_filter_remove"
-                app:showAsAction=""
-                android:title="@string/menu_all_feeds"/> -->
-            <!-- <item
-                android:id="@+id/go_offline"
-                android:icon="@drawable/ic_cloud_download"
-                android:orderInCategory="800"
-                app:showAsAction=""
-                android:title="@string/go_offline"/> --><!-- iRroom -->
-            <!-- <item
-                android:id="@+id/update_feeds"
-                android:icon="@drawable/ic_refresh"
-                app:showAsAction=""
-                android:title="@string/update_feeds"/> -->
-            <!-- <item
-                android:orderInCategory="900"
-                android:id="@+id/logout"
-                android:icon="@drawable/ic_logout"
-                app:showAsAction=""
-                android:title="@string/logout"/> -->
         </group>
         <group android:id="@+id/menu_group_headlines" >
-            <!-- <item
-                android:id="@+id/update_headlines"
-                android:icon="@drawable/ic_refresh"
-                app:showAsAction=""
-                android:title="@string/update_headlines"/> -->
             <item
                 android:id="@+id/search"
                 android:icon="@drawable/ic_magnify"
@@ -78,15 +51,15 @@
                 app:showAsAction="ifRoom"
                 android:title="@string/article_toggle_published"/>
             <item
-                android:id="@+id/toggle_attachments"
-                android:icon="@drawable/ic_attachment"
-                app:showAsAction=""
-                android:title="@string/attachments_prompt"/>
-            <item
                 android:id="@+id/toggle_unread"
                 android:icon="@drawable/ic_email"
                 app:showAsAction="ifRoom"
                 android:title="@string/article_toggle_unread"/>
+            <item
+                android:id="@+id/toggle_attachments"
+                android:icon="@drawable/ic_attachment"
+                app:showAsAction=""
+                android:title="@string/attachments_prompt"/>
             <!-- <item
                 android:id="@+id/share_article"
                 android:icon="@drawable/ic_share"
@@ -111,6 +84,7 @@
 
         <item
             android:id="@+id/donate"
+            android:orderInCategory="899"
             app:showAsAction=""
             android:title="@string/trial_purchase"/>
 
