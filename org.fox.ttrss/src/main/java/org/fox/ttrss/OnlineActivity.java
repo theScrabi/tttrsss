@@ -249,9 +249,6 @@ public class OnlineActivity extends CommonActivity {
 		logout();
 		// setLoadingStatus(R.string.blank, false);
 
-		NotificationManager nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		nmgr.cancel(OfflineDownloadService.NOTIFY_DOWNLOAD_SUCCESS);
-
 		SharedPreferences localPrefs = getSharedPreferences("localprefs", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = localPrefs.edit();
 		editor.putBoolean("offline_mode_active", true);

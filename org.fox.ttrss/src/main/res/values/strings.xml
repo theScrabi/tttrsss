@@ -72,7 +72,7 @@
     <string name="error_invalid_api_url">Error: invalid API URL</string>
     <string name="go_offline">Go offline</string>
     <string name="go_online">Go online</string>
-    <string name="offline_switch_error">Failed to prepare offline mode (see log)</string>
+    <string name="offline_switch_failed">Failed to prepare offline mode</string>
     <!-- <string name="no_feeds">No feeds to display</string> -->
     <string name="dialog_offline_prompt">Login failed, but you have stored offline data. Would you like to go offline?</string>
     <string name="dialog_offline_success">Offline mode is ready</string>
@@ -258,4 +258,5 @@
     <string name="reload">Reload</string>
     <string name="offline_sync_try_again">Try again</string>
     <string name="offline_tap_to_switch">Tap to switch offline</string>
+    <string name="offline_no_articles">No articles downloaded</string>
 </resources>
