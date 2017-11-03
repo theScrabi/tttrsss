@@ -288,6 +288,8 @@ public class HeadlinesFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		setRetainInstance(true);
+
+		Glide.get(getContext()).clearMemory();
 	}
 
 	@Override
@@ -1145,6 +1147,8 @@ public class HeadlinesFragment extends Fragment {
 				holder.flavorVideoView.setVisibility(View.GONE);
 				holder.headlineHeader.setBackgroundDrawable(null);
 
+				Glide.clear(holder.flavorImageView);
+
 				// this is needed if our flavor image goes behind base listview element
 				holder.headlineHeader.setOnClickListener(new OnClickListener() {
 					@Override
@@ -1220,8 +1224,8 @@ public class HeadlinesFragment extends Fragment {
 
 					holder.flavorImageView.setVisibility(View.VISIBLE);
 
-						holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
-						holder.flavorProgressTarget.setModel(article.flavorImageUri);
+					holder.flavorImageView.setMaxHeight((int)(m_screenHeight * 0.8f));
+					holder.flavorProgressTarget.setModel(article.flavorImageUri);
 
 					if (article.flavorViewHeight > 0) {
 						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.flavorImageView.getLayoutParams();

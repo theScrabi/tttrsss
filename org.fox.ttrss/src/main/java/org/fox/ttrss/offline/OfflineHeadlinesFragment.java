@@ -310,7 +310,16 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 			e.printStackTrace();
 		}
 	}
-	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setRetainInstance(true);
+
+		Glide.get(getContext()).clearMemory();
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		

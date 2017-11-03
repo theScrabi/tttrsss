@@ -586,4 +586,5 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 		req.execute(map);
 
 	}
+
 }

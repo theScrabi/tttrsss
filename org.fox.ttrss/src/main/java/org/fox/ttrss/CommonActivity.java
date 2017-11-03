@@ -33,6 +33,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import org.fox.ttrss.util.DatabaseHelper;
 import org.fox.ttrss.widget.SmallWidgetProvider;
 import org.jsoup.Jsoup;
@@ -480,6 +482,20 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		} else {
 			toast(R.string.no_caption_to_display);
 		}
+	}
+
+	@Override
+	public void onTrimMemory(int level) {
+		super.onTrimMemory(level);
+		Log.d(TAG, "onTrimMemory called");
+		Glide.get(this).trimMemory(level);
+	}
+
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		Log.d(TAG, "onLowMemory called");
+		Glide.get(this).clearMemory();
 	}
 
 }
