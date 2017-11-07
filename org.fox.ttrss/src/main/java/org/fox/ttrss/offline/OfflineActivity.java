@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import org.fox.ttrss.CommonActivity;
+import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 
@@ -636,8 +637,12 @@ public class OfflineActivity extends CommonActivity {
 		editor.putBoolean("offline_mode_active", false);
 		editor.apply();
 
-		Intent refresh = new Intent(this, org.fox.ttrss.OnlineActivity.class);
+		Intent refresh = new Intent(this, OnlineActivity.class);
+		refresh.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+				Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
 		startActivity(refresh);
+
 		finish();
 	}
 	

@@ -255,13 +255,13 @@ public class OnlineActivity extends CommonActivity {
 		editor.apply();
 
 		Intent offline = new Intent(OnlineActivity.this, OfflineActivity.class);
+		offline.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+				Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		offline.putExtra("initial", true);
-		offline.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-	 	   
-		startActivityForResult(offline, 0);
+
+		startActivity(offline);
 
 		finish();
-
 	}
 	
 	public void login() {
