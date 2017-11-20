@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -26,6 +28,7 @@ import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -44,6 +47,8 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommonActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -73,6 +78,60 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	private boolean m_smallScreenMode = true;
 	private String m_theme;
 	private boolean m_needRestart;
+
+	private static String s_customTabPackageName;
+
+	static final String STABLE_PACKAGE = "com.android.chrome";
+	static final String BETA_PACKAGE = "com.chrome.beta";
+	static final String DEV_PACKAGE = "com.chrome.dev";
+	static final String LOCAL_PACKAGE = "com.google.android.apps.chrome";
+	private static final String ACTION_CUSTOM_TABS_CONNECTION =
+		"android.support.customtabs.action.CustomTabsService";
+
+	private static String getCustomTabPackageName(Context context) {
+		if (s_customTabPackageName != null) return s_customTabPackageName;
+
+		PackageManager pm = context.getPackageManager();
+		// Get default VIEW intent handler.
+		Intent activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"));
+		ResolveInfo defaultViewHandlerInfo = pm.resolveActivity(activityIntent, 0);
+	        String defaultViewHandlerPackageName = null;
+		if (defaultViewHandlerInfo != null) {
+			defaultViewHandlerPackageName = defaultViewHandlerInfo.activityInfo.packageName;
+		}
+
+		// Get all apps that can handle VIEW intents.
+		List<ResolveInfo> resolvedActivityList = pm.queryIntentActivities(activityIntent, 0);
+		List<String> packagesSupportingCustomTabs = new ArrayList<>();
+		for (ResolveInfo info : resolvedActivityList) {
+			Intent serviceIntent = new Intent();
+			serviceIntent.setAction(ACTION_CUSTOM_TABS_CONNECTION);
+			serviceIntent.setPackage(info.activityInfo.packageName);
+			if (pm.resolveService(serviceIntent, 0) != null) {
+				packagesSupportingCustomTabs.add(info.activityInfo.packageName);
+			}
+		}
+
+		// Now packagesSupportingCustomTabs contains all apps that can handle both VIEW intents
+		// and service calls.
+		if (packagesSupportingCustomTabs.isEmpty()) {
+			s_customTabPackageName = null;
+		} else if (packagesSupportingCustomTabs.size() == 1) {
+			s_customTabPackageName = packagesSupportingCustomTabs.get(0);
+		} else if (!TextUtils.isEmpty(defaultViewHandlerPackageName)
+				&& packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)) {
+			s_customTabPackageName = defaultViewHandlerPackageName;
+		} else if (packagesSupportingCustomTabs.contains(STABLE_PACKAGE)) {
+			s_customTabPackageName = STABLE_PACKAGE;
+		} else if (packagesSupportingCustomTabs.contains(BETA_PACKAGE)) {
+			s_customTabPackageName = BETA_PACKAGE;
+		} else if (packagesSupportingCustomTabs.contains(DEV_PACKAGE)) {
+			s_customTabPackageName = DEV_PACKAGE;
+		} else if (packagesSupportingCustomTabs.contains(LOCAL_PACKAGE)) {
+			s_customTabPackageName = LOCAL_PACKAGE;
+		}
+		return s_customTabPackageName;
+	}
 
 	protected CustomTabsClient m_customTabClient;
 	protected CustomTabsServiceConnection m_customTabServiceConnection = new CustomTabsServiceConnection() {
@@ -173,7 +232,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
 
-		CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", m_customTabServiceConnection);
+		CustomTabsClient.bindCustomTabsService(this, getCustomTabPackageName(this), m_customTabServiceConnection);
 
 		/*if (!ImageLoader.getInstance().isInited()) {
 			ImageLoaderConfiguration config;
