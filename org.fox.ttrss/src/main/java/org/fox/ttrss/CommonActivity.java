@@ -130,6 +130,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		} else if (packagesSupportingCustomTabs.contains(LOCAL_PACKAGE)) {
 			s_customTabPackageName = LOCAL_PACKAGE;
 		}
+
 		return s_customTabPackageName;
 	}
 
@@ -232,7 +233,10 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
 
-		CustomTabsClient.bindCustomTabsService(this, getCustomTabPackageName(this), m_customTabServiceConnection);
+		String customTabPackageName = getCustomTabPackageName(this);
+
+		CustomTabsClient.bindCustomTabsService(this, customTabPackageName != null ?
+				customTabPackageName : "com.android.chrome", m_customTabServiceConnection);
 
 		/*if (!ImageLoader.getInstance().isInited()) {
 			ImageLoaderConfiguration config;
