@@ -1,3 +1,14 @@
+TTTRSS
+======
+
+This is a fork of the original [Tiny Tiny RSS](git@github.com:theScrabi/tttrsss.git) app for android.
+Due to incompatibility with fdroid this fork was produced. However only a few changes where made
+to allow this app to be distributed on fdroid.
+
+Since this version does not need to be bough I highly recommend to [donate](https://tt-rss.org/) to them,
+or buy the [unlock key](https://play.google.com/store/apps/details?id=org.fox.ttrss.key&hl=de) on google play.
+
+
 Tiny Tiny RSS client for Android
 ================================
 

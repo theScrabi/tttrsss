@@ -2,16 +2,17 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
 allprojects {
     repositories {
-        maven { url "http://dl.bintray.com/populov/maven" }
-        maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
+        maven { url 'https://jitpack.io' }
         jcenter()
+        google()
     }
 }

@@ -1568,20 +1568,7 @@ public class HeadlinesFragment extends Fragment {
 			//Log.d(TAG, "openGalleryForType: " + article + " " + holder + " " + transitionView);
 
 			if ("iframe".equals(article.flavorImage.tagName().toLowerCase())) {
-
-				if (m_youtubeInstalled) {
-					Intent intent = new Intent(m_activity, YoutubePlayerActivity.class);
-					intent.putExtra("streamUri", article.flavorStreamUri);
-					intent.putExtra("vid", article.youtubeVid);
-					intent.putExtra("title", article.title);
-
-					startActivity(intent);
-					m_activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-				} else {
-					m_activity.openUri(Uri.parse(article.flavorStreamUri));
-				}
-
+				m_activity.openUri(Uri.parse(article.flavorStreamUri));
 			} else {
 
 				Intent intent = new Intent(m_activity, GalleryActivity.class);
