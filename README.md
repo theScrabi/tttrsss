@@ -8,6 +8,8 @@ to allow this app to be distributed on fdroid.
 Since this version does not need to be bough I highly recommend to [donate](https://tt-rss.org/) to them,
 or buy the [unlock key](https://play.google.com/store/apps/details?id=org.fox.ttrss.key&hl=de) on google play.
 
+<a href="https://f-droid.org/packages/org.fox.tttrss/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
 
 Tiny Tiny RSS client for Android
 ================================
