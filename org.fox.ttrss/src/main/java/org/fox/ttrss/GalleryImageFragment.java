@@ -5,12 +5,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
@@ -21,22 +18,20 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 
+import icepick.State;
+
 public class GalleryImageFragment extends GalleryBaseFragment {
     private final String TAG = this.getClass().getSimpleName();
 
-    String m_url;
+    @State String m_url;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery_entry, container, false);
 
-        if (savedInstanceState != null) {
-            m_url = savedInstanceState.getString("url");
-        }
-
         Log.d(TAG, "called for URL: " + m_url);
 
-        ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
+        ImageView imgView = view.findViewById(R.id.flavor_image);
 
         // TODO: ImageMatrixTouchHandler doesn't like context menus
         ImageMatrixTouchHandler touchHandler = new ImageMatrixTouchHandler(view.getContext());
@@ -50,7 +45,7 @@ public class GalleryImageFragment extends GalleryBaseFragment {
 
         registerForContextMenu(imgView);
 
-        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.flavor_image_progress);
+        final ProgressBar progressBar = view.findViewById(R.id.flavor_image_progress);
         final View errorMessage = view.findViewById(R.id.flavor_image_error);
 
         final GlideDrawableImageViewTarget glideImage = new GlideDrawableImageViewTarget(imgView);
@@ -98,13 +93,5 @@ public class GalleryImageFragment extends GalleryBaseFragment {
         else
             return true;
     }*/
-
-    @Override
-    public void onSaveInstanceState (Bundle out) {
-        super.onSaveInstanceState(out);
-
-        out.setClassLoader(getClass().getClassLoader());
-        out.putString("url", m_url);
-    }
 
 }

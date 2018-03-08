@@ -10,30 +10,22 @@ import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.PopupMenu;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
 
 import java.io.IOException;
+
+import icepick.State;
 
 public class GalleryVideoFragment extends GalleryBaseFragment {
     private final String TAG = this.getClass().getSimpleName();
 
-    String m_url;
-    String m_coverUrl;
+    @State String m_url;
+    @State String m_coverUrl;
     MediaPlayer m_mediaPlayer;
     private boolean m_userVisibleHint = false;
 
@@ -41,14 +33,9 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_gallery_entry, container, false);
 
-        if (savedInstanceState != null) {
-            m_url = savedInstanceState.getString("url");
-            m_coverUrl = savedInstanceState.getString("coverUrl");
-        }
-
         Log.d(TAG, "called for URL: " + m_url + " Cover: " + m_coverUrl);
 
-        ImageView imgView = (ImageView) view.findViewById(R.id.flavor_image);
+        ImageView imgView = view.findViewById(R.id.flavor_image);
 
         ViewCompat.setTransitionName(imgView, "gallery:" + m_url);
 
@@ -119,7 +106,7 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
 
 
         final MediaController m_mediaController = new MediaController(m_activity);
-        final TextureView textureView = (TextureView) view.findViewById(R.id.flavor_video);
+        final TextureView textureView = view.findViewById(R.id.flavor_video);
 
         registerForContextMenu(textureView);
 
@@ -260,15 +247,6 @@ public class GalleryVideoFragment extends GalleryBaseFragment {
     public void initialize(String url, String coverUrl) {
         m_url = url;
         m_coverUrl = coverUrl;
-    }
-
-    @Override
-    public void onSaveInstanceState (Bundle out) {
-        super.onSaveInstanceState(out);
-
-        out.setClassLoader(getClass().getClassLoader());
-        out.putString("url", m_url);
-        out.putString("coverUrl", m_coverUrl);
     }
 
     protected void resizeSurface(View surfaceView) {
