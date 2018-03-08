@@ -22,8 +22,8 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
     private final String TAG = this.getClass().getSimpleName();
     private static final String DEVELOPER_KEY = "AIzaSyD8BS4Uj21jg_gHZfP4v0VXrAWiwqd05nk";
 
-    @State private String m_streamUri;
-    @State private String m_videoId;
+    @State protected String m_streamUri;
+    @State protected String m_videoId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
