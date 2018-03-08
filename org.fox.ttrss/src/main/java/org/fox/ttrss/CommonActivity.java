@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.bumptech.glide.Glide;
+import com.livefront.bridge.Bridge;
 
 import org.fox.ttrss.util.DatabaseHelper;
 import org.fox.ttrss.widget.SmallWidgetProvider;
@@ -46,6 +47,8 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import icepick.State;
 
 public class CommonActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -73,7 +76,7 @@ public class CommonActivity extends AppCompatActivity implements SharedPreferenc
 	//private SQLiteDatabase m_writableDb;
 
 	private boolean m_smallScreenMode = true;
-	private String m_theme;
+	@State protected String m_theme;
 	private boolean m_needRestart;
 
 	private static String s_customTabPackageName;
@@ -224,9 +227,9 @@ public class CommonActivity extends AppCompatActivity implements SharedPreferenc
 
 		setupWidgetUpdates(this);
 
-        if (savedInstanceState != null) {
-			m_theme = savedInstanceState.getString("theme");
-		} else {
+		Bridge.restoreInstanceState(this, savedInstanceState);
+
+        if (savedInstanceState == null) {
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
 
@@ -235,31 +238,13 @@ public class CommonActivity extends AppCompatActivity implements SharedPreferenc
 		CustomTabsClient.bindCustomTabsService(this, customTabPackageName != null ?
 				customTabPackageName : "com.android.chrome", m_customTabServiceConnection);
 
-		/*if (!ImageLoader.getInstance().isInited()) {
-			ImageLoaderConfiguration config;
-
-			try {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.diskCache(
-								new LruDiscCache(new File(getCacheDir(), "article-images"),
-										DefaultConfigurationFactory.createFileNameGenerator(),
-										100 * 1024 * 1024))
-						.build();
-			} catch (IOException e) {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.build();
-			}
-			ImageLoader.getInstance().init(config);
-		}*/
-
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
-		out.putString("theme", m_theme);
+		Bridge.saveInstanceState(this, out);
 	}
 	
 	public boolean isSmallScreen() {
