@@ -3,7 +3,6 @@ package org.fox.ttrss;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,13 +14,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,7 +24,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -150,7 +144,7 @@ public class OnlineActivity extends CommonActivity {
 
 		setContentView(R.layout.activity_login);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		Intent intent = getIntent();
@@ -1019,7 +1013,7 @@ public class OnlineActivity extends CommonActivity {
     }
 
 	private void setLoadingStatus(String status) {
-		TextView tv = (TextView) findViewById(R.id.loading_message);
+		TextView tv = findViewById(R.id.loading_message);
 
 		if (tv != null) {
 			tv.setText(status);
@@ -1063,11 +1057,6 @@ public class OnlineActivity extends CommonActivity {
 		}
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle out) {
-		super.onSaveInstanceState(out);
-	}
-	
 	@Override
 	public void onResume() {
 		super.onResume();

@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -21,7 +20,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.JsonElement;
 
 import org.fox.ttrss.types.Article;
@@ -33,6 +31,8 @@ import org.fox.ttrss.widget.SmallWidgetProvider;
 import java.util.Date;
 import java.util.HashMap;
 
+import icepick.State;
+
 public class MasterActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
@@ -42,8 +42,8 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	protected long m_lastRefresh = 0;
 	protected long m_lastWidgetRefresh = 0;
 	
-	private boolean m_feedIsSelected = false;
-    private boolean m_userFeedSelected = false;
+	@State protected boolean m_feedIsSelected = false;
+    @State protected boolean m_userFeedSelected = false;
 
     private ActionBarDrawerToggle m_drawerToggle;
     private DrawerLayout m_drawerLayout;
@@ -62,14 +62,14 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
 		setSmallScreen(findViewById(R.id.sw600dp_anchor) == null);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		Application.getInstance().load(savedInstanceState);
 
 		m_lastWidgetRefresh = new Date().getTime();
 
-        m_drawerLayout = (DrawerLayout) findViewById(R.id.headlines_drawer);
+        m_drawerLayout = findViewById(R.id.headlines_drawer);
 
         if (m_drawerLayout != null) {
 
@@ -177,22 +177,11 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 			checkTrial(true);
 
 		} else { // savedInstanceState != null
-			//m_actionbarUpEnabled = savedInstanceState.getBoolean("actionbarUpEnabled");
-			//m_actionbarRevertDepth = savedInstanceState.getInt("actionbarRevertDepth");
-			m_feedIsSelected = savedInstanceState.getBoolean("feedIsSelected");
-            m_userFeedSelected = savedInstanceState.getBoolean("userFeedSelected");
-			//m_feedWasSelected = savedInstanceState.getBoolean("feedWasSelected");
 
-			/* if (findViewById(R.id.sw600dp_port_anchor) != null && m_feedWasSelected && m_slidingMenu != null) {
-				m_slidingMenu.setBehindWidth(getScreenWidthInPixel() * 2/3);
-			} */
-			
-			if (m_drawerLayout != null && m_feedIsSelected == false) {
+			if (m_drawerLayout != null && !m_feedIsSelected) {
 				m_drawerLayout.openDrawer(Gravity.START);
 			}
-
 		}
-		
 	}
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -427,9 +416,6 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);	
-		
-		out.putBoolean("feedIsSelected", m_feedIsSelected);
-        out.putBoolean("userFeedSelected", m_userFeedSelected);
 
 		Application.getInstance().save(out);
 	}

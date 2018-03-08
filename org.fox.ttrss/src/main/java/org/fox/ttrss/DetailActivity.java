@@ -19,9 +19,11 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import icepick.State;
+
 public class DetailActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
-	protected ArticleList m_articles = new ArticleList();
+	@State protected ArticleList m_articles = new ArticleList();
 
 	protected SharedPreferences m_prefs;
     private Article m_activeArticle;
@@ -38,7 +40,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 
 		setContentView(R.layout.activity_detail);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         m_forceDisableActionMode = isPortrait() || isSmallScreen();
@@ -54,9 +56,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
             findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         }
 
-		if (savedInstanceState != null) {
-            m_articles = savedInstanceState.getParcelable("articles");
-        } else {
+        if (savedInstanceState == null) {
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
@@ -126,8 +126,6 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 	@Override
 	protected void refresh() {
 		super.refresh();
-		
-		
 	}
 	
 	@Override
@@ -142,8 +140,6 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-
-        out.putParcelable("articles", m_articles);
 
 		Application.getInstance().save(out);
 	}

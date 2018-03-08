@@ -14,14 +14,16 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
+import icepick.State;
+
 
 public class YoutubePlayerActivity extends CommonActivity implements YouTubePlayer.OnInitializedListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final String DEVELOPER_KEY = "AIzaSyD8BS4Uj21jg_gHZfP4v0VXrAWiwqd05nk";
 
-    private String m_streamUri;
-    private String m_videoId;
+    @State private String m_streamUri;
+    @State private String m_videoId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,7 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube_player);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,9 +46,6 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
         if (savedInstanceState == null) {
             m_streamUri = getIntent().getStringExtra("streamUri");
             m_videoId = getIntent().getStringExtra("vid");
-        } else {
-            m_streamUri = savedInstanceState.getString("streamUri");
-            m_videoId = savedInstanceState.getString("vid");
         }
 
         YouTubePlayerSupportFragment frag = (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
@@ -61,15 +60,6 @@ public class YoutubePlayerActivity extends CommonActivity implements YouTubePlay
         else
             getSupportActionBar().show();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-
-        out.putString("streamUri", m_streamUri);
-        out.putString("vid", m_videoId);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

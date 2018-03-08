@@ -1,34 +1,26 @@
 package org.fox.ttrss;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Gallery;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.gson.JsonElement;
 
 import org.fox.ttrss.types.GalleryEntry;
 import org.jsoup.Jsoup;
@@ -36,20 +28,20 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import icepick.State;
 import me.relex.circleindicator.CircleIndicator;
 
 public class GalleryActivity extends CommonActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    private ArrayList<GalleryEntry> m_items = new ArrayList<>();
-    private String m_title;
+    @State protected ArrayList<GalleryEntry> m_items = new ArrayList<>();
+    @State protected String m_title;
     private ArticleImagesPagerAdapter m_adapter;
-    public String m_content;
+    @State public String m_content;
     private ViewPager m_pager;
     private ProgressBar m_checkProgress;
 
@@ -173,7 +165,7 @@ public class GalleryActivity extends CommonActivity {
 
         setContentView(R.layout.activity_gallery);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //m_progress = (ProgressBar) findViewById(R.id.gallery_check_progress);
@@ -185,7 +177,6 @@ public class GalleryActivity extends CommonActivity {
 
         if (savedInstanceState == null) {
             m_title = getIntent().getStringExtra("title");
-            //m_urls = getIntent().getStringArrayListExtra("urls");
             m_content = getIntent().getStringExtra("content");
 
             String imgSrcFirst = getIntent().getStringExtra("firstSrc");
@@ -194,8 +185,6 @@ public class GalleryActivity extends CommonActivity {
             Elements elems = doc.select("img,video");
 
             boolean firstFound = false;
-
-            ArrayList<GalleryEntry> tmp = new ArrayList<>();
 
             for (Element elem : elems) {
 
@@ -254,11 +243,6 @@ public class GalleryActivity extends CommonActivity {
                         uncheckedItems.add(item);
                 }
             }
-
-        } else {
-            m_items = (ArrayList<GalleryEntry>) savedInstanceState.getSerializable("items");
-            m_title = savedInstanceState.getString("title");
-            m_content = savedInstanceState.getString("content");
         }
 
         findViewById(R.id.gallery_overflow).setOnClickListener(new View.OnClickListener() {
@@ -286,15 +270,15 @@ public class GalleryActivity extends CommonActivity {
 
         m_adapter = new ArticleImagesPagerAdapter(getSupportFragmentManager(), m_items);
 
-        m_pager = (ViewPager) findViewById(R.id.gallery_pager);
+        m_pager = findViewById(R.id.gallery_pager);
         m_pager.setAdapter(m_adapter);
         m_pager.setPageTransformer(true, new DepthPageTransformer());
 
-        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.gallery_pager_indicator);
+        CircleIndicator indicator = findViewById(R.id.gallery_pager_indicator);
         indicator.setViewPager(m_pager);
         m_adapter.registerDataSetObserver(indicator.getDataSetObserver());
 
-        m_checkProgress = (ProgressBar) findViewById(R.id.gallery_check_progress);
+        m_checkProgress = findViewById(R.id.gallery_check_progress);
 
         Log.d(TAG, "items to check:" + uncheckedItems.size());
 
@@ -323,16 +307,6 @@ public class GalleryActivity extends CommonActivity {
 
         mct.execute(uncheckedItems);
 
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-
-        out.putSerializable("items", m_items);
-        out.putString("title", m_title);
-        out.putString("content", m_content);
     }
 
     @Override
