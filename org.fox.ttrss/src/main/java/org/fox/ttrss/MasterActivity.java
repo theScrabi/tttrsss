@@ -81,7 +81,11 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
                     getSupportActionBar().show();
                     invalidateOptionsMenu();
 
-					refresh(false);
+					Date date = new Date();
+					if (date.getTime() - m_lastRefresh > 60*1000) {
+						m_lastRefresh = date.getTime();
+						refresh(false);
+					}
                 }
 
                 @Override
@@ -263,7 +267,7 @@ public class MasterActivity extends OnlineActivity implements HeadlinesEventList
 
         Date date = new Date();
 
-        if (date.getTime() - m_lastRefresh > 10000) {
+        if (date.getTime() - m_lastRefresh > 30*1000) {
             m_lastRefresh = date.getTime();
             refresh(false);
         }
