@@ -164,8 +164,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 	@Override
 	public void onLoaderReset(Loader<JsonElement> loader) {
-		m_feeds.clear();
-		m_adapter.notifyDataSetChanged();
+		/*m_feeds.clear();
+		m_adapter.notifyDataSetChanged();*/
 	}
 
 	@SuppressLint("DefaultLocale")

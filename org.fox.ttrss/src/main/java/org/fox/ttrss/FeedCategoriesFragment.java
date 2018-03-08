@@ -172,8 +172,8 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onLoaderReset(Loader<JsonElement> loader) {
 		Log.d(TAG, "onLoaderReset: " + loader);
 
-		m_cats.clear();
-		m_adapter.notifyDataSetChanged();
+		/*m_cats.clear();
+		m_adapter.notifyDataSetChanged();*/
 	}
 
 	@SuppressLint("DefaultLocale")
