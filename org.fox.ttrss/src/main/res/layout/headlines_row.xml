@@ -59,13 +59,13 @@
 
                     <TextureView
                         android:id="@+id/flavor_video"
-                        android:foreground="@drawable/ripple"
+                        android:foreground="@null"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:adjustViewBounds="true"
-                        android:background="@android:color/transparent"
+                        android:background="@null"
                         android:cropToPadding="true"
                         android:src="@drawable/drawer_header"
                         android:scaleType="fitCenter"

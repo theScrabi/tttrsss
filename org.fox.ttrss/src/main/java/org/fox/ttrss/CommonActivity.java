@@ -27,14 +27,13 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -44,13 +43,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class CommonActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CommonActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	public final static String FRAG_HEADLINES = "headlines";
@@ -416,7 +413,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 			if (askEveryTime) {
 
 				View dialogView = View.inflate(this, R.layout.dialog_open_link_askcb, null);
-				final CheckBox askEveryTimeCB = (CheckBox) dialogView.findViewById(R.id.open_link_ask_checkbox);
+				final CheckBox askEveryTimeCB = dialogView.findViewById(R.id.open_link_ask_checkbox);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						CommonActivity.this)
