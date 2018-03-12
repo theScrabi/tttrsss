@@ -4,17 +4,16 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -36,6 +35,8 @@ public class ImageCacheService extends IntentService {
 
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
+	private final String NOTIFICATION_CHANNEL_NORMAL = TAG + ":Normal";
+	private final String NOTIFICATION_CHANNEL_PRIORITY = TAG + ":Priority";
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
@@ -70,6 +71,20 @@ public class ImageCacheService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PRIORITY, NOTIFICATION_CHANNEL_PRIORITY,
+					NotificationManager.IMPORTANCE_HIGH);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			m_nmgr.createNotificationChannel(channel);
+
+			channel = new NotificationChannel(NOTIFICATION_CHANNEL_NORMAL, NOTIFICATION_CHANNEL_NORMAL,
+					NotificationManager.IMPORTANCE_DEFAULT);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			m_nmgr.createNotificationChannel(channel);
+		}
 
 		m_receiver = new BroadcastReceiver() {
 			@Override
@@ -186,6 +201,10 @@ public class ImageCacheService extends IntentService {
 					.setGroup("org.fox.ttrss");
 		}
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(NOTIFICATION_CHANNEL_PRIORITY);
+		}
+
 		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
 	}
 
@@ -222,6 +241,10 @@ public class ImageCacheService extends IntentService {
 					.setColor(0x88b0f0)
 					.setGroup("org.fox.ttrss")
 					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(NOTIFICATION_CHANNEL_NORMAL);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());

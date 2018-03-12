@@ -3,6 +3,7 @@ package org.fox.ttrss.offline;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -45,6 +46,8 @@ import java.util.List;
 public class OfflineDownloadService extends Service {
 
 	private final String TAG = this.getClass().getSimpleName();
+	private final String NOTIFICATION_CHANNEL_NORMAL = TAG + ":Normal";
+	private final String NOTIFICATION_CHANNEL_PRIORITY = TAG + ":Priority";
 
 	// enable downloading read articles in debug configuration for testing
 	private static boolean OFFLINE_DEBUG_READ = false;
@@ -92,6 +95,21 @@ public class OfflineDownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PRIORITY, NOTIFICATION_CHANNEL_PRIORITY,
+					NotificationManager.IMPORTANCE_HIGH);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			m_nmgr.createNotificationChannel(channel);
+
+			channel = new NotificationChannel(NOTIFICATION_CHANNEL_NORMAL, NOTIFICATION_CHANNEL_NORMAL,
+					NotificationManager.IMPORTANCE_DEFAULT);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			m_nmgr.createNotificationChannel(channel);
+		}
+
 		m_prefs = PreferenceManager
 						.getDefaultSharedPreferences(getApplicationContext());
  
@@ -136,6 +154,10 @@ public class OfflineDownloadService extends Service {
 					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
         }
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(NOTIFICATION_CHANNEL_NORMAL);
+		}
+
         m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
@@ -178,6 +200,10 @@ public class OfflineDownloadService extends Service {
 					.setVisibility(Notification.VISIBILITY_PUBLIC)
 					.setColor(0x88b0f0)
 					.setGroup("org.fox.ttrss");
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(NOTIFICATION_CHANNEL_PRIORITY);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
