@@ -487,7 +487,7 @@ public class HeadlinesFragment extends StateSavedFragment {
 
 							a.unread = false;
 							m_readArticles.add(a);
-							m_feed.unread--;
+							if (m_feed != null) m_feed.unread--;
 						}
 					}
 				}
@@ -521,7 +521,7 @@ public class HeadlinesFragment extends StateSavedFragment {
 			}
 		});
 
-        if (m_activity.isSmallScreen()) {
+        if (m_activity.isSmallScreen() && m_feed != null) {
             m_activity.setTitle(m_feed.title);
         }
 
@@ -1014,7 +1014,7 @@ public class HeadlinesFragment extends StateSavedFragment {
 			}
 
 			if (holder.feedTitleView != null) {
-				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
+				if (article.feed_title != null && m_feed != null && (m_feed.is_cat || m_feed.id < 0)) {
 					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 					holder.feedTitleView.setText(article.feed_title);
 

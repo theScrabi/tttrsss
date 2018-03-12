@@ -105,8 +105,9 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 
 				ft.commit();
-				
-				setTitle(feed.title);
+
+				if (feed != null)
+					setTitle(feed.title);
 			}
 		}
 	}
