@@ -2,7 +2,6 @@ package org.fox.ttrss.offline;
 
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -18,6 +17,7 @@ import android.util.Log;
 import com.google.gson.JsonElement;
 
 import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.DatabaseHelper;
@@ -28,8 +28,7 @@ import java.util.List;
 
 public class OfflineUploadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
-	private final String NOTIFICATION_CHANNEL_ID = TAG;
-	
+
 	public static final int NOTIFY_UPLOADING = 2;
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.UploadComplete";
 
@@ -47,14 +46,6 @@ public class OfflineUploadService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, TAG,
-					NotificationManager.IMPORTANCE_DEFAULT);
-			channel.setShowBadge(false);
-			channel.setSound(null, null);
-			m_nmgr.createNotificationChannel(channel);
-		}
 
 		initDatabase();
 	}
@@ -94,7 +85,7 @@ public class OfflineUploadService extends IntentService {
         }
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_NORMAL);
 		}
 
 		m_nmgr.notify(NOTIFY_UPLOADING, builder.build());

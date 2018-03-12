@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -17,6 +16,7 @@ import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.offline.OfflineDownloadService;
@@ -35,8 +35,6 @@ public class ImageCacheService extends IntentService {
 
 	@SuppressWarnings("unused")
 	private final String TAG = this.getClass().getSimpleName();
-	private final String NOTIFICATION_CHANNEL_NORMAL = TAG + ":Normal";
-	private final String NOTIFICATION_CHANNEL_PRIORITY = TAG + ":Priority";
 
 	public static final int NOTIFY_DOWNLOADING = 1;
 	public static final int NOTIFY_DOWNLOAD_SUCCESS = 2;
@@ -71,20 +69,6 @@ public class ImageCacheService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PRIORITY, NOTIFICATION_CHANNEL_PRIORITY,
-					NotificationManager.IMPORTANCE_HIGH);
-			channel.setShowBadge(false);
-			channel.setSound(null, null);
-			m_nmgr.createNotificationChannel(channel);
-
-			channel = new NotificationChannel(NOTIFICATION_CHANNEL_NORMAL, NOTIFICATION_CHANNEL_NORMAL,
-					NotificationManager.IMPORTANCE_DEFAULT);
-			channel.setShowBadge(false);
-			channel.setSound(null, null);
-			m_nmgr.createNotificationChannel(channel);
-		}
 
 		m_receiver = new BroadcastReceiver() {
 			@Override
@@ -202,7 +186,7 @@ public class ImageCacheService extends IntentService {
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			builder.setChannelId(NOTIFICATION_CHANNEL_PRIORITY);
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_PRIORITY);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
@@ -244,7 +228,7 @@ public class ImageCacheService extends IntentService {
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			builder.setChannelId(NOTIFICATION_CHANNEL_NORMAL);
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_NORMAL);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());

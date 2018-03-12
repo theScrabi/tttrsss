@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -65,7 +68,10 @@ public class CommonActivity extends AppCompatActivity implements SharedPreferenc
     //public final static String THEME_AMBER = "THEME_AMBER";
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
 
-    public static final int EXCERPT_MAX_LENGTH = 256;
+	public final static String NOTIFICATION_CHANNEL_NORMAL = "channel_normal";
+	public final static String NOTIFICATION_CHANNEL_PRIORITY = "channel_priority";
+
+	public static final int EXCERPT_MAX_LENGTH = 256;
     public static final int EXCERPT_MAX_QUERY_LENGTH = 2048;
 
 	public static final int PENDING_INTENT_CHROME_SHARE = 1;
@@ -218,6 +224,27 @@ public class CommonActivity extends AppCompatActivity implements SharedPreferenc
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationManager nmgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+			// todo: human readable names
+
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PRIORITY,
+					NOTIFICATION_CHANNEL_PRIORITY,
+					NotificationManager.IMPORTANCE_HIGH);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			nmgr.createNotificationChannel(channel);
+
+			channel = new NotificationChannel(NOTIFICATION_CHANNEL_NORMAL,
+					NOTIFICATION_CHANNEL_NORMAL,
+					NotificationManager.IMPORTANCE_DEFAULT);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			nmgr.createNotificationChannel(channel);
+		}
+
 		m_databaseHelper = DatabaseHelper.getInstance(this);
 
 		m_prefs = PreferenceManager
