@@ -457,7 +457,7 @@ public class ArticleFragment extends StateSavedFragment  {
                 "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
                 "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />" +
                 "<style type=\"text/css\">" +
-                "body { padding : 0px; margin : 0px; line-height : 130%; }" +
+                "body { padding : 0px; margin : 0px; line-height : 130%; word-wrap: break-word; }" +
                 "img, video, iframe { max-width : 100%; width : auto; height : auto; }" +
                 " table { width : 100%; }" +
                 cssOverride +
