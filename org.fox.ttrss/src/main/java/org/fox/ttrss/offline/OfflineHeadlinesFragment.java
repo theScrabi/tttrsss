@@ -343,7 +343,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		View view = inflater.inflate(R.layout.fragment_headlines_offline, container, false);
 
-		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.headlines_swipe_container);
+		m_swipeLayout = view.findViewById(R.id.headlines_swipe_container);
 		
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
@@ -354,9 +354,9 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 		m_cursor = createCursor();
 		
-		m_list = (ListView)view.findViewById(R.id.headlines_list);
+		m_list = view.findViewById(R.id.headlines_list);
 
-		FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.headlines_fab);
+		FloatingActionButton fab = view.findViewById(R.id.headlines_fab);
 		fab.setVisibility(View.GONE);
 
         if (m_activity.isSmallScreen()) {
@@ -524,6 +524,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		public ImageView flavorVideoKindView;
 		public View flavorImageOverflow;
 		public View headlineHeader;
+		public ImageView attachmentsView;
 
 		public ArticleViewHolder(View v) {
 
@@ -548,25 +549,26 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				}
 			});
 
-			titleView = (TextView)v.findViewById(R.id.title);
+			titleView = v.findViewById(R.id.title);
 
-			feedTitleView = (TextView)v.findViewById(R.id.feed_title);
-			markedView = (ImageView)v.findViewById(R.id.marked);
-			publishedView = (ImageView)v.findViewById(R.id.published);
-			excerptView = (TextView)v.findViewById(R.id.excerpt);
-			flavorImageView = (ImageView) v.findViewById(R.id.flavor_image);
-			authorView = (TextView)v.findViewById(R.id.author);
-			dateView = (TextView) v.findViewById(R.id.date);
-			selectionBoxView = (CheckBox) v.findViewById(R.id.selected);
-			menuButtonView = (ImageView) v.findViewById(R.id.article_menu_button);
-			flavorImageHolder = (ViewGroup) v.findViewById(R.id.flavorImageHolder);
-			flavorImageLoadingBar = (ProgressBar) v.findViewById(R.id.flavorImageLoadingBar);
+			feedTitleView = v.findViewById(R.id.feed_title);
+			markedView = v.findViewById(R.id.marked);
+			publishedView = v.findViewById(R.id.published);
+			excerptView = v.findViewById(R.id.excerpt);
+			flavorImageView = v.findViewById(R.id.flavor_image);
+			authorView = v.findViewById(R.id.author);
+			dateView = v.findViewById(R.id.date);
+			selectionBoxView = v.findViewById(R.id.selected);
+			menuButtonView = v.findViewById(R.id.article_menu_button);
+			flavorImageHolder = v.findViewById(R.id.flavorImageHolder);
+			flavorImageLoadingBar = v.findViewById(R.id.flavorImageLoadingBar);
 			headlineFooter = v.findViewById(R.id.headline_footer);
-			textImage = (ImageView) v.findViewById(R.id.text_image);
-			textChecked = (ImageView) v.findViewById(R.id.text_checked);
-			flavorVideoKindView = (ImageView) v.findViewById(R.id.flavor_video_kind);
+			textImage = v.findViewById(R.id.text_image);
+			textChecked = v.findViewById(R.id.text_checked);
+			flavorVideoKindView = v.findViewById(R.id.flavor_video_kind);
 			headlineHeader = v.findViewById(R.id.headline_header);
 			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
+			attachmentsView = v.findViewById(R.id.attachments);
 		}
 	}
 
@@ -661,12 +663,8 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 								@Override
 								public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
 
-									if (resource.getIntrinsicWidth() < HeadlinesFragment.THUMB_IMG_MIN_SIZE ||
-											resource.getIntrinsicHeight() < HeadlinesFragment.THUMB_IMG_MIN_SIZE) {
-										return true;
-									} else {
-										return false;
-									}
+									return resource.getIntrinsicWidth() < HeadlinesFragment.THUMB_IMG_MIN_SIZE ||
+											resource.getIntrinsicHeight() < HeadlinesFragment.THUMB_IMG_MIN_SIZE;
 								}
 							})
 							.into(holder.textImage);
@@ -811,6 +809,10 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 
 			TypedValue tvAccent = new TypedValue();
 			m_activity.getTheme().resolveAttribute(R.attr.colorAccent, tvAccent, true);
+
+			if (holder.attachmentsView != null) {
+				holder.attachmentsView.setVisibility(View.GONE);
+			}
 
 			if (holder.markedView != null) {
 				TypedValue tv = new TypedValue();
@@ -1237,7 +1239,7 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 		try {
 			m_adapter.notifyDataSetChanged();
 
-			ListView list = (ListView)getView().findViewById(R.id.headlines_list);
+			ListView list = getView().findViewById(R.id.headlines_list);
 		
 			Log.d(TAG, articleId + " position " + getArticleIdPosition(articleId));
 			

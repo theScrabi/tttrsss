@@ -760,6 +760,7 @@ public class HeadlinesFragment extends StateSavedFragment {
 		public View headlineHeader;
 		public View flavorImageOverflow;
 		public TextureView flavorVideoView;
+		public ImageView attachmentsView;
 		//public int position;
 		public boolean flavorImageEmbedded;
 		public ProgressTarget<String, GlideDrawable> flavorProgressTarget;
@@ -802,6 +803,7 @@ public class HeadlinesFragment extends StateSavedFragment {
 			headlineHeader = v.findViewById(R.id.headline_header);
 			flavorImageOverflow = v.findViewById(R.id.gallery_overflow);
 			flavorVideoView = v.findViewById(R.id.flavor_video);
+			attachmentsView = v.findViewById(R.id.attachments);
 
 			if (flavorImageView != null && flavorImageLoadingBar != null) {
 				flavorProgressTarget = new FlavorProgressTarget<>(new GlideDrawableImageViewTarget(flavorImageView), flavorImageLoadingBar);
@@ -1072,6 +1074,17 @@ public class HeadlinesFragment extends StateSavedFragment {
 						m_adapter.notifyItemChanged(m_list.getChildPosition(holder.view));
 
 						m_activity.saveArticlePublished(article);
+					}
+				});
+			}
+
+			if (holder.attachmentsView != null) {
+				holder.attachmentsView.setVisibility(article.attachments != null && article.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+
+				holder.attachmentsView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						m_activity.displayAttachments(article);
 					}
 				});
 			}

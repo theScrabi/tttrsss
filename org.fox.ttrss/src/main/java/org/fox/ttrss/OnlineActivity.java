@@ -453,7 +453,58 @@ public class OnlineActivity extends CommonActivity {
 			return super.onContextItemSelected(item);
 		}
 	}
-	
+
+	public void displayAttachments(Article article) {
+		if (article != null && article.attachments != null && article.attachments.size() > 0) {
+			CharSequence[] items = new CharSequence[article.attachments.size()];
+			final CharSequence[] itemUrls = new CharSequence[article.attachments.size()];
+
+			for (int i = 0; i < article.attachments.size(); i++) {
+				items[i] = article.attachments.get(i).title != null ? article.attachments.get(i).content_url :
+						article.attachments.get(i).content_url;
+
+				itemUrls[i] = article.attachments.get(i).content_url;
+			}
+
+			Dialog dialog = new Dialog(OnlineActivity.this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(OnlineActivity.this)
+					.setTitle(R.string.attachments_prompt)
+					.setCancelable(true)
+					.setSingleChoiceItems(items, 0, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							//
+						}
+					}).setNeutralButton(R.string.attachment_copy, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+
+							copyToClipboard((String)itemUrls[selectedPosition]);
+						}
+					}).setPositiveButton(R.string.attachment_view, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+
+							openUri(Uri.parse((String)itemUrls[selectedPosition]));
+
+							dialog.cancel();
+						}
+					}).setNegativeButton(R.string.dialog_cancel, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					});
+
+			dialog = builder.create();
+			dialog.show();
+		}
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		final HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
@@ -467,54 +518,9 @@ public class OnlineActivity extends CommonActivity {
 		case R.id.toggle_attachments:
 			if (true) {
 				Article article = ap.getSelectedArticle();
-				
-				if (article != null && article.attachments != null && article.attachments.size() > 0) {
-					CharSequence[] items = new CharSequence[article.attachments.size()];
-					final CharSequence[] itemUrls = new CharSequence[article.attachments.size()];
 
-					for (int i = 0; i < article.attachments.size(); i++) {
-						items[i] = article.attachments.get(i).title != null ? article.attachments.get(i).content_url : 
-							article.attachments.get(i).content_url;
-						
-						itemUrls[i] = article.attachments.get(i).content_url;
-					}
-
-					Dialog dialog = new Dialog(OnlineActivity.this);
-					AlertDialog.Builder builder = new AlertDialog.Builder(OnlineActivity.this)
-							.setTitle(R.string.attachments_prompt)
-							.setCancelable(true)
-							.setSingleChoiceItems(items, 0, new OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									//
-								}
-							}).setNeutralButton(R.string.attachment_copy, new OnClickListener() {								
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-									
-									copyToClipboard((String)itemUrls[selectedPosition]);
-								}
-							}).setPositiveButton(R.string.attachment_view, new OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-									
-									openUri(Uri.parse((String)itemUrls[selectedPosition]));
-
-									dialog.cancel();
-								}
-							}).setNegativeButton(R.string.dialog_cancel, new OnClickListener() {
-								
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									dialog.cancel();
-								}
-							});
-
-					dialog = builder.create();
-					dialog.show();
+				if (article != null) {
+					displayAttachments(article);
 				}
 			}
 			return true;

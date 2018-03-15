@@ -222,6 +222,17 @@
                     android:textStyle="italic" />
 
                 <ImageView
+                    android:id="@+id/attachments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/ripple"
+                    android:clickable="true"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:src="?ic_attachment" />
+
+                <ImageView
                     android:id="@+id/marked"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
