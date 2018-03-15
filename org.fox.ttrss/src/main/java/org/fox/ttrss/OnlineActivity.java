@@ -515,7 +515,7 @@ public class OnlineActivity extends CommonActivity {
 			Intent subscribe = new Intent(OnlineActivity.this, SubscribeActivity.class);
 			startActivityForResult(subscribe, 0);
 			return true;
-		case R.id.toggle_attachments:
+		/*case R.id.toggle_attachments:
 			if (true) {
 				Article article = ap.getSelectedArticle();
 
@@ -523,7 +523,7 @@ public class OnlineActivity extends CommonActivity {
 					displayAttachments(article);
 				}
 			}
-			return true;
+			return true; */
 		case R.id.donate:
 			if (true) {
 				openUnlockUrl();

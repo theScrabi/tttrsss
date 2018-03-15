@@ -55,11 +55,11 @@
                 android:icon="@drawable/ic_email"
                 app:showAsAction="ifRoom"
                 android:title="@string/article_toggle_unread"/>
-            <item
+            <!-- <item
                 android:id="@+id/toggle_attachments"
                 android:icon="@drawable/ic_attachment"
                 app:showAsAction=""
-                android:title="@string/attachments_prompt"/>
+                android:title="@string/attachments_prompt"/> -->
             <!-- <item
                 android:id="@+id/share_article"
                 android:icon="@drawable/ic_share"

@@ -184,12 +184,12 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 					/* if (!isCompatMode() && (isSmallScreen() || !isPortrait())) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 					} */
-					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
+					//m_menu.findItem(R.id.toggle_attachments).setVisible(true);
 				} else {
 					/* if (!isCompatMode()) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 					} */
-					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
+					//m_menu.findItem(R.id.toggle_attachments).setVisible(false);
 				}
 			}
 			
