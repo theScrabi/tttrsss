@@ -253,6 +253,22 @@ public class ArticleFragment extends StateSavedFragment  {
 
         }
 
+        ImageView attachments = view.findViewById(R.id.attachments);
+
+        if (attachments != null) {
+            if (m_article.attachments != null && m_article.attachments.size() > 0) {
+                attachments.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        m_activity.displayAttachments(m_article);
+                    }
+                });
+
+            } else {
+                attachments.setVisibility(View.GONE);
+            }
+        }
+
         ImageView share = view.findViewById(R.id.share);
 
         if (share != null) {

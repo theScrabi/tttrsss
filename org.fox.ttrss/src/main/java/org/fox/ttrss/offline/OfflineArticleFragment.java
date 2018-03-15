@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import com.shamanland.fab.ShowHideOnScroll;
 
-import org.fox.ttrss.ArticleFragment;
 import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.ImageCacheService;
@@ -206,11 +205,11 @@ public class OfflineArticleFragment extends Fragment {
 		
 		if (m_cursor.isFirst()) {
 			m_contentView = view.findViewById(R.id.article_scrollview);
-			m_customViewContainer = (FrameLayout) view.findViewById(R.id.article_fullscreen_video);
+			m_customViewContainer = view.findViewById(R.id.article_fullscreen_video);
 
             final String link = m_cursor.getString(m_cursor.getColumnIndex("link"));
 
-            NotifyingScrollView scrollView = (NotifyingScrollView) view.findViewById(R.id.article_scrollview);
+            NotifyingScrollView scrollView = view.findViewById(R.id.article_scrollview);
             m_fab = view.findViewById(R.id.article_fab);
 
             if (scrollView != null && m_activity.isSmallScreen()) {
@@ -258,7 +257,7 @@ public class OfflineArticleFragment extends Fragment {
 			int articleFontSize = Integer.parseInt(m_prefs.getString("article_font_size_sp", "16"));
 			int articleSmallFontSize = Math.max(10, Math.min(18, articleFontSize - 2));
 			
-			TextView title = (TextView)view.findViewById(R.id.title);
+			TextView title = view.findViewById(R.id.title);
 
 			if (title != null) {
 
@@ -287,7 +286,14 @@ public class OfflineArticleFragment extends Fragment {
 
 			}
 
-			ImageView share = (ImageView)view.findViewById(R.id.share);
+
+			ImageView attachments = view.findViewById(R.id.attachments);
+
+			if (attachments != null) {
+				attachments.setVisibility(View.GONE);
+			}
+
+			ImageView share = view.findViewById(R.id.share);
 
 			if (share != null) {
 				share.setOnClickListener(new OnClickListener() {
@@ -299,19 +305,19 @@ public class OfflineArticleFragment extends Fragment {
 			}
 
 
-			TextView comments = (TextView)view.findViewById(R.id.comments);
+			TextView comments = view.findViewById(R.id.comments);
 			
 			if (comments != null) {
 				comments.setVisibility(View.GONE);
 			}
 			
-			TextView note = (TextView)view.findViewById(R.id.note);
+			TextView note = view.findViewById(R.id.note);
 			
 			if (note != null) {
 				note.setVisibility(View.GONE);
 			}
 			
-			m_web = (WebView)view.findViewById(R.id.article_content);
+			m_web = view.findViewById(R.id.article_content);
 			
 			if (m_web != null) {
 				if (CommonActivity.THEME_DARK.equals(m_prefs.getString("theme", CommonActivity.THEME_DEFAULT))) {
@@ -464,7 +470,7 @@ public class OfflineArticleFragment extends Fragment {
 			
 			}
 			
-			TextView dv = (TextView)view.findViewById(R.id.date);
+			TextView dv = view.findViewById(R.id.date);
 			
 			if (dv != null) {
 				dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);
@@ -474,7 +480,7 @@ public class OfflineArticleFragment extends Fragment {
 				dv.setText(df.format(d));
 			}
 
-			TextView tagv = (TextView)view.findViewById(R.id.tags);
+			TextView tagv = view.findViewById(R.id.tags);
 						
 			if (tagv != null) {
 				tagv.setTextSize(TypedValue.COMPLEX_UNIT_SP, articleSmallFontSize);

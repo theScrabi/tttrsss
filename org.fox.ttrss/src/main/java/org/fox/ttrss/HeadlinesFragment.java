@@ -1079,14 +1079,19 @@ public class HeadlinesFragment extends StateSavedFragment {
 			}
 
 			if (holder.attachmentsView != null) {
-				holder.attachmentsView.setVisibility(article.attachments != null && article.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+				if (article.attachments != null && article.attachments.size() > 0) {
+					holder.attachmentsView.setVisibility(View.VISIBLE);
 
-				holder.attachmentsView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						m_activity.displayAttachments(article);
-					}
-				});
+					holder.attachmentsView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							m_activity.displayAttachments(article);
+						}
+					});
+
+				} else {
+					holder.attachmentsView.setVisibility(View.GONE);
+				}
 			}
 
 			if (holder.excerptView != null) {

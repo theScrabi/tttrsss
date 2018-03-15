@@ -57,6 +57,17 @@
                         android:textSize="18sp" />
 
                     <ImageView
+                        android:id="@+id/attachments"
+                        android:background="@drawable/ripple"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_weight="0"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="true"
+                        android:src="?ic_attachment"
+                        android:layout_gravity="center_vertical|right" />
+
+                    <ImageView
                         android:id="@+id/share"
                         android:background="@drawable/ripple"
                         android:layout_width="wrap_content"
