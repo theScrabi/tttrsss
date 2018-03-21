@@ -10,14 +10,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.offline.OfflineDownloadService;
@@ -186,6 +185,10 @@ public class ImageCacheService extends IntentService {
 					.setGroup("org.fox.ttrss");
 		}
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_PRIORITY);
+		}
+
 		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());
 	}
 
@@ -222,6 +225,10 @@ public class ImageCacheService extends IntentService {
 					.setColor(0x88b0f0)
 					.setGroup("org.fox.ttrss")
 					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_NORMAL);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());

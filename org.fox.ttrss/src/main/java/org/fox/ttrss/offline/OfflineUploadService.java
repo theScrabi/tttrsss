@@ -17,6 +17,7 @@ import android.util.Log;
 import com.google.gson.JsonElement;
 
 import org.fox.ttrss.ApiRequest;
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.DatabaseHelper;
@@ -27,10 +28,10 @@ import java.util.List;
 
 public class OfflineUploadService extends IntentService {
 	private final String TAG = this.getClass().getSimpleName();
-	
+
 	public static final int NOTIFY_UPLOADING = 2;
 	public static final String INTENT_ACTION_SUCCESS = "org.fox.ttrss.intent.action.UploadComplete";
-	
+
 	private String m_sessionId;
 	private NotificationManager m_nmgr;
 	private boolean m_uploadInProgress = false;
@@ -45,6 +46,7 @@ public class OfflineUploadService extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
 		initDatabase();
 	}
 
@@ -82,7 +84,11 @@ public class OfflineUploadService extends IntentService {
 					.addAction(R.drawable.ic_launcher, getString(R.string.offline_sync_try_again), contentIntent);
         }
 
-        m_nmgr.notify(NOTIFY_UPLOADING, builder.build());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_NORMAL);
+		}
+
+		m_nmgr.notify(NOTIFY_UPLOADING, builder.build());
 	}
 	
 	private void updateNotification(int msgResId, int progress, int max, boolean showProgress, boolean isError) {

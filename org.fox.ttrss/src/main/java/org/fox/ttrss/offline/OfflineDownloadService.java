@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.fox.ttrss.ApiRequest;
 import org.fox.ttrss.BuildConfig;
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.OnlineActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.types.Article;
@@ -92,6 +93,7 @@ public class OfflineDownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		m_nmgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
 		m_prefs = PreferenceManager
 						.getDefaultSharedPreferences(getApplicationContext());
  
@@ -136,6 +138,10 @@ public class OfflineDownloadService extends Service {
 					.addAction(R.drawable.ic_launcher, getString(R.string.cancel), cancelIntent);
         }
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_NORMAL);
+		}
+
         m_nmgr.notify(NOTIFY_DOWNLOADING, builder.build());
 	}
 
@@ -178,6 +184,10 @@ public class OfflineDownloadService extends Service {
 					.setVisibility(Notification.VISIBILITY_PUBLIC)
 					.setColor(0x88b0f0)
 					.setGroup("org.fox.ttrss");
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			builder.setChannelId(CommonActivity.NOTIFICATION_CHANNEL_PRIORITY);
 		}
 
 		m_nmgr.notify(NOTIFY_DOWNLOAD_SUCCESS, builder.build());

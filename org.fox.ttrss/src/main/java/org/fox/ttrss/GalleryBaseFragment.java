@@ -1,15 +1,11 @@
 package org.fox.ttrss;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 
-public class GalleryBaseFragment extends Fragment {
+public class GalleryBaseFragment extends StateSavedFragment {
     private final String TAG = this.getClass().getSimpleName();
     protected GalleryActivity m_activity;
 

@@ -45,6 +45,7 @@
     <attr name="ic_coffee" format="reference" />
     <attr name="ic_folder_outline" format="reference" />
     <attr name="ic_dots_vertical" format="reference" />
+    <attr name="ic_attachment" format="reference" />
     <declare-styleable name="ScrimInsetsView">
         <attr format="reference|color" name="insetForeground">
         </attr></declare-styleable>

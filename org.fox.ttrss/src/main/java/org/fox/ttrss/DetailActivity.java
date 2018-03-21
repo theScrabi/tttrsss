@@ -19,9 +19,11 @@ import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
 import org.fox.ttrss.types.Feed;
 
+import icepick.State;
+
 public class DetailActivity extends OnlineActivity implements HeadlinesEventListener {
 	private final String TAG = this.getClass().getSimpleName();
-	protected ArticleList m_articles = new ArticleList();
+	@State protected ArticleList m_articles = new ArticleList();
 
 	protected SharedPreferences m_prefs;
     private Article m_activeArticle;
@@ -38,7 +40,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 
 		setContentView(R.layout.activity_detail);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
         m_forceDisableActionMode = isPortrait() || isSmallScreen();
@@ -54,9 +56,7 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
             findViewById(R.id.headlines_fragment).setVisibility(View.GONE);
         }
 
-		if (savedInstanceState != null) {
-            m_articles = savedInstanceState.getParcelable("articles");
-        } else {
+        if (savedInstanceState == null) {
 			Intent i = getIntent();
 			
 			if (i.getExtras() != null) {
@@ -105,8 +105,9 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 				ft.replace(R.id.article_fragment, af, FRAG_ARTICLE);
 
 				ft.commit();
-				
-				setTitle(feed.title);
+
+				if (feed != null)
+					setTitle(feed.title);
 			}
 		}
 	}
@@ -126,8 +127,6 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 	@Override
 	protected void refresh() {
 		super.refresh();
-		
-		
 	}
 	
 	@Override
@@ -142,8 +141,6 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-
-        out.putParcelable("articles", m_articles);
 
 		Application.getInstance().save(out);
 	}
@@ -187,12 +184,12 @@ public class DetailActivity extends OnlineActivity implements HeadlinesEventList
 					/* if (!isCompatMode() && (isSmallScreen() || !isPortrait())) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 					} */
-					m_menu.findItem(R.id.toggle_attachments).setVisible(true);
+					//m_menu.findItem(R.id.toggle_attachments).setVisible(true);
 				} else {
 					/* if (!isCompatMode()) {
 						m_menu.findItem(R.id.toggle_attachments).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 					} */
-					m_menu.findItem(R.id.toggle_attachments).setVisible(false);
+					//m_menu.findItem(R.id.toggle_attachments).setVisible(false);
 				}
 			}
 			

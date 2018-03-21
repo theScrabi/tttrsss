@@ -45,12 +45,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import icepick.State;
+
 public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener,
 		LoaderManager.LoaderCallbacks<JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
 	private FeedCategoryListAdapter m_adapter;
 	private FeedCategoryList m_cats = new FeedCategoryList();
-	private FeedCategory m_selectedCat;
+	@State FeedCategory m_selectedCat;
 	private MasterActivity m_activity;
 	private SwipeRefreshLayout m_swipeLayout;
     private ListView m_list;
@@ -170,8 +172,8 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	public void onLoaderReset(Loader<JsonElement> loader) {
 		Log.d(TAG, "onLoaderReset: " + loader);
 
-		m_cats.clear();
-		m_adapter.notifyDataSetChanged();
+		/*m_cats.clear();
+		m_adapter.notifyDataSetChanged();*/
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -318,14 +320,10 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
-		if (savedInstanceState != null) {
-			m_selectedCat = savedInstanceState.getParcelable("selectedCat");
-			//m_cats = savedInstanceState.getParcelable("cats");
-		}	
-		
+
 		View view = inflater.inflate(R.layout.fragment_cats, container, false);
 		
-		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
+		m_swipeLayout = view.findViewById(R.id.feeds_swipe_container);
 		
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
@@ -334,8 +332,8 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 			}
 		});
 
-		m_list = (ListView)view.findViewById(R.id.feeds);
-		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, (ArrayList<FeedCategory>)m_cats);
+		m_list = view.findViewById(R.id.feeds);
+		m_adapter = new FeedCategoryListAdapter(getActivity(), R.layout.feeds_row, m_cats);
 
 		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, true);
 
@@ -366,15 +364,6 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 		m_activity.invalidateOptionsMenu();
 	}
 	
-	@Override
-	public void onSaveInstanceState (Bundle out) {
-		super.onSaveInstanceState(out);
-
-		out.setClassLoader(getClass().getClassLoader());
-		out.putParcelable("selectedCat", m_selectedCat);
-		//out.putParcelable("cats", m_cats);
-	}
-
 	public void refresh() {
 		if (!isAdded()) return;
 
@@ -433,7 +422,7 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 
 			}
 
-			ImageView icon = (ImageView) v.findViewById(R.id.icon);
+			ImageView icon = v.findViewById(R.id.icon);
 
 			if (icon != null) {
 				TypedValue tv = new TypedValue();
@@ -443,13 +432,13 @@ public class FeedCategoriesFragment extends BaseFeedlistFragment implements OnIt
 
 			}
 
-			TextView tt = (TextView) v.findViewById(R.id.title);
+			TextView tt = v.findViewById(R.id.title);
 
 			if (tt != null) {
 				tt.setText(cat.title);
 			}
 
-			TextView tu = (TextView) v.findViewById(R.id.unread_counter);
+			TextView tu = v.findViewById(R.id.unread_counter);
 
 			if (tu != null) {
 				tu.setText(String.valueOf(cat.unread));

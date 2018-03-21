@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.fox.ttrss"
-    android:versionCode="465"
-    android:versionName="1.231">
+    android:versionCode="469"
+    android:versionName="1.235">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -265,11 +265,6 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@style/DarkDialogTheme" />
-        <activity
-            android:name=".YoutubePlayerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_video_player" >
-        </activity>
     </application>
 
 </manifest>

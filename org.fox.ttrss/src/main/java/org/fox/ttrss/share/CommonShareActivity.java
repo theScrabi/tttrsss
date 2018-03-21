@@ -16,11 +16,13 @@ import org.fox.ttrss.PreferencesActivity;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.SimpleLoginManager;
 
+import icepick.State;
+
 
 public abstract class CommonShareActivity extends CommonActivity {
 	protected SharedPreferences m_prefs;
-	protected String m_sessionId;
-	protected int m_apiLevel = 0;
+	@State protected String m_sessionId;
+	@State protected int m_apiLevel = 0;
 
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -30,19 +32,6 @@ public abstract class CommonShareActivity extends CommonActivity {
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		super.onCreate(savedInstanceState);
-		
-		if (savedInstanceState != null) {
-			m_sessionId = savedInstanceState.getString("sessionId");
-			m_apiLevel = savedInstanceState.getInt("apiLevel");
-		}
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle out) {
-		super.onSaveInstanceState(out);
-		
-		out.putString("sessionId", m_sessionId);
-		out.putInt("apiLevel", m_apiLevel);
 	}
 
 	protected abstract void onLoggedIn(int requestId);

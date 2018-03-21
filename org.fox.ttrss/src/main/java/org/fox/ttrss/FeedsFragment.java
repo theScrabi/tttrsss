@@ -47,6 +47,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import icepick.State;
+
 public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickListener, OnSharedPreferenceChangeListener,
 		LoaderManager.LoaderCallbacks<JsonElement> {
 	private final String TAG = this.getClass().getSimpleName();
@@ -54,10 +56,10 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	private FeedListAdapter m_adapter;
 	private FeedList m_feeds = new FeedList();
 	private MasterActivity m_activity;
-	private Feed m_selectedFeed;
-	private FeedCategory m_activeCategory;
+	@State Feed m_selectedFeed;
+	@State FeedCategory m_activeCategory;
 	private SwipeRefreshLayout m_swipeLayout;
-    private boolean m_enableParentBtn = false;
+    @State boolean m_enableParentBtn = false;
     private ListView m_list;
 
     public void initialize(FeedCategory cat, boolean enableParentBtn) {
@@ -162,8 +164,8 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 	@Override
 	public void onLoaderReset(Loader<JsonElement> loader) {
-		m_feeds.clear();
-		m_adapter.notifyDataSetChanged();
+		/*m_feeds.clear();
+		m_adapter.notifyDataSetChanged();*/
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -353,15 +355,9 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
 		
-		if (savedInstanceState != null) {
-			m_selectedFeed = savedInstanceState.getParcelable("selectedFeed");
-			m_activeCategory = savedInstanceState.getParcelable("activeCat");
-            m_enableParentBtn = savedInstanceState.getBoolean("enableParentBtn");
-		}
-
 		View view = inflater.inflate(R.layout.fragment_feeds, container, false);
 		
-		m_swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.feeds_swipe_container);
+		m_swipeLayout = view.findViewById(R.id.feeds_swipe_container);
 		
 	    m_swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
@@ -370,7 +366,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 			}
 		});
 
-		m_list = (ListView)view.findViewById(R.id.feeds);
+		m_list = view.findViewById(R.id.feeds);
 
 		initDrawerHeader(inflater, view, m_list, m_activity, m_prefs, !m_enableParentBtn);
 
@@ -419,16 +415,6 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 		getLoaderManager().initLoader(0, null, this).forceLoad();
 		
 		m_activity.invalidateOptionsMenu();
-	}
-	
-	@Override
-	public void onSaveInstanceState (Bundle out) {
-		super.onSaveInstanceState(out);
-
-		out.setClassLoader(getClass().getClassLoader());
-		out.putParcelable("selectedFeed", m_selectedFeed);
-		out.putParcelable("activeCat", m_activeCategory);
-        out.putBoolean("enableParentBtn", m_enableParentBtn);
 	}
 	
 	@Override
@@ -483,7 +469,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
         @Override
         public boolean isEmpty() {
-            return m_enableParentBtn ? false : super.isEmpty();
+            return !m_enableParentBtn && super.isEmpty();
         }
 
         @Override
@@ -522,7 +508,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 			}
 
-			ImageView icon = (ImageView) v.findViewById(R.id.icon);
+			ImageView icon = v.findViewById(R.id.icon);
 
 			if (icon != null) {
 				TypedValue tv = new TypedValue();
@@ -552,7 +538,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 			}
 
-			TextView tt = (TextView) v.findViewById(R.id.title);
+			TextView tt = v.findViewById(R.id.title);
 
 			if (tt != null) {
                 tt.setText(feed.display_title != null ? feed.display_title : feed.title);
@@ -565,7 +551,7 @@ public class FeedsFragment extends BaseFeedlistFragment implements OnItemClickLi
 
 			}
 
-			TextView tu = (TextView) v.findViewById(R.id.unread_counter);
+			TextView tu = v.findViewById(R.id.unread_counter);
 
 			if (tu != null) {
 				tu.setText(String.valueOf(feed.unread));

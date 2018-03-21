@@ -1,12 +1,19 @@
 package org.fox.ttrss;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.livefront.bridge.Bridge;
+import com.livefront.bridge.SavedStateHandler;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
+
+import icepick.Icepick;
 
 @ReportsCrashes(mode = ReportingInteractionMode.SILENT,
         excludeMatchingSharedPreferencesKeys = {"password"},
@@ -32,6 +39,18 @@ public class Application extends android.app.Application {
         if (!BuildConfig.DEBUG) {
             ACRA.init(this);
         }
+
+		Bridge.initialize(getApplicationContext(), new SavedStateHandler() {
+			@Override
+			public void saveInstanceState(@NonNull Object target, @NonNull Bundle state) {
+				Icepick.saveInstanceState(target, state);
+			}
+
+			@Override
+			public void restoreInstanceState(@NonNull Object target, @Nullable Bundle state) {
+				Icepick.restoreInstanceState(target, state);
+			}
+		});
 
 		m_singleton = this;
 	}

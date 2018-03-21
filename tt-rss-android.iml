@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <module external.linked.project.id="tt-rss-android" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$USER_HOME$/Desktop/tt-rss-android" external.system.id="GRADLE" type="JAVA_MODULE" version="4">
+=======
+<module external.linked.project.id="tt-rss-android" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" type="JAVA_MODULE" version="4">
+>>>>>>> 2b71e821ec9ddddeb1328334577dd04fa8609fb0
   <component name="FacetManager">
     <facet type="java-gradle" name="Java-Gradle">
       <configuration>

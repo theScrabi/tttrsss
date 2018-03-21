@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -27,16 +30,16 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.livefront.bridge.Bridge;
 
 import org.fox.ttrss.util.DatabaseHelper;
 import org.fox.ttrss.widget.SmallWidgetProvider;
@@ -44,13 +47,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class CommonActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+import icepick.State;
+
+public class CommonActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	public final static String FRAG_HEADLINES = "headlines";
@@ -65,7 +68,10 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
     //public final static String THEME_AMBER = "THEME_AMBER";
 	public final static String THEME_DEFAULT = CommonActivity.THEME_LIGHT;
 
-    public static final int EXCERPT_MAX_LENGTH = 256;
+	public final static String NOTIFICATION_CHANNEL_NORMAL = "channel_normal";
+	public final static String NOTIFICATION_CHANNEL_PRIORITY = "channel_priority";
+
+	public static final int EXCERPT_MAX_LENGTH = 256;
     public static final int EXCERPT_MAX_QUERY_LENGTH = 2048;
 
 	public static final int PENDING_INTENT_CHROME_SHARE = 1;
@@ -76,7 +82,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 	//private SQLiteDatabase m_writableDb;
 
 	private boolean m_smallScreenMode = true;
-	private String m_theme;
+	@State protected String m_theme;
 	private boolean m_needRestart;
 
 	private static String s_customTabPackageName;
@@ -218,6 +224,27 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationManager nmgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+			// todo: human readable names
+
+			NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PRIORITY,
+					NOTIFICATION_CHANNEL_PRIORITY,
+					NotificationManager.IMPORTANCE_HIGH);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			nmgr.createNotificationChannel(channel);
+
+			channel = new NotificationChannel(NOTIFICATION_CHANNEL_NORMAL,
+					NOTIFICATION_CHANNEL_NORMAL,
+					NotificationManager.IMPORTANCE_DEFAULT);
+			channel.setShowBadge(false);
+			channel.setSound(null, null);
+			nmgr.createNotificationChannel(channel);
+		}
+
 		m_databaseHelper = DatabaseHelper.getInstance(this);
 
 		m_prefs = PreferenceManager
@@ -227,9 +254,9 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 
 		setupWidgetUpdates(this);
 
-        if (savedInstanceState != null) {
-			m_theme = savedInstanceState.getString("theme");
-		} else {
+		Bridge.restoreInstanceState(this, savedInstanceState);
+
+        if (savedInstanceState == null) {
 			m_theme = m_prefs.getString("theme", CommonActivity.THEME_DEFAULT);
 		}
 
@@ -238,31 +265,13 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 		CustomTabsClient.bindCustomTabsService(this, customTabPackageName != null ?
 				customTabPackageName : "com.android.chrome", m_customTabServiceConnection);
 
-		/*if (!ImageLoader.getInstance().isInited()) {
-			ImageLoaderConfiguration config;
-
-			try {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.diskCache(
-								new LruDiscCache(new File(getCacheDir(), "article-images"),
-										DefaultConfigurationFactory.createFileNameGenerator(),
-										100 * 1024 * 1024))
-						.build();
-			} catch (IOException e) {
-				config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-						.build();
-			}
-			ImageLoader.getInstance().init(config);
-		}*/
-
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-		
-		out.putString("theme", m_theme);
+		Bridge.saveInstanceState(this, out);
 	}
 	
 	public boolean isSmallScreen() {
@@ -416,7 +425,7 @@ public class CommonActivity extends ActionBarActivity implements SharedPreferenc
 			if (askEveryTime) {
 
 				View dialogView = View.inflate(this, R.layout.dialog_open_link_askcb, null);
-				final CheckBox askEveryTimeCB = (CheckBox) dialogView.findViewById(R.id.open_link_ask_checkbox);
+				final CheckBox askEveryTimeCB = dialogView.findViewById(R.id.open_link_ask_checkbox);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						CommonActivity.this)
