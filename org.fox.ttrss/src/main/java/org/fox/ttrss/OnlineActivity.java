@@ -1332,60 +1332,65 @@ public class OnlineActivity extends CommonActivity {
 		req.execute(map);
 	}
 	
-	
+	// this may be called after activity has been destroyed (i.e. long asynctask)
+	// might as well prevent null pointers if menu items are missing
 	protected void initMenu() {
-		if (m_menu != null) {			
-			if (getSessionId() != null) {
-				m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
-				m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
-			} else {
-				m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
-				m_menu.setGroupVisible(R.id.menu_group_logged_out, true);				
-			}
-			
-			m_menu.setGroupVisible(R.id.menu_group_headlines, false);
-			m_menu.setGroupVisible(R.id.menu_group_article, false);
-			m_menu.setGroupVisible(R.id.menu_group_feeds, false);
-			
-			m_menu.findItem(R.id.set_labels).setEnabled(getApiLevel() >= 1);
-			m_menu.findItem(R.id.article_set_note).setEnabled(getApiLevel() >= 1);
-			m_menu.findItem(R.id.subscribe_to_feed).setEnabled(getApiLevel() >= 5);
-			
-			MenuItem search = m_menu.findItem(R.id.search);
-			search.setEnabled(getApiLevel() >= 2);
-			
-			ArticlePager ap = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
-			
-			if (ap != null) {
-				Article article = ap.getSelectedArticle();
-				
-				if (article != null) {
-					m_menu.findItem(R.id.toggle_marked).setIcon(article.marked ? R.drawable.ic_star :
-						R.drawable.ic_star_outline);
-
-					m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_checkbox_marked :
-						R.drawable.ic_rss_box);
-
-					m_menu.findItem(R.id.toggle_unread).setIcon(article.unread ? R.drawable.ic_email :
-							R.drawable.ic_email_open);
+		try {
+			if (m_menu != null) {
+				if (getSessionId() != null) {
+					m_menu.setGroupVisible(R.id.menu_group_logged_in, true);
+					m_menu.setGroupVisible(R.id.menu_group_logged_out, false);
+				} else {
+					m_menu.setGroupVisible(R.id.menu_group_logged_in, false);
+					m_menu.setGroupVisible(R.id.menu_group_logged_out, true);
 				}
-			}
-			
-			HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
-				
-			if (hf != null && !m_forceDisableActionMode) {
-				if (hf.getSelectedArticles().size() > 0) {
-					if (m_headlinesActionMode == null) {
-						m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
-					}
 
-					m_headlinesActionMode.setTitle(String.valueOf(hf.getSelectedArticles().size()));
-				} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) { 
+				m_menu.setGroupVisible(R.id.menu_group_headlines, false);
+				m_menu.setGroupVisible(R.id.menu_group_article, false);
+				m_menu.setGroupVisible(R.id.menu_group_feeds, false);
+
+				m_menu.findItem(R.id.set_labels).setEnabled(getApiLevel() >= 1);
+				m_menu.findItem(R.id.article_set_note).setEnabled(getApiLevel() >= 1);
+				m_menu.findItem(R.id.subscribe_to_feed).setEnabled(getApiLevel() >= 5);
+
+				MenuItem search = m_menu.findItem(R.id.search);
+				search.setEnabled(getApiLevel() >= 2);
+
+				ArticlePager ap = (ArticlePager) getSupportFragmentManager().findFragmentByTag(FRAG_ARTICLE);
+
+				if (ap != null) {
+					Article article = ap.getSelectedArticle();
+
+					if (article != null) {
+						m_menu.findItem(R.id.toggle_marked).setIcon(article.marked ? R.drawable.ic_star :
+								R.drawable.ic_star_outline);
+
+						m_menu.findItem(R.id.toggle_published).setIcon(article.published ? R.drawable.ic_checkbox_marked :
+								R.drawable.ic_rss_box);
+
+						m_menu.findItem(R.id.toggle_unread).setIcon(article.unread ? R.drawable.ic_email :
+								R.drawable.ic_email_open);
+					}
+				}
+
+				HeadlinesFragment hf = (HeadlinesFragment) getSupportFragmentManager().findFragmentByTag(FRAG_HEADLINES);
+
+				if (hf != null && !m_forceDisableActionMode) {
+					if (hf.getSelectedArticles().size() > 0) {
+						if (m_headlinesActionMode == null) {
+							m_headlinesActionMode = startSupportActionMode(m_headlinesActionModeCallback);
+						}
+
+						m_headlinesActionMode.setTitle(String.valueOf(hf.getSelectedArticles().size()));
+					} else if (hf.getSelectedArticles().size() == 0 && m_headlinesActionMode != null) {
+						m_headlinesActionMode.finish();
+					}
+				} else if (m_forceDisableActionMode && m_headlinesActionMode != null) {
 					m_headlinesActionMode.finish();
 				}
-			} else if (m_forceDisableActionMode && m_headlinesActionMode != null) {
-                m_headlinesActionMode.finish();
-            }
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 	}
 	
