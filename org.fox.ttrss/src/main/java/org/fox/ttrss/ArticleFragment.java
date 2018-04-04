@@ -161,6 +161,12 @@ public class ArticleFragment extends StateSavedFragment  {
 
 		final View view = inflater.inflate(R.layout.fragment_article, container, false);
 
+		// couldn't reinitialize state properly, might as well bail out
+        // tfw m_activity is null
+		if (m_article == null && m_activity != null) {
+		    m_activity.finish();
+        }
+
         /* if (m_fsviewShown) {
             view.findViewById(R.id.article_fullscreen_video).setVisibility(View.VISIBLE);
             view.findViewById(R.id.article_scrollview).setVisibility(View.INVISIBLE);
