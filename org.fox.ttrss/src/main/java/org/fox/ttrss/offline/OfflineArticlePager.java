@@ -95,7 +95,10 @@ public class OfflineArticlePager extends Fragment {
 		@Override
 		public Parcelable saveState() {
 			Bundle bundle = (Bundle) super.saveState();
-			bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+
+			if (bundle != null)
+				bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+
 			return bundle;
 		}
 
