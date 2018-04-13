@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ClassloaderWorkaroundFragmentStatePagerAdapter;
@@ -51,6 +52,18 @@ public class ArticlePager extends StateSavedFragment {
 		}
 
 		private ArticleFragment m_currentFragment;
+
+		// workaround for possible TransactionTooLarge exception on 8.0+
+		// we don't need to save member state anyway, bridge takes care of it
+		@Override
+		public Parcelable saveState() {
+			Bundle bundle = (Bundle) super.saveState();
+
+			if (bundle != null)
+				bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+
+			return bundle;
+		}
 
 		@Override
 		public Fragment getItem(int position) {

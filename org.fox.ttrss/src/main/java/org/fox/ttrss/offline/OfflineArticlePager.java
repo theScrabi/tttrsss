@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
@@ -89,6 +90,18 @@ public class OfflineArticlePager extends Fragment {
 			super(fm);
 		}
 
+		// workaround for possible TransactionTooLarge exception on 8.0+
+		// we don't need to save member state anyway, bridge takes care of it
+		@Override
+		public Parcelable saveState() {
+			Bundle bundle = (Bundle) super.saveState();
+
+			if (bundle != null)
+				bundle.putParcelableArray("states", null); // Never maintain any states from the base class, just null it out
+
+			return bundle;
+		}
+
 		@Override
 		public Fragment getItem(int position) {
 			Log.d(TAG, "getItem: " + position);
@@ -166,11 +179,11 @@ public class OfflineArticlePager extends Fragment {
 		}
 		
 		
-		ViewPager pager = (ViewPager) view.findViewById(R.id.article_pager);
+		ViewPager pager = view.findViewById(R.id.article_pager);
 		
 		pager.setAdapter(m_adapter);
 
-        UnderlinePageIndicator indicator = (UnderlinePageIndicator)view.findViewById(R.id.article_pager_indicator);
+        UnderlinePageIndicator indicator = view.findViewById(R.id.article_pager_indicator);
         indicator.setViewPager(pager);
 
         pager.setCurrentItem(position);
@@ -243,7 +256,7 @@ public class OfflineArticlePager extends Fragment {
 		
 		int position = getArticleIdPosition(articleId);
 		
-		ViewPager pager = (ViewPager) getView().findViewById(R.id.article_pager);
+		ViewPager pager = getView().findViewById(R.id.article_pager);
 		
 		pager.setCurrentItem(position);
 		
