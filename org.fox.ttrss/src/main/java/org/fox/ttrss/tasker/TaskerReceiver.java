@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -43,8 +44,12 @@ public class TaskerReceiver extends BroadcastReceiver {
 									OfflineDownloadService.class);
 							intent.putExtra("sessionId", sessionId);
 							intent.putExtra("batchMode", true);
-	
-							fContext.startService(intent);
+
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+								fContext.startForegroundService(intent);
+							} else {
+								fContext.startService(intent);
+							}
 						}
 						break;
 					case TaskerSettingsActivity.ACTION_UPLOAD:
@@ -53,8 +58,13 @@ public class TaskerReceiver extends BroadcastReceiver {
 									OfflineUploadService.class);
 							intent.putExtra("sessionId", sessionId);
 							intent.putExtra("batchMode", true);
-	
-							fContext.startService(intent);
+
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+								fContext.startForegroundService(intent);
+							} else {
+								fContext.startService(intent);
+							}
+
 						}						
 						break;
 					default:
