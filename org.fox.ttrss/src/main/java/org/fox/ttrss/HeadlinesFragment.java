@@ -73,9 +73,12 @@ import com.shamanland.fab.ShowHideOnScroll;
 import org.fox.ttrss.glide.ProgressTarget;
 import org.fox.ttrss.types.Article;
 import org.fox.ttrss.types.ArticleList;
+import org.fox.ttrss.types.Attachment;
 import org.fox.ttrss.types.Feed;
 import org.fox.ttrss.util.HeaderViewRecyclerAdapter;
 import org.fox.ttrss.util.HeadlinesRequest;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1574,7 +1577,29 @@ public class HeadlinesFragment extends StateSavedFragment {
 
 				intent.putExtra("firstSrc", article.flavorStreamUri != null ? article.flavorStreamUri : article.flavorImageUri);
 				intent.putExtra("title", article.title);
-				intent.putExtra("content", article.content);
+
+				// FIXME maybe: gallery view works with document as html, it's easier to add this hack rather than
+				// rework it to additionally operate on separate attachment array (?)
+				// also, maybe consider video attachments? kinda hard to do without a poster tho (for flavor view)
+
+				String tempContent = article.content;
+
+				if (article.attachments != null) {
+					Document doc = new Document("");
+
+					for (Attachment a : article.attachments) {
+						if (a.content_type != null) {
+							if (a.content_type.contains("image/")) {
+								Element img = new Element("img").attr("src", a.content_url);
+								doc.appendChild(img);
+							}
+						}
+					}
+
+					tempContent = doc.outerHtml() + tempContent;
+				}
+
+				intent.putExtra("content", tempContent);
 
 				ActivityOptionsCompat options =
 						ActivityOptionsCompat.makeSceneTransitionAnimation(m_activity,

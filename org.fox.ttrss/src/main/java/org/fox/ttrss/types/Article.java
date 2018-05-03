@@ -78,6 +78,10 @@ public class Article implements Parcelable {
 						flavorImageUri = "https:" + flavorImageUri;
 					}
 
+					// this is needed for the gallery view
+					flavorImage = new Element("img")
+						.attr("src", flavorImageUri);
+
 					break;
 				}
 			}
