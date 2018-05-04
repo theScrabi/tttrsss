@@ -1,5 +1,6 @@
 package org.fox.ttrss.widget;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,15 @@ public class WidgetUpdateService extends Service {
     public static final int UPDATE_RESULT_ERROR_OTHER = 2;
     public static final int UPDATE_RESULT_ERROR_NEED_CONF = 3;
     public static final int UPDATE_IN_PROGRESS = 4;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(1, new Notification());
+        }
+    }
 
     @Override
 	public IBinder onBind(Intent intent) {
