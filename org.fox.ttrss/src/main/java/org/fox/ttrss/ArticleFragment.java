@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
@@ -407,14 +406,16 @@ public class ArticleFragment extends StateSavedFragment  {
 
         m_web.setVisibility(View.VISIBLE);
 
-        //renderContent(savedInstanceState);
+        // we no longer use async rendering because chrome 66 webview breaks on it sometimes
 
-        new Handler().postDelayed(new Runnable() {
+        /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 renderContent(savedInstanceState);
             }
-        }, 250);
+        }, 250);*/
+
+        renderContent(savedInstanceState);
 
         return view;
 	}
