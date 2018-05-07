@@ -1,11 +1,13 @@
 package org.fox.ttrss.widget;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -30,6 +32,15 @@ public class WidgetUpdateService extends Service {
     public static final int UPDATE_IN_PROGRESS = 4;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(1, new Notification());
+        }
+    }
+
+    @Override
 	public IBinder onBind(Intent intent) {
 		Log.d(TAG, "onBind");
 
@@ -43,10 +54,7 @@ public class WidgetUpdateService extends Service {
 
         // if no network is available networkInfo will be null
         // otherwise check if we are connected
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     @Override
@@ -67,7 +75,12 @@ public class WidgetUpdateService extends Service {
                         public void run() {
                             Intent serviceIntent = new Intent(getApplicationContext(), WidgetUpdateService.class);
                             serviceIntent.putExtra("retryCount", retryCount + 1);
-                            startService(serviceIntent);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(serviceIntent);
+                            } else {
+                                startService(serviceIntent);
+                            }
 
                         }
                     }, 3 * 1000);

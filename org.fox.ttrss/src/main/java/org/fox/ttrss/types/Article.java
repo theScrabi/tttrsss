@@ -67,67 +67,89 @@ public class Article implements Parcelable {
 	}
 
 	public void collectMediaInfo() {
-		articleDoc = Jsoup.parse(content);
 
-		if (articleDoc != null) {
-			mediaList = articleDoc.select("img,video,iframe[src*=youtube.com/embed/]");
+		// consider attachments first
+		if (attachments != null) {
+			for (Attachment a : attachments) {
+				if (a.content_type != null && a.content_type.contains("image/")) {
+					flavorImageUri = a.content_url;
 
-			for (Element e : mediaList) {
-				if ("iframe".equals(e.tagName().toLowerCase())) {
-					flavorImage = e;
-					break;
-				} /*else if ("video".equals(e.tagName().toLowerCase())) {
-					flavorImage = e;
-					break;
-				}*/
-			}
+					if (flavorImageUri != null && flavorImageUri.startsWith("//")) {
+						flavorImageUri = "https:" + flavorImageUri;
+					}
 
-			if (flavorImage == null) {
-				for (Element e : mediaList) {
-					flavorImage = e;
+					// this is needed for the gallery view
+					flavorImage = new Element("img")
+						.attr("src", flavorImageUri);
+
 					break;
 				}
 			}
+		}
 
-			if (flavorImage != null) {
+		// doing this the hard way then
+		if (flavorImageUri == null) {
+			articleDoc = Jsoup.parse(content);
 
-				try {
+			if (articleDoc != null) {
+				mediaList = articleDoc.select("img,video,iframe[src*=youtube.com/embed/]");
 
-					if ("video".equals(flavorImage.tagName().toLowerCase())) {
-						Element source = flavorImage.select("source").first();
-						flavorStreamUri = source.attr("src");
+				for (Element e : mediaList) {
+					if ("iframe".equals(e.tagName().toLowerCase())) {
+						flavorImage = e;
+						break;
+					} /*else if ("video".equals(e.tagName().toLowerCase())) {
+					flavorImage = e;
+					break;
+				}*/
+				}
 
-						flavorImageUri = flavorImage.attr("poster");
-					} else if ("iframe".equals(flavorImage.tagName().toLowerCase())) {
+				if (flavorImage == null) {
+					for (Element e : mediaList) {
+						flavorImage = e;
+						break;
+					}
+				}
 
-						String srcEmbed = flavorImage.attr("src");
+				if (flavorImage != null) {
+					try {
 
-						if (srcEmbed.length() > 0) {
-							Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
-							Matcher matcher = pattern.matcher(srcEmbed);
+						if ("video".equals(flavorImage.tagName().toLowerCase())) {
+							Element source = flavorImage.select("source").first();
+							flavorStreamUri = source.attr("src");
 
-							if (matcher.find()) {
-								youtubeVid = matcher.group(1);
+							flavorImageUri = flavorImage.attr("poster");
+						} else if ("iframe".equals(flavorImage.tagName().toLowerCase())) {
 
-								flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/hqdefault.jpg";
-								flavorStreamUri = "https://youtu.be/" + youtubeVid;
+							String srcEmbed = flavorImage.attr("src");
+
+							if (srcEmbed.length() > 0) {
+								Pattern pattern = Pattern.compile("/embed/([\\w-]+)");
+								Matcher matcher = pattern.matcher(srcEmbed);
+
+								if (matcher.find()) {
+									youtubeVid = matcher.group(1);
+
+									flavorImageUri = "https://img.youtube.com/vi/" + youtubeVid + "/hqdefault.jpg";
+									flavorStreamUri = "https://youtu.be/" + youtubeVid;
+								}
 							}
-						}
-					} else {
-						flavorImageUri = flavorImage.attr("src");
+						} else {
+							flavorImageUri = flavorImage.attr("src");
 
-						if (flavorImageUri != null && flavorImageUri.startsWith("//")) {
-							flavorImageUri = "https:" + flavorImageUri;
-						}
+							if (flavorImageUri != null && flavorImageUri.startsWith("//")) {
+								flavorImageUri = "https:" + flavorImageUri;
+							}
 
+							flavorStreamUri = null;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+
+						flavorImage = null;
+						flavorImageUri = null;
 						flavorStreamUri = null;
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-
-					flavorImage = null;
-					flavorImageUri = null;
-					flavorStreamUri = null;
 				}
 			}
 		}

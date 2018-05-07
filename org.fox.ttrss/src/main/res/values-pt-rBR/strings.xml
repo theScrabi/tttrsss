@@ -72,8 +72,8 @@
     <string name="error_invalid_api_url">Erro: A URL da API é inválida</string>
     <string name="go_offline">Modo offline</string>
     <string name="go_online">Modo online</string>
-    <string name="offline_switch_error">Falha ao preparar o modo offline (ver log)</string>
-    <!-- <string name="no_feeds">Nenhum feed para mostrar display</string> -->
+    <string name="offline_switch_failed">Falha ao preparar modo offline</string>
+    <!-- <string name="no_feeds">Nenhum feed para mostrar</string> -->
     <string name="dialog_offline_prompt">O Login falhou, mas você tem dados armazenados. Mudar para modo offline?</string>
     <string name="dialog_offline_success">Modo offline está disponível</string>
     <string name="dialog_offline_go">Mudar para offline</string>
@@ -88,9 +88,10 @@
     <string name="notify_uploading_title">Sincronizando dados offline</string>
     <string name="offline_sync_success">Sincronização de dados offline completa</string>
     <string name="offline_mode">Modo offline</string>
-    <string name="offline_image_cache_enabled">Armazenar imagens</string>
-    <string name="offline_image_cache_enabled_summary">Baixar imagens para o cartão SD. Isso pode aumentar consideravelmente o tempo para o modo offline.</string>
+    <string name="offline_media_cache_enabled">Fazer cache de mídia</string>
+    <string name="offline_media_cache_enabled_summary">Baixar arquivos de mídia. Isso aumenta significativamente o tempo necessário para ir para o modo offline</string>
     <string name="notify_downloading_images">Baixando imagens (%1$d)…</string>
+    <string name="notify_downloading_media">Baixando arquivos de mídia…</string>
     <string name="article_set_labels">Definir marcadores</string>
     <string name="search">Pesquisar</string>
     <string name="cancel">Cancelar</string>
@@ -254,4 +255,7 @@
     <string name="pref_widget_update_interval_summary">Esse intervalo não é preciso devido a limitações do Android</string>
     <string name="prefs_offline_sort_by_feed">Agrupar títulos por feeds</string>
     <string name="reload">Recarregar</string>
+    <string name="offline_sync_try_again">Tentar novamente</string>
+    <string name="offline_tap_to_switch">Pressione para alterar para offline</string>
+    <string name="offline_no_articles">Nenhum artigo baixado</string>
 </resources>
