@@ -331,7 +331,12 @@ public class ArticleFragment extends StateSavedFragment  {
             dv.setTextSize(TypedValue.COMPLEX_UNIT_SP, m_articleSmallFontSize);
 
             Date d = new Date(m_article.updated * 1000L);
-            DateFormat df = new SimpleDateFormat("MMM dd, HH:mm");
+            long half_a_year_ago = System.currentTimeMillis()/1000L - 182*24*60*60;
+            DateFormat df;
+            if (m_article.updated < half_a_year_ago)
+                df = new SimpleDateFormat("MMM dd, yyyy");
+            else
+                df = new SimpleDateFormat("MMM dd, HH:mm");
             dv.setText(df.format(d));
         }
 
