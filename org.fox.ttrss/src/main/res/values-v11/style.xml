@@ -1,6 +1,0 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	
-	<style name="DarkDialogTheme" parent="android:Theme.Holo.Dialog">
-    </style>
-
-</resources>
